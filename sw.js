@@ -1,14 +1,18 @@
 /* ════════════════════════════════════════════════════════════
    زاد — Service Worker
-   Version: 20260522-2340
+   Version: 20260617-z9a
    Strategy: Network-First WITH TIMEOUT (HTML/CSS/JS) + Cache-First (media)
 
    إصلاح حرج: إضافة مهلة زمنية للشبكة. على الشبكات الضعيفة (0 KB/s متصلة
    لكن ميتة) كان fetch يعلّق للأبد فلا يرجع للكاش = شاشة سوداء. الآن لو لم
    تستجب الشبكة خلال 3 ثوانٍ نرجع فوراً للنسخة المخزّنة.
+
+   Z9a: إضافة /api/ و /health/ إلى قائمة BYPASS —
+        نداءات الـ API يجب أن تصل دائماً للخادم مباشرةً بدون أي
+        تدخّل من الـ SW. كاش session غير صحيح = 401 مستمر بعد login.
    ════════════════════════════════════════════════════════════ */
 
-const CACHE_STATIC = 'zad-20260617-z8';
+const CACHE_STATIC = 'zad-20260617-z9a';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -33,13 +37,28 @@ const PRECACHE = [
 
 /* ── لا تُخزَّن أبداً ── */
 const BYPASS = [
+  /* ── Z9a: API + Health — يصلان دائماً للخادم مباشرةً ── */
+  '/api/',          /* كل نداءات /api/v1/* بدون استثناء  */
+  '/health/',       /* /health/ready وما شابه             */
+
+  /* ── AI / external APIs ── */
   'api.anthropic.com', 'generativelanguage.googleapis.com', 'api.groq.com',
   'mcp.tafsir.net',
+
+  /* ── Fonts / CDN ── */
   'fonts.googleapis.com', 'fonts.gstatic.com',
   'cdnjs.cloudflare.com', 'cdn.jsdelivr.net',
+
+  /* ── Analytics / Vercel infra ── */
   'analytics', 'vercel.com/api', '_vercel',
+
+  /* ── Prayer times / Quran APIs ── */
   'aladhan.com', 'alquran.cloud',
+
+  /* ── Geo ── */
   'nominatim.openstreetmap.org',
+
+  /* ── Media streams ── */
   'radiojar.com', 'zeno.fm',
 ];
 const bypass = url => BYPASS.some(p => url.includes(p));
@@ -63,7 +82,7 @@ self.addEventListener('activate', e => {
       ))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ includeUncontrolled: true }))
-      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260522-2340' })))
+      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260617-z9a' })))
   );
 });
 

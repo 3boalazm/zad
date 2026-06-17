@@ -57,6 +57,9 @@
 </div>
 </main>
 
+<!-- Z9a: api-client.js يجب أن يُحمَّل قبل الـ script الرئيسي -->
+<script src="js/api-client.js"></script>
+
 <script>
 /* قائمة الصفحات الأساسية للفحص */
 var PAGES = [
@@ -300,6 +303,104 @@ function esc(s){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
   });
 }
+
+/* ════════════════════════════════════════════════════════
+   Z9a — API Health Card
+   يستخدم window.ZadAPI (js/api-client.js) لفحص الاتصال.
+   • health()  → GET /health/ready
+   • index()   → GET /api/v1
+   يُثبت أن api-client.js يعمل من السياق الفعلي للـ PWA.
+   ════════════════════════════════════════════════════════ */
+(function () {
+
+  function renderApiCard(healthRes, apiRes) {
+    var healthOk = healthRes.ok && healthRes.data && healthRes.data.status === 'ok';
+    var dbOk     = healthRes.data && healthRes.data.db === 'ok';
+    var apiOk    = apiRes.ok;
+
+    var cls = (healthOk && dbOk && apiOk) ? 'ok' : (!healthOk ? 'err' : 'warn');
+    var lbl = (healthOk && dbOk && apiOk) ? 'متاح' : (!healthOk ? 'تعذّر الوصول' : 'جزئي');
+
+    var rows = '';
+
+    /* /health/ready */
+    var hSt  = healthRes.ok ? 'ok' : 'err';
+    var hVal = healthRes.ok
+      ? '✅ ' + healthRes.status + ' · db:' + (dbOk ? 'ok' : '⚠️ ' + (healthRes.data && healthRes.data.db || '?'))
+      : '❌ ' + (healthRes.error || healthRes.status || 'فشل');
+    rows += rowHtml('/health/ready — reachable', hVal, hSt);
+
+    /* /api/v1 */
+    var aSt  = apiRes.ok ? 'ok' : 'err';
+    var aVal = apiRes.ok
+      ? '✅ ' + apiRes.status + ' · v' + (apiRes.data && apiRes.data.version || '?') + ' · sprint:' + (apiRes.data && apiRes.data.sprint || '?')
+      : '❌ ' + (apiRes.error || apiRes.status || 'فشل');
+    rows += rowHtml('/api/v1 — reachable', aVal, aSt);
+
+    /* SW bypass — expected, needs manual Cache Storage check */
+    var swCls = (healthRes.ok || apiRes.ok) ? 'warn' : 'warn';
+    rows += rowHtml(
+      'SW bypass — configured in sw.js',
+      '⚠️ تحقق يدوي مطلوب: Cache Storage يجب ألا يحتوي /api/ أو /health/',
+      swCls
+    );
+
+    if (apiRes.data && apiRes.data.version) {
+      rows += rowHtml('Sprint', esc(apiRes.data.sprint || '—'), 'ok');
+    }
+
+    /* ZadAPI module */
+    var zadApiOk = typeof window.ZadAPI === 'object' && typeof window.ZadAPI.health === 'function';
+    rows += rowHtml('window.ZadAPI loaded', zadApiOk ? '✅ api-client.js يعمل' : '❌ لم يُحمَّل', zadApiOk ? 'ok' : 'err');
+
+    var card = '<div class="diag-section" id="api-health-card">' +
+      '<h2>🔌 API Connectivity (Z9a) <span class="diag-badge ' + cls + '">' + lbl + '</span></h2>' +
+      rows + '</div>';
+
+    var existing = document.getElementById('api-health-card');
+    if (existing) existing.remove();
+
+    var resultsEl = document.getElementById('results');
+    if (resultsEl) resultsEl.insertAdjacentHTML('afterbegin', card);
+  }
+
+  function runApiHealthCheck() {
+    /* التأكد من تحميل ZadAPI أولاً */
+    if (typeof window.ZadAPI !== 'object' || typeof window.ZadAPI.health !== 'function') {
+      var resultsEl = document.getElementById('results');
+      if (resultsEl && !document.getElementById('api-health-card')) {
+        resultsEl.insertAdjacentHTML('afterbegin',
+          '<div class="diag-section" id="api-health-card">' +
+          '<h2>🔌 API Connectivity (Z9a) <span class="diag-badge err">خطأ</span></h2>' +
+          '<div class="diag-empty">❌ window.ZadAPI غير موجود — تأكد من تحميل js/api-client.js</div>' +
+          '</div>');
+      }
+      return;
+    }
+
+    /* placeholder أثناء الفحص */
+    var resultsEl = document.getElementById('results');
+    if (resultsEl && !document.getElementById('api-health-card')) {
+      resultsEl.insertAdjacentHTML('afterbegin',
+        '<div class="diag-section" id="api-health-card">' +
+        '<h2>🔌 API Connectivity (Z9a) <span class="diag-badge warn">جارٍ الفحص…</span></h2>' +
+        '<div class="diag-empty">⏳ يستدعي window.ZadAPI…</div></div>');
+    }
+
+    /* استخدام ZadAPI مباشرة — هذا ما يُثبت أن api-client.js يعمل */
+    Promise.all([window.ZadAPI.health(), window.ZadAPI.index()])
+      .then(function (r) { renderApiCard(r[0], r[1]); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runApiHealthCheck);
+  } else {
+    runApiHealthCheck();
+  }
+
+  window.runApiHealthCheck = runApiHealthCheck;
+})();
 </script>
 </body>
 </html>
+
