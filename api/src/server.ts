@@ -1,6 +1,6 @@
 /**
  * ZAD API — Server entry point
- * Sprint Z4: initialises DB pool (if DATABASE_URL set), then starts HTTP server.
+ * Sprint Z6: initialises DB pool (if DATABASE_URL set), then starts HTTP server.
  *
  * Startup sequence:
  *   1. Load config
@@ -45,7 +45,7 @@ async function main(): Promise<void> {
         env: config.nodeEnv,
         apiPrefix: config.apiPrefix,
         db: config.databaseUrl ? 'pool_created' : 'not_configured',
-        sprint: 'Z5',
+        sprint: 'Z6',
       }) + '\n'
     );
   });

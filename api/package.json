@@ -1,7 +1,7 @@
 {
   "name": "zad-api",
-  "version": "0.5.0",
-  "description": "ZAD backend API — Sprint Z5 Auth/Sessions",
+  "version": "0.6.0",
+  "description": "ZAD backend API — Sprint Z6 Worship Sync",
   "private": true,
   "engines": {
     "node": ">=18.0.0"

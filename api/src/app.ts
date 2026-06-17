@@ -1,13 +1,13 @@
 /**
  * ZAD API — Express application factory
- * Sprint Z5: Auth/Sessions added (login, logout, me, requireAuth middleware).
+ * Sprint Z6: Worship Sync added (worship/logs, sync/push, sync/pull).
  *
  * Middleware order:
  *   1. requestId      — UUID per request
  *   2. cookieParser   — parse HttpOnly session cookies
  *   3. json body      — parse request bodies
  *   4. requestLogger  — structured JSON logs
- *   5. routes         — /health, /api/v1/auth, /api/v1 index
+ *   5. routes         — /health, /api/v1/auth, /api/v1/worship, /api/v1/sync, /api/v1 index
  *   6. notFound       — 404 handler
  *   7. errorHandler   — global error handler (4-arg, last)
  *
@@ -23,6 +23,8 @@ import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { healthRouter } from './health/health.router.js';
 import { authRouter } from './auth/auth.router.js';
+import { worshipRouter } from './worship/worship.router.js';
+import { syncRouter } from './sync/sync.router.js';
 
 export function createApp(): Application {
   const app = express();
@@ -44,18 +46,24 @@ export function createApp(): Application {
 
   // ── 5. Routes ─────────────────────────────────────────────────────────────
   app.use('/health', healthRouter);
-  app.use(`${config.apiPrefix}/auth`, authRouter);
+  app.use(`${config.apiPrefix}/auth`,    authRouter);
+  app.use(`${config.apiPrefix}/worship`, worshipRouter);
+  app.use(`${config.apiPrefix}/sync`,    syncRouter);
 
   app.get(config.apiPrefix, (_req, res) => {
     res.json({
       service: config.serviceName,
-      version: '0.5.0',
-      sprint: 'Z5',
-      message: 'ZAD API — Auth/Sessions active.',
+      version: '0.6.0',
+      sprint: 'Z6',
+      message: 'ZAD API — Worship Sync active.',
       endpoints: [
         'POST /api/v1/auth/login',
         'POST /api/v1/auth/logout',
         'GET  /api/v1/auth/me',
+        'POST /api/v1/worship/logs',
+        'GET  /api/v1/worship/logs',
+        'POST /api/v1/sync/push',
+        'POST /api/v1/sync/pull',
       ],
     });
   });
