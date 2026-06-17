@@ -55,6 +55,8 @@
 
   <div id="results"></div>
 </div>
+
+  <div id="z9c-card"></div>
 </main>
 
 <!-- Z9a: api-client.js يجب أن يُحمَّل قبل الـ script الرئيسي -->
@@ -557,6 +559,163 @@ function esc(s){
   }
 
 })();
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     Z9c — Worship Sync
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  (function initZ9cCard() {
+    var ph = document.getElementById('z9c-card');
+    if (!ph) return;
+
+    /* skeleton */
+    ph.innerHTML =
+      '<h2>\U0001f54c Worship Sync (Z9c) <span class="diag-badge warn">\u062c\u0627\u0631\u0646 \u0627\u0644\u0641\u062d\u0635\u2026</span></h2>' +
+      '<table id="z9c-table"></table>';
+
+    var tbl = document.getElementById('z9c-table');
+
+    function row(k, v, cls) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + k + '</td><td class="' + (cls || '') + '">' + v + '</td>';
+      tbl.appendChild(tr);
+    }
+
+    function setHeader(lbl, cls) {
+      ph.querySelector('h2').innerHTML =
+        '\U0001f54c Worship Sync (Z9c) <span class="diag-badge ' + cls + '">' + lbl + '</span>';
+    }
+
+    /* فحص ZadAPI.worship */
+    if (window.ZadAPI && window.ZadAPI.worship &&
+        typeof window.ZadAPI.worship.push === 'function' &&
+        typeof window.ZadAPI.worship.list === 'function') {
+      row('window.ZadAPI.worship', '\u2705 push / list \u062c\u0627\u0647\u0632\u062a\u0627\u0646', 'ok');
+    } else {
+      row('window.ZadAPI.worship', '\u274c \u063a\u064a\u0631 \u0645\u0648\u062c\u0648\u062f \u2014 \u062a\u062d\u0642\u0642 \u0645\u0646 api-client.js', 'err');
+      setHeader('\u062e\u0637\u0623', 'err');
+      return;
+    }
+
+    row('Preview', '<code>runWorshipPayloadPreview()</code>', 'hint');
+    row('Test', '<code>runWorshipSyncTest()</code>', 'hint');
+
+    /* فحص session */
+    if (!window.ZadAPI || !window.ZadAPI.auth) {
+      row('Session', '\u274c ZadAPI.auth \u063a\u064a\u0631 \u0645\u0648\u062c\u0648\u062f', 'err');
+      setHeader('\u062e\u0637\u0623', 'err');
+      return;
+    }
+
+    window.ZadAPI.auth.me().then(function (res) {
+      if (res.ok) {
+        row('Session', '\u2705 \u0645\u0635\u0627\u062f\u0642 (userId: ' + res.data.userId + ')', 'ok');
+        row('Push Ready', '\u2705 \u0646\u0639\u0645', 'ok');
+        setHeader('\u062c\u0627\u0647\u0632', 'ok');
+      } else {
+        row('Session', '\u26a0\ufe0f \u062a\u0633\u062c\u064a\u0644 \u062f\u062e\u0648\u0644 \u0645\u0637\u0644\u0648\u0628 \u2014 <code>runAuthE2E()</code>', 'warn');
+        row('Push Ready', '\u26a0\ufe0f \u064a\u062a\u0637\u0644\u0628 session', 'warn');
+        setHeader('\u062a\u0633\u062c\u064a\u0644 \u0645\u0637\u0644\u0648\u0628', 'warn');
+      }
+    }).catch(function (err) {
+      row('Session', '\u274c \u062e\u0637\u0623: ' + err.message, 'err');
+      setHeader('\u062e\u0637\u0623', 'err');
+    });
+  })();
+
+  /* ── Z9c helpers ──────────────────────────────────────────────────────── */
+
+  /* _z9cBuildPayload — مشترك، read-only على localStorage */
+  function _z9cBuildPayload() {
+    var raw = localStorage.getItem('zad_v2');
+    var zad;
+    try { zad = raw ? JSON.parse(raw) : {}; }
+    catch (e) { throw new Error('zad_v2 parse error: ' + e.message); }
+
+    var now     = new Date();
+    var pad     = function (n) { return n < 10 ? '0' + n : String(n); };
+    var logDate = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+
+    var payload = {
+      worship:       (zad.worship || {}),
+      streak:        (zad.streak  || 0),
+      takbeer_total: (zad.takbeer && zad.takbeer.total ? zad.takbeer.total : 0),
+      history_today: (zad.history && zad.history[logDate] ? zad.history[logDate] : null)
+    };
+
+    var iKey = zad._uuid ? (logDate + '-' + zad._uuid) : undefined;
+    return { logDate: logDate, payload: payload, iKey: iKey, snapRaw: raw };
+  }
+
+  /**
+   * runWorshipPayloadPreview()
+   * يعرض ما سيُرسَل بدون أي طلب شبكي
+   */
+  window.runWorshipPayloadPreview = function () {
+    console.log('[ZAD Z9C] Payload Preview (no network call)');
+    try {
+      var built = _z9cBuildPayload();
+      console.log('log_date:', built.logDate);
+      console.log('payload:', built.payload);
+      if (built.iKey) console.log('idempotency_key:', built.iKey);
+      else            console.log('idempotency_key: (none \u2014 zad._uuid absent)');
+      return built;
+    } catch (e) {
+      console.error(e.message);
+      return null;
+    }
+  };
+
+  /**
+   * runWorshipSyncTest()
+   * 1. auth.me  — يتأكد من session
+   * 2. snapshot localStorage قبل
+   * 3. worship.push
+   * 4. equality check بعد (no-write guarantee)
+   */
+  window.runWorshipSyncTest = function () {
+    console.log('[ZAD Z9C] Worship Sync Test');
+
+    return window.ZadAPI.auth.me().then(function (meRes) {
+      if (!meRes.ok) {
+        console.warn('auth.me \u2192', meRes.status, meRes.data);
+        console.warn('\u26a0\ufe0f \u062a\u0633\u062c\u064a\u0644 \u062f\u062e\u0648\u0644 \u0645\u0637\u0644\u0648\u0628 \u2014 \u0634\u063a\u0651\u0644 runAuthE2E \u0623\u0648\u0644\u0627\u064b');
+        return meRes;
+      }
+      console.log('auth.me \u2192 200  userId:', meRes.data.userId);
+
+      var snapBefore = localStorage.getItem('zad_v2');
+
+      var built;
+      try { built = _z9cBuildPayload(); }
+      catch (e) { console.error(e.message); return Promise.reject(e); }
+
+      console.log('log_date:', built.logDate);
+      console.log('payload:', built.payload);
+      if (built.iKey) console.log('idempotency_key:', built.iKey);
+
+      return window.ZadAPI.worship.push(built.logDate, built.payload, built.iKey)
+        .then(function (pushRes) {
+          var snapAfter = localStorage.getItem('zad_v2');
+          if (snapBefore === snapAfter) {
+            console.log('\u2705 localStorage \u0644\u0645 \u064a\u062a\u063a\u064a\u0651\u0631 (read-only \u0645\u0624\u0643\u0651\u062f)');
+          } else {
+            console.error('\u274c localStorage \u062a\u063a\u064a\u0651\u0631 \u2014 \u062e\u0631\u0642 \u0642\u0627\u0639\u062f\u0629 read-only!');
+          }
+          if (pushRes.ok) {
+            console.log('push \u2192', pushRes.status, pushRes.data);
+          } else {
+            console.warn('push \u2192', pushRes.status, pushRes.data);
+          }
+          return pushRes;
+        });
+    }).catch(function (err) {
+      console.error('runWorshipSyncTest error:', err);
+      throw err;
+    });
+  };
+
+  /* ── end Z9c ─────────────────────────────────────────────────────────── */
 </script>
 </body>
 </html>

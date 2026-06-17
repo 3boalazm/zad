@@ -1,121 +1,127 @@
-/* ════════════════════════════════════════════════════════════
-   زاد — API Client  (Z9b)
-   js/api-client.js
+/**
+ * زاد — API Client  (Z9c)
+ *
+ * Z9a: health() + index()
+ * Z9b: auth.login / auth.me / auth.logout
+ * Z9c: worship.push / worship.list
+ *
+ * القواعد الثابتة:
+ *   - credentials: 'include'  على كل request
+ *   - cache: 'no-store'       على كل request
+ *   - لا Authorization header
+ *   - لا credentials مخزّنة هنا
+ *   - لا كتابة على zad_v2
+ *   - لا window.STATE
+ */
 
-   window.ZadAPI surface:
-     Z9a: health()  → GET /health/ready
-          index()   → GET /api/v1
-     Z9b: auth.login(email, password) → POST /api/v1/auth/login
-          auth.me()                   → GET  /api/v1/auth/me
-          auth.logout()               → POST /api/v1/auth/logout
-
-   Worship → Z9c (لم تُضَف بعد)
-   Sync    → Z9d (لم تُضَف بعد)
-
-   قواعد ثابتة:
-   • credentials: 'include' على كل request
-   • cache: 'no-store' على كل request
-   • لا يقرأ zad_v2 ولا يكتب عليه
-   • لا يعتمد على window.STATE
-   • لا يلمس Firebase
-   • لا Authorization header
-   • لا credentials محفوظة
-   • كل الـ errors تُرجَع كـ {ok:false, status, error, data:null}
-   ════════════════════════════════════════════════════════════ */
+'use strict';
 
 (function () {
-  'use strict';
 
-  var ZAD_API_PREFIX  = '/api/v1';
-  var ZAD_HEALTH_URL  = '/health/ready';
-  var ZAD_API_TIMEOUT = 8000;
+  var ZAD_API_PREFIX = '/api/v1';
+  var TIMEOUT_MS     = 10000;
 
-  /* ── fetch مع AbortController timeout ── */
-  function fetchWithTimeout(url, options, ms) {
-    var ctrl  = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, ms) : null;
-    var opts  = ctrl ? Object.assign({}, options, { signal: ctrl.signal }) : options;
+  /* ── helpers ───────────────────────────────────────────────────────── */
 
-    return fetch(url, opts).then(
-      function (res) { if (timer) clearTimeout(timer); return res; },
-      function (err) { if (timer) clearTimeout(timer); throw err; }
-    );
+  function fetchWithTimeout(url, opts) {
+    return new Promise(function (resolve, reject) {
+      var controller = new AbortController();
+      var timer = setTimeout(function () {
+        controller.abort();
+        reject(new Error('timeout'));
+      }, TIMEOUT_MS);
+
+      fetch(url, Object.assign({}, opts, {
+        signal:      controller.signal,
+        credentials: 'include',
+        cache:       'no-store'
+      }))
+        .then(function (r) { clearTimeout(timer); resolve(r); })
+        .catch(function (e) { clearTimeout(timer); reject(e); });
+    });
   }
 
-  /* ── نتيجة موحّدة من الـ Response ── */
-  function parseResponse(res) {
-    return res.json()
-      .then(function (data) { return { ok: res.ok, status: res.status, data: data }; })
-      .catch(function ()   { return { ok: res.ok, status: res.status, data: null }; });
+  /**
+   * safeJsonResponse — يمسك حالات السيرفر رجع non-JSON
+   * (nginx 502، HTML error page، إلخ)
+   * بدلاً من SyntaxError غير واضح، يرجّع:
+   *   { ok: false, status: N, data: null, raw: '<first 200 chars>' }
+   */
+  function safeJsonResponse(r) {
+    return r.text().then(function (text) {
+      var data;
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        return { ok: false, status: r.status, data: null, raw: text.slice(0, 200) };
+      }
+      return { ok: r.ok, status: r.status, data: data };
+    });
   }
 
-  /* ── معالجة الـ network errors ── */
-  function handleError(err) {
-    var msg = err && err.name === 'AbortError' ? 'timeout' : (err && err.message) || 'network-error';
-    return { ok: false, status: 0, error: msg, data: null };
-  }
-
-  /* ── GET ── */
   function get(url) {
-    return fetchWithTimeout(
-      url,
-      { method: 'GET', credentials: 'include', cache: 'no-store' },
-      ZAD_API_TIMEOUT
-    )
-      .then(parseResponse)
-      .catch(handleError);
+    return fetchWithTimeout(url, { method: 'GET' }).then(safeJsonResponse);
   }
 
-  /* ── POST JSON — login only ── */
   function postJson(url, body) {
-    return fetchWithTimeout(
-      url,
-      {
-        method: 'POST',
-        credentials: 'include',
-        cache: 'no-store',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      },
-      ZAD_API_TIMEOUT
-    )
-      .then(parseResponse)
-      .catch(handleError);
+    return fetchWithTimeout(url, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body)
+    }).then(safeJsonResponse);
   }
 
-  /* ── POST بدون body — logout ── */
   function postNoBody(url) {
-    return fetchWithTimeout(
-      url,
-      {
-        method: 'POST',
-        credentials: 'include',
-        cache: 'no-store'
-      },
-      ZAD_API_TIMEOUT
-    )
-      .then(parseResponse)
-      .catch(handleError);
+    return fetchWithTimeout(url, { method: 'POST' }).then(safeJsonResponse);
   }
 
-  /* ── Public API ── */
+  /* ── public API ─────────────────────────────────────────────────────── */
+
   window.ZadAPI = {
 
     /* Z9a */
-    health: function () { return get(ZAD_HEALTH_URL); },
-    index:  function () { return get(ZAD_API_PREFIX); },
+    health: function () {
+      return get('/health/ready');
+    },
+
+    index: function () {
+      return get(ZAD_API_PREFIX);
+    },
 
     /* Z9b */
     auth: {
-      login:  function (email, password) {
+      login: function (email, password) {
         return postJson(ZAD_API_PREFIX + '/auth/login', { email: email, password: password });
       },
-      me:     function () { return get(ZAD_API_PREFIX + '/auth/me');     },
-      logout: function () { return postNoBody(ZAD_API_PREFIX + '/auth/logout'); },
+      me: function () {
+        return get(ZAD_API_PREFIX + '/auth/me');
+      },
+      logout: function () {
+        return postNoBody(ZAD_API_PREFIX + '/auth/logout');
+      }
     },
 
-    /* Worship → Z9c */
-    /* Sync    → Z9d */
+    /* Z9c — worship sync */
+    worship: {
+      /**
+       * push — ترسل سجل عبادة ليوم معين
+       * @param {string}  log_date          "YYYY-MM-DD"
+       * @param {object}  payload           { worship, streak, takbeer_total, history_today? }
+       * @param {string}  [idempotency_key] اختياري
+       */
+      push: function (log_date, payload, idempotency_key) {
+        var body = { log_date: log_date, payload: payload };
+        if (idempotency_key) { body.idempotency_key = idempotency_key; }
+        return postJson(ZAD_API_PREFIX + '/worship/logs', body);
+      },
+
+      /**
+       * list — تجيب كل سجلات المستخدم المصادق
+       */
+      list: function () {
+        return get(ZAD_API_PREFIX + '/worship/logs');
+      }
+    }
   };
 
 })();
