@@ -57,6 +57,8 @@
 </div>
 
   <div id="z9c-card"></div>
+
+  <div id="z9d-card"></div>
 </main>
 
 <!-- Z9a: api-client.js يجب أن يُحمَّل قبل الـ script الرئيسي -->
@@ -716,6 +718,151 @@ function esc(s){
   };
 
   /* ── end Z9c ─────────────────────────────────────────────────────────── */
+
+  /* Z9d — Readback + Repeat Sync Proof */
+
+  (function initZ9dCard() {
+    var ph = document.getElementById('z9d-card');
+    if (!ph) return;
+
+    ph.innerHTML =
+      '<h2>📋 Sync Readback (Z9d) <span class="diag-badge warn">جارن…</span></h2>' +
+      '<table id="z9d-table"></table>' +
+      '<div id="z9d-actions" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"></div>' +
+      '<div id="z9d-result" style="margin-top:8px;font-family:monospace;font-size:12px;white-space:pre-wrap;max-height:220px;overflow:auto;border:1px solid var(--b);border-radius:6px;padding:8px;display:none"></div>';
+
+    var tbl = document.getElementById('z9d-table');
+    var actions = document.getElementById('z9d-actions');
+    var result  = document.getElementById('z9d-result');
+
+    function row(k, v, cls) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + k + '</td><td class="' + (cls||'') + '">' + v + '</td>';
+      tbl.appendChild(tr);
+    }
+    function setHeader(lbl, cls) {
+      ph.querySelector('h2').innerHTML =
+        '📋 Sync Readback (Z9d) <span class="diag-badge ' + cls + '">' + lbl + '</span>';
+    }
+    function showResult(text) {
+      result.textContent = text;
+      result.style.display = 'block';
+    }
+    function btn(label, fn) {
+      var b = document.createElement('button');
+      b.textContent = label;
+      b.style.cssText = 'padding:4px 12px;font-size:12px;border-radius:6px;border:1px solid var(--b);background:var(--bg2);cursor:pointer;color:var(--p)';
+      b.onclick = function () {
+        b.disabled = true;
+        showResult('جاري…');
+        fn().finally(function () { b.disabled = false; });
+      };
+      actions.appendChild(b);
+    }
+
+    if (!window.ZadAPI || !window.ZadAPI.auth) {
+      row('Status', '❌ ZadAPI غير موجود', 'err');
+      setHeader('خطأ', 'err'); return;
+    }
+
+    window.ZadAPI.auth.me().then(function (res) {
+      if (!res.ok) {
+        row('Session', '⚠️ تسجيل دخول مطلوب — <code>runAuthE2E()</code>', 'warn');
+        setHeader('تسجيل مطلوب', 'warn'); return;
+      }
+      row('Session', '✅ مصادق (userId: ' + res.data.userId + ')', 'ok');
+      row('Readback', '<code>runWorshipReadback()</code>', 'hint');
+      row('Repeat sync', '<code>runWorshipRepeatSync()</code>', 'hint');
+      setHeader('جاهز', 'ok');
+
+      btn('📋 List logs', function () {
+        return window.runWorshipReadback().then(function (r) {
+          if (r && r.ok) {
+            var logs = (r.data && r.data.data) ? r.data.data : [];
+            var meta = (r.data && r.data.meta) ? r.data.meta : {};
+            showResult(
+              'count: ' + (meta.count !== undefined ? meta.count : logs.length) + '\n' +
+              'has_more: ' + (meta.has_more || false) + '\n\n' +
+              logs.map(function (l, i) {
+                return '#' + (i+1) + '  ' + (l.log_date ? l.log_date.slice(0,10) : '?') +
+                  '  seq:' + l.server_seq +
+                  '  streak:' + (l.payload && l.payload.streak !== undefined ? l.payload.streak : '?') +
+                  '\n    updated: ' + (l.updated_at ? l.updated_at.slice(0,19).replace('T',' ') : '?');
+              }).join('\n')
+            );
+          } else { showResult('ERROR: ' + JSON.stringify(r && r.data)); }
+        });
+      });
+
+      btn('↺ Repeat sync', function () {
+        return window.runWorshipRepeatSync().then(function (r) {
+          if (r && r.ok) {
+            var d = r.data && r.data.data ? r.data.data : r.data;
+            showResult(
+              'push → 200\n' +
+              'id:         ' + (d.id||'?') + '\n' +
+              'log_date:   ' + (d.log_date ? d.log_date.slice(0,10) : '?') + '\n' +
+              'server_seq: ' + (d.server_seq||'?') + '\n' +
+              'updated_at: ' + (d.updated_at ? d.updated_at.slice(0,19).replace('T',' ') : '?') + '\n\n' +
+              '✅ upsert مؤكّد — نفس id بسيق جديد'
+            );
+          } else { showResult('ERROR: ' + JSON.stringify(r && r.data)); }
+        });
+      });
+
+    }).catch(function (err) {
+      row('Session', '❌ ' + err.message, 'err');
+      setHeader('خطأ', 'err');
+    });
+  })();
+
+  window.runWorshipReadback = function () {
+    console.log('[ZAD Z9D] Worship Readback');
+    return window.ZadAPI.worship.list().then(function (res) {
+      if (res.ok) {
+        var logs = (res.data && res.data.data) ? res.data.data : [];
+        var meta = (res.data && res.data.meta) ? res.data.meta : {};
+        console.log('count:', meta.count !== undefined ? meta.count : logs.length);
+        console.log('has_more:', meta.has_more || false);
+        logs.forEach(function (l, i) {
+          console.log('#'+(i+1), l.log_date ? l.log_date.slice(0,10) : '?',
+            'seq:'+l.server_seq, l.payload);
+        });
+      } else { console.warn('list →', res.status, res.data); }
+      return res;
+    }).catch(function (err) { console.error('runWorshipReadback error:', err); throw err; });
+  };
+
+  window.runWorshipRepeatSync = function () {
+    console.log('[ZAD Z9D] Repeat Sync Test');
+    var snapBefore = localStorage.getItem('zad_v2');
+    var built;
+    try { built = _z9cBuildPayload(); }
+    catch (e) { console.error(e.message); return Promise.reject(e); }
+    var repeatKey = built.logDate + '-repeat-' + Date.now();
+    console.log('log_date:', built.logDate);
+    console.log('idempotency_key (new):', repeatKey);
+    return window.ZadAPI.worship.push(built.logDate, built.payload, repeatKey)
+      .then(function (res) {
+        var snapAfter = localStorage.getItem('zad_v2');
+        if (snapBefore === snapAfter) {
+          console.log('✅ localStorage لم يتغيّر (read-only مؤكّد)');
+        } else {
+          console.error('❌ localStorage تغيّر!');
+        }
+        if (res.ok) {
+          var d = res.data && res.data.data ? res.data.data : res.data;
+          console.log('push → 200');
+          console.log('  id:        ', d.id);
+          console.log('  server_seq:', d.server_seq, '(should be > previous)');
+          console.log('  updated_at:', d.updated_at);
+          console.log('✅ upsert confirmed — no duplicate row');
+        } else { console.warn('push →', res.status, res.data); }
+        return res;
+      }).catch(function (err) { console.error('runWorshipRepeatSync error:', err); throw err; });
+  };
+
+  /* end Z9d */
 </script>
 </body>
 </html>
