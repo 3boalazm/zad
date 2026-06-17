@@ -400,6 +400,163 @@ function esc(s){
 
   window.runApiHealthCheck = runApiHealthCheck;
 })();
+
+/* ════════════════════════════════════════════════════════
+   Z9b — Auth Status Card
+   يستخدم window.ZadAPI.auth للتحقق من الجلسة.
+   • لا credentials مخزّنة
+   • لا localStorage/sessionStorage
+   • لا login form
+   • console helpers فقط للاختبار اليدوي
+   ════════════════════════════════════════════════════════ */
+(function () {
+
+  /* ── render Auth card ── */
+  function renderAuthCard(meRes) {
+    var authed  = meRes.ok && meRes.data && meRes.data.userId;
+    var cls     = authed ? 'ok' : (meRes.status === 401 ? 'warn' : 'err');
+    var lbl     = authed ? 'مصادق ✅' : (meRes.status === 401 ? 'NO_SESSION' : 'خطأ');
+
+    var rows = '';
+
+    if (authed) {
+      /* نعرض userId فقط — لا email، لا بيانات حساسة */
+      rows += rowHtml('Session', '✅ نشطة', 'ok');
+      rows += rowHtml('userId', esc(String(meRes.data.userId).slice(0, 8) + '…'), 'ok');
+      if (meRes.data.sessionExpiresAt) {
+        rows += rowHtml('Expires', esc(meRes.data.sessionExpiresAt), 'ok');
+      }
+    } else if (meRes.status === 401) {
+      rows += rowHtml('Session', 'لا توجد جلسة نشطة', 'warn');
+      rows += rowHtml('hint', 'استخدم window.runAuthE2E(email, password) من الـ Console', 'warn');
+    } else {
+      rows += rowHtml('Error', esc(meRes.error || ('HTTP ' + meRes.status)), 'err');
+    }
+
+    rows += rowHtml(
+      'window.ZadAPI.auth',
+      (typeof window.ZadAPI === 'object' && typeof window.ZadAPI.auth === 'object')
+        ? '✅ login / me / logout جاهزة'
+        : '❌ لم تُحمَّل',
+      (typeof window.ZadAPI === 'object' && typeof window.ZadAPI.auth === 'object') ? 'ok' : 'err'
+    );
+
+    var card = '<div class="diag-section" id="auth-status-card">' +
+      '<h2>🔐 Auth Status (Z9b) <span class="diag-badge ' + cls + '">' + lbl + '</span></h2>' +
+      rows + '</div>';
+
+    var existing = document.getElementById('auth-status-card');
+    if (existing) existing.remove();
+
+    var apiCard = document.getElementById('api-health-card');
+    if (apiCard) {
+      apiCard.insertAdjacentHTML('afterend', card);
+    } else {
+      var resultsEl = document.getElementById('results');
+      if (resultsEl) resultsEl.insertAdjacentHTML('afterbegin', card);
+    }
+  }
+
+  /* ── Auto check on load ── */
+  function runAuthStatusCheck() {
+    if (typeof window.ZadAPI !== 'object' || typeof window.ZadAPI.auth !== 'object') {
+      var r = document.getElementById('results');
+      if (r && !document.getElementById('auth-status-card')) {
+        var ph = document.createElement('div');
+        ph.id = 'auth-status-card';
+        ph.className = 'diag-section';
+        ph.innerHTML = '<h2>🔐 Auth Status (Z9b) <span class="diag-badge err">خطأ</span></h2>' +
+          '<div class="diag-empty">❌ window.ZadAPI.auth غير موجود</div>';
+        var apiCard = document.getElementById('api-health-card');
+        if (apiCard) apiCard.insertAdjacentHTML('afterend', ph.outerHTML);
+        else r.insertAdjacentHTML('afterbegin', ph.outerHTML);
+      }
+      return Promise.resolve();
+    }
+
+    /* placeholder */
+    var existing = document.getElementById('auth-status-card');
+    if (!existing) {
+      var apiCard = document.getElementById('api-health-card');
+      var ph2 = '<div class="diag-section" id="auth-status-card">' +
+        '<h2>🔐 Auth Status (Z9b) <span class="diag-badge warn">جارٍ الفحص…</span></h2>' +
+        '<div class="diag-empty">⏳ يستدعي ZadAPI.auth.me()…</div></div>';
+      if (apiCard) apiCard.insertAdjacentHTML('afterend', ph2);
+      else {
+        var r2 = document.getElementById('results');
+        if (r2) r2.insertAdjacentHTML('afterbegin', ph2);
+      }
+    }
+
+    return window.ZadAPI.auth.me().then(function (res) {
+      renderAuthCard(res);
+      return res;
+    });
+  }
+
+  /* ── Console Helpers (لا تُخزَّن credentials) ── */
+
+  /**
+   * window.runAuthE2E(email, password)
+   * يشغّل login → me → يطبع النتائج
+   * بيانات الاختبار تُمرَّر مباشرة من الـ console، لا تُحفظ في أي مكان
+   */
+  window.runAuthE2E = function (email, password) {
+    console.group('[ZAD Z9B] Auth E2E Test');
+    return window.ZadAPI.auth.login(email, password)
+      .then(function (loginRes) {
+        console.log('login →', loginRes.status, loginRes.data || loginRes.error);
+        return window.ZadAPI.auth.me();
+      })
+      .then(function (meRes) {
+        console.log('me    →', meRes.status, meRes.data || meRes.error);
+        renderAuthCard(meRes);
+        console.groupEnd();
+        return meRes;
+      })
+      .catch(function (err) {
+        console.error('E2E error:', err);
+        console.groupEnd();
+      });
+  };
+
+  /**
+   * window.runAuthLogout()
+   * يشغّل logout → me (يجب أن يرجع 401)
+   */
+  window.runAuthLogout = function () {
+    console.group('[ZAD Z9B] Logout Test');
+    return window.ZadAPI.auth.logout()
+      .then(function (logoutRes) {
+        console.log('logout →', logoutRes.status, logoutRes.data || logoutRes.error);
+        return window.ZadAPI.auth.me();
+      })
+      .then(function (meRes) {
+        console.log('me after logout →', meRes.status, meRes.data || meRes.error);
+        renderAuthCard(meRes);
+        console.groupEnd();
+        return meRes;
+      })
+      .catch(function (err) {
+        console.error('Logout error:', err);
+        console.groupEnd();
+      });
+  };
+
+  /**
+   * window.runAuthStatusCheck()
+   * يعيد فحص الجلسة الحالية ويحدّث الكارت
+   */
+  window.runAuthStatusCheck = runAuthStatusCheck;
+
+  /* ── تشغيل تلقائي عند التحميل ── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runAuthStatusCheck);
+  } else {
+    runAuthStatusCheck();
+  }
+
+})();
 </script>
 </body>
 </html>
