@@ -14,8 +14,7 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/premium-ui.css">
 <meta property="og:title" content="الأربعون النووية — زاد">
-<meta property="og:image" content="https://zadullashr.vercel.app/og-image.png">
-<script src="/_vercel/insights/script.js" defer></script>
+<meta property="og:image" content="/og-image.png">
 <style>
 @keyframes nwCardIn  { from{opacity:0;transform:translateY(20px) scale(.97)} to{opacity:1;transform:none} }
 @keyframes nwGlow    { 0%,100%{box-shadow:0 0 0 0 rgba(201,161,74,0)} 50%{box-shadow:0 0 20px 4px rgba(201,161,74,.18)} }
@@ -810,7 +809,7 @@ window.nwToggleRead = function(n) {
 window.nwCopy = function(n) {
   const h = HADITHS.find(x => x.n === n);
   if (!h) return;
-  const txt = `📜 الحديث ${h.n}: ${h.title}\n\n${h.matn}\n\n📖 المصدر: ${h.src}\n\nمن زاد — zadullashr.vercel.app`;
+  const txt = `📜 الحديث ${h.n}: ${h.title}\n\n${h.matn}\n\n📖 المصدر: ${h.src}\n\nمن زاد — test.codeandcanvas.net`;
   navigator.clipboard?.writeText(txt);
   if (typeof showToast === 'function') showToast('📋 تم نسخ المتن');
 };

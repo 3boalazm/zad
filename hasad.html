@@ -153,10 +153,10 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
-  <meta property="og:url" content="https://zadullashr.vercel.app/hasad.html">
+  <meta property="og:url" content="https://test.codeandcanvas.net/hasad.html">
   <meta property="og:title" content="زاد — أفضل أيام الدنيا">
   <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
-  <meta property="og:image" content="https://zadullashr.vercel.app/og-image.png">
+  <meta property="og:image" content="/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="زاد — تطبيق العبادة في عشر ذي الحجة">
@@ -165,17 +165,16 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="زاد — أفضل أيام الدنيا">
   <meta name="twitter:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر">
-  <meta name="twitter:image" content="https://zadullashr.vercel.app/og-image.png">
+  <meta name="twitter:image" content="/og-image.png">
   <!-- WhatsApp / general -->
   <meta name="description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
-  <link rel="apple-touch-icon" href="https://zadullashr.vercel.app/og-image.png">
+  <link rel="apple-touch-icon" href="/og-image.png">
   <!-- Vercel Web Analytics -->
   <script>
     window.va = window.va || function() {
       (window.vaq = window.vaq || []).push(arguments);
     };
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -764,7 +763,7 @@ function buildHarvestCardHTML(state) {
         <div style="font-size:12px;color:#e6c97a;margin-top:3px;font-weight:700">«ما من أيام العمل الصالح فيهن أحب إلى الله»</div>
       </div>
       <div style="padding:14px 20px;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(201,161,74,.1)">
-        <div><div style="font-size:13px;font-weight:700;color:#c9a14a">zadullashr.vercel.app</div><div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">رفيقك في أفضل أيام الدنيا</div></div>
+        <div><div style="font-size:13px;font-weight:700;color:#c9a14a">test.codeandcanvas.net</div><div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">رفيقك في أفضل أيام الدنيا</div></div>
         <div style="font-size:30px">📲</div>
       </div>
     </div>
@@ -800,12 +799,12 @@ async function shareHarvest() {
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             title: 'حصادي في عشر ذي الحجة — زاد',
-            text: 'انضم إلي في تحدي العشر المباركة 🕋\nzadullashr.vercel.app',
+            text: 'انضم إلي في تحدي العشر المباركة 🕋\ntest.codeandcanvas.net',
             files: [file]
           });
           showToast('✅ تم المشاركة!');
         } else if (navigator.share) {
-          await navigator.share({ title: 'حصادي في عشر ذي الحجة', url: 'https://zadullashr.vercel.app/hasad.html' });
+          await navigator.share({ title: 'حصادي في عشر ذي الحجة', url: 'https://test.codeandcanvas.net/hasad.html' });
         } else {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');

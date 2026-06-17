@@ -94,10 +94,10 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
-  <meta property="og:url" content="https://zadullashr.vercel.app/summary.html">
+  <meta property="og:url" content="https://test.codeandcanvas.net/summary.html">
   <meta property="og:title" content="زاد — أفضل أيام الدنيا">
   <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
-  <meta property="og:image" content="https://zadullashr.vercel.app/og-image.png">
+  <meta property="og:image" content="/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="زاد — تطبيق العبادة في عشر ذي الحجة">
@@ -106,17 +106,16 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="زاد — أفضل أيام الدنيا">
   <meta name="twitter:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر">
-  <meta name="twitter:image" content="https://zadullashr.vercel.app/og-image.png">
+  <meta name="twitter:image" content="/og-image.png">
   <!-- WhatsApp / general -->
   <meta name="description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
-  <link rel="apple-touch-icon" href="https://zadullashr.vercel.app/og-image.png">
+  <link rel="apple-touch-icon" href="/og-image.png">
   <!-- Vercel Web Analytics -->
   <script>
     window.va = window.va || function() {
       (window.vaq = window.vaq || []).push(arguments);
     };
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -394,7 +393,7 @@ function shareHarvest() {
   const pct  = document.getElementById('sum-total-pct')?.textContent || '0%';
   const fast = document.getElementById('sum-fasting')?.textContent || '0';
   const tak  = document.getElementById('sum-takbeer')?.textContent || '0';
-  const text = encodeURIComponent(`🕋 حصادي في عشر ذي الحجة مع زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nحمّل زاد: https://zadullashr.vercel.app`);
+  const text = encodeURIComponent(`🕋 حصادي في عشر ذي الحجة مع زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nحمّل زاد: https://test.codeandcanvas.net`);
   const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
   window.open((isMobile ? 'whatsapp://send?text=' : 'https://web.whatsapp.com/send?text=') + text, '_blank');
 }

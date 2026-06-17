@@ -606,7 +606,7 @@ function shareProgress(){
                'morning_dhikr','evening_dhikr','takbeer_100','tawbah'];
   const done=keys.filter(k=>worship[k]).length;
   const pct=Math.round(done/keys.length*100);
-  const text=`🌙 زاد\n📊 إنجازي اليوم: ${pct}%\n✅ ${done} عبادة مكتملة\n🔗 zadullashr.vercel.app`;
+  const text=`🌙 زاد\n📊 إنجازي اليوم: ${pct}%\n✅ ${done} عبادة مكتملة\n🔗 test.codeandcanvas.net`;
   if(navigator.share){navigator.share({title:'زاد',text});}
   else{navigator.clipboard?.writeText(text);if(typeof showToast==='function')showToast('✅ تم نسخ التقدم');}
 }

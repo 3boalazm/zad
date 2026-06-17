@@ -14,9 +14,8 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/premium-ui.css">
 <meta property="og:title" content="الأدعية — زاد">
-<meta property="og:image" content="https://zadullashr.vercel.app/og-image.png">
+<meta property="og:image" content="/og-image.png">
 <meta name="description" content="جوامع الكلم وأدعية الأنبياء والصحابة والمناسبات">
-<script src="/_vercel/insights/script.js" defer></script>
 
 <style>
 /* ── TABS ─────────────────────────────────────────────────── */
@@ -866,7 +865,7 @@ function _findDua(id) {
 
 window.duCopy = function(id) {
   const d = _findDua(id); if (!d) return;
-  const txt = `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}${d.note ? '\n💡 ' + d.note : ''}\n\nمن زاد — zadullashr.vercel.app`;
+  const txt = `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}${d.note ? '\n💡 ' + d.note : ''}\n\nمن زاد — test.codeandcanvas.net`;
   navigator.clipboard?.writeText(txt);
   if (typeof showToast === 'function') showToast('📋 تم نسخ الدعاء');
 };

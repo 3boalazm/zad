@@ -369,7 +369,7 @@ async function shareAchievement(title, subtitle) {
 
   ctx.fillStyle = 'rgba(255,255,255,.6)';
   ctx.font = '36px Arial';
-  ctx.fillText('zadullashr.vercel.app', 540, 980);
+  ctx.fillText('test.codeandcanvas.net', 540, 980);
 
   /* حوّل لصورة وشارك */
   canvas.toBlob(async (blob) => {

@@ -17,7 +17,7 @@
 <!-- OG -->
 <meta property="og:title" content="أسماء الله الحسنى — زاد">
 <meta property="og:description" content="تدبّر في أسماء الله الحسنى الـ 99 — فهم، ذكر، تعبّد">
-<meta property="og:image" content="https://zadullashr.vercel.app/og-image.png">
+<meta property="og:image" content="/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 
 <style>
@@ -583,7 +583,7 @@ window.randomName = function() {
 };
 window.shareHero = function() {
   const n = NAMES[currentHeroIdx];
-  const txt = `🌺 "${n.ar}" — ${n.en}\n\n${n.m.split('<br>').slice(0,2).join('\n')}\n\nمن تطبيق زاد: zadullashr.vercel.app`;
+  const txt = `🌺 "${n.ar}" — ${n.en}\n\n${n.m.split('<br>').slice(0,2).join('\n')}\n\nمن تطبيق زاد: test.codeandcanvas.net`;
   if (navigator.share) navigator.share({title:'أسماء الله الحسنى',text:txt});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('✅ تم نسخ الاسم'); }
 };
