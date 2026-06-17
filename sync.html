@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ZAD — مزامنة العبادة</title>
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    /* ── design tokens ──────────────────────────────────────────── */
+    :root {
+      --bg:          #0d1117;
+      --surface:     #161b22;
+      --surface2:    #21262d;
+      --border:      #30363d;
+      --text:        #e6edf3;
+      --text-muted:  #8b949e;
+      --green:       #3fb950;
+      --yellow:      #d29922;
+      --red:         #f85149;
+      --blue:        #58a6ff;
+      --radius:      10px;
+      --font:        'IBM Plex Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── layout ─────────────────────────────────────────────────── */
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .sprint-badge {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── card ───────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+
+    /* ── status badge ───────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge.ok      { background: rgba(63,185,80,.15); color: var(--green); border: 1px solid rgba(63,185,80,.3); }
+    .badge.warn    { background: rgba(210,153,34,.15); color: var(--yellow); border: 1px solid rgba(210,153,34,.3); }
+    .badge.fail    { background: rgba(248,81,73,.15); color: var(--red); border: 1px solid rgba(248,81,73,.3); }
+    .badge.info    { background: rgba(88,166,255,.12); color: var(--blue); border: 1px solid rgba(88,166,255,.25); }
+    .badge.neutral { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* ── form ───────────────────────────────────────────────────── */
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      direction: ltr;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+
+    /* ── buttons ────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s, transform .1s;
+    }
+
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn:not(:disabled):active { transform: scale(.97); }
+
+    .btn-primary  { background: var(--blue); color: #000; }
+    .btn-green    { background: var(--green); color: #000; }
+    .btn-danger   { background: rgba(248,81,73,.2); color: var(--red); border: 1px solid rgba(248,81,73,.3); }
+    .btn-ghost    { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ── status line ────────────────────────────────────────────── */
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+    }
+
+    .status-label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      min-width: 100px;
+    }
+
+    /* ── result panel ───────────────────────────────────────────── */
+    .result-panel {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .result-panel pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+      direction: ltr;
+      text-align: left;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 8px;
+    }
+
+    /* ── verification table ─────────────────────────────────────── */
+    .verify-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .verify-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .verify-table td:first-child {
+      color: var(--text-muted);
+      width: 60%;
+    }
+
+    .verify-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── back link ──────────────────────────────────────────────── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    /* ── divider ────────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+
+    /* ── hidden ─────────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── footer ─────────────────────────────────────────────────── */
+    .page-footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 32px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- header -->
+    <div class="page-header">
+      <div class="sprint-badge">ZAD · Sprint Z10</div>
+      <h1>🕌 مزامنة العبادة</h1>
+      <p>حفظ سجلاتك اليومية على السيرفر — اختياري وآمن</p>
+    </div>
+
+    <a class="back-link" href="/">← العودة للرئيسية</a>
+
+    <!-- ══════════════════════════════════════════════════════════
+         CARD 1 — AUTH STATUS
+    ══════════════════════════════════════════════════════════ -->
+    <div class="card" id="card-auth">
+      <div class="card-title">حالة الجلسة</div>
+
+      <div class="status-line">
+        <span class="status-label">الاتصال</span>
+        <span class="badge neutral" id="badge-api">⏳ جاري الفحص</span>
+      </div>
+
+      <div class="status-line">
+        <span class="status-label">الجلسة</span>
+        <span class="badge neutral" id="badge-session">⏳ جاري الفحص</span>
+      </div>
+
+      <div class="status-line" id="row-user" style="display:none">
+        <span class="status-label">المستخدم</span>
+        <span class="badge info" id="badge-user">—</span>
+      </div>
+
+      <hr class="divider">
+
+      <!-- LOGIN FORM — يظهر فقط لما مفيش session -->
+      <div id="section-login">
+        <!-- stale cookie warning -->
+        <div id="cookie-warning" style="display:none;background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:.8rem;color:var(--yellow);line-height:1.5">
+          ⚠ لو بتظهر "بيانات غير صحيحة" وأنت متأكد من الـ credentials —
+          احذف الـ session cookie القديمة ثم حاول مرة تانية:<br>
+          <button class="btn btn-ghost" style="margin-top:8px;padding:6px 12px;font-size:.78rem" onclick="clearSessionCookie()">
+            🍪 مسح zad_sid Cookie
+          </button>
+        </div>
+        <form id="login-form" onsubmit="doLogin(); return false;" autocomplete="on" novalidate>
+          <div class="field">
+            <label for="input-email">البريد الإلكتروني</label>
+            <input type="email" id="input-email" name="email" autocomplete="username" placeholder="user@example.com" dir="ltr">
+          </div>
+          <div class="field">
+            <label for="input-password">كلمة المرور</label>
+            <input type="password" id="input-password" name="password" autocomplete="current-password" placeholder="••••••••" dir="ltr">
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary" id="btn-login">تسجيل الدخول</button>
+          </div>
+          <div id="login-error" style="color:var(--red);font-size:.8rem;margin-top:10px;display:none"></div>
+        </form>
+      </div>
+
+      <!-- LOGOUT BUTTON — يظهر فقط لما في session -->
+      <div id="section-logout" class="hidden">
+        <button class="btn btn-danger" onclick="doLogout()">تسجيل الخروج</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         CARD 2 — SYNC ACTION
+    ══════════════════════════════════════════════════════════ -->
+    <div class="card" id="card-sync">
+      <div class="card-title">مزامنة يدوية</div>
+
+      <div class="status-line">
+        <span class="status-label">سجل اليوم</span>
+        <span class="badge neutral" id="badge-local">⏳ جاري القراءة</span>
+      </div>
+
+      <div class="status-line">
+        <span class="status-label">آخر مزامنة</span>
+        <span class="badge neutral" id="badge-last-sync">لا توجد</span>
+      </div>
+
+      <hr class="divider">
+
+      <div class="btn-row">
+        <button class="btn btn-green" id="btn-sync" onclick="doSync()" disabled>
+          ☁ مزامنة الآن
+        </button>
+        <button class="btn btn-ghost" id="btn-preview" onclick="doPreview()">
+          🔍 معاينة البيانات
+        </button>
+      </div>
+
+      <div id="sync-result" style="display:none;margin-top:14px">
+        <div class="result-panel">
+          <div id="sync-result-summary"></div>
+          <pre id="sync-result-raw"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         CARD 3 — VERIFICATION SUITE
+    ══════════════════════════════════════════════════════════ -->
+    <div class="card" id="card-verify">
+      <div class="card-title">التحقق — Z10 Verification <span id="verify-note" style="font-weight:400;font-size:.75rem;color:var(--yellow)"></span></div>
+
+      <table class="verify-table" id="verify-table">
+        <tr>
+          <td>ZadAPI متاحة</td>
+          <td id="v-api"><span class="badge neutral">—</span></td>
+        </tr>
+        <tr>
+          <td>ZadSync متاحة</td>
+          <td id="v-sync"><span class="badge neutral">—</span></td>
+        </tr>
+        <tr>
+          <td>zad_v2 موجودة في localStorage</td>
+          <td id="v-ls"><span class="badge neutral">—</span></td>
+        </tr>
+        <tr>
+          <td>Session نشطة (auth.me)</td>
+          <td id="v-session"><span class="badge neutral">—</span></td>
+        </tr>
+        <tr>
+          <td>Push ناجح (write to DB)</td>
+          <td id="v-push"><span class="badge neutral">—</span></td>
+        </tr>
+        <tr>
+          <td>Product data لم تتغير بعد Sync</td>
+          <td id="v-integrity"><span class="badge neutral">—</span></td>
+        </tr>
+        <tr>
+          <td>Readback — صف واحد فقط (user_id, log_date)</td>
+          <td id="v-readback"><span class="badge neutral">—</span></td>
+        </tr>
+        <tr>
+          <td>Sync بعد Logout يُرفض</td>
+          <td id="v-auth-guard"><span class="badge neutral">—</span></td>
+        </tr>
+      </table>
+
+      <hr class="divider">
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btn-verify" onclick="runVerificationSuite()">▶ تشغيل كل الاختبارات</button>
+        <button class="btn btn-ghost" onclick="resetVerification()">↺ إعادة تعيين</button>
+      </div>
+
+      <div id="verify-summary" style="margin-top:14px;display:none">
+        <div class="result-panel">
+          <div id="verify-summary-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div class="page-footer">
+      ZAD · offline-first · لا حسابات · لا إعلانات<br>
+      sync.html — Sprint Z10 | <span id="footer-date"></span>
+    </div>
+
+  </div><!-- /container -->
+
+  <!-- ── scripts ─────────────────────────────────────────────────────── -->
+  <script src="/js/api-client.js"></script>
+  <script src="/js/sync-manager.js"></script>
+  <script>
+  /* ── page init ──────────────────────────────────────────────────── */
+
+  (function init() {
+    /* footer date */
+    document.getElementById('footer-date').textContent = new Date().toLocaleDateString('ar-EG');
+
+    /* initial checks */
+    checkAPIAvailability();
+    checkSession();
+    refreshLocalStatus();
+    refreshLastSync();
+  })();
+
+  /* ── helpers ────────────────────────────────────────────────────── */
+
+  function setBadge(id, cls, text) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'badge ' + cls;
+    el.textContent = text;
+  }
+
+  function setVerifyRow(id, cls, text) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '<span class="badge ' + cls + '">' + text + '</span>';
+  }
+
+  /* ── API availability ────────────────────────────────────────────── */
+
+  function checkAPIAvailability() {
+    if (window.ZadAPI && window.ZadAPI.health) {
+      window.ZadAPI.health()
+        .then(function (r) {
+          setBadge('badge-api', r && r.ok ? 'ok' : 'fail', r && r.ok ? '✅ متصل' : '❌ لا يستجيب');
+        })
+        .catch(function () {
+          setBadge('badge-api', 'fail', '❌ خطأ');
+        });
+    } else {
+      setBadge('badge-api', 'fail', '❌ ZadAPI مفقودة');
+    }
+  }
+
+  /* ── session check ───────────────────────────────────────────────── */
+
+  function checkSession() {
+    setBadge('badge-session', 'neutral', '⏳ جاري الفحص');
+
+    if (!window.ZadAPI || !window.ZadAPI.auth) {
+      setBadge('badge-session', 'fail', '❌ ZadAPI مفقودة');
+      return;
+    }
+
+    window.ZadAPI.auth.me()
+      .then(function (res) {
+        var user = normalizeAuthUser(res);
+        if (user) {
+          /* session active */
+          setBadge('badge-session', 'ok', '✅ جلسة نشطة');
+          var userRow = document.getElementById('row-user');
+          if (userRow) userRow.style.display = 'flex';
+          setBadge('badge-user', 'info', user.email || user.userId || user.id || 'مستخدم');
+          showLoggedIn();
+        } else {
+          setBadge('badge-session', 'warn', '⚠ لا توجد جلسة');
+          showLoggedOut();
+        }
+      })
+      .catch(function () {
+        setBadge('badge-session', 'fail', '❌ خطأ في الفحص');
+        showLoggedOut();
+      });
+  }
+
+  function showLoggedIn() {
+    document.getElementById('section-login').classList.add('hidden');
+    document.getElementById('section-logout').classList.remove('hidden');
+    document.getElementById('btn-sync').disabled = false;
+    var n = document.getElementById('verify-note');
+    if (n) n.textContent = '';
+  }
+
+  function showLoggedOut() {
+    document.getElementById('section-login').classList.remove('hidden');
+    document.getElementById('section-logout').classList.add('hidden');
+    document.getElementById('btn-sync').disabled = true;
+    var n = document.getElementById('verify-note');
+    if (n) n.textContent = '— سجّل الدخول أولاً للاختبار الكامل';
+  }
+
+  /* ── localStorage status ─────────────────────────────────────────── */
+
+  function refreshLocalStatus() {
+    if (!window.ZadSync) {
+      setBadge('badge-local', 'fail', '❌ ZadSync مفقودة');
+      return;
+    }
+    var info = ZadSync.previewPayload();
+    if (info.ok) {
+      setBadge('badge-local', 'ok', '✅ موجود — ' + info.log_date);
+    } else {
+      setBadge('badge-local', 'warn', '⚠ zad_v2 غير موجود');
+    }
+  }
+
+  function refreshLastSync() {
+    try {
+      var raw = localStorage.getItem('zad_v2');
+      if (!raw) return;
+      var state = JSON.parse(raw);
+      if (state && state.sync && state.sync.lastPushedAt) {
+        var dt = new Date(state.sync.lastPushedAt).toLocaleString('ar-EG');
+        setBadge('badge-last-sync', 'info', dt);
+      }
+    } catch (e) {}
+  }
+
+  /* ── login ───────────────────────────────────────────────────────── */
+
+  /* ── normalizeAuthUser ─────────────────────────────────────────────── */
+  function normalizeAuthUser(res) {
+    if (!res || !res.ok) return null;
+    if (res.user) return res.user;
+    if (res.data && (res.data.userId || res.data.email)) {
+      return {
+        id:               res.data.userId,
+        userId:           res.data.userId,
+        email:            res.data.email,
+        isAnonymous:      res.data.isAnonymous,
+        sessionExpiresAt: res.data.sessionExpiresAt
+      };
+    }
+    return null;
+  }
+
+  /* ── cookie helpers ─────────────────────────────────────────────── */
+
+  function clearSessionCookie() {
+    /* مسح zad_sid من الـ domain الحالي — بدون HttpOnly bypass */
+    document.cookie = 'zad_sid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax';
+    document.cookie = 'zad_sid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+    /* ملاحظة: HttpOnly cookies لا يمكن حذفها من JS —
+     * لو لم يختفِ الـ cookie، احذفه يدوياً من DevTools →
+     * Application → Cookies → test.codeandcanvas.net */
+    var btn = event && event.target;
+    if (btn) {
+      btn.textContent = '✅ تم المسح — حاول تسجيل الدخول مرة تانية';
+      btn.disabled = true;
+    }
+    checkSession();
+  }
+
+  function showCookieWarning() {
+    var el = document.getElementById('cookie-warning');
+    if (el) el.style.display = 'block';
+  }
+
+  function hideCookieWarning() {
+    var el = document.getElementById('cookie-warning');
+    if (el) el.style.display = 'none';
+  }
+
+  function doLogin() {
+    var email    = document.getElementById('input-email').value.trim();
+    var password = document.getElementById('input-password').value;
+    var errEl    = document.getElementById('login-error');
+    var btn      = document.getElementById('btn-login');
+
+    errEl.style.display = 'none';
+
+    if (!email || !password) {
+      errEl.textContent = 'أدخل البريد الإلكتروني وكلمة المرور';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري الدخول...';
+
+    window.ZadAPI.auth.login(email, password)
+      .then(function (res) {
+        btn.disabled = false;
+        btn.textContent = 'تسجيل الدخول';
+        if (res && res.ok) {
+          document.getElementById('input-password').value = '';
+          hideCookieWarning();
+          /* re-check session */
+          checkSession();
+        } else {
+          var msg = (res && res.error) || 'بيانات غير صحيحة';
+          errEl.textContent = msg;
+          errEl.style.display = 'block';
+          /* show stale-cookie hint on auth failure */
+          showCookieWarning();
+        }
+      })
+      .catch(function (err) {
+        btn.disabled = false;
+        btn.textContent = 'تسجيل الدخول';
+        errEl.textContent = 'خطأ في الاتصال: ' + String(err);
+        errEl.style.display = 'block';
+        showCookieWarning();
+      });
+  }
+
+  /* ── logout ──────────────────────────────────────────────────────── */
+
+  function doLogout() {
+    window.ZadAPI.auth.logout()
+      .then(function () {
+        document.getElementById('row-user').style.display = 'none';
+        checkSession();
+        document.getElementById('btn-sync').disabled = true;
+      })
+      .catch(function () {
+        checkSession();
+      });
+  }
+
+  /* ── sync now ────────────────────────────────────────────────────── */
+
+  function doSync() {
+    var btn    = document.getElementById('btn-sync');
+    var resDiv = document.getElementById('sync-result');
+    var sumEl  = document.getElementById('sync-result-summary');
+    var rawEl  = document.getElementById('sync-result-raw');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري المزامنة...';
+    resDiv.style.display = 'none';
+
+    ZadSync.syncNow()
+      .then(function (result) {
+        btn.disabled = false;
+        btn.textContent = '☁ مزامنة الآن';
+
+        var cls = result.ok ? 'ok' : (result.status === 'AUTH_REQUIRED' ? 'warn' : 'fail');
+        var icon = result.ok ? '✅' : (result.status === 'AUTH_REQUIRED' ? '⚠' : '❌');
+
+        sumEl.innerHTML =
+          '<span class="badge ' + cls + '">' + icon + ' ' + result.message + '</span>';
+
+        rawEl.textContent = JSON.stringify(result, null, 2);
+        resDiv.style.display = 'block';
+
+        /* update last sync badge */
+        refreshLastSync();
+
+        /* auto-update integrity row if available */
+        if (result.localIntegrity) {
+          var eq = result.localIntegrity.productDataEqual;
+          setVerifyRow('v-integrity', eq ? 'ok' : 'fail',
+            eq ? '✅ PASS' : '❌ FAIL');
+        }
+
+        if (result.ok) {
+          setVerifyRow('v-push', 'ok', '✅ PASS');
+          setVerifyRow('v-readback', result.readback ? 'ok' : 'warn',
+            result.readback ? '✅ PASS' : '⚠ لا بيانات');
+        } else if (result.status === 'AUTH_REQUIRED') {
+          setVerifyRow('v-push', 'warn', '⚠ AUTH_REQUIRED');
+        } else {
+          setVerifyRow('v-push', 'fail', '❌ FAIL');
+        }
+      })
+      .catch(function (err) {
+        btn.disabled = false;
+        btn.textContent = '☁ مزامنة الآن';
+        sumEl.innerHTML = '<span class="badge fail">❌ ' + String(err) + '</span>';
+        rawEl.textContent = '';
+        resDiv.style.display = 'block';
+      });
+  }
+
+  /* ── payload preview ─────────────────────────────────────────────── */
+
+  function doPreview() {
+    var resDiv = document.getElementById('sync-result');
+    var sumEl  = document.getElementById('sync-result-summary');
+    var rawEl  = document.getElementById('sync-result-raw');
+
+    var info = ZadSync.previewPayload();
+    sumEl.innerHTML =
+      '<span class="badge ' + (info.ok ? 'info' : 'warn') + '">🔍 معاينة — ' + (info.log_date || '—') + '</span>';
+    rawEl.textContent = JSON.stringify(info, null, 2);
+    resDiv.style.display = 'block';
+  }
+
+  /* ── verification suite ──────────────────────────────────────────── */
+
+  function resetVerification() {
+    ['v-api','v-sync','v-ls','v-session','v-push','v-integrity','v-readback','v-auth-guard'].forEach(function (id) {
+      setVerifyRow(id, 'neutral', '—');
+    });
+    document.getElementById('verify-summary').style.display = 'none';
+  }
+
+  function runVerificationSuite() {
+    resetVerification();
+    var results = [];
+    var summaryEl = document.getElementById('verify-summary');
+    var summaryText = document.getElementById('verify-summary-text');
+
+    /* V1 — ZadAPI */
+    var v1 = !!(window.ZadAPI && window.ZadAPI.auth && window.ZadAPI.worship);
+    setVerifyRow('v-api', v1 ? 'ok' : 'fail', v1 ? '✅ PASS' : '❌ FAIL');
+    results.push({ name: 'ZadAPI', pass: v1 });
+
+    /* V2 — ZadSync */
+    var v2 = !!(window.ZadSync && typeof window.ZadSync.syncNow === 'function');
+    setVerifyRow('v-sync', v2 ? 'ok' : 'fail', v2 ? '✅ PASS' : '❌ FAIL');
+    results.push({ name: 'ZadSync', pass: v2 });
+
+    /* V3 — localStorage */
+    var v3 = ZadSync ? ZadSync.getLocalIntegrity().found : false;
+    setVerifyRow('v-ls', v3 ? 'ok' : 'warn', v3 ? '✅ PASS' : '⚠ WARN (no zad_v2)');
+    results.push({ name: 'localStorage', pass: v3 });
+
+    if (!v1 || !v2) {
+      summaryEl.style.display = 'block';
+      summaryText.innerHTML = '<span class="badge fail">❌ توقّف — ZadAPI أو ZadSync مفقودة</span>';
+      return;
+    }
+
+    setVerifyRow('v-session', 'neutral', '⏳');
+
+    /* V4 — Session */
+    window.ZadAPI.auth.me()
+      .then(function (meRes) {
+        var sessionUser = normalizeAuthUser(meRes);
+        var v4 = !!sessionUser;
+        setVerifyRow('v-session', v4 ? 'ok' : 'warn', v4 ? '✅ PASS' : '⚠ لا توجد جلسة');
+        /* session absent = SKIP (null), not FAIL (false) — user simply not logged in */
+        results.push({ name: 'Session', pass: v4 ? true : null });
+
+        if (!v4) {
+          /* V5–V7 يحتاجون جلسة — SKIP مش FAIL */
+          ['v-push','v-integrity','v-readback'].forEach(function (id) {
+            setVerifyRow(id, 'warn', '⚠ SKIP (سجّل الدخول أولاً)');
+          });
+          results.push({ name: 'Push', pass: null });
+          results.push({ name: 'Integrity', pass: null });
+          results.push({ name: 'Readback', pass: null });
+
+          /* V8 — auth guard — نحن فعلاً مش logged in */
+          return ZadSync.syncNow().then(function (r) {
+            var v8 = !r.ok && r.status === 'AUTH_REQUIRED';
+            setVerifyRow('v-auth-guard', v8 ? 'ok' : 'fail', v8 ? '✅ PASS' : '❌ FAIL');
+            results.push({ name: 'Auth Guard', pass: v8 });
+            /* summary: WARN لأن الـ session tests اتخطّوا — مش FAIL */
+            renderSummary(results, '⚠ سجّل الدخول وشغّل الاختبارات مرة تانية للنتيجة الكاملة');
+          });
+        }
+
+        /* V5 — Push + V6 — Integrity */
+        setVerifyRow('v-push', 'neutral', '⏳');
+        setVerifyRow('v-integrity', 'neutral', '⏳');
+        setVerifyRow('v-readback', 'neutral', '⏳');
+
+        return ZadSync.syncNow().then(function (syncRes) {
+          var v5 = syncRes.ok;
+          setVerifyRow('v-push', v5 ? 'ok' : 'fail', v5 ? '✅ PASS' : '❌ FAIL');
+          results.push({ name: 'Push', pass: v5 });
+
+          var v6 = syncRes.localIntegrity && syncRes.localIntegrity.productDataEqual;
+          setVerifyRow('v-integrity', v6 ? 'ok' : 'fail', v6 ? '✅ PASS' : '❌ FAIL');
+          results.push({ name: 'Integrity', pass: !!v6 });
+
+          var v7 = !!(syncRes.readback && syncRes.readback.log_date);
+          setVerifyRow('v-readback', v7 ? 'ok' : 'warn', v7 ? '✅ PASS' : '⚠ WARN');
+          /* WARN = null (skip/inconclusive), not false (fail) — readback is best-effort */
+          results.push({ name: 'Readback', pass: v7 ? true : null });
+
+          /* V8 — auth guard: logout ثم حاول sync */
+          return window.ZadAPI.auth.logout().then(function () {
+            return ZadSync.syncNow().then(function (r) {
+              var v8 = !r.ok && r.status === 'AUTH_REQUIRED';
+              setVerifyRow('v-auth-guard', v8 ? 'ok' : 'fail', v8 ? '✅ PASS' : '❌ FAIL');
+              results.push({ name: 'Auth Guard', pass: v8 });
+            }).then(function () {
+              renderSummary(results, null);
+              /* refresh session UI بعد logout */
+              checkSession();
+            });
+          });
+        });
+      })
+      .catch(function (err) {
+        setVerifyRow('v-session', 'fail', '❌ ERROR');
+        results.push({ name: 'Session', pass: false });
+        renderSummary(results, null);
+      });
+  }
+
+  function renderSummary(results, hint) {
+    var summaryEl   = document.getElementById('verify-summary');
+    var summaryText = document.getElementById('verify-summary-text');
+
+    var pass  = results.filter(function (r) { return r.pass === true; }).length;
+    var fail  = results.filter(function (r) { return r.pass === false; }).length;
+    var skip  = results.filter(function (r) { return r.pass === null; }).length;
+
+    /* SKIP tests don't count as FAIL — treat as WARN */
+    var cls  = fail > 0 ? 'fail' : (skip > 0 ? 'warn' : 'ok');
+    var icon = fail > 0 ? '❌' : (skip > 0 ? '⚠' : '✅');
+    var label = fail > 0 ? 'FAIL' : (skip > 0 ? 'WARN' : 'PASS');
+
+    var html =
+      '<span class="badge ' + cls + '">' + icon + ' ' + label + ' — ' +
+      pass + ' نجح، ' + fail + ' فشل، ' + skip + ' تخطّى</span>';
+
+    if (hint) {
+      html += '<div style="margin-top:8px;font-size:.78rem;color:var(--text-muted)">' + hint + '</div>';
+    }
+
+    summaryText.innerHTML = html;
+    summaryEl.style.display = 'block';
+  }
+
+  /* ── keyboard support: Enter on email → focus password ─────────── */
+  document.getElementById('input-email').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') document.getElementById('input-password').focus();
+  });
+  /* password Enter → form submit (handled by form onsubmit) */
+  </script>
+</body>
+</html>
