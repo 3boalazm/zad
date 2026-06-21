@@ -53,10 +53,11 @@ export function createApp(): Application {
   app.get(config.apiPrefix, (_req, res) => {
     res.json({
       service: config.serviceName,
-      version: '0.6.0',
-      sprint: 'Z6',
+      version: '0.7.0',
+      sprint: 'Z16',
       message: 'ZAD API — Worship Sync active.',
       endpoints: [
+        'POST /api/v1/auth/register',
         'POST /api/v1/auth/login',
         'POST /api/v1/auth/logout',
         'GET  /api/v1/auth/me',
