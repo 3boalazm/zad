@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>إنشاء حساب — زاد</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0f1117;
+      --surface:    #1a1d27;
+      --border:     #2e3147;
+      --text:       #e8eaf0;
+      --text-muted: #8b8fa8;
+      --accent:     #4f8ef7;
+      --accent-hov: #3a7ae0;
+      --error:      #e05454;
+      --success:    #4caf88;
+      --warn:       #d4943a;
+      --radius:     12px;
+      --input-bg:   #12141e;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .notice {
+      background: rgba(79, 142, 247, 0.08);
+      border: 1px solid rgba(79, 142, 247, 0.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 15px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      direction: ltr;
+      text-align: left;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: var(--accent);
+    }
+
+    input.invalid {
+      border-color: var(--error);
+    }
+
+    .field-err {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s, opacity 0.15s;
+    }
+
+    .btn:hover:not(:disabled) { background: var(--accent-hov); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status-box {
+      border-radius: 8px;
+      padding: 13px 16px;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .status-box.error {
+      background: rgba(224, 84, 84, 0.1);
+      border: 1px solid rgba(224, 84, 84, 0.3);
+      color: #f08080;
+    }
+
+    .status-box.success {
+      background: rgba(76, 175, 136, 0.1);
+      border: 1px solid rgba(76, 175, 136, 0.3);
+      color: var(--success);
+    }
+
+    /* ── success state ── */
+    #success-panel {
+      display: none;
+      text-align: center;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .success-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 8px;
+    }
+
+    .success-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .session-info {
+      background: rgba(76, 175, 136, 0.08);
+      border: 1px solid rgba(76, 175, 136, 0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: monospace;
+      direction: ltr;
+      text-align: left;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border: 1px solid rgba(79, 142, 247, 0.3);
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: rgba(79, 142, 247, 0.08);
+    }
+
+    .footer-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-link a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-link a:hover { text-decoration: underline; }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- ── Registration form panel ── -->
+  <div id="form-panel">
+    <div class="logo">زاد</div>
+    <div class="tagline">إنشاء حساب للمزامنة اليدوية</div>
+
+    <div class="notice">
+      إنشاء الحساب <strong>اختياري تماماً</strong>. يمكنك استخدام زاد بدون تسجيل دخول. الحساب يساعدك فقط على حفظ نسخة من بياناتك على السيرفر واستخدام المزامنة اليدوية.
+    </div>
+
+    <div class="field">
+      <label for="email-input">البريد الإلكتروني</label>
+      <input type="email" id="email-input" autocomplete="email" placeholder="you@example.com" />
+      <div class="field-err" id="email-err"></div>
+    </div>
+
+    <div class="field">
+      <label for="pass-input">كلمة المرور</label>
+      <input type="password" id="pass-input" autocomplete="new-password" placeholder="8 أحرف على الأقل" />
+      <div class="field-err" id="pass-err"></div>
+    </div>
+
+    <div class="field">
+      <label for="pass2-input">تأكيد كلمة المرور</label>
+      <input type="password" id="pass2-input" autocomplete="new-password" placeholder="أعد كتابة كلمة المرور" />
+      <div class="field-err" id="pass2-err"></div>
+    </div>
+
+    <button class="btn" id="submit-btn" type="button">إنشاء الحساب</button>
+
+    <div class="status-box error" id="status-error"></div>
+
+    <div class="footer-link">
+      لديك حساب بالفعل؟ <a href="sync.html">تسجيل الدخول من صفحة المزامنة</a>
+    </div>
+  </div>
+
+  <!-- ── Success panel ── -->
+  <div id="success-panel">
+    <div class="success-icon">✅</div>
+    <div class="success-title">تم إنشاء الحساب بنجاح</div>
+    <div class="success-sub">تم تسجيل دخولك تلقائياً وأنت جاهز للمزامنة.</div>
+    <div class="session-info" id="session-info">جاري التحقق من الجلسة…</div>
+    <a class="back-link" href="sync.html">← العودة إلى المزامنة</a>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── DOM refs ──────────────────────────────────────────────────────────
+  var emailInput = document.getElementById('email-input');
+  var passInput  = document.getElementById('pass-input');
+  var pass2Input = document.getElementById('pass2-input');
+  var submitBtn  = document.getElementById('submit-btn');
+  var statusErr  = document.getElementById('status-error');
+  var emailErr   = document.getElementById('email-err');
+  var passErr    = document.getElementById('pass-err');
+  var pass2Err   = document.getElementById('pass2-err');
+  var formPanel  = document.getElementById('form-panel');
+  var successPnl = document.getElementById('success-panel');
+  var sessionInfo= document.getElementById('session-info');
+
+  // ── Helpers ───────────────────────────────────────────────────────────
+  function showFieldErr(el, msg) {
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+  }
+
+  function clearFieldErrs() {
+    [emailErr, passErr, pass2Err].forEach(function (e) {
+      showFieldErr(e, '');
+    });
+    [emailInput, passInput, pass2Input].forEach(function (i) {
+      i.classList.remove('invalid');
+    });
+  }
+
+  function showError(msg) {
+    statusErr.textContent = msg;
+    statusErr.style.display = 'block';
+  }
+
+  function hideError() {
+    statusErr.style.display = 'none';
+  }
+
+  function setLoading(on) {
+    if (on) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'جاري الإنشاء… <span class="spinner"></span>';
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'إنشاء الحساب';
+    }
+  }
+
+  // ── Frontend validation (backend is authoritative) ────────────────────
+  function validateForm() {
+    clearFieldErrs();
+    var ok = true;
+
+    var email = emailInput.value.trim();
+    if (!email || !email.includes('@') || !email.includes('.') || email.length < 5) {
+      showFieldErr(emailErr, 'الرجاء إدخال بريد إلكتروني صحيح');
+      emailInput.classList.add('invalid');
+      ok = false;
+    }
+
+    var pass = passInput.value;
+    if (pass.length < 8) {
+      showFieldErr(passErr, 'كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+      passInput.classList.add('invalid');
+      ok = false;
+    }
+
+    var pass2 = pass2Input.value;
+    if (pass !== pass2) {
+      showFieldErr(pass2Err, 'كلمتا المرور غير متطابقتين');
+      pass2Input.classList.add('invalid');
+      ok = false;
+    }
+
+    return ok;
+  }
+
+  // ── Register call ─────────────────────────────────────────────────────
+  async function doRegister() {
+    if (!validateForm()) return;
+    hideError();
+    setLoading(true);
+
+    var email    = emailInput.value.trim().toLowerCase();
+    var password = passInput.value;
+
+    try {
+      var res = await fetch('/api/v1/auth/register', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        cache:       'no-store',
+        body: JSON.stringify({ email: email, password: password }),
+      });
+
+      var data = {};
+      try { data = await res.json(); } catch (_) {}
+
+      if (res.status === 201) {
+        await handleSuccess(data.userId, data.email);
+        return;
+      }
+
+      if (res.status === 409) {
+        showError('هذا البريد الإلكتروني مسجّل مسبقاً. يمكنك تسجيل الدخول من صفحة المزامنة.');
+        emailInput.classList.add('invalid');
+        setLoading(false);
+        return;
+      }
+
+      if (res.status === 422) {
+        var detail = data.detail || 'خطأ في البيانات المدخلة';
+        showError('خطأ: ' + detail);
+        setLoading(false);
+        return;
+      }
+
+      showError('حدث خطأ في السيرفر. الرجاء المحاولة لاحقاً.');
+      setLoading(false);
+
+    } catch (err) {
+      showError('لا يوجد اتصال بالسيرفر. تحقق من الشبكة.');
+      setLoading(false);
+    }
+  }
+
+  // ── After successful register: verify session via auth/me ─────────────
+  async function handleSuccess(userId, email) {
+    formPanel.style.display = 'none';
+    successPnl.style.display = 'block';
+
+    try {
+      var meRes = await fetch('/api/v1/auth/me', {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      var meData = {};
+      try { meData = await meRes.json(); } catch (_) {}
+
+      if (meRes.status === 200) {
+        var verifiedId = meData.userId || meData.data?.userId || userId;
+        sessionInfo.textContent = 'جلسة مفعّلة ✓ — userId: ' + verifiedId;
+      } else {
+        sessionInfo.textContent = 'تم الإنشاء — Cookie set — auth/me: ' + meRes.status;
+      }
+    } catch (_) {
+      sessionInfo.textContent = 'تم الإنشاء — Cookie set — (لا اتصال للتحقق)';
+    }
+  }
+
+  // ── Events ────────────────────────────────────────────────────────────
+  submitBtn.addEventListener('click', doRegister);
+
+  [emailInput, passInput, pass2Input].forEach(function (el) {
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') doRegister();
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
