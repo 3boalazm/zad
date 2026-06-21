@@ -12,12 +12,14 @@
         تدخّل من الـ SW. كاش session غير صحيح = 401 مستمر بعد login.
    ════════════════════════════════════════════════════════════ */
 
-const CACHE_STATIC = 'zad-20260621-z11';
+const CACHE_STATIC = 'zad-20260621-z15';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
 const PRECACHE = [
   './', './index.html', './404.html',
+  './register.html', './sync.html',
+  './js/api-client.js', './js/sync-manager.js',
   './prayers.html', './adhkar.html', './mushaf.html', './takbeer.html',
   './hasn.html', './worship.html', './zahra.html', './settings.html', './hijri.html',
   './css/style.css', './css/premium-ui.css', './manifest.json',
