@@ -79,7 +79,7 @@ export function createRegisterHandler(pool: Pool): Router {
       const userId: string = randomUUID();
 
       await client.query(
-        `INSERT INTO users (id) VALUES ($1)`,
+        `INSERT INTO users (id, is_anonymous) VALUES ($1, false)`,
         [userId],
       );
 
@@ -95,8 +95,8 @@ export function createRegisterHandler(pool: Pool): Router {
       // createSession handles: token generation, SHA-256 hash, INSERT into
       // sessions(user_id, token_hash, ip_address, user_agent, expires_at)
       const rawToken = await createSession(pool, userId, {
-        ip:        req.ip,
-        userAgent: req.get('user-agent') ?? undefined,
+        ip:        req.socket.remoteAddress,
+        userAgent: (req.get('user-agent') ?? '').substring(0, 256),
       });
 
       // ── 7. Set cookie — exact same pattern as login ───────────────────────
@@ -104,7 +104,7 @@ export function createRegisterHandler(pool: Pool): Router {
       res.cookie(SESSION_COOKIE, rawToken, {
         httpOnly: true,
         secure:   isProd,
-        sameSite: 'strict',
+        sameSite: 'lax',
         maxAge:   SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000,
         path:     '/',
       });
