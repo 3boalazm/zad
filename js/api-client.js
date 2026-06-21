@@ -123,33 +123,6 @@
         return { ok: false, code: 'NETWORK_ERROR', detail: String(err) };
       }
     },
-    register: async function (email, password) {
-      try {
-        const res = await fetch('/api/v1/auth/register', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          cache:       'no-store',
-          body: JSON.stringify({ email, password }),
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (res.status === 201) {
-          return { ok: true, userId: data.userId, email: data.email };
-        }
-        if (res.status === 409) {
-          return { ok: false, code: 'EMAIL_EXISTS' };
-        }
-        if (res.status === 422) {
-          return { ok: false, code: 'VALIDATION_ERROR', detail: data.detail || '' };
-        }
-        return { ok: false, code: 'SERVER_ERROR', status: res.status };
-
-      } catch (err) {
-        return { ok: false, code: 'NETWORK_ERROR', detail: String(err) };
-      }
-    },
     logout: function () {
         return postNoBody(ZAD_API_PREFIX + '/auth/logout');
       }
