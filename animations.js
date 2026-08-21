@@ -28,18 +28,34 @@ function runAnimInit() {
 function initPageEnter() {
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
   const main = document.querySelector('.main');
+  const sidebar = window.innerWidth > 768 ? document.querySelector('.sidebar') : null;
+  const navLinks = window.innerWidth > 768 ? document.querySelectorAll('.nav a') : [];
+  const hero = document.querySelector('.hero');
+  const brand = document.querySelector('.brand-mark');
+
+  /* شبكة أمان: هذا الأنيميشن يبدأ كل عنصر من opacity:0 ثم يرفعه تدريجياً.
+     لو اتقاطع (تبويب في الخلفية أثناء تنقّل/ريفريش، تعليق GSAP، تنقّل سريع
+     لصفحة تانية قبل ما يخلص) يفضل .main/.sidebar/روابط القائمة عالقة على
+     opacity منخفض بلا أي رجعة — ده بالظبط سبب "الشريط والقائمة بيختفوا
+     أحياناً". اضمن ظهورها الفعلي خلال أقصى مدة متوقعة بغض النظر عمّا حصل. */
+  const animatedEls = [main, sidebar, hero, brand, ...navLinks].filter(Boolean);
+  const forceVisible = () => {
+    animatedEls.forEach(el => {
+      gsap.killTweensOf(el);
+      gsap.set(el, { clearProps: 'all' });
+    });
+  };
+  const safetyTimer = setTimeout(forceVisible, 1500);
+  tl.eventCallback('onComplete', () => clearTimeout(safetyTimer));
+
   if (main) {
     main.style.animation = 'none';
-    if (window.innerWidth > 768) gsap.from(main, { opacity: 0, y: 10, duration: 0.4, ease: 'expo.out', clearProps: 'all' });
+    if (window.innerWidth > 768) tl.from(main, { opacity: 0, y: 10, duration: 0.4, ease: 'expo.out', clearProps: 'all' }, 0);
   }
-  if (window.innerWidth > 768) {
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-      tl.from(sidebar, { x: 40, opacity: 0, duration: 0.5 }, 0.05);
-    }
+  if (sidebar) {
+    tl.from(sidebar, { x: 40, opacity: 0, duration: 0.5 }, 0.05);
   }
-  const navLinks = document.querySelectorAll('.nav a');
-  if (window.innerWidth > 768 && navLinks.length > 0) {
+  if (navLinks.length > 0) {
     /* أمان: نترك التحكم بالـ opacity لـ GSAP عبر fromTo + clearProps
        بدل تصفيرها بالـ JS العادي (لو فشل GSAP تفضل الروابط ظاهرة) */
     navLinks.forEach(a => { a.style.animation = 'none'; });
@@ -48,7 +64,6 @@ function initPageEnter() {
       { opacity: 1, x: 0, duration: 0.35, stagger: 0.04, ease: 'back.out(1.2)', clearProps: 'all' },
       0.15);
   }
-  const hero = document.querySelector('.hero');
   if (hero) {
     hero.style.animation = 'none';
     tl.from(hero, { scale: 0.94, opacity: 0, duration: 0.6, ease: 'back.out(1.3)' }, 0.1);
@@ -57,7 +72,6 @@ function initPageEnter() {
   if (title) {
     tl.from(title, { opacity: 0, y: -18, duration: 0.4, ease: 'back.out(1.4)' }, 0.18);
   }
-  const brand = document.querySelector('.brand-mark');
   if (brand) {
     brand.style.animation = 'none';
     tl.from(brand, { scale: 0, rotation: -20, duration: 0.6, ease: 'elastic.out(1.2, 0.5)' }, 0.1);

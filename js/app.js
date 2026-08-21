@@ -1,3 +1,112 @@
+/* ════════════════════════════════════════════════════════════════════════
+   تشخيص مؤقّت — وضع تسجيل لتوثيق مشكلة "فليكر" الشريط العلوي/القائمة عند
+   الريفريش أو التنقّل. غير مفعّل إطلاقاً للزوّار العاديين — يُفعَّل فقط
+   بزيارة أي صفحة بـ ?zaddiag=1 مرة واحدة (يُحفَظ الاختيار بعدها).
+   لإلغاؤه: افتح الكونسول واكتب localStorage.removeItem('zad_diag')
+   أو زُر صفحة بـ ?zaddiag=0
+   ════════════════════════════════════════════════════════════════════════ */
+(function () {
+  try {
+    var qs = new URLSearchParams(location.search);
+    if (qs.get('zaddiag') === '1') localStorage.setItem('zad_diag', '1');
+    if (qs.get('zaddiag') === '0') localStorage.removeItem('zad_diag');
+    if (localStorage.getItem('zad_diag') !== '1') return;
+  } catch (e) { return; }
+
+  var T0 = performance.now();
+  var LOG_KEY = 'zad_diag_log';
+  function nowRel() { return (performance.now() - T0).toFixed(0); }
+  function readLog() { try { return JSON.parse(sessionStorage.getItem(LOG_KEY) || '[]'); } catch (e) { return []; } }
+  function log(msg) {
+    var arr = readLog();
+    arr.push({
+      t: nowRel(),
+      wall: new Date().toISOString().slice(11, 23),
+      page: location.pathname.split('/').pop() || 'index.html',
+      msg: msg
+    });
+    if (arr.length > 500) arr = arr.slice(-500);
+    try { sessionStorage.setItem(LOG_KEY, JSON.stringify(arr)); } catch (e) {}
+  }
+  log('▶ load start (readyState=' + document.readyState + ')');
+
+  window.addEventListener('error', function (e) {
+    log('❌ JS ERROR: ' + (e.message || '') + ' @ ' + (e.filename || '').split('/').pop() + ':' + (e.lineno || ''));
+  });
+  document.addEventListener('DOMContentLoaded', function () { log('DOMContentLoaded'); });
+  window.addEventListener('load', function () { log('window load'); });
+  document.addEventListener('visibilitychange', function () { log('visibilitychange → ' + document.visibilityState); });
+  window.addEventListener('pageshow', function (e) { log('pageshow persisted=' + e.persisted); });
+  window.addEventListener('pagehide', function (e) { log('pagehide persisted=' + e.persisted); });
+  window.addEventListener('focus', function () { log('window focus'); });
+  window.addEventListener('blur', function () { log('window blur'); });
+
+  if ('serviceWorker' in navigator) {
+    log('SW controller at start: ' + !!navigator.serviceWorker.controller);
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      log('⚠ SW controllerchange — سيُعاد تحميل الصفحة تلقائياً الآن');
+    });
+    navigator.serviceWorker.getRegistration().then(function (reg) {
+      if (!reg) { log('لا يوجد SW registration'); return; }
+      log('SW reg: active=' + !!reg.active + ' waiting=' + !!reg.waiting + ' installing=' + !!reg.installing);
+      reg.addEventListener('updatefound', function () { log('SW updatefound'); });
+    }).catch(function (e) { log('SW getRegistration error: ' + e.message); });
+  }
+
+  function watchEl(sel) {
+    document.addEventListener('DOMContentLoaded', function () {
+      var el = document.querySelector(sel);
+      if (!el) { log('watch ' + sel + ': غير موجود عند DCL'); return; }
+      var cs = getComputedStyle(el);
+      log('watch ' + sel + ': موجود، opacity=' + cs.opacity + ' display=' + cs.display + ' style="' + (el.getAttribute('style') || '') + '"');
+      var mo = new MutationObserver(function (muts) {
+        muts.forEach(function (m) {
+          if (m.type === 'attributes') {
+            log('ATTR ' + sel + '.' + m.attributeName + ' = "' + (el.getAttribute(m.attributeName) || '').slice(0, 100) + '"');
+          }
+        });
+      });
+      mo.observe(el, { attributes: true, attributeFilter: ['class', 'style'] });
+    });
+  }
+  ['.main', '.topbar', '.sidebar', '#hamburger', '.tb-left', '.tb-right'].forEach(watchEl);
+
+  /* زر عائم أحمر — يظهر فقط في وضع التشخيص — لنسخ التقرير الكامل */
+  document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('zad-diag-btn')) return;
+    var btn = document.createElement('button');
+    btn.id = 'zad-diag-btn';
+    btn.textContent = '🐞';
+    btn.title = 'نسخ تقرير التشخيص';
+    btn.style.cssText = 'position:fixed;bottom:14px;left:14px;z-index:2147483647;width:46px;height:46px;' +
+      'border-radius:50%;background:#c0392b;color:#fff;border:2px solid #fff;font-size:20px;' +
+      'box-shadow:0 4px 14px rgba(0,0,0,.45);cursor:pointer';
+    btn.onclick = function () {
+      var arr = readLog();
+      var text = '=== تقرير تشخيص زاد — ' + new Date().toLocaleString('ar-EG') + ' ===\n' +
+        arr.map(function (e) { return '[+' + e.t + 'ms | ' + e.page + '] ' + e.msg; }).join('\n');
+      var box = document.createElement('div');
+      box.style.cssText = 'position:fixed;inset:4vh 4vw;z-index:2147483647;background:#111;border-radius:14px;' +
+        'padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:8px';
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'flex:1;width:100%;background:#000;color:#7ce89a;font-family:monospace;' +
+        'font-size:11px;direction:ltr;border:1px solid #333;border-radius:8px;padding:8px;box-sizing:border-box';
+      var closeBtn = document.createElement('button');
+      closeBtn.textContent = '✕ إغلاق';
+      closeBtn.style.cssText = 'padding:12px;border-radius:10px;background:#0e3b2e;color:#fff;border:none;font-size:15px;font-weight:800';
+      closeBtn.onclick = function () { box.remove(); };
+      box.appendChild(ta);
+      box.appendChild(closeBtn);
+      document.body.appendChild(box);
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(function () {});
+    };
+    document.body.appendChild(btn);
+  });
+})();
+
 const KEY = 'zad_v2';
 function loadState() {
   try {
