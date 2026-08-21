@@ -78,13 +78,29 @@ const ZadDesign = (() => {
       '--ink':        '#f0f0ea',
       '--muted':      '#8a9a90',
       '--subtle':     '#4a5a50',
+      /* Greens — light-mode values (#0e3b2e etc.) are dark forest tones meant for
+         light backgrounds; left un-overridden they render as near-invisible text
+         on dark backgrounds (contrast ratio ~1:1). Use the bright dark-mode
+         greens already defined in css/style.css's html[data-theme="dark"] rule. */
+      '--green-deep': '#4dd866',
+      '--green-mid':  '#2eb84d',
+      '--green-soft': '#3dcc5e',
       '--green-pale': '#0e2a1e',
       '--green-faint':'#0a1e16',
     },
     oled: {
-      '--bg':   '#000000',
-      '--card': '#0a0f0d',
-      '--sand': '#0f1a14',
+      '--bg':         '#000000',
+      '--card':       '#0a0f0d',
+      '--sand':       '#0f1a14',
+      '--border':     '#2a3830',
+      '--ink':        '#f5fef6',
+      '--muted':      '#b8cfba',
+      '--subtle':     '#4a5a50',
+      '--green-deep': '#4dd866',
+      '--green-mid':  '#2eb84d',
+      '--green-soft': '#3dcc5e',
+      '--green-pale': '#0e2a1e',
+      '--green-faint':'#0a1e16',
     },
   };
 
