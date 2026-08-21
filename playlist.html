@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstArt = ALL.find(t=>t.artwork)?.artwork;
         if (firstArt)
           document.getElementById('pl-cover').innerHTML =
-            `<img loading="lazy" decoding="async" src="${firstArt}" alt="cover">`;
+            `<img loading="lazy" decoding="async" src="${firstArt}" alt="cover" onerror="this.parentNode.innerHTML='🎵'">`;
 
         applyFilter();
       });
@@ -744,7 +744,7 @@ function updatePlayerUI(t) {
   document.getElementById('mp-fill').style.width = '0%';
   const art = document.getElementById('mp-art');
   art.innerHTML = t.artwork
-    ? `<img loading="lazy" decoding="async" src="${t.artwork}" alt="${t.title}">`
+    ? `<img loading="lazy" decoding="async" src="${t.artwork}" alt="${t.title}" onerror="this.parentNode.innerHTML='🎵'">`
     : '🎵';
 }
 
@@ -808,7 +808,7 @@ function renderList() {
   el.innerHTML = '<div class="pl-list">' + FILTERED.map((t,i)=>{
     const gi  = ALL.findIndex(x=>x.id===t.id);
     const cur = gi===CUR;
-    const art = t.artwork ? `<img src="${t.artwork}" alt="${t.title}" loading="lazy">` : '🎵';
+    const art = t.artwork ? `<img src="${t.artwork}" alt="${t.title}" loading="lazy" onerror="this.parentNode.innerHTML='🎵'">` : '🎵';
     const dur = fmt(Math.floor(t.duration/1000));
     const plays = t.plays>=1000?(t.plays/1000).toFixed(1)+'K':(t.plays||'');
     return `<div class="pl-card pl-card-anim${cur?' playing':''}"
