@@ -917,11 +917,15 @@ function initPageTransition() {
   /* ضمان: المحتوى ظاهر عند تحميل الصفحة (يصلح حالة بقاء opacity:0 من انتقال سابق) */
   const resetMain = () => {
     const m = document.querySelector('.main');
-    if (m) { m.style.opacity = '1'; m.style.transform = 'none'; }
+    if (m) { m.style.cssText = m.style.cssText.replace(/(transition|opacity|transform)\s*:[^;]*;?/gi, ''); }
   };
   resetMain();
-  /* عند الرجوع من الكاش (back/forward) المتصفح يحافظ على inline styles — أعد الضبط */
+  /* عند الرجوع من الكاش (back/forward) المتصفح يحافظ على inline styles — أعد الضبط.
+     pageshow هو المصدر الأساسي، لكن نضيف visibilitychange/focus كشبكة أمان لو
+     الصفحة اتعرضت من حالة bfcache-like من غير ما pageshow يُطلَق بشكل موثوق. */
   window.addEventListener('pageshow', resetMain);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') resetMain(); });
+  window.addEventListener('focus', resetMain);
 
   const links = document.querySelectorAll('.nav a, a.card');
   links.forEach(link => {
