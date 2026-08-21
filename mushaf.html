@@ -275,6 +275,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
   </aside>
 
   <main class="main">
+    <h1 class="sr-only">الورد اليومي</h1>
 
     <div class="topbar">
       <!-- LEFT: Burger + Logo -->
@@ -435,12 +436,12 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
       <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px">✏️ خطتي الخاصة — حدد الصفحة اليدوياً</div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">من صفحة</div>
+          <label for="custom-from" style="display:block;font-size:11px;color:var(--muted);margin-bottom:4px">من صفحة</label>
           <input id="custom-from" type="number" min="1" max="604" value="1" style="width:80px;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);font-family:'ThmanyahSans',monospace;font-size:16px;font-weight:700;text-align:center;outline:none;direction:ltr">
         </div>
         <div style="color:var(--gold);font-size:20px;margin-top:16px">→</div>
         <div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">إلى صفحة</div>
+          <label for="custom-to" style="display:block;font-size:11px;color:var(--muted);margin-bottom:4px">إلى صفحة</label>
           <input id="custom-to" type="number" min="1" max="604" value="20" style="width:80px;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);font-family:'ThmanyahSans',monospace;font-size:16px;font-weight:700;text-align:center;outline:none;direction:ltr">
         </div>
         <button onclick="applyCustomPlan()" style="margin-top:16px;padding:9px 18px;border-radius:10px;border:none;background:var(--green-deep);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">تطبيق</button>

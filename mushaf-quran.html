@@ -243,6 +243,7 @@ function zadSafeParse(key, fallback) {
 
   <!-- Main -->
   <main class="main">
+    <h1 class="sr-only">المصحف الشريف</h1>
 
     <!-- Topbar -->
     <div class="topbar">
@@ -272,10 +273,10 @@ function zadSafeParse(key, fallback) {
 
     <!-- Nav Controls -->
     <div class="qnav">
-      <select class="qn-select" id="surah-sel" onchange="goToSurah(this.value)">
+      <select class="qn-select" id="surah-sel" aria-label="اذهب إلى سورة" onchange="goToSurah(this.value)">
         <option value="">📖 سورة...</option>
       </select>
-      <select class="qn-select" id="juz-sel" onchange="goToJuz(this.value)" style="max-width:90px">
+      <select class="qn-select" id="juz-sel" aria-label="اذهب إلى جزء" onchange="goToJuz(this.value)" style="max-width:90px">
         <option value="">الجزء</option>
       </select>
       <input class="qn-input" id="page-inp" type="number" min="1" max="604" placeholder="ص" inputmode="numeric" onchange="jumpPage(this.value)">

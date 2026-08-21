@@ -408,7 +408,7 @@
         if (currentGroupId) html += '</div>';
         currentGroupId = item.id;
         const isOpen = openSecs.includes(item.id) || item.id === activeSecId;
-        html += `<div class="nav-sep ${isOpen ? '' : 'collapsed'}" data-sec="${item.id}" onclick="window._zadToggleSec('${item.id}')">
+        html += `<div class="nav-sep ${isOpen ? '' : 'collapsed'}" data-sec="${item.id}" role="button" tabindex="0" aria-expanded="${isOpen}" aria-controls="grp-${item.id}" onclick="window._zadToggleSec('${item.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window._zadToggleSec('${item.id}')}">
           <span class="sep-arrow">▾</span>${item.sep}
         </div>
         <div class="nav-group ${isOpen ? '' : 'collapsed'}" id="grp-${item.id}" style="max-height:${isOpen ? '1000px' : '0'}">`;
@@ -434,10 +434,12 @@
       sep.classList.add('collapsed');
       grp.classList.add('collapsed');
       grp.style.maxHeight = '0';
+      sep.setAttribute('aria-expanded', 'false');
     } else {
       sep.classList.remove('collapsed');
       grp.classList.remove('collapsed');
       grp.style.maxHeight = '1000px';
+      sep.setAttribute('aria-expanded', 'true');
     }
     /* حفظ الحالة */
     const open = [];

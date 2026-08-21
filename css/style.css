@@ -19,6 +19,9 @@ html[data-theme="oled"]{--sys-blue:#5aabff;--sys-green:#4dd866;--sys-indigo:#919
 html[data-theme="dark"]{--bg:#0a0f0c;--card:#111a14;--card-2:#162019;--sand:#1c2a1e;--sand-2:#1a2618;--gold-pale:#1a1608;--green-pale:#0d1f12;--ink:#d8ead8;--muted:#7a9a7a;--muted-2:#4a6a4a;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#e6c97a;--gold-soft:#f0d898;--gold-dark:#c9a14a;--border:rgba(255,255,255,.08);--shadow:0 10px 30px -12px rgba(0,0,0,.6);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.4)}
 html[data-theme="oled"]{--bg:#000000;--card:#0a0a0a;--card-2:#101010;--sand:#080808;--sand-2:#0d0d0d;--gold-pale:#0a0800;--green-pale:#040a05;--ink:#f5fef6;--muted:#b8cfba;--muted-2:#7a9a7c;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#f0d080;--gold-soft:#f8e4a0;--gold-dark:#c9a14a;--border:rgba(255,255,255,.09);--shadow:0 10px 30px -12px rgba(0,0,0,.85);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.7)}
 
+/* إتاحة: عنصر مخفي بصرياً لكن مقروء لقارئات الشاشة (h1 وغيره) */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
 /* ── Base Reset ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}

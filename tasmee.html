@@ -266,6 +266,7 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
   </aside>
 
   <main class="main">
+    <h1 class="sr-only">تسميع القرآن</h1>
     <div class="topbar">
       <div class="tb-left">
         <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
@@ -292,14 +293,14 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
     <!-- ══ Selection Bar ══════════════════════════════════════ -->
     <div class="section-title">📖 اختر ما تريد تسميعه</div>
     <div class="ts-select-bar">
-      <select class="ts-sel" id="ts-mode">
+      <select class="ts-sel" id="ts-mode" aria-label="طريقة التسميع">
         <option value="surah">سورة كاملة</option>
         <option value="page">صفحة من المصحف</option>
         <option value="range">نطاق آيات</option>
       </select>
 
       <!-- Surah select -->
-      <select class="ts-sel" id="ts-surah-sel" style="max-width:180px">
+      <select class="ts-sel" id="ts-surah-sel" aria-label="اختر السورة" style="max-width:180px">
         <option value="">اختر سورة...</option>
       </select>
 
@@ -309,7 +310,7 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
 
       <!-- Range inputs -->
       <div id="ts-range-wrap" style="display:none;display:flex;gap:6px;flex-wrap:wrap">
-        <select class="ts-sel" id="ts-range-surah" style="max-width:140px"><option value="">سورة</option></select>
+        <select class="ts-sel" id="ts-range-surah" aria-label="اختر السورة لتحديد نطاق التسميع" style="max-width:140px"><option value="">سورة</option></select>
         <input id="ts-range-from" type="number" min="1" class="ts-sel" style="max-width:70px" placeholder="من">
         <input id="ts-range-to"   type="number" min="1" class="ts-sel" style="max-width:70px" placeholder="إلى">
       </div>

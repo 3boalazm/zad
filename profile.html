@@ -123,6 +123,7 @@
   </aside>
 
   <main class="main">
+    <h1 class="sr-only">حسابي وبياناتي</h1>
 
     <div class="topbar">
       <div class="tb-left">
@@ -186,7 +187,7 @@
         <input class="pf-input" id="in-name" placeholder="اسمك الكريم" oninput="onField()">
       </div>
       <div class="pf-row">
-        <span class="pf-row-label">الوضع</span>
+        <label class="pf-row-label" for="in-type">الوضع</label>
         <select class="pf-input pf-select" id="in-type" onchange="onField()">
           <option value="adult">🧑 راشد</option>
           <option value="child">🧒 طفل</option>
@@ -203,7 +204,7 @@
         <input class="pf-input" id="in-city" placeholder="مثال: القاهرة" oninput="onField()">
       </div>
       <div class="pf-row">
-        <span class="pf-row-label">طريقة حساب المواقيت</span>
+        <label class="pf-row-label" for="in-method">طريقة حساب المواقيت</label>
         <select class="pf-input pf-select" id="in-method" onchange="onField()"></select>
       </div>
     </div>
@@ -212,11 +213,11 @@
     <div class="pf-section">
       <h2 class="pf-section-title">🎯 الأهداف اليومية</h2>
       <div class="pf-row">
-        <span class="pf-row-label">صفحات القرآن يومياً</span>
+        <label class="pf-row-label" for="in-goal-quran">صفحات القرآن يومياً</label>
         <input class="pf-input" id="in-goal-quran" type="number" min="1" max="60" style="max-width:90px;direction:ltr" oninput="onField()">
       </div>
       <div class="pf-row">
-        <span class="pf-row-label">عدد التكبير/الذكر يومياً</span>
+        <label class="pf-row-label" for="in-goal-dhikr">عدد التكبير/الذكر يومياً</label>
         <input class="pf-input" id="in-goal-dhikr" type="number" min="10" max="1000" step="10" style="max-width:90px;direction:ltr" oninput="onField()">
       </div>
     </div>
@@ -249,7 +250,7 @@
         <button class="pf-btn pf-btn-primary" onclick="doExport()">⬇️ تصدير نسخة احتياطية</button>
         <button class="pf-btn pf-btn-ghost" onclick="document.getElementById('pf-import-file').click()">⬆️ استيراد نسخة</button>
       </div>
-      <input type="file" id="pf-import-file" accept="application/json,.json" style="display:none" onchange="doImport(this)">
+      <input type="file" id="pf-import-file" aria-label="استيراد نسخة من البيانات" accept="application/json,.json" style="display:none" onchange="doImport(this)">
       <div class="pf-note" id="pf-sync-status">آخر نسخة احتياطية: لم تُنشأ بعد.</div>
 
       <!-- حساب سحابي مستقبلي -->

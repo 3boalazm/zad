@@ -1170,7 +1170,7 @@ html[data-theme="oled"] .stream-error-banner { background: rgba(239,68,68,.12); 
         <button class="ctrl-btn" onclick="nextStation()" title="التالي">⏭</button>
         <div class="volume-wrap">
           <span class="vol-icon">🔊</span>
-          <input type="range" id="vol-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
+          <input type="range" id="vol-slider" aria-label="مستوى الصوت" min="0" max="100" value="80" oninput="setVolume(this.value)">
         </div>
       </div>
     </div>
@@ -1190,7 +1190,7 @@ html[data-theme="oled"] .stream-error-banner { background: rgba(239,68,68,.12); 
         <span class="search-icon">🔍</span>
         <input type="text" placeholder="ابحث عن إذاعة..." id="search-input" oninput="filterStations(this.value)">
       </div>
-      <select class="quality-select" id="quality-select" onchange="changeQuality(this.value)">
+      <select class="quality-select" id="quality-select" aria-label="جودة البث" onchange="changeQuality(this.value)">
         <option value="high">جودة عالية</option>
         <option value="medium">متوسطة</option>
         <option value="low">منخفضة</option>
@@ -1202,28 +1202,28 @@ html[data-theme="oled"] .stream-error-banner { background: rgba(239,68,68,.12); 
       <div class="prefs-title">⚙️ إعدادات التشغيل</div>
       <div class="prefs-grid">
         <div class="pref-item">
-          <label>استئناف تلقائي عند الاتصال</label>
+          <label for="toggle-auto-resume">استئناف تلقائي عند الاتصال</label>
           <div class="pref-toggle">
             <span>يستأنف البث تلقائياً عند عودة الإنترنت</span>
             <button class="toggle-sm on" id="toggle-auto-resume" onclick="this.classList.toggle('on')"></button>
           </div>
         </div>
         <div class="pref-item">
-          <label>إعادة الاتصال التلقائي</label>
+          <label for="toggle-reconnect">إعادة الاتصال التلقائي</label>
           <div class="pref-toggle">
             <span>إعادة الاتصال تلقائياً عند الانقطاع</span>
             <button class="toggle-sm on" id="toggle-reconnect" onclick="this.classList.toggle('on')"></button>
           </div>
         </div>
         <div class="pref-item">
-          <label>آخر إذاعة مستمعة</label>
+          <label for="toggle-last">آخر إذاعة مستمعة</label>
           <div class="pref-toggle">
             <span>استئناف الإذاعة السابقة عند الفتح</span>
             <button class="toggle-sm" id="toggle-last" onclick="this.classList.toggle('on')"></button>
           </div>
         </div>
         <div class="pref-item">
-          <label>مستوى الصوت الافتراضي</label>
+          <label for="default-vol">مستوى الصوت الافتراضي</label>
           <input type="range" id="default-vol" min="0" max="100" value="80"
             style="width:100%;margin-top:8px"
             oninput="document.getElementById('default-vol-val').textContent=this.value+'%'">

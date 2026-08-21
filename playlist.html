@@ -280,6 +280,7 @@ html[data-theme="oled"] .pl-card.playing .pl-title{color:var(--sys-green,#4ade80
   </aside>
 
   <main class="main" style="padding-bottom:20px">
+    <h1 class="sr-only">🎵 العظماء</h1>
     <div class="topbar">
       <div class="tb-left">
         <button class="hamburger" id="hamburger">☰</button>
@@ -370,8 +371,8 @@ html[data-theme="oled"] .pl-card.playing .pl-title{color:var(--sys-green,#4ade80
         <button class="mp-btn" onclick="mpNext()">⏭</button>
         <button class="mp-btn" onclick="mpSkip(10)" title="تقديم 10 ثوانٍ">10 ▶▶</button>
         <div class="mp-vol-wrap">
-          <span class="mp-vol-ico" onclick="mpMute()" id="mp-vol-ico">🔊</span>
-          <input type="range" class="mp-vol-slider" id="mp-vol"
+          <span class="mp-vol-ico" onclick="mpMute()" id="mp-vol-ico" role="button" tabindex="0" aria-label="كتم/تشغيل الصوت" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();mpMute()}">🔊</span>
+          <input type="range" class="mp-vol-slider" id="mp-vol" aria-label="مستوى الصوت"
             min="0" max="100" value="80" oninput="mpSetVol(this.value)">
         </div>
       </div>
