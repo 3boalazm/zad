@@ -2781,15 +2781,7 @@ function initProfileSystem() {
   injectProfileChip();
   const profile = getProfile();
 
-  if (!profile) {
-    /* لا تُظهر المودال إن كان المستخدم اختار وضع الزائر سابقاً */
-    let skipped = false;
-    try { skipped = localStorage.getItem('zad_profile_skipped') === '1'; } catch(e) {}
-    if (!skipped) {
-      /* First visit — show modal after 600ms */
-      setTimeout(() => showProfileModal(false), 600);
-    }
-  } else {
+  if (profile) {
     applyProfile(profile);
     /* If on index, inject kids shortcut if child */
     if (window.location.pathname.includes('index') || window.location.pathname === '/') {
