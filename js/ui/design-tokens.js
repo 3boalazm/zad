@@ -102,6 +102,22 @@ const ZadDesign = (() => {
       '--green-pale': '#0e2a1e',
       '--green-faint':'#0a1e16',
     },
+    /* وضع زهرة (العذر الشرعي) — html[data-excuse="on"]. مطبّق فوق أي ثيم
+       (فاتح/داكن/OLED)، بنفس القيم الوردية المعرَّفة أصلاً في css/style.css
+       لـ html[data-excuse="on"]. بدون هذا الـ overlay، كانت هذه الرموز
+       (اللي بتضبطها applyTokens() كـ inline style على <html>) تكسب دايماً
+       على قاعدة الـ CSS في الملف، فيفضل اللون الأخضر/الأصلي ظاهر بدل الوردي
+       — يعني وضع زهرة كان بيتفعّل تقنياً بس بلا أي تغيّر بصري فعلي. */
+    excuse: {
+      '--green-deep': '#a84d77',
+      '--green-mid':  '#b86397',
+      '--green-soft': '#c77fa3',
+      '--green-pale': '#fbeef4',
+      '--gold-500':   '#d4789f',
+      '--gold-300':   '#e89bbb',
+      '--gold-100':   '#fbeef4',
+      '--border':     'rgba(168,77,119,.16)',
+    },
   };
 
   /* ── طبّق الـ tokens ─────────────────────────────────────────────────── */
@@ -109,7 +125,8 @@ const ZadDesign = (() => {
     const root = document.documentElement;
     const base = TOKENS.light;
     const override = TOKENS[theme] || {};
-    const merged = { ...base, ...override };
+    const excuseOn = root.getAttribute('data-excuse') === 'on';
+    const merged = { ...base, ...override, ...(excuseOn ? TOKENS.excuse : {}) };
     Object.entries(merged).forEach(([k, v]) => root.style.setProperty(k, v));
   }
 
@@ -117,12 +134,12 @@ const ZadDesign = (() => {
   function watchTheme() {
     const obs = new MutationObserver(muts => {
       muts.forEach(m => {
-        if (m.attributeName === 'data-theme') {
+        if (m.attributeName === 'data-theme' || m.attributeName === 'data-excuse') {
           applyTokens(document.documentElement.getAttribute('data-theme') || 'light');
         }
       });
     });
-    obs.observe(document.documentElement, { attributes: true });
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-excuse'] });
   }
 
   /* ── Component Builders ──────────────────────────────────────────────── */
