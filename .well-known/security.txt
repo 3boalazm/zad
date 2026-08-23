@@ -1,0 +1,4 @@
+Contact: mailto:zadulashr@gmail.com
+Preferred-Languages: ar, en
+Canonical: https://zad.codeandcanvas.net/.well-known/security.txt
+Expires: 2027-08-23T00:00:00.000Z

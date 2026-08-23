@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════
    زاد — Service Worker
-   Version: 20260617-z9a
+   Version: 20260823-z18
    Strategy: Network-First WITH TIMEOUT (HTML/CSS/JS) + Cache-First (media)
 
    إصلاح حرج: إضافة مهلة زمنية للشبكة. على الشبكات الضعيفة (0 KB/s متصلة
@@ -10,9 +10,15 @@
    Z9a: إضافة /api/ و /health/ إلى قائمة BYPASS —
         نداءات الـ API يجب أن تصل دائماً للخادم مباشرةً بدون أي
         تدخّل من الـ SW. كاش session غير صحيح = 401 مستمر بعد login.
+
+   Z18: إصلاح fallback الملاحة — كان أي طلب لصفحة غير مُخزَّنة مسبقاً
+        (مثل report.html) يرجع بمحتوى index.html بصمت عند فشل/بطء الشبكة،
+        فتظهر لوحة التحكم بدل الصفحة المطلوبة وكأنها فتحت بنجاح. الآن
+        يُرجَع fallback الصفحة الرئيسية فقط لطلبات الجذر الفعلية، وأي
+        صفحة أخرى غير مخزّنة تعرض رسالة خطأ صريحة بدلاً من ذلك.
    ════════════════════════════════════════════════════════════ */
 
-const CACHE_STATIC = 'zad-20260621-z15';
+const CACHE_STATIC = 'zad-20260823-z18';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -84,7 +90,7 @@ self.addEventListener('activate', e => {
       ))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ includeUncontrolled: true }))
-      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260617-z9a' })))
+      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260823-z18' })))
   );
 });
 
@@ -99,14 +105,6 @@ function fetchWithTimeout(request, timeout) {
   });
 }
 
-
-/* ── Offline fallback: لو فشل كل شيء، ارجع للصفحة الرئيسية المخزّنة ── */
-function offlineFallback(request) {
-  if (request.mode === 'navigate' || request.destination === 'document') {
-    return caches.match('./index.html').then(hit => hit || caches.match('./'));
-  }
-  return Promise.resolve(new Response('', { status: 503, statusText: 'Offline' }));
-}
 
 /* ── Fetch ── */
 
@@ -136,7 +134,10 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  /* HTML/CSS/JS → Network-First بمهلة، ثم الكاش، ثم index كحل أخير */
+  /* HTML/CSS/JS → Network-First بمهلة، ثم الكاش، ثم fallback صريح */
+  const isNavigation = e.request.mode === 'navigate' || e.request.destination === 'document';
+  const isRootRequest = isNavigation && /\/(index\.html)?$/.test(new URL(url).pathname);
+
   e.respondWith(
     fetchWithTimeout(e.request, NET_TIMEOUT)
       .then(res => {
@@ -147,16 +148,30 @@ self.addEventListener('fetch', e => {
         return res;
       })
       .catch(() =>
-        caches.match(e.request).then(hit =>
-          hit || caches.match('./index.html').then(idx =>
-            idx || new Response(
-              '<!doctype html><meta charset=utf-8><body style="background:#0e3b2e;color:#fff;font-family:sans-serif;text-align:center;padding-top:30vh">'
-              + '<h2>تعذّر التحميل</h2><p>تحقّق من الاتصال وحاول مجدداً.</p>'
-              + '<a href="./index.html" style="color:#e6c97a">إعادة المحاولة</a></body>',
-              { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-            )
-          )
-        )
+        caches.match(e.request).then(hit => {
+          if (hit) return hit;
+
+          /* لو الطلب فعلاً للصفحة الرئيسية، ارجع لنسختها المخزّنة.
+             غير كده لا تستبدل صفحة لم تُخزَّن بعد (مثل report.html) بمحتوى
+             index.html — ده كان يعرض لوحة التحكم بدل الصفحة المطلوبة فعلياً
+             ويوهم المستخدم إنها فتحت بنجاح. اعرض رسالة خطأ صريحة بدلاً منها. */
+          if (isRootRequest) {
+            return caches.match('./index.html').then(idx => idx || offlineErrorResponse());
+          }
+          if (isNavigation) return offlineErrorResponse();
+
+          /* طلبات CSS/JS غير الملاحية: لا تُرجِع HTML مكانها (يكسر التحليل) */
+          return new Response('', { status: 503, statusText: 'Offline' });
+        })
       )
   );
 });
+
+function offlineErrorResponse() {
+  return new Response(
+    '<!doctype html><meta charset=utf-8><body style="background:#0e3b2e;color:#fff;font-family:sans-serif;text-align:center;padding-top:30vh">'
+    + '<h2>تعذّر التحميل</h2><p>تحقّق من الاتصال وحاول مجدداً.</p>'
+    + '<a href="./index.html" style="color:#e6c97a">العودة للرئيسية</a></body>',
+    { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+  );
+}

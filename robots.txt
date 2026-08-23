@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /tools/
+Disallow: /diagnostics.html
+Disallow: /demo.html
+Disallow: /sync.html
+Disallow: /register.html
+
+Sitemap: https://zad.codeandcanvas.net/sitemap.xml
