@@ -372,6 +372,7 @@ html[data-theme="dark"] .jr-medal .jr-medal-t,html[data-theme="oled"] .jr-medal 
   function setDone(j,i,v){var s=read();s.kidsSchool=s.kidsSchool||{};s.kidsSchool[j]=s.kidsSchool[j]||{};if(v)s.kidsSchool[j][i]=1;else delete s.kidsSchool[j][i];write(s);}
   var $=function(id){return document.getElementById(id);};
   var modal=$('jr-modal'), curJ=null, curI=null;
+  var jrLastFocused=null;
 
   function paintProgress(j){
     var arr=JR[j], done=getDone(j), n=Object.keys(done).length, total=arr.length;
@@ -387,6 +388,7 @@ html[data-theme="dark"] .jr-medal .jr-medal-t,html[data-theme="oled"] .jr-medal 
 
   function openStep(j,i){
     curJ=j; curI=i;
+    jrLastFocused=document.activeElement;
     var st=JR[j][i];
     $('jr-he').textContent=st.e;
     $('jr-name').textContent=st.t;
@@ -401,8 +403,13 @@ html[data-theme="dark"] .jr-medal .jr-medal-t,html[data-theme="oled"] .jr-medal 
     btn.classList.toggle('done',!!done);
     btn.textContent=done?'✓ تعلّمتُها! (اضغط للإلغاء)':'✓ تعلّمتُها!';
     modal.classList.add('open'); document.body.style.overflow='hidden';
+    if($('jr-close'))$('jr-close').focus();
   }
-  function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+  function closeModal(){
+    modal.classList.remove('open'); document.body.style.overflow='';
+    if(jrLastFocused&&typeof jrLastFocused.focus==='function')jrLastFocused.focus();
+    jrLastFocused=null;
+  }
 
   document.querySelectorAll('.jr-step').forEach(function(el){
     el.addEventListener('click',function(){ openStep(el.dataset.j, +el.dataset.i); });
