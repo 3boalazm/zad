@@ -1603,8 +1603,8 @@ html[data-theme="oled"] #next-reset-time{color:var(--sys-green)}
   bottom:80px;left:16px;
   width:42px;height:42px;
   border-radius:14px;
-  background:var(--green-deep);
-  color:#fff;
+  background:var(--button-primary-bg);
+  color:var(--button-primary-text);
   border:none;
   font-size:18px;
   cursor:pointer;
@@ -1617,8 +1617,6 @@ html[data-theme="oled"] #next-reset-time{color:var(--sys-green)}
 }
 .scroll-top-btn.show{opacity:1;pointer-events:auto;transform:translateY(0)}
 html[dir="ltr"] .scroll-top-btn{left:auto;right:16px}
-html[data-theme="dark"] .scroll-top-btn,
-html[data-theme="oled"] .scroll-top-btn{background:var(--sys-green);color:#001a08}
 
 /* ══════════════════════════════════════════════════════════
    TOPBAR FINAL RULES — added last for maximum specificity
