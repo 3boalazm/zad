@@ -874,10 +874,13 @@ const PAGE_TITLES = {
   style.id = 'i18n-ltr-css';
   style.textContent = `
     body[data-lang="en"], body[data-lang="fr"] { direction: ltr; text-align: left; }
-    body[data-lang="en"] .sidebar, body[data-lang="fr"] .sidebar { right: auto; left: -290px; }
-    body[data-lang="en"] .sidebar.open, body[data-lang="fr"] .sidebar.open { left: 0; right: auto; }
+    /* الشريط الجانبي وقائمة الإشعارات بيستخدموا inset-inline-start/الفلكس
+       المنطقي فعليًا في css/style.css — كانا هنا بقيم left/right ثابتة من
+       زمن direction:rtl كان متجبر على html,body (اتصلح ده مؤخرًا)، فكانا
+       بيلغوا التموضع الصحيح ويخفوا الشريط الجانبي تمامًا في وضعي EN/FR على
+       الديسكتوب (زر الفتح hamburger نفسه مخفي على الديسكتوب، فمفيش طريقة
+       لإرجاعه). شيلتهم بدل ما أعمل patch فوق patch. */
     body[data-lang="en"] .nav a, body[data-lang="fr"] .nav a { flex-direction: row-reverse; justify-content: flex-end; }
-    body[data-lang="en"] .notif-dropdown, body[data-lang="fr"] .notif-dropdown { left: 0; right: auto; }
     body[data-lang="en"] .hijri-bar, body[data-lang="fr"] .hijri-bar { direction: ltr; }
     body[data-lang="en"] .quran-text, body[data-lang="fr"] .quran-text,
     body[data-lang="en"] .ts-ayah-text, body[data-lang="fr"] .ts-ayah-text,
