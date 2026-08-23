@@ -187,7 +187,7 @@ function renderZakatWizard() {
                    onclick="setZakatField('hawlPassed', false)">لا، لم يمر بعد</button>
          </div>`
       : `<input type="number" inputmode="decimal" class="zk-input" id="zk-field-${step.field}"
-                value="${ZakatCalc.data[step.field] || ''}" placeholder="0"
+                value="${ZakatCalc.data[step.field] || ''}" placeholder="0" aria-label="${step.title}"
                 oninput="setZakatField('${step.field}', parseFloat(this.value)||0)">`;
 
     bodyHtml = `

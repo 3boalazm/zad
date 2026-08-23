@@ -84,7 +84,8 @@ function renderAdhkarAssistant() {
   container.innerHTML = `
     <div class="aa-intro">صِف حالتك أو شعورك، وسأقترح عليك الأذكار المأثورة المناسبة</div>
     <div class="aa-input-row">
-      <input id="aa-input" class="aa-input" placeholder="مثال: أشعر بالقلق... / أنا مسافر... / مريض..." 
+      <input id="aa-input" class="aa-input" placeholder="مثال: أشعر بالقلق... / أنا مسافر... / مريض..."
+             aria-label="صِف حالتك أو شعورك"
              onkeydown="if(event.key==='Enter')askAdhkar()">
       <button class="btn btn-primary" onclick="askAdhkar()">اقترح</button>
     </div>

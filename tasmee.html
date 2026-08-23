@@ -309,13 +309,13 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
 
       <!-- Page input -->
       <input id="ts-page-inp" type="number" min="1" max="604" value="1"
-        class="ts-sel" style="max-width:90px;display:none" placeholder="صفحة (1-604)">
+        class="ts-sel" style="max-width:90px;display:none" placeholder="صفحة (1-604)" aria-label="رقم الصفحة">
 
       <!-- Range inputs -->
       <div id="ts-range-wrap" style="display:none;display:flex;gap:6px;flex-wrap:wrap">
         <select class="ts-sel" id="ts-range-surah" aria-label="اختر السورة لتحديد نطاق التسميع" style="max-width:140px"><option value="">سورة</option></select>
-        <input id="ts-range-from" type="number" min="1" class="ts-sel" style="max-width:70px" placeholder="من">
-        <input id="ts-range-to"   type="number" min="1" class="ts-sel" style="max-width:70px" placeholder="إلى">
+        <input id="ts-range-from" type="number" min="1" class="ts-sel" style="max-width:70px" placeholder="من" aria-label="من آية">
+        <input id="ts-range-to"   type="number" min="1" class="ts-sel" style="max-width:70px" placeholder="إلى" aria-label="إلى آية">
       </div>
 
       <button class="ts-go" onclick="loadContent()">▶ تحميل</button>

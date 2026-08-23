@@ -98,7 +98,7 @@ function showCityPicker() {
     <div style="background:var(--card,#fff);border-radius:20px;padding:24px;width:100%;max-width:400px;max-height:80vh;overflow:auto">
       <h3 style="margin:0 0 8px;font-size:17px">📍 اختر مدينتك</h3>
       <p style="font-size:13px;color:var(--muted,#888);margin:0 0 16px">لحساب مواقيت الصلاة والقبلة بدقة</p>
-      <input id="city-search" placeholder="ابحث عن مدينتك..." 
+      <input id="city-search" placeholder="ابحث عن مدينتك..." aria-label="ابحث عن مدينتك"
              style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border,#ddd);background:var(--sand,#faf9f6);font-family:inherit;margin-bottom:12px;box-sizing:border-box"
              oninput="filterCities(this.value)">
       <div id="city-list">

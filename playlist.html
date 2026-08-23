@@ -393,7 +393,7 @@ html[data-theme="oled"] .pl-card.playing .pl-title{color:var(--sys-green,#4ade80
       <span id="pl-count" style="font-size:12px;color:var(--muted);font-weight:500"></span>
     </div>
     <input type="text" class="pl-search" id="pl-search"
-      placeholder="🔍 ابحث في المسارات..." oninput="plFilter()">
+      placeholder="🔍 ابحث في المسارات..." aria-label="ابحث في المسارات" oninput="plFilter()">
     <div class="pl-chips">
       <button class="pl-chip active" onclick="plSort(this,'default')">الكل</button>
       <button class="pl-chip" onclick="plSort(this,'short')">⚡ الأقصر</button>

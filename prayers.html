@@ -246,7 +246,7 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
       <div class="loc-panel" id="panel-search" style="display:none">
         <div class="loc-panel-title">🔍 البحث عن مدينة</div>
         <div class="loc-search-row">
-          <input class="loc-input" id="city-search-input" placeholder="مثال: الإسكندرية، جدة، إسطنبول..."
+          <input class="loc-input" id="city-search-input" placeholder="مثال: الإسكندرية، جدة، إسطنبول..." aria-label="ابحث عن مدينة"
                  onkeydown="if(event.key==='Enter')searchCity()">
           <button class="loc-search-btn" id="city-search-btn" onclick="searchCity()">بحث</button>
         </div>
@@ -266,11 +266,11 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
         <div class="loc-panel-title">✏️ إدخال الإحداثيات</div>
         <div class="manual-grid">
           <div class="manual-field">
-            <label>خط العرض (Latitude)</label>
+            <label for="manual-lat">خط العرض (Latitude)</label>
             <input class="loc-input" id="manual-lat" type="number" step="any" placeholder="30.0444" style="direction:ltr">
           </div>
           <div class="manual-field">
-            <label>خط الطول (Longitude)</label>
+            <label for="manual-lng">خط الطول (Longitude)</label>
             <input class="loc-input" id="manual-lng" type="number" step="any" placeholder="31.2357" style="direction:ltr">
           </div>
         </div>

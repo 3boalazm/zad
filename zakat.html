@@ -161,7 +161,7 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
         <button data-rate="2.5"   class="active">سنة هجرية · 2.5%</button>
         <button data-rate="2.577">سنة ميلادية · 2.577%</button>
       </div>
-      <div class="zk-cur-wrap">العملة: <input id="zk-cur" type="text" maxlength="6" placeholder="ج.م" value="ج.م"></div>
+      <div class="zk-cur-wrap">العملة: <input id="zk-cur" type="text" maxlength="6" placeholder="ج.م" value="ج.م" aria-label="رمز العملة"></div>
     </div>
 
     <!-- Assets -->
@@ -171,9 +171,9 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
         <span class="zk-ico">🥇</span>
         <div class="zk-meta"><div class="zk-name">الذهب</div><div class="zk-hint">الوزن (جرام) × سعر الجرام</div></div>
         <div class="zk-inputs">
-          <input class="zk-inp" type="number" inputmode="decimal" id="gold-g" placeholder="جرام" min="0">
+          <input class="zk-inp" type="number" inputmode="decimal" id="gold-g" placeholder="جرام" aria-label="وزن الذهب بالجرام" min="0">
           <span class="zk-times">×</span>
-          <input class="zk-inp" type="number" inputmode="decimal" id="gold-p" placeholder="سعر/جم" min="0">
+          <input class="zk-inp" type="number" inputmode="decimal" id="gold-p" placeholder="سعر/جم" aria-label="سعر جرام الذهب" min="0">
         </div>
       </div>
       <div class="zk-row"><span class="zk-ico"></span><div class="zk-meta"></div><div class="zk-sub-amt" id="gold-amt">0</div></div>
@@ -182,9 +182,9 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
         <span class="zk-ico">🥈</span>
         <div class="zk-meta"><div class="zk-name">الفضة</div><div class="zk-hint">الوزن (جرام) × سعر الجرام</div></div>
         <div class="zk-inputs">
-          <input class="zk-inp" type="number" inputmode="decimal" id="silver-g" placeholder="جرام" min="0">
+          <input class="zk-inp" type="number" inputmode="decimal" id="silver-g" placeholder="جرام" aria-label="وزن الفضة بالجرام" min="0">
           <span class="zk-times">×</span>
-          <input class="zk-inp" type="number" inputmode="decimal" id="silver-p" placeholder="سعر/جم" min="0">
+          <input class="zk-inp" type="number" inputmode="decimal" id="silver-p" placeholder="سعر/جم" aria-label="سعر جرام الفضة" min="0">
         </div>
       </div>
       <div class="zk-row"><span class="zk-ico"></span><div class="zk-meta"></div><div class="zk-sub-amt" id="silver-amt">0</div></div>
@@ -192,22 +192,22 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
       <div class="zk-row">
         <span class="zk-ico">💵</span>
         <div class="zk-meta"><div class="zk-name">النقد والأرصدة</div><div class="zk-hint">كاش + حسابات بنكية</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="cash" placeholder="القيمة" min="0"></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="cash" placeholder="القيمة" aria-label="قيمة النقد والأرصدة" min="0"></div>
       </div>
       <div class="zk-row">
         <span class="zk-ico">📈</span>
         <div class="zk-meta"><div class="zk-name">الأسهم</div><div class="zk-hint">القيمة السوقية الحالية</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="stocks" placeholder="القيمة" min="0"></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="stocks" placeholder="القيمة" aria-label="قيمة الأسهم" min="0"></div>
       </div>
       <div class="zk-row">
         <span class="zk-ico">🏦</span>
         <div class="zk-meta"><div class="zk-name">الصناديق الاستثمارية</div><div class="zk-hint">قيمة الوحدات الحالية</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="funds" placeholder="القيمة" min="0"></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="funds" placeholder="القيمة" aria-label="قيمة الصناديق الاستثمارية" min="0"></div>
       </div>
       <div class="zk-row">
         <span class="zk-ico">🛍️</span>
         <div class="zk-meta"><div class="zk-name">عروض التجارة</div><div class="zk-hint">بضائع بنيّة البيع</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="trade" placeholder="القيمة" min="0"></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="trade" placeholder="القيمة" aria-label="قيمة عروض التجارة" min="0"></div>
       </div>
     </div>
 
@@ -217,7 +217,7 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
       <div class="zk-row liab">
         <span class="zk-ico">➖</span>
         <div class="zk-meta"><div class="zk-name">الديون المستحقة الآن</div><div class="zk-hint">ديونٌ حالّة عليك</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="debts" placeholder="القيمة" min="0"></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="debts" placeholder="القيمة" aria-label="قيمة الديون المستحقة الآن" min="0"></div>
       </div>
     </div>
 

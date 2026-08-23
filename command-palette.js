@@ -80,7 +80,7 @@
       '<div id="zad-cmd-box" style="background:var(--card,#fff);color:var(--ink,#222);width:min(560px,92vw);max-height:70vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;display:flex;flex-direction:column;font-family:inherit">'+
         '<div style="padding:14px 16px;border-bottom:1px solid var(--border,#eee);display:flex;align-items:center;gap:10px">'+
           '<span style="font-size:18px">🔍</span>'+
-          '<input id="zad-cmd-input" placeholder="ابحث عن صفحة أو أمر..." style="flex:1;border:none;background:none;outline:none;font-size:16px;font-family:inherit;color:var(--ink,#222)">'+
+          '<input id="zad-cmd-input" placeholder="ابحث عن صفحة أو أمر..." aria-label="ابحث عن صفحة أو أمر" style="flex:1;border:none;background:none;outline:none;font-size:16px;font-family:inherit;color:var(--ink,#222)">'+
           '<kbd style="font-size:11px;color:var(--muted,#999);border:1px solid var(--border,#ddd);border-radius:5px;padding:2px 6px">Esc</kbd>'+
         '</div>'+
         '<div id="zad-cmd-list" style="overflow-y:auto;flex:1;padding:6px"></div>'+

@@ -1311,7 +1311,7 @@ function initSearch() {
     ov.className = 'search-overlay'; ov.id = 'search-overlay';
     ov.innerHTML = `
       <div class="search-box-big">
-        <input id="search-main" placeholder="ابحث في التطبيق..." autocomplete="off" dir="rtl">
+        <input id="search-main" placeholder="ابحث في التطبيق..." aria-label="ابحث في التطبيق" autocomplete="off" dir="rtl">
         <div class="search-results" id="search-results"></div>
       </div>`;
     document.body.appendChild(ov);
@@ -2679,7 +2679,7 @@ function showProfileModal(forceNew = false) {
       <div style="padding:24px">
         <!-- Name input -->
         <div style="margin-bottom:20px">
-          <label style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px">اسمك الكريم <span style="font-size:11px;font-weight:400;color:rgba(var(--muted-rgb,150,150,150),.7)">(اختياري)</span></label>
+          <label for="pm-name" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px">اسمك الكريم <span style="font-size:11px;font-weight:400;color:rgba(var(--muted-rgb,150,150,150),.7)">(اختياري)</span></label>
           <input id="pm-name" type="text" placeholder="أدخل اسمك... (اختياري)"
             style="width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid var(--border);
                    background:var(--sand);color:var(--ink);font-family:inherit;font-size:15px;

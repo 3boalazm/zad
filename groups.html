@@ -156,8 +156,8 @@ html[data-theme="dark"] .gp-gpct b,html[data-theme="oled"] .gp-gpct b{color:var(
         <p>اربط حسابك ليُحفظ لهيبُك ووردُك في السحابة وتستعيدها عند تغيير الهاتف. <b>خصوصيتك محفوظة</b> — لا تُرفع أدعيتُك الشخصية ولا ملاحظاتك.</p>
         <button class="cl-google" id="cl-google"><span style="font-size:18px">🔓</span> الدخول عبر Google</button>
         <div class="cl-or">— أو بالبريد —</div>
-        <div class="cl-row"><input class="cl-input" id="cl-email" type="email" placeholder="email@example.com"></div>
-        <div class="cl-row"><input class="cl-input" id="cl-pass" type="password" placeholder="كلمة المرور"></div>
+        <div class="cl-row"><input class="cl-input" id="cl-email" type="email" placeholder="email@example.com" aria-label="البريد الإلكتروني"></div>
+        <div class="cl-row"><input class="cl-input" id="cl-pass" type="password" placeholder="كلمة المرور" aria-label="كلمة المرور"></div>
         <div class="cl-btns"><button class="cl-btn primary" id="cl-signin">دخول</button><button class="cl-btn ghost" id="cl-signup">حساب جديد</button></div>
         <div class="cl-status" id="cl-status"></div>
         <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.6">🔒 المفتاح العام للويب غير سرّي؛ بياناتك محميّة بقواعد قاعدة البيانات. أنت تُدخل كلمتك بنفسك — لا يحفظها التطبيق.</div>
@@ -183,7 +183,7 @@ html[data-theme="dark"] .gp-gpct b,html[data-theme="oled"] .gp-gpct b{color:var(
         </div>
       </div>
       <div class="gp-row">
-        <input class="gp-input" id="alias-input" type="text" maxlength="24" placeholder="مثال: فارس العشر">
+        <input class="gp-input" id="alias-input" type="text" maxlength="24" placeholder="مثال: فارس العشر" aria-label="اسمك المستعار">
         <button class="gp-btn" id="alias-save">حفظ</button>
       </div>
       <div class="gp-hint">يُولَّد لك مُعرِّفٌ مجهول (UUID) لا يرتبط ببريدٍ أو هاتف — خصوصيةٌ كاملة.</div>
@@ -204,14 +204,14 @@ html[data-theme="dark"] .gp-gpct b,html[data-theme="oled"] .gp-gpct b{color:var(
     <div class="gp-sec-title">➕ أنشئ أو انضمّ</div>
     <div class="gp-card" style="margin-bottom:12px">
       <div class="gp-row">
-        <input class="gp-input" id="create-name" type="text" maxlength="32" placeholder="اسم المجموعة — مثال: بيت الإيمان">
+        <input class="gp-input" id="create-name" type="text" maxlength="32" placeholder="اسم المجموعة — مثال: بيت الإيمان" aria-label="اسم المجموعة">
         <button class="gp-btn" id="create-btn">أنشئ مجموعة</button>
       </div>
       <div class="gp-hint">ستحصل على رمز دعوةٍ تشاركه مع عائلتك للانضمام.</div>
     </div>
     <div class="gp-card">
       <div class="gp-row">
-        <input class="gp-input" id="join-code" type="text" maxlength="6" placeholder="رمز الدعوة — مثال: 8GH6EP" style="text-transform:uppercase;letter-spacing:2px;direction:ltr;text-align:center">
+        <input class="gp-input" id="join-code" type="text" maxlength="6" placeholder="رمز الدعوة — مثال: 8GH6EP" aria-label="رمز الدعوة" style="text-transform:uppercase;letter-spacing:2px;direction:ltr;text-align:center">
         <button class="gp-btn ghost" id="join-btn">انضمام</button>
       </div>
       <div class="gp-hint">أدخِل الرمز الذي وصلك من أحد أفراد المجموعة.</div>

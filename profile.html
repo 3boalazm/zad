@@ -185,7 +185,7 @@
       <h2 class="pf-section-title">👤 الهوية</h2>
       <div class="pf-row">
         <span class="pf-row-label">الاسم <small>اختياري</small></span>
-        <input class="pf-input" id="in-name" placeholder="اسمك الكريم" oninput="onField()">
+        <input class="pf-input" id="in-name" placeholder="اسمك الكريم" aria-label="الاسم" oninput="onField()">
       </div>
       <div class="pf-row">
         <label class="pf-row-label" for="in-type">الوضع</label>
@@ -202,7 +202,7 @@
       <h2 class="pf-section-title">⚙️ التفضيلات</h2>
       <div class="pf-row">
         <span class="pf-row-label">المدينة <small>لمواقيت الصلاة</small></span>
-        <input class="pf-input" id="in-city" placeholder="مثال: القاهرة" oninput="onField()">
+        <input class="pf-input" id="in-city" placeholder="مثال: القاهرة" aria-label="المدينة" oninput="onField()">
       </div>
       <div class="pf-row">
         <label class="pf-row-label" for="in-method">طريقة حساب المواقيت</label>
@@ -228,15 +228,15 @@
       <h2 class="pf-section-title">🔔 الإشعارات</h2>
       <div class="pf-row">
         <span class="pf-row-label">تذكير مواقيت الصلاة</span>
-        <label class="pf-toggle"><input type="checkbox" id="nt-prayers" onchange="onField()"><span class="sl"></span></label>
+        <label class="pf-toggle"><input type="checkbox" id="nt-prayers" aria-label="تذكير مواقيت الصلاة" onchange="onField()"><span class="sl"></span></label>
       </div>
       <div class="pf-row">
         <span class="pf-row-label">تذكير الأذكار والتكبير</span>
-        <label class="pf-toggle"><input type="checkbox" id="nt-dhikr" onchange="onField()"><span class="sl"></span></label>
+        <label class="pf-toggle"><input type="checkbox" id="nt-dhikr" aria-label="تذكير الأذكار والتكبير" onchange="onField()"><span class="sl"></span></label>
       </div>
       <div class="pf-row">
         <span class="pf-row-label">آية اليوم</span>
-        <label class="pf-toggle"><input type="checkbox" id="nt-verse" onchange="onField()"><span class="sl"></span></label>
+        <label class="pf-toggle"><input type="checkbox" id="nt-verse" aria-label="آية اليوم" onchange="onField()"><span class="sl"></span></label>
       </div>
     </div>
 
@@ -260,7 +260,7 @@
           <span><span class="pf-soon">قريباً</span>حساب سحابي للمزامنة التلقائية</span>
           <small>مزامنة بياناتك تلقائياً بين أجهزتك — اختياري تماماً</small>
         </span>
-        <label class="pf-toggle"><input type="checkbox" id="acc-enable" disabled><span class="sl"></span></label>
+        <label class="pf-toggle"><input type="checkbox" id="acc-enable" aria-label="حساب سحابي للمزامنة التلقائية (قريباً)" disabled><span class="sl"></span></label>
       </div>
       <div class="pf-note">
         🔒 المزامنة السحابية ميزة اختيارية قيد التطوير ولن تكون مطلوبة أبداً —
