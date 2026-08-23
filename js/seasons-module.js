@@ -314,7 +314,7 @@ const SEASONS_CSS = `
 .season-next-card { background: var(--sand, #f5f5f0); border-radius: 14px; padding: 16px; margin-bottom: 20px; text-align: center; }
 .season-next-label { font-size: 12px; color: var(--muted, #888); }
 .season-next-name { font-size: 18px; font-weight: 800; margin: 4px 0; }
-.season-next-away { font-size: 13px; color: var(--zad-green-700, #1a5d47); }
+.season-next-away { font-size: 13px; color: var(--green-mid, #1a5d47); }
 .recurring-title { font-size: 16px; font-weight: 800; margin: 24px 0 12px; }
 .recurring-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 .recurring-card { background: var(--sand, #faf9f6); border-radius: 14px; padding: 16px; text-align: center; }

@@ -221,9 +221,9 @@ const ADVANCED_AI_CSS = `
 .fiqh-disclaimer { margin-bottom: 16px; margin-top: 0; }
 .fiqh-item { background: var(--sand, #faf9f6); border-radius: 12px; padding: 16px; margin-bottom: 10px; cursor: pointer; }
 .fiqh-q { font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; }
-.fiqh-toggle { color: var(--zad-green-700, #1a5d47); font-size: 20px; }
+.fiqh-toggle { color: var(--green-mid, #1a5d47); font-size: 20px; }
 .fiqh-a { font-size: 14px; line-height: 1.8; margin-top: 12px; color: var(--ink); }
-.fiqh-type { font-size: 12px; color: var(--zad-green-700, #1a5d47); margin-top: 8px; font-weight: 700; }
+.fiqh-type { font-size: 12px; color: var(--green-mid, #1a5d47); margin-top: 8px; font-weight: 700; }
 `;
 
 function injectAdvancedAICSS() {

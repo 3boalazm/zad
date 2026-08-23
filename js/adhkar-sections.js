@@ -161,7 +161,7 @@ const ADHKAR_FULL_CSS = `
 .afs-time { font-size: 13px; color: var(--muted,#888); margin-top: 2px; }
 .afs-card { background: var(--card,#fff); border: 1.5px solid var(--border,#ddd); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
 .afs-card.afs-done { background: rgba(14,59,46,.05); border-color: var(--zad-green-700,#1a5d47); }
-.afs-label { font-size: 13px; font-weight: 700; color: var(--zad-green-700,#1a5d47); margin-bottom: 10px; }
+.afs-label { font-size: 13px; font-weight: 700; color: var(--green-mid,#1a5d47); margin-bottom: 10px; }
 .afs-arabic { font-family: var(--font-quran,serif); font-size: 21px; line-height: 2.2; text-align: center; color: var(--ink); margin-bottom: 12px; }
 .afs-virtue { font-size: 13px; color: var(--zad-gold-700,#b87200); background: rgba(201,161,74,.08); padding: 8px 12px; border-radius: 10px; margin-bottom: 12px; line-height: 1.6; }
 .afs-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }

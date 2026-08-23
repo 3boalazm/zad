@@ -340,6 +340,20 @@ html[data-theme="oled"] .muted, html[data-theme="oled"] [class*="-sub"], html[da
   color:var(--muted);
 }
 
+/* استثناء: عناوين فرعية داخل هيرو/CTA بخلفية متدرجة ملوّنة (أخضر/ذهبي) — تبقى
+   بيضاء شبه شفافة بدل اللون الرمادي الموحّد أعلاه، لأن [class*="-sub"] يفترض
+   خلفية بطاقة افتراضية وهنا الخلفية غامقة/ذهبية فيصير التباين شبه معدوم */
+html[data-theme="dark"] .hero-sub, html[data-theme="dark"] .zk-sub,
+html[data-theme="dark"] .sum-hero-sub, html[data-theme="dark"] .mh-sub,
+html[data-theme="oled"] .hero-sub, html[data-theme="oled"] .zk-sub,
+html[data-theme="oled"] .sum-hero-sub, html[data-theme="oled"] .mh-sub{
+  color:rgba(255,255,255,.82);
+}
+html[data-theme="dark"] .portfolio-header-sub, html[data-theme="dark"] .cc-subtitle,
+html[data-theme="oled"] .portfolio-header-sub, html[data-theme="oled"] .cc-subtitle{
+  color:rgba(255,255,255,.65);
+}
+
 /* ══ Theme segmented control (للصفحات اللي تحمّل premium-ui فقط مثل إذاعة القرآن) ══ */
 .theme-seg{display:flex;gap:5px;background:var(--sand);border:1px solid var(--border);border-radius:13px;padding:5px;margin:10px 0}
 .theme-opt{flex:1;padding:9px 6px;border-radius:9px;border:none;background:transparent;color:var(--ink);color:color-mix(in srgb,var(--ink) 78%,transparent);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap}

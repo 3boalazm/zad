@@ -147,9 +147,9 @@ const QURAN_CSS = `
 .khatma-plan-card.active { border-color: var(--zad-green-900, #0e3b2e); background: rgba(14,59,46,.06); }
 .kp-name { font-weight: 800; font-size: 15px; margin-bottom: 4px; }
 .kp-desc { font-size: 12px; color: var(--muted, #888); margin-bottom: 8px; line-height: 1.5; }
-.kp-days { font-size: 13px; font-weight: 700; color: var(--zad-green-700, #1a5d47); }
+.kp-days { font-size: 13px; font-weight: 700; color: var(--green-mid, #1a5d47); }
 .hifz-stats { text-align: center; margin-bottom: 20px; }
-.hifz-stat-num { font-size: 42px; font-weight: 900; color: var(--zad-green-900, #0e3b2e); }
+.hifz-stat-num { font-size: 42px; font-weight: 900; color: var(--green-deep, #0e3b2e); }
 .hifz-stat-lbl { font-size: 13px; color: var(--muted, #888); }
 .hifz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
 .hifz-surah { position: relative; padding: 12px 8px; border-radius: 10px; border: 1.5px solid var(--border, #ddd);
@@ -157,7 +157,7 @@ const QURAN_CSS = `
 .hifz-surah.memorized { background: rgba(14,59,46,.1); border-color: var(--zad-green-700, #1a5d47); }
 .hifz-surah-name { display: block; font-weight: 700; font-size: 14px; }
 .hifz-surah-ayat { display: block; font-size: 11px; color: var(--muted, #888); margin-top: 2px; }
-.hifz-check { position: absolute; top: 4px; left: 4px; color: var(--zad-green-700, #1a5d47); font-weight: 900; }
+.hifz-check { position: absolute; top: 4px; left: 4px; color: var(--green-mid, #1a5d47); font-weight: 900; }
 `;
 
 function injectQuranCSS() {

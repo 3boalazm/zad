@@ -267,12 +267,12 @@ const HAJJ_CSS = `
 .ihram-card:hover { border-color: var(--zad-green-700, #1a5d47); }
 .ihram-name { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
 .ihram-desc { font-size: 13px; color: var(--ink); margin-bottom: 6px; line-height: 1.6; }
-.ihram-note { font-size: 12px; color: var(--zad-green-700, #1a5d47); }
+.ihram-note { font-size: 12px; color: var(--green-mid, #1a5d47); }
 .gender-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .gender-btn { padding: 24px; border-radius: 14px; border: 2px solid var(--border, #ddd);
   background: var(--sand, #faf9f6); font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
 .hajj-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.hajj-type-badge { background: rgba(14,59,46,.1); color: var(--zad-green-900, #0e3b2e);
+.hajj-type-badge { background: rgba(14,59,46,.1); color: var(--green-deep, #0e3b2e);
   padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; }
 .hajj-missed-banner { background: rgba(192,57,43,.1); border: 1px solid rgba(192,57,43,.3);
   color: var(--zad-coral, #c0392b); padding: 14px; border-radius: 12px; font-size: 13px;

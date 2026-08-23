@@ -312,14 +312,14 @@ const ZAKAT_CSS = `
   cursor: pointer; transition: all .2s; }
 .zk-bool-btn.active { background: rgba(14,59,46,.1); border-color: var(--zad-green-900, #0e3b2e); }
 .zk-hint { font-size: 13px; color: var(--muted, #888); margin-top: 12px; }
-.zk-ruling-note { font-size: 13px; color: var(--zad-green-700, #1a5d47); margin-top: 12px;
+.zk-ruling-note { font-size: 13px; color: var(--green-mid, #1a5d47); margin-top: 12px;
   padding: 10px 14px; background: rgba(14,59,46,.05); border-radius: 10px;
   border-right: 3px solid var(--zad-green-700, #1a5d47); }
 .zk-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
 .zk-result { text-align: center; padding: 20px; }
 .zk-result-icon { font-size: 48px; margin-bottom: 12px; }
 .zk-result-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-.zk-result-amount { font-size: 36px; font-weight: 900; color: var(--zad-green-900, #0e3b2e); margin: 16px 0; }
+.zk-result-amount { font-size: 36px; font-weight: 900; color: var(--green-deep, #0e3b2e); margin: 16px 0; }
 .zk-result-detail { font-size: 14px; color: var(--muted, #666); line-height: 1.8; }
 .zk-history-title, .zk-history-row { font-size: 14px; }
 .zk-history-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border, #eee); }

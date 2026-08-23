@@ -298,7 +298,7 @@ function replaceZeroStates() {
   /* استبدل نِسب 0% بعبارات تحفيزية */
   document.querySelectorAll('#prog-txt, .prog-txt').forEach(el => {
     if (el.textContent.includes('0 من') || el.textContent.trim() === '0%') {
-      el.innerHTML = '<span style="color:var(--zad-green-700,#1a5d47)">ابدأ رحلتك — أول عبادة بانتظارك 🌱</span>';
+      el.innerHTML = '<span style="color:var(--green-mid,#1a5d47)">ابدأ رحلتك — أول عبادة بانتظارك 🌱</span>';
     }
   });
 
@@ -369,7 +369,7 @@ async function shareAchievement(title, subtitle) {
 
   ctx.fillStyle = 'rgba(255,255,255,.6)';
   ctx.font = '36px Arial';
-  ctx.fillText('test.codeandcanvas.net', 540, 980);
+  ctx.fillText('zad.codeandcanvas.net', 540, 980);
 
   /* حوّل لصورة وشارك */
   canvas.toBlob(async (blob) => {
