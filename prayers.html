@@ -138,7 +138,7 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
-  <meta property="og:url" content="https://test.codeandcanvas.net/prayers.html">
+  <meta property="og:url" content="https://zad.codeandcanvas.net/prayers.html">
   <meta property="og:title" content="مواقيت الصلاة — زاد">
   <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
   <meta property="og:image" content="/og-image.png">
@@ -719,16 +719,25 @@ async function searchCity() {
       return;
     }
 
-    box.innerHTML = results.map(r => {
+    /* Nominatim قد يُرجع أكثر من عنصر لنفس المكان (نقطة المدينة + حدود
+       المحافظة مثلاً) يظهران بنفس الاسم المعروض — استبعد المكرر بصرياً
+       بدل الاعتماد على تخصيص الـ API فقط */
+    const seen = new Set();
+    const rows = [];
+    for (const r of results) {
       const lat = parseFloat(r.lat), lng = parseFloat(r.lon);
       const main = r.address?.city || r.address?.town || r.address?.village || r.address?.state || r.name || (r.display_name || '').split(',')[0];
       const sub  = (r.display_name || '').split(',').slice(1, 3).join('،').trim();
+      const dedupeKey = `${main}|${sub}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
       const safe = String(main).replace(/'/g, '');
-      return `<div class="city-result" onclick="applyLocation(${lat},${lng},'${safe}')">
+      rows.push(`<div class="city-result" onclick="applyLocation(${lat},${lng},'${safe}')">
         <span class="cr-ico">📍</span>
         <span class="cr-name">${main}<span class="cr-sub">${sub}</span></span>
-      </div>`;
-    }).join('');
+      </div>`);
+    }
+    box.innerHTML = rows.join('');
   } catch(e) {
     box.innerHTML = '<div style="text-align:center;padding:14px;color:var(--muted);font-size:13px">تعذّر البحث — تحقق من الإنترنت</div>';
   }

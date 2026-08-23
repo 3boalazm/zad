@@ -80,7 +80,7 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
-  <meta property="og:url" content="https://test.codeandcanvas.net/settings.html">
+  <meta property="og:url" content="https://zad.codeandcanvas.net/settings.html">
   <meta property="og:title" content="زاد — أفضل أيام الدنيا">
   <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
   <meta property="og:image" content="/og-image.png">
@@ -285,7 +285,7 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
       <div class="settings-row" style="border-bottom:none">
         <div class="ic">🌐</div>
         <div class="lbl"><b>لغة التطبيق</b><small>Language</small></div>
-        <button onclick="toggleLang?.()" style="padding:9px 18px;border-radius:10px;border:1.5px solid var(--border);background:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink)">العربية ⇄ EN</button>
+        <button class="lang-btn" id="topbar-lang-btn" onclick="toggleLang?.()" style="padding:9px 18px;border-radius:10px;border:1.5px solid var(--border);background:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink)">EN</button>
       </div>
     </div>
 
@@ -490,7 +490,7 @@ function updateInstallBtn(){
 }
 
 function shareApp(){
-  const d={title:'🌙 زاد',text:'رفيقك في أفضل أيام الدنيا',url:'https://test.codeandcanvas.net'};
+  const d={title:'🌙 زاد',text:'رفيقك في أفضل أيام الدنيا',url:'https://zad.codeandcanvas.net'};
   if(navigator.share)navigator.share(d).catch(()=>{navigator.clipboard?.writeText(d.url);if(typeof showToast==='function')showToast('✅ تم نسخ الرابط');});
   else{navigator.clipboard?.writeText(d.url);if(typeof showToast==='function')showToast('✅ تم نسخ الرابط');}
 }

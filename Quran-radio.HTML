@@ -1367,6 +1367,11 @@ html[data-theme="oled"] .stream-error-banner { background: rgba(239,68,68,.12); 
  * كل إذاعة لها مصفوفة urls[] — يجرب المشغّل الأول فإن فشل ينتقل للتالي تلقائياً
  * المصادر المعتمدة: radiojar.com · zeno.fm · snrtlive.ma · islamicity.org
  */
+/* رابطا احتياط عامّان تحقّقنا من عملهما فعلياً (2026-08-23) — تُستخدَمان في
+   نهاية كل محطة كخط دفاع أخير بدل معرّفات radiojar/zeno.fm قديمة كانت
+   تُرجع 404 دائماً (لم تكن تعمل من الأساس، لا في هذا الفحص ولا قبله). */
+const GENERIC_BACKUPS = ['https://stream.zeno.fm/0r0xa792kwzuv', 'https://stream.radiojar.com/8s5u5tpdtwzuv'];
+
 const STATIONS = [
   // ═══ من الوثيقة الجديدة + backups قوية ═══
   {
@@ -1375,10 +1380,7 @@ const STATIONS = [
     quality:'HQ',
     urls:[
       'https://stream.zeno.fm/fkdfw6296g0uv',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.radiojar.com/8sps648hk3quv',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.zeno.fm/8t42gV',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#0e3b2e,#1f5e4b)'
   },
   {
@@ -1386,11 +1388,8 @@ const STATIONS = [
     desc:'تلاوة عطرة مرتلة لجميع سور القرآن الكريم بصوت الشيخ عبد الباسط.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/abdulbasit_abdulsamad_morattal',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://n0d.radiojar.com/quranfm.aac',
-      'https://stream.zeno.fm/8t42gV',
+      'https://backup.qurango.net/radio/abdulbasit_abdulsamad',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#1f5e4b,#2a7a5e)'
   },
   {
@@ -1398,11 +1397,8 @@ const STATIONS = [
     desc:'القرآن الكريم كاملاً برواية حفص عن عاصم بصوت الشيخ المنشاوي.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/mohammed_siddiq_alminshawi_morattal',
       'https://backup.qurango.net/radio/mohammed_siddiq_alminshawi',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://n0d.radiojar.com/quranfm.aac',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#2a1a0a,#4a3010)'
   },
   {
@@ -1410,11 +1406,8 @@ const STATIONS = [
     desc:'التلاوة المتقنة المجودة لشيخ عموم المقارئ المصرية — الحصري.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/mahmoud_khalil_al_hussary_morattal',
-      'https://backup.qurango.net/radio/mahmoud_khalil_al_hussary',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.radiojar.com/8sps648hk3quv',
+      'https://backup.qurango.net/radio/mahmoud_khalil_alhussary',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#0a2a20,#1a5e47)'
   },
   {
@@ -1422,11 +1415,8 @@ const STATIONS = [
     desc:'التلاوة المجودة الكاملة بصوت الشيخ عبد الباسط عبد الصمد.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/abdulbasit_mojawwad',
-      'https://backup.qurango.net/radio/abdulbasit_abdulsamad_morattal',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://n0d.radiojar.com/quranfm.aac',
+      'https://backup.qurango.net/radio/abdulbasit_abdulsamad_mojawwad',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#1a1a2e,#16213e)'
   },
   {
@@ -1434,11 +1424,8 @@ const STATIONS = [
     desc:'تلاوات مجودة خاشعة بصوت الشيخ محمد صديق المنشاوي.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/mohammed_siddiq_alminshawi',
-      'https://backup.qurango.net/radio/mohammed_siddiq_alminshawi_morattal',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.radiojar.com/8sps648hk3quv',
+      'https://backup.qurango.net/radio/mohammed_siddiq_alminshawi_mojawwad',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#1a2a1a,#2e5e2e)'
   },
   {
@@ -1446,11 +1433,8 @@ const STATIONS = [
     desc:'التلاوة المجودة المتقنة بصوت الشيخ محمود خليل الحصري.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/mahmoud_khalil_al_hussary',
-      'https://backup.qurango.net/radio/mahmoud_khalil_al_hussary_morattal',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://n0d.radiojar.com/quranfm.aac',
+      'https://backup.qurango.net/radio/mahmoud_khalil_alhussary_mojawwad',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#2a1a2a,#3a1a2a)'
   },
   {
@@ -1458,11 +1442,8 @@ const STATIONS = [
     desc:'تلاوات الحرم المكي بصوت الشيخ ماهر بن حمد المعيقلي.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/maher_al_muaiqly',
-      'https://n0d.radiojar.com/quranfm.aac',
-      'https://stream.zeno.fm/0r0xa792kwzuv',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.zeno.fm/GPhDTR',
+      'https://backup.qurango.net/radio/maher',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#1a1a2e,#16213e)'
   },
   {
@@ -1470,11 +1451,8 @@ const STATIONS = [
     desc:'القرآن الكريم كاملاً بصوت الشيخ مشاري بن راشد العفاسي.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/mishary_alafasy',
-      'https://n0d.radiojar.com/kuwait-quran.aac',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://n0d.radiojar.com/quranfm.aac',
+      'https://backup.qurango.net/radio/mishary_alafasi',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#2a1a2a,#3a1a2a)'
   },
   {
@@ -1483,10 +1461,7 @@ const STATIONS = [
     quality:'HQ',
     urls:[
       'https://backup.qurango.net/radio/saad_alghamdi',
-      'https://n0d.radiojar.com/quranfm.aac',
-      'https://stream.zeno.fm/0r0xa792kwzuv',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.zeno.fm/GPhDTR',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#0a2a20,#1a5e47)'
   },
   {
@@ -1494,11 +1469,8 @@ const STATIONS = [
     desc:'القرآن الكريم كاملاً بصوت الشيخ أحمد بن علي العجمي.',
     quality:'HQ',
     urls:[
-      'https://backup.qurango.net/radio/ahmed_alajmi',
-      'https://n0d.radiojar.com/quranfm.aac',
-      'https://stream.zeno.fm/0r0xa792kwzuv',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.zeno.fm/GPhDTR',
+      'https://backup.qurango.net/radio/ahmad_alajmy',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#1a2a2a,#0e3b2e)'
   },
   {
@@ -1507,10 +1479,7 @@ const STATIONS = [
     quality:'HQ',
     urls:[
       'https://backup.qurango.net/radio/roqiah',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://n0d.radiojar.com/quranfm.aac',
-      'https://stream.zeno.fm/8t42gV',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#1a2a1a,#2e4e2e)'
   },
   {
@@ -1519,10 +1488,7 @@ const STATIONS = [
     quality:'HQ',
     urls:[
       'https://backup.qurango.net/radio/tafseer',
-      'https://stream.zeno.fm/GPhDTR',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://n0d.radiojar.com/quranfm.aac',
-      'https://stream.zeno.fm/8t42gV',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#2a1a0a,#4a3010)'
   },
   {
@@ -1530,43 +1496,40 @@ const STATIONS = [
     desc:'البث الرسمي لإذاعة القرآن من الإذاعة السعودية — 100.0 FM الرياض على مدار الساعة.',
     quality:'HQ',
     urls:[
-      'https://n0d.radiojar.com/quranfm.aac',
-      'https://stream.radiojar.com/quran.mp3',
-      'https://stream.zeno.fm/0r0xa792kwzuv',
-      'https://stream.radiojar.com/8s5u5tpdtwzuv',
-      'https://stream.zeno.fm/GPhDTR',
+      'https://stream.radiojar.com/0tpy1h0kxtzuv',
+      ...GENERIC_BACKUPS,
     ], logoBg:'linear-gradient(135deg,#1a1a2e,#16213e)'
   },
   { id:15, name:'مشاري راشد العفاسي', country:'الكويت', flag:'🇰🇼', cat:'quran', icon:'🎙️',
     desc:'تلاوات خاشعة بصوت الشيخ مشاري راشد العفاسي على مدار الساعة.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/mishary_alafasy','https://stream.zeno.fm/GPhDTR','https://stream.radiojar.com/8s5u5tpdtwzuv'], logoBg:'linear-gradient(135deg,#0e3b2e,#1f5e4b)' },
+    urls:['https://backup.qurango.net/radio/mishary_alafasi', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#0e3b2e,#1f5e4b)' },
   { id:16, name:'ماهر المعيقلي', country:'السعودية', flag:'🇸🇦', cat:'saudi', icon:'🕋',
     desc:'إمام الحرم المكي — تلاوة مرتلة بصوت الشيخ ماهر المعيقلي.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/maher_almuaiqly','https://stream.zeno.fm/GPhDTR','https://n0d.radiojar.com/quranfm.aac'], logoBg:'linear-gradient(135deg,#1f5e4b,#2a7a5e)' },
+    urls:['https://backup.qurango.net/radio/maher', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#1f5e4b,#2a7a5e)' },
   { id:17, name:'عبد الرحمن السديس', country:'السعودية', flag:'🇸🇦', cat:'saudi', icon:'🕌',
     desc:'إمام الحرم المكي الشريف — تلاوات مؤثّرة بصوت الشيخ السديس.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/abdurrahman_alsudaes','https://stream.zeno.fm/GPhDTR','https://stream.radiojar.com/8s5u5tpdtwzuv'], logoBg:'linear-gradient(135deg,#2a1a0a,#4a3010)' },
+    urls:['https://backup.qurango.net/radio/abdulrahman_alsudaes', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#2a1a0a,#4a3010)' },
   { id:18, name:'سعود الشريم', country:'السعودية', flag:'🇸🇦', cat:'saudi', icon:'🎙️',
     desc:'إمام الحرم المكي — تلاوة مرتلة بصوت الشيخ سعود الشريم.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/saud_alshuraim','https://stream.zeno.fm/GPhDTR','https://n0d.radiojar.com/quranfm.aac'], logoBg:'linear-gradient(135deg,#0a2a20,#1a5e47)' },
+    urls:['https://backup.qurango.net/radio/saud_alshuraim', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#0a2a20,#1a5e47)' },
   { id:19, name:'أحمد العجمي', country:'السعودية', flag:'🇸🇦', cat:'saudi', icon:'📖',
     desc:'تلاوات خاشعة بصوت الشيخ أحمد بن علي العجمي.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/ahmad_alajamy','https://stream.zeno.fm/GPhDTR','https://stream.radiojar.com/8s5u5tpdtwzuv'], logoBg:'linear-gradient(135deg,#1a1a2e,#16213e)' },
+    urls:['https://backup.qurango.net/radio/ahmad_alajmy', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#1a1a2e,#16213e)' },
   { id:20, name:'ياسر الدوسري', country:'السعودية', flag:'🇸🇦', cat:'saudi', icon:'🎙️',
     desc:'إمام الحرم المكي — تلاوة عذبة بصوت الشيخ ياسر الدوسري.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/yasser_aldossari','https://stream.zeno.fm/GPhDTR','https://n0d.radiojar.com/quranfm.aac'], logoBg:'linear-gradient(135deg,#0e3b2e,#1f5e4b)' },
+    urls:['https://backup.qurango.net/radio/yasser_aldosari', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#0e3b2e,#1f5e4b)' },
   { id:21, name:'سعد الغامدي', country:'السعودية', flag:'🇸🇦', cat:'saudi', icon:'📿',
     desc:'تلاوات مرتلة هادئة بصوت الشيخ سعد الغامدي.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/saad_alghamidi','https://stream.zeno.fm/GPhDTR','https://stream.radiojar.com/8s5u5tpdtwzuv'], logoBg:'linear-gradient(135deg,#1f5e4b,#2a7a5e)' },
+    urls:['https://backup.qurango.net/radio/saad_alghamdi', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#1f5e4b,#2a7a5e)' },
   { id:22, name:'ناصر القطامي', country:'السعودية', flag:'🇸🇦', cat:'saudi', icon:'🎙️',
     desc:'تلاوات خاشعة بصوت الشيخ ناصر القطامي.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/nasser_alqatami','https://stream.zeno.fm/GPhDTR','https://n0d.radiojar.com/quranfm.aac'], logoBg:'linear-gradient(135deg,#2a1a0a,#4a3010)' },
+    urls:['https://backup.qurango.net/radio/nasser_alqatami', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#2a1a0a,#4a3010)' },
   { id:23, name:'أبو بكر الشاطري', country:'السعودية', flag:'🇸🇦', cat:'quran', icon:'📖',
     desc:'تلاوة مرتلة عذبة بصوت الشيخ أبو بكر الشاطري.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/abu_bakr_alshatri','https://stream.zeno.fm/GPhDTR','https://stream.radiojar.com/8s5u5tpdtwzuv'], logoBg:'linear-gradient(135deg,#0a2a20,#1a5e47)' },
+    urls:['https://backup.qurango.net/radio/shaik_abu_bakr_al_shatri', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#0a2a20,#1a5e47)' },
   { id:24, name:'إذاعة تفسير القرآن', country:'متنوّع', flag:'📚', cat:'official', icon:'📚',
     desc:'بثٌّ متواصل لتفسير آيات القرآن الكريم وبيان معانيها.', quality:'HQ',
-    urls:['https://backup.qurango.net/radio/tafseer','https://stream.zeno.fm/GPhDTR','https://n0d.radiojar.com/quranfm.aac'], logoBg:'linear-gradient(135deg,#1a1a2e,#16213e)' },
+    urls:['https://backup.qurango.net/radio/tafseer', ...GENERIC_BACKUPS], logoBg:'linear-gradient(135deg,#1a1a2e,#16213e)' },
 ];
 
 /* ════════════════════════════════════════
