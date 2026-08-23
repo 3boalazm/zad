@@ -24,6 +24,17 @@ h1,h2,h3,.page-title,.brand-name,.section-title,.kids-title{font-family:'Thmanya
   --k-green:#1a5d47;--k-gold:#c9a14a;--k-orange:#ff9500;
   --k-purple:#5856d6;--k-pink:#ff6b85;--k-sky:#5aabff
 }
+/* --k-green is used as TEXT color (headings/craft steps) against the dark
+   --card/--bg surfaces; the light-mode value #1a5d47 is nearly the same
+   luminance as those dark surfaces (~1.1:1 contrast) and becomes unreadable.
+   Brighten it to match the sitewide dark-mode green (--sys-green / --green-deep).
+   --k-gold, --k-pink and --k-sky are left unchanged: --k-gold is only used as a
+   border/background (never text) and already clears 3:1 against dark cards;
+   --k-orange/--k-purple/--k-pink/--k-sky are defined but never referenced
+   anywhere in this file, so there is no live contrast risk to fix. */
+html[data-theme="dark"],html[data-theme="oled"]{
+  --k-green:#4dd866;
+}
 
 /* ══ Hero Story ═════════════════════════════════════════════ */
 .story-hero{
@@ -372,8 +383,8 @@ function zadSafeParse(key, fallback) {
         <div style="font-size:15px;font-weight:800;color:var(--k-green);margin-bottom:12px">🕋 اصنعي كعبتك!</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">خذي صندوقاً وغطّيه بالورق الأسود وشريط ذهبي — هكذا تصنعين مجسم الكعبة!</div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;gap:8px;align-items:center;font-size:13px"><span style="width:24px;height:24px;border-radius:50%;background:var(--k-green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>صندوق كرتون + ورق أسود</div>
-          <div style="display:flex;gap:8px;align-items:center;font-size:13px"><span style="width:24px;height:24px;border-radius:50%;background:var(--k-green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>غلّفيه بالكامل وأضيفي الشريط الذهبي ✨</span></div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:13px"><span style="width:24px;height:24px;border-radius:50%;background:#1a5d47;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>صندوق كرتون + ورق أسود</div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:13px"><span style="width:24px;height:24px;border-radius:50%;background:#1a5d47;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>غلّفيه بالكامل وأضيفي الشريط الذهبي ✨</span></div>
           <div style="display:flex;gap:8px;align-items:center;font-size:13px"><span style="width:24px;height:24px;border-radius:50%;background:var(--k-gold,#c9a14a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">★</span>حوّليها حصالة صدقات الأيام العشر! 💰</div>
         </div>
       </div>

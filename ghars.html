@@ -18,6 +18,21 @@
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
 
 /* ══ Ghars Theme ═════════════════════════════════════════════ */
+/* Dark/OLED note: these --g-* tokens are NOT redefined at the root for
+   dark/oled, because --g-green and --g-gold are also used as solid
+   backgrounds paired with hardcoded #fff text (.step-num, the day-earned
+   popup button, the quiz restart button) — brightening the token itself
+   would break those white-on-color combos. Instead, only the confirmed
+   text/border usages that go low-contrast against a darkening --card/--sand
+   are individually overridden below (search "html[data-theme" in this file):
+   .day-num, .story-toggle, .gh-quiz-score, .gnav-btn:hover/.active,
+   .hajj-step.done, .gh-quiz-opt:hover — all repointed to var(--sys-green).
+   --g-gold is used only as borders/tint or as a background with its own
+   hardcoded white text, never as bare text on a page background, so it is
+   left as-is. --g-sky/--g-orange/--g-purple/--g-pink are defined but never
+   applied anywhere in this file (dead tokens) — left as-is. --g-sand is
+   only used for body background, which already has its own direct
+   html[data-theme] overrides (see below), so the token itself is moot. */
 :root{
   --g-green:#0e6b3f; --g-gold:#c9a14a; --g-sky:#4a9eff;
   --g-orange:#ff7e00; --g-purple:#7c5cbf; --g-pink:#e85d8a;
@@ -25,6 +40,7 @@
 }
 body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:var(--g-sand)}
 html[data-theme="dark"] body{background:#0a1409}
+html[data-theme="oled"] body{background:#000000}
 
 /* ══ Page Hero ═══════════════════════════════════════════════ */
 .ghars-hero{
@@ -71,6 +87,8 @@ html[data-theme="dark"] body{background:#0a1409}
   cursor:pointer;transition:all .2s;text-decoration:none;display:block
 }
 .gnav-btn:hover,.gnav-btn.active{border-color:var(--g-green);background:rgba(14,107,63,.06)}
+html[data-theme="dark"] .gnav-btn:hover,html[data-theme="dark"] .gnav-btn.active,
+html[data-theme="oled"] .gnav-btn:hover,html[data-theme="oled"] .gnav-btn.active{border-color:var(--sys-green)}
 .gnav-ico{font-size:28px;margin-bottom:4px;display:block}
 .gnav-lbl{font-size:11px;font-weight:700;color:var(--ink)}
 
@@ -89,6 +107,7 @@ html[data-theme="dark"] body{background:#0a1409}
 .day-card.done{border-color:var(--g-gold);background:rgba(201,161,74,.1)}
 .day-card.done::after{content:'✅';position:absolute;top:6px;left:8px;font-size:16px}
 .day-num{font-size:30px;font-weight:900;font-family:'ThmanyahSans',monospace;color:var(--g-green);line-height:1}
+html[data-theme="dark"] .day-num,html[data-theme="oled"] .day-num{color:var(--sys-green)}
 .day-name{font-size:11px;font-weight:700;color:var(--muted);margin-top:3px}
 .day-ico{font-size:24px;margin-bottom:4px;display:block}
 .day-special{font-size:9px;font-weight:800;background:var(--g-gold);color:#fff;border-radius:99px;padding:2px 8px;display:inline-block;margin-top:3px}
@@ -113,6 +132,7 @@ html[data-theme="dark"] body{background:#0a1409}
   background:var(--sand);font-family:inherit;font-size:13px;font-weight:700;
   cursor:pointer;color:var(--g-green);transition:all .2s
 }
+html[data-theme="dark"] .story-toggle,html[data-theme="oled"] .story-toggle{color:var(--sys-green)}
 .story-toggle:hover{background:rgba(14,107,63,.08)}
 
 /* ══ Hajj Steps ══════════════════════════════════════════════ */
@@ -123,6 +143,7 @@ html[data-theme="dark"] body{background:#0a1409}
   transition:all .2s;cursor:pointer
 }
 .hajj-step.done{border-color:var(--g-green);background:rgba(14,107,63,.05)}
+html[data-theme="dark"] .hajj-step.done,html[data-theme="oled"] .hajj-step.done{border-color:var(--sys-green)}
 .step-num{
   width:38px;height:38px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,var(--g-green),#1a9a5a);
@@ -195,7 +216,7 @@ html[data-theme="dark"] body{background:#0a1409}
 .gh-hero-emoji{font-size:40px;letter-spacing:6px;margin-bottom:8px}
 .gh-hero-title{font-size:34px;font-weight:900;color:var(--green-deep);margin:0}
 html[data-theme="dark"] .gh-hero-title,html[data-theme="oled"] .gh-hero-title{color:var(--sys-green)}
-.gh-hero-sub{font-size:16px;font-weight:700;color:var(--gold);margin:2px 0 10px}
+.gh-hero-sub{font-size:16px;font-weight:700;color:var(--gold-dark);margin:2px 0 10px}
 .gh-hero-desc{font-size:14px;line-height:1.9;color:var(--ink);max-width:560px;margin:0 auto;opacity:.92}
 .gh-parent-note{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1.5px solid var(--border);
   border-radius:14px;padding:12px 14px;margin-bottom:22px;font-size:12.5px;line-height:1.7;color:var(--muted)}
@@ -252,6 +273,11 @@ html[data-theme="dark"] .gh-dia b,html[data-theme="oled"] .gh-dia b{color:var(--
 .gh-dua{background:var(--green-pale);border-color:var(--green-soft);text-align:center}
 .gh-dua p{font-size:15px;line-height:1.9;color:var(--green-deep);margin:0;font-weight:700;font-family:'Amiri',serif}
 html[data-theme="dark"] .gh-dua p,html[data-theme="oled"] .gh-dua p{color:var(--sys-green)}
+/* Quiz result % and option hover border are set via inline style/JS using
+   var(--g-green); !important is required here to win over those inline
+   values (a plain override rule cannot beat an inline style). */
+html[data-theme="dark"] .gh-quiz-score,html[data-theme="oled"] .gh-quiz-score{color:var(--sys-green)!important}
+html[data-theme="dark"] .gh-quiz-opt:hover,html[data-theme="oled"] .gh-quiz-opt:hover{border-color:var(--sys-green)!important}
 .gh-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
 .gh-nav-btn{flex:1;padding:12px;border:none;border-radius:12px;background:var(--green-deep);
   color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;min-height:46px}
@@ -663,7 +689,7 @@ function renderQuiz(){
     el.innerHTML = `
       <div class="card" style="text-align:center;padding:28px">
         <div style="font-size:52px;margin-bottom:12px">${pct>=80?'🏆':pct>=50?'👍':'📚'}</div>
-        <div style="font-size:26px;font-weight:900;color:var(--g-green);margin-bottom:6px">${pct}%</div>
+        <div class="gh-quiz-score" style="font-size:26px;font-weight:900;color:var(--g-green);margin-bottom:6px">${pct}%</div>
         <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px">${pct>=80?'ممتاز!':pct>=50?'جيد جداً!':'تابع التعلم!'}</div>
         <div style="font-size:13px;color:var(--muted);margin-bottom:20px">${quizScore} من ${QUIZ_Q.length} أسئلة صحيحة</div>
         <button onclick="restartQuiz()" style="padding:11px 24px;border-radius:12px;border:none;background:var(--g-green,#0e6b3f);color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer">🔄 حاول مرة أخرى</button>
@@ -682,7 +708,7 @@ function renderQuiz(){
       <div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:18px;line-height:1.6">${q.q}</div>
       <div style="display:flex;flex-direction:column;gap:10px">
         ${q.opts.map((o,i) => `
-          <button onclick="answerQuiz(${i})" style="padding:12px 16px;border-radius:12px;border:2px solid var(--border);background:var(--sand);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;text-align:right;color:var(--ink);transition:all .2s;width:100%"
+          <button class="gh-quiz-opt" onclick="answerQuiz(${i})" style="padding:12px 16px;border-radius:12px;border:2px solid var(--border);background:var(--sand);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;text-align:right;color:var(--ink);transition:all .2s;width:100%"
             onmouseover="this.style.borderColor='var(--g-green)'"
             onmouseout="this.style.borderColor='var(--border)'">${o}</button>`).join('')}
       </div>
