@@ -54,7 +54,7 @@ html[data-theme="dark"] .ftab.active,html[data-theme="dark"] .ftab:hover,html[da
 .speaker-name{font-size:13px;font-weight:700;color:var(--green-deep);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html[data-theme="dark"] .speaker-name,html[data-theme="oled"] .speaker-name{color:var(--sys-green)}
 .vid-category{font-size:11px;color:var(--muted)}
-.vid-title{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px;line-height:1.4}
+.vid-title{font-size:16px;font-weight:800!important;color:var(--ink);margin-bottom:8px;line-height:1.4}
 .vid-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 
 .vid-points-toggle{display:flex;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink);transition:all .2s;width:100%;margin-bottom:8px}
@@ -201,6 +201,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       </div>
     </div>
 
+    <h2 class="sr-only">قائمة المحاضرات</h2>
     <div class="filter-tabs" id="vid-filter-tabs">
       <button class="ftab active" data-cat="all" onclick="filterVideos('all')">الكل</button>
       <button class="ftab" data-cat="ashr" onclick="filterVideos('ashr')">🕋 عشر ذي الحجة</button>
@@ -226,7 +227,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#c9a14a,#8a6822)">🎤</div><div class="vid-meta-text"><div class="speaker-name">الشيخ أمجد سمير</div><div class="vid-category">💚 التزكية والإيمان</div></div></div>
-          <div class="vid-title">عشر ذي الحجة — التخطيط العملي</div>
+          <h3 class="vid-title">عشر ذي الحجة — التخطيط العملي</h3>
           <div class="vid-desc">كيفية التخطيط العملي لاستقبال عشر ذي الحجة، مع معالجة إيمانية لمفهوم "المتاح" من العبادات</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -266,7 +267,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#5856d6,#3a3882)">🎓</div><div class="vid-meta-text"><div class="speaker-name">د. أحمد العربي</div><div class="vid-category">💚 التزكية والإيمان</div></div></div>
-          <div class="vid-title">لا تدخل العشر قبل مشاهدة هذا المقطع</div>
+          <h3 class="vid-title">لا تدخل العشر قبل مشاهدة هذا المقطع</h3>
           <div class="vid-desc">التركيز على "مقام المحبة" في عشر ذي الحجة، وخصوصية يوم عرفة في العتق من النار</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -310,7 +311,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar">👳</div><div class="vid-meta-text"><div class="speaker-name">الشيخ سمير مصطفى</div><div class="vid-category">⚖️ الفقه والأحكام</div></div></div>
-          <div class="vid-title">العَشر الأُوَل من ذي الحِجَّة</div>
+          <h3 class="vid-title">العَشر الأُوَل من ذي الحِجَّة</h3>
           <div class="vid-desc">خطبة علمية شاملة في اصطفاء الأزمنة وأدلة فضل العشر من القرآن والسنة مع أحكام الأضحية والصيام</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -353,7 +354,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#5856d6,#8e44ad)">📺</div><div class="vid-meta-text"><div class="speaker-name">برنامج وعي — حازم الصديق وضيوفه</div><div class="vid-category">⚖️ الفقه والأحكام / 💚 التزكية</div></div></div>
-          <div class="vid-title">وعي ١٥ | أوائل ذي الحجة | أفضل أيام الدهر</div>
+          <h3 class="vid-title">وعي ١٥ | أوائل ذي الحجة | أفضل أيام الدهر</h3>
           <div class="vid-desc">رؤية عميقة لاستيعاب القيمة الإيمانية للعشر، ويوم عرفة كتجديد لميثاق "ألست بربكم؟"</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -391,7 +392,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#5856d6,#8e44ad)">📺</div><div class="vid-meta-text"><div class="speaker-name">برنامج وعي — حازم الصديق وضيوفه</div><div class="vid-category">📋 الخطط العملية</div></div></div>
-          <div class="vid-title">وعي ٩٤ | السر وراء يوم عرفة وعلاقته بالدعاء</div>
+          <h3 class="vid-title">وعي ٩٤ | السر وراء يوم عرفة وعلاقته بالدعاء</h3>
           <div class="vid-desc">استكشاف المعاني العميقة ليوم عرفة والربط بين التوحيد والدعاء وموانع استجابة الدعاء</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -431,7 +432,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#c9a14a,#8a6822)">🎓</div><div class="vid-meta-text"><div class="speaker-name">د. حازم شومان</div><div class="vid-category">💚 التزكية والإيمان</div></div></div>
-          <div class="vid-title">عشر ذي الحجة موسم الخواص</div>
+          <h3 class="vid-title">عشر ذي الحجة موسم الخواص</h3>
           <div class="vid-desc">لماذا العشر "موسم الخواص"؟ الشياطين غير مصفدة والجو فردي — اختبار حقيقي للصدق</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -470,7 +471,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#2a7a5f,#0e3b2e)">🎓</div><div class="vid-meta-text"><div class="speaker-name">د. أحمد عبد المنعم</div><div class="vid-category">💚 التزكية والإيمان</div></div></div>
-          <div class="vid-title">موسم العَشر والذكر: حِكَم وأسرار</div>
+          <h3 class="vid-title">موسم العَشر والذكر: حِكَم وأسرار</h3>
           <div class="vid-desc">الربط بين عبادة الذكر وطبيعة الحركة في موسم العشر، وشرح عميق لمفهوم "سبق المفردون"</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -508,7 +509,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#2a7a5f,#0e3b2e)">🎓</div><div class="vid-meta-text"><div class="speaker-name">د. أحمد عبد المنعم</div><div class="vid-category">📋 الخطط العملية / 💚 التزكية</div></div></div>
-          <div class="vid-title">لقاء العشر من ذي الحجة</div>
+          <h3 class="vid-title">لقاء العشر من ذي الحجة</h3>
           <div class="vid-desc">العلاقة التكاملية بين مواسم الطاعات وكيف نحوّل بصيرة رمضان إلى واقع عملي في العشر</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -547,7 +548,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#ff9500,#c97000)">🤝</div><div class="vid-meta-text"><div class="speaker-name">الشيخ نبيل العوضي • د. أحمد العربي</div><div class="vid-category">💚 التزكية والإيمان</div></div></div>
-          <div class="vid-title">لقاء عرفة — درة الأيام العشر</div>
+          <h3 class="vid-title">لقاء عرفة — درة الأيام العشر</h3>
           <div class="vid-desc">تركيز مكثف على يوم عرفة وعظمته، وكيف يشارك غير الحاج الحجيجَ في الأجر بقلبه وذلته</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -587,7 +588,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#0e3b2e,#2a7a5f)">🎓</div><div class="vid-meta-text"><div class="speaker-name">الشيخ إبراهيم بشندي</div><div class="vid-category">⚖️ الفقه والأحكام / 💚 التزكية</div></div></div>
-          <div class="vid-title">العمل الصالح — العشر الأول من ذي الحجة</div>
+          <h3 class="vid-title">العمل الصالح — العشر الأول من ذي الحجة</h3>
           <div class="vid-desc">فضل الأشهر الحرم وعشر ذي الحجة، مع التركيز على تعظيم العمل الصالح فيها ومقارنته بالجهاد ورمضان</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -628,7 +629,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar">🎯</div><div class="vid-meta-text"><div class="speaker-name">الشيخ محمد الغليظ</div><div class="vid-category">📋 الخطط العملية</div></div></div>
-          <div class="vid-title">عشر ذي الحجة أيام غير عادية — عالسكة</div>
+          <h3 class="vid-title">عشر ذي الحجة أيام غير عادية — عالسكة</h3>
           <div class="vid-desc">أسلوب شبابي وعملي — خطة مفصلة من 10 خطوات لاستغلال كل يوم وتجاوز العقبات النفسية</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 خطة الـ ١٠ خطوات</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -672,7 +673,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#5856d6,#3a3882)">🎓</div><div class="vid-meta-text"><div class="speaker-name">د. أحمد العربي</div><div class="vid-category">📋 الخطط العملية</div></div></div>
-          <div class="vid-title">أفضل خطة لعبادة عشر ذي الحجة</div>
+          <h3 class="vid-title">أفضل خطة لعبادة عشر ذي الحجة</h3>
           <div class="vid-desc">لماذا تُعد العشر أعظم مواسم العام؟ وكيف نستغل "النهار" لنيل مقام محبة الله الخاص؟</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -710,7 +711,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#0e3b2e,#2a7a5f)">🎓</div><div class="vid-meta-text"><div class="speaker-name">الشيخ عبد السلام الشويعر</div><div class="vid-category">⚖️ الفقه والأحكام</div></div></div>
-          <div class="vid-title">ثلاث مزايا زمنية عظيمة في عشر ذي الحجة</div>
+          <h3 class="vid-title">ثلاث مزايا زمنية عظيمة في عشر ذي الحجة</h3>
           <div class="vid-desc">يكشف لماذا تجتمع في هذه الأيام ثلاث فضائل لا تتوفر في أي وقت آخر من العام</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 الثلاث مزايا الكبرى</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -748,7 +749,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#2a7a5f,#0e3b2e)">🎓</div><div class="vid-meta-text"><div class="speaker-name">د. كريم عبد الحليم</div><div class="vid-category">💚 التزكية والإيمان</div></div></div>
-          <div class="vid-title">استراحة مع د. كريم عبد الحليم - عشر ذي الحجة</div>
+          <h3 class="vid-title">استراحة مع د. كريم عبد الحليم - عشر ذي الحجة</h3>
           <div class="vid-desc">التركيز على قيمة أيام عشر ذي الحجة من زاوية إيمانية ونفسية، مع مفهوم "العبودية المبنية على الحب"</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -784,7 +785,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#5856d6,#3a3882)">🎬</div><div class="vid-meta-text"><div class="speaker-name">ياسر ممدوح</div><div class="vid-category">⚖️ الفقه والأحكام / 💚 التزكية</div></div></div>
-          <div class="vid-title">٤٠ معلومة عن عشر ذي الحجة في ١٥٠ ثانية</div>
+          <h3 class="vid-title">٤٠ معلومة عن عشر ذي الحجة في ١٥٠ ثانية</h3>
           <div class="vid-desc">ملخص سريع وشامل لأهم المعلومات والأحكام عن عشر ذي الحجة ويوم عرفة والأضحية في دقيقتين ونصف</div>
           
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
@@ -832,7 +833,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#0e3b2e,#2a7a5f)">🎙️</div><div class="vid-meta-text"><div class="speaker-name">الشيخ محمد سعد الشرقاوي</div><div class="vid-category">💚 التزكية / 🎙️ بودكاست فاهم</div></div></div>
-          <div class="vid-title">فاهم 84 — مشاهد عظمة الله عز وجل</div>
+          <h3 class="vid-title">فاهم 84 — مشاهد عظمة الله عز وجل</h3>
           <div class="vid-desc">لقاءٌ عميقٌ ينقل الإيمان من معلوماتٍ ذهنية إلى حالةٍ قلبية تملأ القلب حياءً ومحبةً وخضوعاً لله — عبر استعراض مشاهد عظمة الذات والصفات والرحمة.</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">
@@ -866,7 +867,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
         <div class="vid-body">
           <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#0e3b2e,#2a7a5f)">🎓</div><div class="vid-meta-text"><div class="speaker-name">د. محمد ثروت</div><div class="vid-category">🏆 فضائل العشر / 📋 خطة عملية</div></div></div>
-          <div class="vid-title">أعظم أيام حياتك — عشر ذي الحجة</div>
+          <h3 class="vid-title">أعظم أيام حياتك — عشر ذي الحجة</h3>
           <div class="vid-desc">هذه الأيام اختبارٌ لمدى إيمانك باسم الله «العظيم»؛ فبقَدْر تعظيمك لله يكون تعظيمك لما عظّمه من الأزمان. خطةٌ تربوية مبنية على «التحفّظ والتحفّز».</div>
           <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
           <div class="vid-points"><div class="vid-points-inner">

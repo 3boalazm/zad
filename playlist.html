@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstArt = ALL.find(t=>t.artwork)?.artwork;
         if (firstArt)
           document.getElementById('pl-cover').innerHTML =
-            `<img loading="lazy" decoding="async" src="${firstArt}" alt="cover" onerror="this.parentNode.innerHTML='🎵'">`;
+            `<img loading="lazy" decoding="async" src="${firstArt}" alt="" onerror="this.parentNode.innerHTML='🎵'">`;
 
         applyFilter();
       });

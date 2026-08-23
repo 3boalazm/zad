@@ -38,11 +38,11 @@ html[data-theme="dark"] .gpv-sec-title,html[data-theme="oled"] .gpv-sec-title{co
 html[data-theme="dark"] .gpv-pol.ok,html[data-theme="oled"] .gpv-pol.ok{background:rgba(42,122,95,.12)}
 .gpv-pol.no{border-color:#ffb4b4;background:#fff4f4}
 html[data-theme="dark"] .gpv-pol.no,html[data-theme="oled"] .gpv-pol.no{background:rgba(255,107,107,.1);border-color:rgba(255,107,107,.4)}
-.gpv-pol h4{font-size:14px;font-weight:800;margin:0 0 8px}
-.gpv-pol.ok h4{color:var(--green-deep)}
-html[data-theme="dark"] .gpv-pol.ok h4,html[data-theme="oled"] .gpv-pol.ok h4{color:var(--sys-green)}
-.gpv-pol.no h4{color:#c0392b}
-html[data-theme="dark"] .gpv-pol.no h4,html[data-theme="oled"] .gpv-pol.no h4{color:#ff9b9b}
+.gpv-pol h3{font-size:14px;font-weight:800!important;margin:0 0 8px}
+.gpv-pol.ok h3{color:var(--green-deep)}
+html[data-theme="dark"] .gpv-pol.ok h3,html[data-theme="oled"] .gpv-pol.ok h3{color:var(--sys-green)}
+.gpv-pol.no h3{color:#c0392b}
+html[data-theme="dark"] .gpv-pol.no h3,html[data-theme="oled"] .gpv-pol.no h3{color:#ff9b9b}
 .gpv-pol ul{list-style:none;padding:0;margin:0}
 .gpv-pol li{font-size:12.8px;line-height:1.9;color:var(--ink)}
 
@@ -50,8 +50,8 @@ html[data-theme="dark"] .gpv-pol.no h4,html[data-theme="oled"] .gpv-pol.no h4{co
 .gpv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:6px}
 .gpv-item{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:15px;box-shadow:var(--shadow-sm)}
 .gpv-item .ico{font-size:26px;display:block;margin-bottom:8px}
-.gpv-item h4{font-size:14px;font-weight:800;color:var(--green-deep);margin:0 0 4px}
-html[data-theme="dark"] .gpv-item h4,html[data-theme="oled"] .gpv-item h4{color:var(--sys-green)}
+.gpv-item h3{font-size:14px;font-weight:800!important;color:var(--green-deep);margin:0 0 4px}
+html[data-theme="dark"] .gpv-item h3,html[data-theme="oled"] .gpv-item h3{color:var(--sys-green)}
 .gpv-item p{font-size:12.5px;line-height:1.75;color:var(--muted);margin:0}
 
 /* feature cards */
@@ -116,7 +116,7 @@ html[data-theme="dark"] .gpv-back .bt,html[data-theme="oled"] .gpv-back .bt{colo
     <h2 class="gpv-sec-title">🔒 ماذا يُشارَك ومالا يُشارَك</h2>
     <div class="gpv-policy">
       <div class="gpv-pol ok">
-        <h4>✅ يُشارَك فقط</h4>
+        <h3>✅ يُشارَك فقط</h3>
         <ul>
           <li>• نسبةُ الإنجاز اليومية (%)</li>
           <li>• أيامُ الالتزام المتتالية (اللهب)</li>
@@ -125,7 +125,7 @@ html[data-theme="dark"] .gpv-back .bt,html[data-theme="oled"] .gpv-back .bt{colo
         </ul>
       </div>
       <div class="gpv-pol no">
-        <h4>⛔ لا يُشارَك أبداً</h4>
+        <h3>⛔ لا يُشارَك أبداً</h3>
         <ul>
           <li>• نوعُ العبادة أو تفاصيلها</li>
           <li>• اسمُك الحقيقي أو بياناتك</li>
@@ -138,10 +138,10 @@ html[data-theme="dark"] .gpv-back .bt,html[data-theme="oled"] .gpv-back .bt{colo
     <!-- كيف يعمل -->
     <h2 class="gpv-sec-title">⚙️ كيف يعمل النظام</h2>
     <div class="gpv-grid">
-      <div class="gpv-item"><span class="ico">📵</span><h4>محليٌّ أولاً</h4><p>تفاصيلُ عباداتك (الصلاة، الذكر، المهام) تُحسَب وتُخزَّن على جهازك فقط ولا تغادره.</p></div>
-      <div class="gpv-item"><span class="ico">☁️</span><h4>يُرفَع الرقمُ فقط</h4><p>عند الاتصال يُرفَع رقمُك النهائي (مثلاً 85%) دون أيِّ تفصيل عن العبادة نفسها.</p></div>
-      <div class="gpv-item"><span class="ico">🎭</span><h4>هويةٌ مقنّعة</h4><p>لك مُعرّفٌ مجهول واسمٌ مستعار يفصلان هويتَك الحقيقية تمامًا عن لوحة المنافسة.</p></div>
-      <div class="gpv-item"><span class="ico">📦</span><h4>يعمل بدون إنترنت</h4><p>التطبيقُ PWA؛ تُكمل عباداتك دون اتصال، ويتزامن الرقمُ النهائي تلقائيًا عند عودة الشبكة.</p></div>
+      <div class="gpv-item"><span class="ico">📵</span><h3>محليٌّ أولاً</h3><p>تفاصيلُ عباداتك (الصلاة، الذكر، المهام) تُحسَب وتُخزَّن على جهازك فقط ولا تغادره.</p></div>
+      <div class="gpv-item"><span class="ico">☁️</span><h3>يُرفَع الرقمُ فقط</h3><p>عند الاتصال يُرفَع رقمُك النهائي (مثلاً 85%) دون أيِّ تفصيل عن العبادة نفسها.</p></div>
+      <div class="gpv-item"><span class="ico">🎭</span><h3>هويةٌ مقنّعة</h3><p>لك مُعرّفٌ مجهول واسمٌ مستعار يفصلان هويتَك الحقيقية تمامًا عن لوحة المنافسة.</p></div>
+      <div class="gpv-item"><span class="ico">📦</span><h3>يعمل بدون إنترنت</h3><p>التطبيقُ PWA؛ تُكمل عباداتك دون اتصال، ويتزامن الرقمُ النهائي تلقائيًا عند عودة الشبكة.</p></div>
     </div>
 
     <!-- ميزات التفاعل -->

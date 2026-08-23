@@ -629,7 +629,7 @@
     btn.className = 'zad-tkbr-fab';
     btn.id = 'zad-tkbr-fab';
     btn.setAttribute('aria-label', 'التكبير السريع');
-    btn.innerHTML = `<span class="zt-ico">📿</span><span class="zt-n" id="zad-tkbr-badge">${total}</span>`;
+    btn.innerHTML = `<span class="zt-ico" aria-hidden="true">📿</span><span class="zt-n" id="zad-tkbr-badge" aria-hidden="true">${total}</span>`;
     btn.onclick = openTakbeerPop;
     document.body.appendChild(btn);
   }

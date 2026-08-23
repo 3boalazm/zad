@@ -129,7 +129,7 @@
     var fab = document.createElement('div');
     fab.id   = FAB_ID;
     fab.setAttribute('role', 'button');
-    fab.setAttribute('aria-label', 'تثبيت تطبيق زاد');
+    fab.setAttribute('aria-label', 'ثبّت التطبيق — يعمل بدون إنترنت');
     fab.setAttribute('tabindex', '0');
     fab.innerHTML = [
       '<span class="pfab-ico" aria-hidden="true">📲</span>',
@@ -211,8 +211,9 @@
         doInstall();
       });
 
-      /* Keyboard */
+      /* Keyboard — تجاهل لو التركيز على زر الإغلاق، الـ click handler فوق بيتولى أمره */
       fab.addEventListener('keydown', function (ev) {
+        if (ev.target.id === 'zad-pwa-fab-close' || ev.target.closest('#zad-pwa-fab-close')) return;
         if (ev.key === 'Enter' || ev.key === ' ') doInstall();
       });
     });
