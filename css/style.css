@@ -32,6 +32,16 @@ html[data-theme="oled"]{--brand-deep:#4dd866;--brand-mid:#2eb84d;--brand-soft:#3
    now alias these instead of re-declaring the values. */
 :root{--primitive-green-900:#0e3b2e;--primitive-green-700:#1a5d47;--primitive-green-500:#2a7a5f;--primitive-green-100:#e8f4ef;--primitive-gold-700:#b87200;--primitive-gold-500:#c9a14a;--primitive-gold-100:#fff8e8}
 
+/* ── Z-index scale ──────────────────────────────────────────
+   Shared, sitewide stacking layers only — not every z-index in the
+   codebase (202 declarations across the repo, most of them one-off
+   and page-local, were left as literals; migrating every single one
+   for no functional benefit wasn't worth the blast radius). This
+   covers the handful of shared components in this file where a real
+   collision was already found (sidebar_overlay_fix.js, since removed,
+   fought .sidebar's z-index:200 with its own competing 999/1000). */
+:root{--z-decor:1;--z-topbar:60;--z-tooltip:90;--z-sidebar:100;--z-sidebar-overlay:199;--z-sidebar-mobile:200;--z-overlay:500;--z-popup:800;--z-progress:999;--z-toast:9999}
+
 /* ── App Theme Variables ────────────────────────────────── */
 :root{--bg:#f5f4f0;--card:#ffffff;--card-2:#f7f3ea;--sand:#faf9f6;--sand-2:#ebdfc4;--gold-pale:#fdf5e0;--green-pale:#e8f4ef;--ink:#1a1a18;--muted:#757570;--muted-2:#5c6c58;--green-deep:var(--brand-deep);--green-mid:var(--brand-mid);--green-soft:var(--brand-soft);--gold:var(--brand-gold);--gold-soft:var(--brand-gold-lt);--gold-dark:var(--brand-gold-dk);--border:#e5e4de;--shadow:0 10px 30px -12px rgba(14,59,46,.18);--shadow-sm:0 4px 14px -6px rgba(14,59,46,.12);--shadow-gold:0 8px 24px -8px rgba(201,161,74,.35);--clr-success:var(--sys-green);--clr-warning:var(--sys-orange);--clr-error:var(--sys-red);--clr-info:var(--sys-blue);--clr-link:var(--sys-blue);--radius:18px;--radius-sm:12px;--t:0.25s;--ease:cubic-bezier(0.4,0,0.2,1)}
 html[data-theme="dark"]{--bg:#0a1410;--card:#141f1a;--card-2:#162019;--sand:#1a2820;--sand-2:#1a2618;--gold-pale:#1a1608;--green-pale:#0e2a1e;--ink:#f0f0ea;--muted:#8a9a90;--muted-2:#7a9a7a;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#e6c97a;--gold-soft:#f0d898;--gold-dark:#c9a14a;--border:#2a3830;--shadow:0 10px 30px -12px rgba(0,0,0,.6);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.4)}
@@ -61,7 +71,7 @@ html[data-theme="oled"] .app{background:var(--bg)}
 .main{padding:34px 38px 60px;max-width:1260px;min-height:100vh;margin-right:270px}
 
 /* ── Sidebar ───────────────────────────────────────────── */
-.sidebar{position:fixed;top:0;right:0;height:100vh;overflow-y:auto;overflow-x:hidden;padding:24px 18px 20px;background:linear-gradient(180deg,#0b3024,#1a5d47);color:#f4ecd6;display:flex;flex-direction:column;gap:18px;z-index:100;will-change:transform;width:270px}
+.sidebar{position:fixed;top:0;right:0;height:100vh;overflow-y:auto;overflow-x:hidden;padding:24px 18px 20px;background:linear-gradient(180deg,#0b3024,#1a5d47);color:#f4ecd6;display:flex;flex-direction:column;gap:18px;z-index:var(--z-sidebar);will-change:transform;width:270px}
 .app{min-height:100vh;background:radial-gradient(900px 450px at 90% -10%,rgba(201,161,74,.05),transparent 55%),radial-gradient(700px 400px at -10% 110%,rgba(26,93,71,.05),transparent 55%),var(--bg)}
 html[data-theme="dark"] .sidebar{background:linear-gradient(180deg,#060e09,#0e1c12)}
 html[data-theme="oled"] .sidebar{background:linear-gradient(180deg,#000000,#050505)}
@@ -89,7 +99,7 @@ html[data-theme="oled"] .sidebar{background:linear-gradient(180deg,#000000,#0505
 
 /* ── Hamburger & Overlay ────────────────────────────────── */
 .hamburger{display:none;width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.1);color:#fff;font-size:18px;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.2);cursor:pointer;flex-shrink:0;transition:background .2s}.hamburger:hover{background:rgba(255,255,255,.2)}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:199;opacity:0;transition:opacity .3s var(--ease);pointer-events:none}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:var(--z-sidebar-overlay);opacity:0;transition:opacity .3s var(--ease);pointer-events:none}
 .sidebar-overlay.active{opacity:1;pointer-events:auto}
 
 /* ── Main Content ───────────────────────────────────────── */
@@ -357,7 +367,7 @@ html[data-theme="dark"] .quiz-opt.correct,html[data-theme="oled"] .quiz-opt.corr
 html[data-theme="dark"] .quiz-opt.wrong,html[data-theme="oled"] .quiz-opt.wrong{background:rgba(255,122,116,.1);color:var(--sys-red)}
 
 /* ── Toast Notifications ───────────────────────────────── */
-.toast{will-change:transform,opacity;position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--brand-deep);color:#fff;padding:12px 26px;border-radius:99px;font-size:14px;font-weight:700;box-shadow:var(--shadow);z-index:9999;opacity:0;transition:opacity .35s var(--ease),transform .35s var(--ease);white-space:nowrap;pointer-events:none;max-width:90vw}
+.toast{will-change:transform,opacity;position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--brand-deep);color:#fff;padding:12px 26px;border-radius:99px;font-size:14px;font-weight:700;box-shadow:var(--shadow);z-index:var(--z-toast);opacity:0;transition:opacity .35s var(--ease),transform .35s var(--ease);white-space:nowrap;pointer-events:none;max-width:90vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 html[data-theme="dark"] .toast,html[data-theme="oled"] .toast{background:var(--sys-green);color:#001a08}
 
@@ -376,7 +386,7 @@ html[data-theme="dark"] .verse,html[data-theme="oled"] .verse{background:linear-
 html[data-theme="oled"] .hero{background:linear-gradient(135deg,#030d07,#0a2018 70%,#0d2a20)}
 
 /* ── Search Overlay ────────────────────────────────────── */
-.search-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);display:none;flex-direction:column;align-items:center;padding-top:80px}
+.search-overlay{position:fixed;inset:0;z-index:var(--z-overlay);background:rgba(0,0,0,.72);backdrop-filter:blur(10px);display:none;flex-direction:column;align-items:center;padding-top:80px}
 .search-overlay.open{display:flex}
 .search-box-big{width:100%;max-width:600px;background:var(--card);border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);border:1px solid var(--border)}
 .search-box-big input{width:100%;padding:18px 22px;font-size:17px;border:none;outline:none;background:transparent;color:var(--ink);font-family:inherit;direction:rtl}
@@ -461,7 +471,7 @@ html[data-font="lg"] .check .label,html[data-font="xl"] .check .label{font-size:
   .app{min-height:100vh;overflow-x:hidden}
   .main{padding:4px 12px 60px !important}
   .main{margin-right:0!important;padding:16px 16px 60px}
-  .sidebar{position:fixed;top:0;right:-290px;height:100%;width:270px;z-index:200;overflow-y:auto;transition:right .3s var(--ease);-webkit-overflow-scrolling:touch}
+  .sidebar{position:fixed;top:0;right:-290px;height:100%;width:270px;z-index:var(--z-sidebar-mobile);overflow-y:auto;transition:right .3s var(--ease);-webkit-overflow-scrolling:touch}
   .sidebar.open{right:0;box-shadow:-6px 0 40px rgba(0,0,0,.45)}
   html[dir="ltr"] .sidebar{right:auto;left:-290px}
   html[dir="ltr"] .sidebar.open{left:0}
@@ -1038,7 +1048,7 @@ html[data-theme="dark"] .dc-day-task-btn,html[data-theme="oled"] .dc-day-task-bt
 #daily-content-card{display:none}
 
 /* ── FAB AI Button ─────────────────────────────────────── */
-.fab-ai{position:fixed;bottom:28px;left:24px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(14,59,46,.35);cursor:pointer;z-index:90;border:none;transition:all .25s;text-decoration:none}
+.fab-ai{position:fixed;bottom:28px;left:24px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(14,59,46,.35);cursor:pointer;z-index:var(--z-tooltip);border:none;transition:all .25s;text-decoration:none}
 html[data-theme="dark"] .fab-ai,html[data-theme="oled"] .fab-ai{background:linear-gradient(135deg,var(--sys-green),#2eb84d);color:#001a08;box-shadow:0 8px 24px rgba(77,216,102,.3)}
 .fab-ai:hover{transform:scale(1.12) translateY(-3px);box-shadow:0 12px 32px rgba(14,59,46,.45)}
 .fab-ai:active{transform:scale(.95)}
@@ -1436,7 +1446,7 @@ html[data-fs="lg"] .nav a{font-size:15px}
     padding:9px 12px;
     grid-template-columns:auto 1fr auto;
     gap:8px;
-    z-index:60;
+    z-index:var(--z-topbar);
   }
   html[data-theme="dark"] .topbar,html[data-theme="oled"] .topbar{
     background:rgba(8,12,9,.92);
@@ -1492,7 +1502,7 @@ html[data-theme="dark"] .hamburger,html[data-theme="oled"] .hamburger{
   width:min(300px, calc(100vw - 24px));max-height:380px;overflow-y:auto;
   background:var(--card);border:1px solid var(--border);
   border-radius:16px;box-shadow:0 12px 40px -8px rgba(0,0,0,.3);
-  z-index:800;display:none;flex-direction:column;
+  z-index:var(--z-popup);display:none;flex-direction:column;
   animation:dropIn .2s ease
 }
 @keyframes dropIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -1586,7 +1596,7 @@ html[data-theme="oled"] #next-reset-time{color:var(--sys-green)}
   opacity:0;pointer-events:none;
   transition:opacity .25s,transform .25s;
   transform:translateY(8px);
-  z-index:90
+  z-index:var(--z-tooltip)
 }
 .scroll-top-btn.show{opacity:1;pointer-events:auto;transform:translateY(0)}
 html[dir="ltr"] .scroll-top-btn{left:auto;right:16px}
@@ -1626,7 +1636,7 @@ html[data-theme="oled"] .scroll-top-btn{background:var(--sys-green);color:#001a0
     /* STICKY — stays visible when scrolling */
     position:sticky !important;
     top:6px !important;
-    z-index:200 !important;
+    z-index:var(--z-sidebar-mobile) !important;
     /* Floating glass look */
     margin:6px 8px 14px 8px !important;
     width:calc(100% - 16px) !important;
@@ -1912,7 +1922,7 @@ html[dir="ltr"] .chapter-start-line:first-child {
 /* ── Reading Progress Indicator ──────────────────────────── */
 .reading-progress-bar {
   position:fixed;top:0;right:0;left:0;height:3px;
-  background:transparent;z-index:999;pointer-events:none;
+  background:transparent;z-index:var(--z-progress);pointer-events:none;
 }
 .reading-progress-fill {
   height:100%;width:0%;
