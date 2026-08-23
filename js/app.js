@@ -491,11 +491,6 @@ const BADGE_DEFS = [
   { id:'mukabbir',  label:'المُكبِّرون',    cond: s => (s.takbeer?.total||0) >= 1000 },
   { id:'sadiq',     label:'المتصدقون',      cond: s => (s.charityDone?.length||0) >= 3 },
   { id:'kamil',     label:'جامع الخير',     cond: s => (s.streak||0) >= 5 },
-  { id:'saher',     label:'فجر العشر',      cond: s => (s.streak||0) >= 5 },
-  { id:'sabiq',     label:'السابق',         cond: s => Object.values(s.arafah?.milestones||{}).filter(Boolean).length >= 5 },
-  { id:'lisan',     label:'لسان ذاكر',      cond: s => (s.takbeer?.total||0) >= 1000 },
-  { id:'khatim2',   label:'الراسخون',       cond: s => (s.mushaf?.juz||0) >= 15 },
-  { id:'wasil',     label:'الواصلون',       cond: s => (s.charityDone?.length||0) >= 5 },
 ];
 function checkBadges() {
   BADGE_DEFS.forEach(def => {
