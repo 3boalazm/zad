@@ -251,3 +251,25 @@ h2 من غير h3 وسيطة. تمت ترقيتهم لـ`<h3>` (مع إضافة 
   (موجودة في مصفوفة bottom-nav.js بس جنب `demo.html`/`404.html`/
   `diagnostics.html`) — أُضيف لها h1/h2 أساسي، لكن مايستأهلش استثمار وقت
   أكبر (ربطها بـ`design-system.js` الكامل مثلاً) ما لم تكن لسه مستخدمة فعليًا.
+
+### تصحيح: "الـskip link شغّال site-wide" — كان دقيق جزئيًا بس
+لما قلت فوق إن `js/design-system.js` (اللي بيحقن skip link) شغّال على كل
+صفحة بتحمّله، كان الكلام صح — لكن اكتشفت بعدين إن **12 صفحة أصلاً مش
+بتحمّل الملف ده خالص**: `adhkar-categories.html`, `groups-privacy.html`,
+`hasad-month.html`, `hasn.html`, `hawwa.html`, `hikayat-hajj.html`,
+`maktaba-nassiya.html`, `Quran-radio.HTML`, `takbeer.html` (من أهم صفحات
+الموقع!), `zahra.html`, `zakat-ahkam.html`, `zakat-anwa.html`. يعني كانت
+فعليًا بلا skip link، بلا `role="navigation"` على الشريط الجانبي، وبلا
+معالجة `prefers-reduced-motion` لأنيميشن GSAP على الصفحات اللي بتحمّله
+(7 منهم). **تم إصلاحه** — أضفت `<script src="js/design-system.js">` لكل
+الـ12، وتحققت حيًا على `takbeer.html`/`hasn.html`/`zakat-ahkam.html`:
+skip link موجود، `role="navigation"` موجود، صفر أخطاء console جديدة،
+وعداد التسبيح في `takbeer.html` لسه شغّال صح (0 تحقق زيادة).
+
+### خلل تاني لقيته بالصدفة أثناء فحص وضع LTR: زر لغة ميت في Quran-radio.HTML
+`Quran-radio.HTML` عنده نفس زر "EN" و`onclick="toggleLang?.()"` الموجود
+في كل صفحة، لكنه مايحمّلش `lang.js` خالص — يعني الزر كان بيعمل لا شيء
+تمامًا لما تدوس عليه (الـ optional chaining بيمنع الخطأ بس برضه مفيش
+تأثير)، والصفحة كانت عالقة على العربي دايمًا مهما غيّر المستخدم اللغة في
+باقي الموقع. **تم إصلاحه** — أضفت `lang.js`، وتحققت إنها الصفحة الوحيدة
+اللي عندها الزر بدون الملف (فحصت باقي الـ64 صفحة).
