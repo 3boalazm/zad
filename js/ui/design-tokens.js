@@ -142,64 +142,6 @@ const ZadDesign = (() => {
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-excuse'] });
   }
 
-  /* ── Component Builders ──────────────────────────────────────────────── */
-  const Components = {
-    /* بطاقة */
-    card({ title, body, icon = '', color = 'var(--green-deep)', href = null, onClick = null } = {}) {
-      const el = document.createElement(href ? 'a' : 'div');
-      el.className = 'zd-card';
-      if (href) el.href = href;
-      if (onClick) el.onclick = onClick;
-      el.innerHTML = `
-        ${icon ? `<div class="zd-card-icon" style="color:${color}">${icon}</div>` : ''}
-        ${title ? `<div class="zd-card-title">${title}</div>` : ''}
-        ${body  ? `<div class="zd-card-body">${body}</div>` : ''}`;
-      return el;
-    },
-
-    /* شارة */
-    badge({ text, color = 'var(--green-deep)', bg = 'var(--green-pale)' } = {}) {
-      const el = document.createElement('span');
-      el.className = 'zd-badge';
-      el.textContent = text;
-      el.style.cssText = `color:${color};background:${bg}`;
-      return el;
-    },
-
-    /* زرار */
-    button({ text, variant = 'primary', icon = '', onClick = null, disabled = false } = {}) {
-      const el = document.createElement('button');
-      el.className = `zd-btn zd-btn-${variant}`;
-      el.disabled = disabled;
-      el.innerHTML = `${icon ? `<span>${icon}</span>` : ''}<span>${text}</span>`;
-      if (onClick) el.onclick = onClick;
-      return el;
-    },
-
-    /* مودال */
-    modal({ title, body, onConfirm = null, confirmText = 'تأكيد', cancelText = 'إلغاء' } = {}) {
-      const wrap = document.createElement('div');
-      wrap.className = 'zd-modal-wrap';
-      wrap.innerHTML = `
-        <div class="zd-modal-backdrop"></div>
-        <div class="zd-modal" role="dialog" aria-modal="true">
-          <div class="zd-modal-header">${title}</div>
-          <div class="zd-modal-body">${body}</div>
-          <div class="zd-modal-footer">
-            <button class="zd-btn zd-btn-ghost" onclick="this.closest('.zd-modal-wrap').remove()">${cancelText}</button>
-            ${onConfirm ? `<button class="zd-btn zd-btn-primary" id="zd-modal-confirm">${confirmText}</button>` : ''}
-          </div>
-        </div>`;
-      if (onConfirm) {
-        wrap.querySelector('#zd-modal-confirm').onclick = () => { onConfirm(); wrap.remove(); };
-      }
-      wrap.querySelector('.zd-modal-backdrop').onclick = () => wrap.remove();
-      document.body.appendChild(wrap);
-      requestAnimationFrame(() => wrap.classList.add('open'));
-      return wrap;
-    },
-  };
-
   /* ── CSS للكومبوننتس ─────────────────────────────────────────────────── */
   function injectComponentCSS() {
     if (document.getElementById('zad-design-tokens-css')) return;
@@ -306,7 +248,7 @@ const ZadDesign = (() => {
     console.log('[ZadDesign] ✅ Design System 2026 جاهز');
   }
 
-  return { init, applyTokens, Components, A11y, TOKENS };
+  return { init, applyTokens, A11y, TOKENS };
 })();
 
 window.ZadDesign = ZadDesign;
