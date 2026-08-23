@@ -810,14 +810,16 @@ async function fetchAndCacheHijriDate() {
 
 window.toggleLang = () => { if(typeof I18N !== "undefined") I18N.toggle(); };
 function initSidebar() {
-  const hamburger = document.getElementById('hamburger');
+  const hamburgers = document.querySelectorAll('.hamburger');
   const sidebar   = document.querySelector('.sidebar');
   const overlay   = document.querySelector('.sidebar-overlay');
-  if (!hamburger || !sidebar) return;
-  hamburger.onclick = () => {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('active');
-  };
+  if (!hamburgers.length || !sidebar) return;
+  hamburgers.forEach(hamburger => {
+    hamburger.onclick = () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    };
+  });
   overlay.onclick = () => {
     sidebar.classList.remove('open');
     overlay.classList.remove('active');
