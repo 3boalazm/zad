@@ -111,7 +111,7 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
 .manual-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .manual-field label{font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px}
 .loc-hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
-.loc-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(201,161,74,.3);border-top-color:var(--gold);border-radius:50%;animation:lspin .7s linear infinite;vertical-align:middle}
+.loc-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(201,161,74,.3);border-top-color:var(--gold-dark);border-radius:50%;animation:lspin .7s linear infinite;vertical-align:middle}
 @keyframes lspin{to{transform:rotate(360deg)}}
 .loc-back{background:none;border:none;color:var(--muted);font-family:inherit;font-size:12px;cursor:pointer;margin-top:10px;text-decoration:underline}
 
@@ -286,7 +286,7 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
       <div class="loc-info">
         <span>📍</span>
         <span id="loc-name" class="loc-badge">—</span>
-        <button onclick="showLocationPicker()" style="background:none;border:none;color:var(--gold);font-size:12px;cursor:pointer;padding:0;font-family:inherit">تغيير ↻</button>
+        <button onclick="showLocationPicker()" style="background:none;border:none;color:var(--gold-dark);font-size:12px;cursor:pointer;padding:0;font-family:inherit">تغيير ↻</button>
       </div>
 
       <!-- Method selector -->

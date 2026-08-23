@@ -53,7 +53,7 @@ html[data-theme="dark"] .hifz30-t,html[data-theme="oled"] .hifz30-t{color:var(--
 .hifz30-s{font-size:12.5px;color:var(--muted);margin:3px 0 8px}
 .hifz30-barwrap{height:9px;background:var(--sand);border-radius:99px;overflow:hidden}
 .hifz30-bar{height:100%;background:linear-gradient(90deg,var(--green-deep),var(--gold));border-radius:99px;transition:width .5s ease}
-.hifz30-msg{font-size:12px;color:var(--gold);font-weight:700;margin-top:8px}
+.hifz30-msg{font-size:12px;color:var(--gold-dark);font-weight:700;margin-top:8px}
 .hifz30-track{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
 @media(max-width:380px){.hifz30-track{grid-template-columns:repeat(5,1fr)}}
 .h30-cell{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:all .18s;font-family:inherit;position:relative}
@@ -69,7 +69,7 @@ html[data-theme="dark"] .hifz30-t,html[data-theme="oled"] .hifz30-t{color:var(--
 }
 .plan-card:hover{border-color:var(--gold);transform:translateY(-3px)}
 .plan-card.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,161,74,.2)}
-.plan-card.active::after{content:'✓';position:absolute;top:8px;left:10px;font-size:14px;font-weight:900;color:var(--gold)}
+.plan-card.active::after{content:'✓';position:absolute;top:8px;left:10px;font-size:14px;font-weight:900;color:var(--gold-dark)}
 .pc-ico{font-size:30px;margin-bottom:8px}
 .pc-title{font-size:13px;font-weight:800;color:var(--green-deep);font-family:'ThmanyahSans',sans-serif;margin-bottom:3px}
 html[data-theme="dark"] .pc-title,html[data-theme="oled"] .pc-title{color:var(--sys-green)}
@@ -104,7 +104,7 @@ html[data-theme="dark"] .pc-title,html[data-theme="oled"] .pc-title{color:var(--
 .wr-val{font-size:16px;font-weight:800;color:var(--green-deep);font-family:'ThmanyahSans',sans-serif;line-height:1.2}
 html[data-theme="dark"] .wr-val,html[data-theme="oled"] .wr-val{color:var(--sys-green)}
 .wr-sub{font-size:10px;color:var(--muted);margin-top:3px}
-.wr-arrow{font-size:20px;color:var(--gold);text-align:center}
+.wr-arrow{font-size:20px;color:var(--gold-dark);text-align:center}
 
 /* Read button */
 .wird-read-btn{
@@ -202,7 +202,7 @@ html[data-theme="dark"] .ms-val,html[data-theme="oled"] .ms-val{color:var(--sys-
 }
 html[data-theme="dark"] .quran-preview{background:linear-gradient(180deg,#1a1608,#141004);border-color:rgba(230,201,122,.2);color:var(--sys-yellow)}
 html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900,#080600);border-color:rgba(230,201,122,.15);color:var(--sys-yellow)}
-.qp-header{display:flex;justify-content:space-between;font-family:'IBM Plex Sans Arabic',sans-serif;font-size:12px;color:var(--gold);font-weight:700;border-bottom:1px solid rgba(201,161,74,.3);padding-bottom:8px;margin-bottom:14px}
+.qp-header{display:flex;justify-content:space-between;font-family:'IBM Plex Sans Arabic',sans-serif;font-size:12px;color:var(--gold-dark);font-weight:700;border-bottom:1px solid rgba(201,161,74,.3);padding-bottom:8px;margin-bottom:14px}
 .font-ctrl{display:flex;gap:6px}
 .fc-btn{
   width:30px;height:30px;border-radius:8px;border:1px solid var(--border);
@@ -406,7 +406,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
             <div style="text-align:right">
               <div style="font-family:'Amiri',serif;font-size:16px;color:var(--green-deep);line-height:1.9;direction:rtl" id="wvp-from-text">...</div>
             </div>
-            <div style="color:var(--gold);font-size:18px;text-align:center">←</div>
+            <div style="color:var(--gold-dark);font-size:18px;text-align:center">←</div>
             <div style="text-align:right">
               <div style="font-family:'Amiri',serif;font-size:16px;color:var(--green-deep);line-height:1.9;direction:rtl" id="wvp-to-text">...</div>
             </div>
@@ -426,7 +426,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
       <div class="tmr-title" id="tmr-title">ورد الغد — يُفتح بعد إتمام ورد اليوم</div>
       <div class="tmr-range">
         <div class="tmr-b"><div class="v" id="tmr-from">—</div><div class="l">من</div></div>
-        <div style="color:var(--gold);font-size:16px;text-align:center">←</div>
+        <div style="color:var(--gold-dark);font-size:16px;text-align:center">←</div>
         <div class="tmr-b"><div class="v" id="tmr-to">—</div><div class="l">إلى</div></div>
       </div>
     </div>
@@ -439,7 +439,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
           <label for="custom-from" style="display:block;font-size:11px;color:var(--muted);margin-bottom:4px">من صفحة</label>
           <input id="custom-from" type="number" min="1" max="604" value="1" style="width:80px;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);font-family:'ThmanyahSans',monospace;font-size:16px;font-weight:700;text-align:center;outline:none;direction:ltr">
         </div>
-        <div style="color:var(--gold);font-size:20px;margin-top:16px">→</div>
+        <div style="color:var(--gold-dark);font-size:20px;margin-top:16px">→</div>
         <div>
           <label for="custom-to" style="display:block;font-size:11px;color:var(--muted);margin-bottom:4px">إلى صفحة</label>
           <input id="custom-to" type="number" min="1" max="604" value="20" style="width:80px;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);font-family:'ThmanyahSans',monospace;font-size:16px;font-weight:700;text-align:center;outline:none;direction:ltr">
