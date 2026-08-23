@@ -65,7 +65,6 @@ const ZAD_TOKENS_CSS = `
   /* ── الخطوط ─────────────────────────────────────────── */
   --font-ui:    'ThmanyahSans', 'Segoe UI', 'Arial', sans-serif;
   --font-quran: 'ThmanyahSerifText', 'Amiri', 'Traditional Arabic', serif;
-  --font-display: 'ThmanyahSerifDisplay', serif;
 
   /* ── أحجام الخط ──────────────────────────────────────── */
   --text-xs:   11px;

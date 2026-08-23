@@ -1103,8 +1103,6 @@ html[data-theme="dark"] .lang-option.active,html[data-theme="oled"] .lang-option
 @font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Medium.otf') format('opentype');font-weight:500;font-display:swap;font-style:normal}
 @font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Regular.otf') format('opentype');font-weight:400;font-display:swap;font-style:normal}
 @font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Light.otf') format('opentype');font-weight:300;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSerifDisplay';src:url('../fonts/thmanyahserifdisplay-Black.otf') format('opentype');font-weight:900;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSerifDisplay';src:url('../fonts/thmanyahserifdisplay-Bold.otf') format('opentype');font-weight:700;font-display:swap;font-style:normal}
 @font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Regular.otf') format('opentype');font-weight:400;font-display:swap;font-style:normal}
 @font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Medium.otf') format('opentype');font-weight:500;font-display:swap;font-style:normal}
 @font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Light.otf') format('opentype');font-weight:300;font-display:swap;font-style:normal}
@@ -1115,7 +1113,13 @@ html[data-theme="dark"] .lang-option.active,html[data-theme="oled"] .lang-option
 html,body{font-family:'Tajawal','IBM Plex Sans Arabic',system-ui,sans-serif !important}
 
 /* ── Headers: ThmanyahSans ─────────────────────────────── */
-h1,h2,h3,h4,h5,h6,.page-title,.brand-name,.section-title,.hero h1,.hero-eyebrow,.card h3,.tl-title,.af-ms-title,.dc-day-title,.wird-bound-val,.adhkar-sec-title,.az-label,.settings-group-title{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif !important}
+/* h1/h2/h3/.page-title/.section-title deliberately NOT listed here — css/premium-ui.css
+   (loaded after this file) already claims them for 'ThmanyahDisplay' (a serif display
+   face for top-level headers), and its rule already won every cascade before this
+   comment existed since both rules carry !important and source order was the
+   tie-break; removing the redundant/conflicting declaration here doesn't change what
+   renders, it just stops two rules fighting silently over the same elements. */
+h4,h5,h6,.brand-name,.hero h1,.hero-eyebrow,.card h3,.tl-title,.af-ms-title,.dc-day-title,.wird-bound-val,.adhkar-sec-title,.az-label,.settings-group-title{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif !important}
 h1,.hero h1{font-weight:900 !important}
 h2,.page-title{font-weight:800 !important}
 h3,h4,.section-title,.brand-name{font-weight:700 !important}

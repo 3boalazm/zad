@@ -211,8 +211,6 @@ main.main, #main-content {
 @font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Bold.otf') format('opentype');font-weight:700;font-display:swap}
 @font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Medium.otf') format('opentype');font-weight:500;font-display:swap}
 @font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Regular.otf') format('opentype');font-weight:400;font-display:swap}
-@font-face{font-family:'ThmanyahText';src:url('../fonts/thmanyahseriftext-Bold.otf') format('opentype');font-weight:700;font-display:swap}
-@font-face{font-family:'ThmanyahText';src:url('../fonts/thmanyahseriftext-Regular.otf') format('opentype');font-weight:400;font-display:swap}
 
 /* تطبيق الخط على العناوين فقط (بدون نصوص مُشكّلة — التشكيل يتقطّع على هذا الخط) */
 .page-title,
