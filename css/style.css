@@ -21,6 +21,17 @@ html[data-theme="oled"]{--sys-blue:#5aabff;--sys-green:#4dd866;--sys-indigo:#919
 html[data-theme="dark"]{--brand-deep:#4dd866;--brand-mid:#2eb84d;--brand-soft:#3dcc5e}
 html[data-theme="oled"]{--brand-deep:#4dd866;--brand-mid:#2eb84d;--brand-soft:#3dcc5e}
 
+/* ── Primitives (fixed — deliberately NEVER theme-reactive) ─
+   Raw brand colors for surfaces that are a solid color block paired
+   with white text (buttons, badges, gradient banners) — these must
+   stay the same hex in every theme, or white-on-color contrast breaks
+   (e.g. white on the dark-mode --green-deep bright green is ~1.85:1).
+   This is the single source of truth previously duplicated with
+   independent hex literals in js/design-system.js's --zad-green-*/
+   --zad-gold-* and in several pages' own local :root blocks — those
+   now alias these instead of re-declaring the values. */
+:root{--primitive-green-900:#0e3b2e;--primitive-green-700:#1a5d47;--primitive-green-500:#2a7a5f;--primitive-green-100:#e8f4ef;--primitive-gold-700:#b87200;--primitive-gold-500:#c9a14a;--primitive-gold-100:#fff8e8}
+
 /* ── App Theme Variables ────────────────────────────────── */
 :root{--bg:#f5f4f0;--card:#ffffff;--card-2:#f7f3ea;--sand:#faf9f6;--sand-2:#ebdfc4;--gold-pale:#fdf5e0;--green-pale:#e8f4ef;--ink:#1a1a18;--muted:#757570;--muted-2:#5c6c58;--green-deep:var(--brand-deep);--green-mid:var(--brand-mid);--green-soft:var(--brand-soft);--gold:var(--brand-gold);--gold-soft:var(--brand-gold-lt);--gold-dark:var(--brand-gold-dk);--border:#e5e4de;--shadow:0 10px 30px -12px rgba(14,59,46,.18);--shadow-sm:0 4px 14px -6px rgba(14,59,46,.12);--shadow-gold:0 8px 24px -8px rgba(201,161,74,.35);--clr-success:var(--sys-green);--clr-warning:var(--sys-orange);--clr-error:var(--sys-red);--clr-info:var(--sys-blue);--clr-link:var(--sys-blue);--radius:18px;--radius-sm:12px;--t:0.25s;--ease:cubic-bezier(0.4,0,0.2,1)}
 html[data-theme="dark"]{--bg:#0a1410;--card:#141f1a;--card-2:#162019;--sand:#1a2820;--sand-2:#1a2618;--gold-pale:#1a1608;--green-pale:#0e2a1e;--ink:#f0f0ea;--muted:#8a9a90;--muted-2:#7a9a7a;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#e6c97a;--gold-soft:#f0d898;--gold-dark:#c9a14a;--border:#2a3830;--shadow:0 10px 30px -12px rgba(0,0,0,.6);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.4)}
