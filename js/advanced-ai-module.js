@@ -214,7 +214,7 @@ const ADVANCED_AI_CSS = `
 .aa-empty { text-align: center; padding: 20px; color: var(--muted, #888); }
 .seerah-timeline { display: flex; flex-direction: column; gap: 12px; }
 .seerah-event { padding: 16px; border-radius: 14px; background: var(--sand, #faf9f6); border-right: 4px solid var(--zad-purple, #4a3580); }
-.se-period { font-size: 12px; color: var(--zad-purple, #4a3580); font-weight: 700; }
+.se-period { font-size: 12px; color: var(--sys-purple, #4a3580); font-weight: 700; }
 .se-title { font-size: 17px; font-weight: 800; margin: 4px 0; }
 .se-lesson { font-size: 14px; color: var(--ink); }
 .seerah-ai-note, .fiqh-disclaimer { font-size: 13px; color: var(--muted, #888); padding: 12px; background: rgba(0,0,0,.03); border-radius: 10px; margin-top: 16px; }

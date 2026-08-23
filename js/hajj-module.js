@@ -275,7 +275,7 @@ const HAJJ_CSS = `
 .hajj-type-badge { background: rgba(14,59,46,.1); color: var(--green-deep, #0e3b2e);
   padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; }
 .hajj-missed-banner { background: rgba(192,57,43,.1); border: 1px solid rgba(192,57,43,.3);
-  color: var(--zad-coral, #c0392b); padding: 14px; border-radius: 12px; font-size: 13px;
+  color: var(--sys-red, #c0392b); padding: 14px; border-radius: 12px; font-size: 13px;
   line-height: 1.7; margin-bottom: 16px; }
 .hajj-progress-txt { font-size: 14px; color: var(--muted, #888); margin-bottom: 16px; text-align: center; }
 .manasik-timeline { position: relative; }
@@ -293,9 +293,12 @@ const HAJJ_CSS = `
 .type-rukn { background: rgba(192,57,43,.15); color: #c0392b; }
 .type-wajib { background: rgba(184,114,0,.15); color: #b87200; }
 .type-sunnah { background: rgba(45,138,106,.15); color: #2d8a6a; }
-.critical-flag { font-size: 11px; color: var(--zad-gold-700, #b87200); }
+html[data-theme="dark"] .type-rukn, html[data-theme="oled"] .type-rukn { color: var(--sys-red, #c0392b); }
+html[data-theme="dark"] .type-wajib, html[data-theme="oled"] .type-wajib { color: var(--gold-dark, #b87200); }
+html[data-theme="dark"] .type-sunnah, html[data-theme="oled"] .type-sunnah { color: var(--sys-green, #2d8a6a); }
+.critical-flag { font-size: 11px; color: var(--gold-dark, #b87200); }
 .manasik-time { font-size: 12px; color: var(--muted, #888); margin-bottom: 4px; }
-.manasik-leave { font-size: 12px; color: var(--zad-coral, #c0392b); margin-bottom: 10px; }
+.manasik-leave { font-size: 12px; color: var(--sys-red, #c0392b); margin-bottom: 10px; }
 .manasik-btn { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border, #ddd);
   background: #fff; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
 .manasik-btn.done { background: var(--zad-green-900, #0e3b2e); color: #fff; border: none; }

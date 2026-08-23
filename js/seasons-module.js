@@ -305,7 +305,7 @@ const SEASONS_CSS = `
 .season-active-card { border: 2px solid; border-radius: 18px; padding: 20px; margin-bottom: 16px; background: var(--card, #fff); }
 .season-badge { display: inline-block; color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 10px; }
 .season-name { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
-.season-highlight { font-size: 14px; color: var(--zad-gold-700, #b87200); font-weight: 700; margin-bottom: 12px; }
+.season-highlight { font-size: 14px; color: var(--gold-dark, #b87200); font-weight: 700; margin-bottom: 12px; }
 .season-hadith { font-size: 14px; line-height: 1.8; color: var(--ink); padding: 12px; background: rgba(0,0,0,.03); border-radius: 12px; margin-bottom: 12px; }
 .season-source { font-size: 12px; color: var(--muted, #888); }
 .season-deeds { display: flex; flex-direction: column; gap: 6px; }

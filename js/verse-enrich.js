@@ -78,7 +78,7 @@ function showTafsirModal(verseSrc, tafsir) {
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
   modal.innerHTML = `
     <div style="background:var(--card,#fff);border-radius:20px;padding:24px;max-width:440px;max-height:75vh;overflow:auto">
-      <div style="font-size:13px;color:var(--zad-gold-700,#b87200);font-weight:700;margin-bottom:4px">تفسير السعدي</div>
+      <div style="font-size:13px;color:var(--gold-dark,#b87200);font-weight:700;margin-bottom:4px">تفسير السعدي</div>
       <h3 style="margin:0 0 16px;font-size:15px;color:var(--muted,#888)">${verseSrc}</h3>
       <div style="font-size:15px;line-height:2;color:var(--ink)">${tafsir}</div>
       <div style="font-size:12px;color:var(--muted,#888);margin-top:16px">المصدر: Quran.com — تفسير السعدي</div>
@@ -91,7 +91,7 @@ function showTafsirModal(verseSrc, tafsir) {
 
 const VERSE_EXPAND_CSS = `
 .verse-expand-btn { background: rgba(201,161,74,.12); border: 1px solid rgba(201,161,74,.3);
-  color: var(--zad-gold-700, #b87200); padding: 6px 14px; border-radius: 20px;
+  color: var(--gold-dark, #b87200); padding: 6px 14px; border-radius: 20px;
   font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 .verse-expand-btn:disabled { opacity: 0.6; cursor: wait; }
 `;

@@ -70,6 +70,8 @@ html[data-theme="dark"] .ts-ayah-text,html[data-theme="oled"] .ts-ayah-text{colo
 .ts-word.pending{color:var(--muted)}
 html[data-theme="dark"] .ts-word.correct{color:var(--sys-green)}
 html[data-theme="dark"] .ts-word.wrong{color:#ff6b6b}
+html[data-theme="oled"] .ts-word.correct{color:var(--sys-green)}
+html[data-theme="oled"] .ts-word.wrong{color:#ff6b6b}
 
 /* Ayah navigation */
 .ts-ayah-nav{
@@ -178,6 +180,7 @@ html[data-theme="dark"] .ts-score-pct{color:var(--sys-green)}
 }
 .ts-error-ico{font-size:18px;flex-shrink:0;margin-top:1px}
 .ts-error-word{font-weight:700;color:#c0392b;font-family:'Amiri',serif;font-size:16px}
+html[data-theme="dark"] .ts-error-word,html[data-theme="oled"] .ts-error-word{color:var(--sys-red)}
 .ts-error-note{font-size:12px;color:var(--muted);margin-top:3px}
 .ts-correct-note{
   background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.2);
