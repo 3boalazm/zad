@@ -208,6 +208,19 @@ html[data-theme="dark"],html[data-theme="oled"]{
 .btn-danger{background:var(--button-danger-bg);color:var(--button-danger-text)}
 .btn-danger:hover{opacity:.88;transform:translateY(-1px);box-shadow:var(--shadow-sm)}
 
+/* ── Input (canonical standalone text field) ──────────────
+   For a bordered, self-contained field with its own background —
+   NOT for inputs meant to sit borderless inside an already-chromed
+   container (.search input, .chat-input-row input, .search-box-big
+   input intentionally stay bare, the parent supplies the pill/border).
+   Pattern lifted as-is from .az-add-field input, the one place this
+   already existed correctly; now reusable instead of re-implemented
+   per consumer (the profile modal's name field was previously a
+   one-off inline style with no class at all). */
+.input{width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:15px;outline:none;box-sizing:border-box;transition:border-color var(--t)}
+.input:focus{border-color:var(--gold)}
+html[data-theme="dark"] .input,html[data-theme="oled"] .input{background:var(--sand-2)}
+
 /* ── Stats Cards ───────────────────────────────────────── */
 .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:background var(--t),border-color var(--t)}
 .stat .v{font-size:28px;font-weight:900;color:var(--green-deep)}
