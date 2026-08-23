@@ -15,10 +15,9 @@
    نستبدل الأخضر النيون بأخضر زمردي أهدأ + خلفية بعمق
    ═══════════════════════════════════════════════════════════ */
 html[data-theme="dark"] {
-  /* أخضر أهدأ من النيون — يحافظ على الطابع الروحاني */
-  --green-deep: #5fb87a;
-  --green-mid:  #3f9960;
-  --green-soft: #4fa86d;
+  /* --green-deep/mid/soft removed from here — css/style.css's html[data-theme="dark"]
+     block already defines these (and has a matching oled block), so keeping a second,
+     different-valued override here made dark and oled render different greens. */
   /* خلفية بعمق متدرّج */
   --bg: #0a1410;
 }
@@ -352,6 +351,39 @@ html[data-theme="oled"] .sum-hero-sub, html[data-theme="oled"] .mh-sub{
 html[data-theme="dark"] .portfolio-header-sub, html[data-theme="dark"] .cc-subtitle,
 html[data-theme="oled"] .portfolio-header-sub, html[data-theme="oled"] .cc-subtitle{
   color:rgba(255,255,255,.65);
+}
+/* المزيد من العناوين الفرعية فوق خلفيات هيرو ملوّنة — نفس السبب أعلاه، كل قيمة
+   منسوخة من قاعدة الكلاس نفسه في صفحته (اللون/الشفافية المقصودين أصلاً) */
+html[data-theme="dark"] .rq-hero-sub,
+html[data-theme="oled"] .rq-hero-sub{
+  color:rgba(255,255,255,.8);
+}
+html[data-theme="dark"] .hm-hero-sub, html[data-theme="dark"] .ph-sub,
+html[data-theme="oled"] .hm-hero-sub, html[data-theme="oled"] .ph-sub{
+  color:rgba(255,255,255,.7);
+}
+html[data-theme="dark"] .nw-hero-sub,
+html[data-theme="oled"] .nw-hero-sub{
+  color:rgba(255,255,255,.75);
+}
+html[data-theme="dark"] .dua-hero-sub,
+html[data-theme="oled"] .dua-hero-sub{
+  color:rgba(255,255,255,.82);
+}
+html[data-theme="dark"] .zh-hero-sub,
+html[data-theme="oled"] .zh-hero-sub{
+  color:rgba(255,255,255,.9);
+}
+html[data-theme="dark"] .pl-hero-sub,
+html[data-theme="oled"] .pl-hero-sub{
+  color:rgba(255,255,255,.6);
+}
+/* .gh-hero-sub's own base rule uses var(--gold-dark), not white — .gh-hero's
+   background is var(--green-pale)/var(--gold-pale) (not a fixed dark gradient
+   like the others above), so its intended color is the theme-aware gold token */
+html[data-theme="dark"] .gh-hero-sub,
+html[data-theme="oled"] .gh-hero-sub{
+  color:var(--gold-dark);
 }
 
 /* ══ Theme segmented control (للصفحات اللي تحمّل premium-ui فقط مثل إذاعة القرآن) ══ */

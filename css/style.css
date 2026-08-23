@@ -13,11 +13,18 @@ html[data-theme="oled"]{--sys-blue:#5aabff;--sys-green:#4dd866;--sys-indigo:#919
 
 /* ── Brand Colors ───────────────────────────────────────── */
 :root{--brand-deep:#0e3b2e;--brand-mid:#1a5d47;--brand-soft:#2a7a5f;--brand-gold:#c9a14a;--brand-gold-lt:#e6c97a;--brand-gold-dk:#8a6822}
+/* --brand-deep/mid/soft feed --green-deep/mid/soft (and any consumer that
+   references --brand-* directly, e.g. hasad.html's .zad-card /
+   .share-harvest-card gradients). Without these, dark/oled kept the
+   light-mode dark-forest gradient instead of the bright dark-mode green
+   already used for --green-deep/mid/soft below. */
+html[data-theme="dark"]{--brand-deep:#4dd866;--brand-mid:#2eb84d;--brand-soft:#3dcc5e}
+html[data-theme="oled"]{--brand-deep:#4dd866;--brand-mid:#2eb84d;--brand-soft:#3dcc5e}
 
 /* ── App Theme Variables ────────────────────────────────── */
-:root{--bg:#faf6ec;--card:#ffffff;--card-2:#f7f3ea;--sand:#f5ecd9;--sand-2:#ebdfc4;--gold-pale:#fdf5e0;--green-pale:#e8f4ef;--ink:#10241d;--muted:#56635c;--muted-2:#7c8c7e;--green-deep:var(--brand-deep);--green-mid:var(--brand-mid);--green-soft:var(--brand-soft);--gold:var(--brand-gold);--gold-soft:var(--brand-gold-lt);--gold-dark:var(--brand-gold-dk);--border:rgba(14,59,46,.09);--shadow:0 10px 30px -12px rgba(14,59,46,.18);--shadow-sm:0 4px 14px -6px rgba(14,59,46,.12);--shadow-gold:0 8px 24px -8px rgba(201,161,74,.35);--clr-success:var(--sys-green);--clr-warning:var(--sys-orange);--clr-error:var(--sys-red);--clr-info:var(--sys-blue);--clr-link:var(--sys-blue);--radius:18px;--radius-sm:12px;--t:0.25s;--ease:cubic-bezier(0.4,0,0.2,1)}
-html[data-theme="dark"]{--bg:#0a0f0c;--card:#111a14;--card-2:#162019;--sand:#1c2a1e;--sand-2:#1a2618;--gold-pale:#1a1608;--green-pale:#0d1f12;--ink:#d8ead8;--muted:#7a9a7a;--muted-2:#4a6a4a;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#e6c97a;--gold-soft:#f0d898;--gold-dark:#c9a14a;--border:rgba(255,255,255,.08);--shadow:0 10px 30px -12px rgba(0,0,0,.6);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.4)}
-html[data-theme="oled"]{--bg:#000000;--card:#0a0a0a;--card-2:#101010;--sand:#080808;--sand-2:#0d0d0d;--gold-pale:#0a0800;--green-pale:#040a05;--ink:#f5fef6;--muted:#b8cfba;--muted-2:#7a9a7c;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#f0d080;--gold-soft:#f8e4a0;--gold-dark:#c9a14a;--border:rgba(255,255,255,.09);--shadow:0 10px 30px -12px rgba(0,0,0,.85);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.7)}
+:root{--bg:#f5f4f0;--card:#ffffff;--card-2:#f7f3ea;--sand:#faf9f6;--sand-2:#ebdfc4;--gold-pale:#fdf5e0;--green-pale:#e8f4ef;--ink:#1a1a18;--muted:#757570;--muted-2:#5c6c58;--green-deep:var(--brand-deep);--green-mid:var(--brand-mid);--green-soft:var(--brand-soft);--gold:var(--brand-gold);--gold-soft:var(--brand-gold-lt);--gold-dark:var(--brand-gold-dk);--border:#e5e4de;--shadow:0 10px 30px -12px rgba(14,59,46,.18);--shadow-sm:0 4px 14px -6px rgba(14,59,46,.12);--shadow-gold:0 8px 24px -8px rgba(201,161,74,.35);--clr-success:var(--sys-green);--clr-warning:var(--sys-orange);--clr-error:var(--sys-red);--clr-info:var(--sys-blue);--clr-link:var(--sys-blue);--radius:18px;--radius-sm:12px;--t:0.25s;--ease:cubic-bezier(0.4,0,0.2,1)}
+html[data-theme="dark"]{--bg:#0a1410;--card:#141f1a;--card-2:#162019;--sand:#1a2820;--sand-2:#1a2618;--gold-pale:#1a1608;--green-pale:#0e2a1e;--ink:#f0f0ea;--muted:#8a9a90;--muted-2:#7a9a7a;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#e6c97a;--gold-soft:#f0d898;--gold-dark:#c9a14a;--border:#2a3830;--shadow:0 10px 30px -12px rgba(0,0,0,.6);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.4)}
+html[data-theme="oled"]{--bg:#000000;--card:#0a0f0d;--card-2:#101010;--sand:#0f1a14;--sand-2:#0d0d0d;--gold-pale:#0a0800;--green-pale:#0e2a1e;--ink:#f5fef6;--muted:#b8cfba;--muted-2:#7a9a7c;--green-deep:#4dd866;--green-mid:#2eb84d;--green-soft:#3dcc5e;--gold:#f0d080;--gold-soft:#f8e4a0;--gold-dark:#c9a14a;--border:#2a3830;--shadow:0 10px 30px -12px rgba(0,0,0,.85);--shadow-sm:0 4px 14px -6px rgba(0,0,0,.7)}
 
 /* إتاحة: عنصر مخفي بصرياً لكن مقروء لقارئات الشاشة (h1 وغيره) */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -809,13 +816,13 @@ html[data-theme="dark"] .ts-laps,html[data-theme="oled"] .ts-laps{color:var(--sy
 .dhikr-card:hover{border-color:var(--dc-color,var(--gold));background:var(--dc-bg,rgba(201,161,74,.08));transform:translateY(-2px)}
 .dhikr-card.active{border-color:var(--dc-color,var(--gold));background:var(--dc-bg,rgba(201,161,74,.12));box-shadow:0 0 0 3px color-mix(in srgb,var(--dc-color,var(--gold)) 20%,transparent)}
 .dhikr-card.active::before{content:"▶";position:absolute;top:8px;left:10px;font-size:9px;color:var(--dc-color,var(--gold));opacity:.8}
-.dc-arabic{font-family:'Amiri',serif;font-size:16px;line-height:1.75;color:var(--dc-color,var(--ink));margin-bottom:4px;transition:color .2s}
+.dc-arabic{font-family:'Amiri',serif;font-size:16px;line-height:1.75;color:var(--ink);margin-bottom:4px;transition:color .2s}
 html[data-theme="dark"] .dc-arabic,html[data-theme="oled"] .dc-arabic{color:var(--dc-color)}
 .dc-sub-lbl{font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'Tajawal',sans-serif}
 .dc-unit{font-size:11px;color:var(--muted-2);margin-right:2px}
-html[data-theme="dark"] .dc-arabic,html[data-theme="oled"] .dc-arabic{color:var(--dc-color)}
 .dc-meta{display:flex;align-items:baseline;gap:3px;margin-bottom:6px}
-.dc-count{font-size:22px;font-weight:900;color:var(--dc-color,var(--green-deep));font-feature-settings:"tnum";transition:color .2s}
+.dc-count{font-size:22px;font-weight:900;color:var(--green-deep);font-feature-settings:"tnum";transition:color .2s}
+html[data-theme="dark"] .dc-count,html[data-theme="oled"] .dc-count{color:var(--dc-color)}
 .dc-sep,.dc-target{font-size:12px;color:var(--muted)}
 .dc-prog{height:4px;background:var(--sand-2);border-radius:99px;overflow:hidden}
 .dc-prog span{display:block;height:100%;background:var(--dc-color,var(--gold));border-radius:99px;transition:width .4s var(--ease)}
