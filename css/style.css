@@ -110,7 +110,7 @@ html[data-theme="oled"] .sidebar{background:linear-gradient(180deg,#000000,#0505
 html[data-theme="dark"] .btn-theme:hover,html[data-theme="oled"] .btn-theme:hover{background:var(--sys-green);color:#000;border-color:var(--sys-green)}
 
 /* ── Cards ─────────────────────────────────────────────── */
-.card{min-height:unset;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:background var(--t) var(--ease),border-color var(--t) var(--ease)}
+.card{min-height:unset;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--card-radius);padding:22px;box-shadow:var(--card-shadow);position:relative;overflow:hidden;transition:background var(--t) var(--ease),border-color var(--t) var(--ease)}
 .card h3{font-size:16px;color:var(--green-deep);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .card p{color:var(--muted);font-size:14px;line-height:1.7}
 .card .ico-lg{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--sand),var(--sand-2));display:grid;place-items:center;color:var(--brand-deep);font-size:22px;margin-bottom:14px}
@@ -146,8 +146,8 @@ a.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
 .verse-dot.active{background:var(--gold);width:22px;border-radius:4px}
 
 /* ── Progress Bar ──────────────────────────────────────── */
-.progress{height:10px;background:var(--sand-2);border-radius:99px;overflow:hidden;margin-top:8px}
-.progress>span{will-change:width;display:block;height:100%;background:linear-gradient(90deg,var(--green-soft),var(--gold));border-radius:99px;transition:width .8s var(--ease);will-change:width}
+.progress{height:10px;background:var(--progress-track);border-radius:99px;overflow:hidden;margin-top:8px}
+.progress>span{will-change:width;display:block;height:100%;background:linear-gradient(90deg,var(--progress-fill-from),var(--progress-fill-to));border-radius:99px;transition:width .8s var(--ease);will-change:width}
 
 /* ── Checklist Items ───────────────────────────────────── */
 .check{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:13px;background:var(--card);margin-bottom:9px;cursor:pointer;transition:background var(--t),border-color var(--t),transform var(--t);user-select:none}
@@ -164,20 +164,38 @@ html[data-theme="dark"] .check.done .box,html[data-theme="oled"] .check.done .bo
 .section-title{display:flex;align-items:center;gap:10px;margin:32px 0 14px;font-size:17px;color:var(--green-deep);font-weight:800}
 .section-title::before{content:"";width:5px;height:20px;background:linear-gradient(180deg,var(--gold),var(--green-soft));border-radius:3px;flex-shrink:0}
 
+/* ── Component tokens (Button/Card/Badge/Progress) ───────
+   Contract layer between semantic tokens (--green-deep, --sys-red, …)
+   and component CSS. Values below are aliases of what .btn-primary/
+   .card/.badge/.progress already rendered — introducing this layer is
+   a no-op visually. Its purpose is so the many one-off button/card/
+   badge/progress look-alikes scattered per-page can reference the same
+   contract instead of re-hardcoding colors (and silently drifting out
+   of theme sync, the exact bug pattern fixed repeatedly this session). */
+:root{
+  --button-primary-bg:var(--brand-deep);--button-primary-text:#fff;--button-primary-hover-bg:var(--brand-mid);
+  --button-gold-from:var(--brand-gold);--button-gold-to:var(--brand-gold-lt);--button-gold-text:#3a2a08;
+  --button-ghost-text:var(--green-deep);--button-ghost-border:rgba(42,122,95,.4);--button-ghost-hover-bg:var(--green-pale);--button-ghost-hover-border:var(--green-soft);
+  --button-danger-bg:var(--sys-red);--button-danger-text:#fff;
+  --card-bg:var(--card);--card-border:var(--border);--card-radius:var(--radius);--card-shadow:var(--shadow);
+  --badge-bg:var(--card);--badge-border:var(--border);
+  --progress-track:var(--sand-2);--progress-fill-from:var(--green-soft);--progress-fill-to:var(--gold);
+}
+html[data-theme="dark"],html[data-theme="oled"]{
+  --button-primary-bg:var(--sys-green);--button-primary-text:#001a08;--button-primary-hover-bg:#5de878;
+  --button-ghost-text:var(--sys-green);--button-ghost-border:rgba(77,216,102,.35);--button-ghost-hover-bg:rgba(77,216,102,.1);--button-ghost-hover-border:var(--sys-green);
+}
+
 /* ── Buttons ───────────────────────────────────────────── */
 .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:99px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:background var(--t),transform var(--t),box-shadow var(--t),opacity var(--t);font-size:14px}
 .btn:active{transform:scale(.96)}
-.btn-primary{background:var(--brand-deep);color:#fff}
-.btn-primary:hover{background:var(--brand-mid);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
-html[data-theme="dark"] .btn-primary,html[data-theme="oled"] .btn-primary{background:var(--sys-green);color:#001a08}
-html[data-theme="dark"] .btn-primary:hover,html[data-theme="oled"] .btn-primary:hover{background:#5de878}
-.btn-gold{background:linear-gradient(135deg,var(--brand-gold),var(--brand-gold-lt));color:#3a2a08}
+.btn-primary{background:var(--button-primary-bg);color:var(--button-primary-text)}
+.btn-primary:hover{background:var(--button-primary-hover-bg);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.btn-gold{background:linear-gradient(135deg,var(--button-gold-from),var(--button-gold-to));color:var(--button-gold-text)}
 .btn-gold:hover{opacity:.9;transform:translateY(-1px);box-shadow:var(--shadow-gold)}
-.btn-ghost{background:transparent;color:var(--green-deep);border:1.5px solid rgba(42,122,95,.4)}
-.btn-ghost:hover{background:var(--green-pale);border-color:var(--green-soft)}
-html[data-theme="dark"] .btn-ghost,html[data-theme="oled"] .btn-ghost{color:var(--sys-green);border-color:rgba(77,216,102,.35)}
-html[data-theme="dark"] .btn-ghost:hover,html[data-theme="oled"] .btn-ghost:hover{background:rgba(77,216,102,.1)}
-.btn-danger{background:var(--sys-red);color:#fff}
+.btn-ghost{background:transparent;color:var(--button-ghost-text);border:1.5px solid var(--button-ghost-border)}
+.btn-ghost:hover{background:var(--button-ghost-hover-bg);border-color:var(--button-ghost-hover-border)}
+.btn-danger{background:var(--button-danger-bg);color:var(--button-danger-text)}
 .btn-danger:hover{opacity:.88;transform:translateY(-1px);box-shadow:var(--shadow-sm)}
 
 /* ── Stats Cards ───────────────────────────────────────── */
@@ -219,7 +237,7 @@ html[data-theme="oled"] .mushaf{background:linear-gradient(180deg,#0c0900,#08060
 
 /* ── Badges Grid ───────────────────────────────────────── */
 .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:16px}
-.badge{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 14px;text-align:center;box-shadow:var(--shadow);transition:transform var(--t),box-shadow var(--t)}
+.badge{background:var(--badge-bg);border:1px solid var(--badge-border);border-radius:var(--card-radius);padding:22px 14px;text-align:center;box-shadow:var(--card-shadow);transition:transform var(--t),box-shadow var(--t)}
 .badge:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
 .badge.earned{border-color:rgba(201,161,74,.45)}
 html[data-theme="dark"] .badge.earned,html[data-theme="oled"] .badge.earned{border-color:rgba(255,229,77,.4)}
