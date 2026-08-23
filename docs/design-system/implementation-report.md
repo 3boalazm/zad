@@ -15,9 +15,9 @@
 ## 1. ملخص تنفيذي
 
 **الجولة الأولى (P0/P1):** Workflow بـ١٤ وكيلاً، إصلاحات تباين ونقاط عمياء متفرقة. ٧ commits.
-**الجولة الثانية (النظام الكامل):** بناء مباشر + Workflow بـ٤ وكلاء إضافيين. ١٣ commit.
+**الجولة الثانية (النظام الكامل):** بناء مباشر + Workflow بـ٤ وكلاء إضافيين + ترحيل RTL. ١٤ commit.
 
-**الإجمالي: ٢٠ commit، ٣٥+ ملفاً معدَّلاً، ٢ ملف محذوف (كود ميت مؤكَّد)، صفر أخطاء syntax، 37/37 اختبار خلفية ناجح طوال الوقت.**
+**الإجمالي: ٢١ commit، ٣٥+ ملفاً معدَّلاً، ٢ ملف محذوف (كود ميت مؤكَّد)، صفر أخطاء syntax، 37/37 اختبار خلفية ناجح طوال الوقت.**
 
 ---
 
@@ -78,6 +78,16 @@
 - **`sync.html`'s `.btn-danger`**: الصفحة لا تحمّل نظام التصميم المشترك إطلاقاً — لها توكنز ومكوّنات خاصة بها بالكامل (نمط GitHub-dark)، و`.btn-danger` هنا عضو متّسق من عائلة `.badge.ok/.warn/.fail` بنفس الصيغة. **لا تضارب حقيقي، تُركت كما هي.**
 - **`profile.html`'s `.pf-btn-danger`**: عائلة أزرار كاملة خاصة بالصفحة (`.pf-btn-primary/-ghost/-danger`) بشكل مربّع متّسق مع بقية عناصر الصفحة، مختلف عمداً عن شكل `.btn` الدائري المشترك. تحويلها كان سيكسر الاتساق مع الأزرار المجاورة لها مباشرة. تباينها في الداكن/OLED (المُصلَح الأسبوع الماضي) أُعيد التحقّق منه حيّاً: 5.44:1 (فاتح), 6.68:1 (داكن), 7.63:1 (OLED) — كلها تتجاوز AA بهامش مريح.
 
+### 3.9 ترحيل RTL لـ logical properties — بدأ فعلياً (لم يكن مؤجَّلاً بعد الآن)
+
+**اكتشاف جذري أثناء التحويل:** `css/style.css`'s `html,body{...}` كان يفرض `direction:rtl` مباشرة بـCSS، بمعزل تام عن attribute الـ`dir`. النتيجة: تبديل اللغة للإنجليزية/الفرنسية عبر `lang.js` (اللي بيغيّر `document.documentElement.dir='ltr'` بشكل صحيح) **ما كانش بيغيّر خاصية `direction` الفعلية إطلاقاً** — القيمة كانت تفضل `rtl` دايماً بغض النظر عن الـattribute. ده بالظبط سبب وجود override يدوي بـpixel فعلي (`left`/`right`) للقائمة الجانبية على الموبايل بدل الاعتماد على logical properties من الأساس — المطوّر الأصلي كان مضطر لكده لأن `direction` نفسها كانت "مكسورة". اتحذف الفرض (`<html dir="rtl">` أصلاً موجودة بشكل افتراضي بكل الصفحات فمفيش داعي لتكرارها بـCSS)، واتحقق حيّاً إن `direction` بقت فعلاً بتتبع الـattribute صح في الاتجاهين.
+
+بعد الإصلاح ده، اتحوّلت أول دفعة من القيم الفعلية (`left`/`right`/`margin-left`/`margin-right`/`border-right`/`padding-right`) لـlogical properties (`inset-inline-*`, `margin-inline-*`, `border-inline-*`, `padding-inline-*`) — القائمة الجانبية والمحتوى الرئيسي (كان بدون أي دعم LTR على الديسكتوب إطلاقاً قبل كده!)، `.scroll-top-btn` (توحيد override كان موجود بالفعل)، وأنماط "الشريط الجانبي الملوّن" المتكرّرة (`.timeline`, `.rules li`, `.az-meaning`, `.summary-block`, `.drop-cap`)، بالإضافة لتوحيدات رمزية (`inset-inline` بدل `left`+`right` منفصلين لعناصر متماثلة أصلاً).
+
+كل تحويل اتحقق منه **باتجاهين فعليين حيّاً** (`dir="rtl"` ثم `dir="ltr"` على نفس العنصر، قراءة `getComputedStyle` بعد كل تبديل) — مش قراءة كود بس. القيم في RTL طابقت السلوك الأصلي تماماً؛ في LTR القائمة الجانبية والمحتوى بقوا فعلاً بينعكسوا لأول مرة على الديسكتوب.
+
+**استُثنيت عمداً** (موثَّقة، مش منسية): `.fast-day.arafah`'s شارة النجمة، `.notif-dot`، `.fab-ai` (ركن ثابت يبدو مقصوداً)، مثلث ▶ التشغيل في `.dhikr-card` (رمز اتجاهي عالمي، عادة ثابت بغض النظر عن اتجاه اللغة)، علامة الاقتباس الزخرفية في `.key-quote`، بسملة الخلفية في `.hijri-bar`، وشريط `.pyramid-lead` (تعقيد إضافي بسبب زوايا border-radius غير المتماثلة). كل دول قرارات تصميمية غامضة تحتاج فحصاً بصرياً حقيقي (لقطة شاشة مقارنة) قبل التحويل، ولم يتوفّر لي وسيلة تصوير موثوقة لمقارنة RTL/LTR بصرياً هذه الجلسة — الاعتماد كان على `getComputedStyle` فقط.
+
 ---
 
 ## 4. ما تبقّى مؤجَّلاً عمداً (بعد الجولتين)
@@ -85,7 +95,7 @@
 | البند | لماذا |
 |---|---|
 | توحيد الأزرار/الشارات/الـprogress "one-off" المتبقية (~١٤ كلاساً: `.az-btn-count`, `.wird-complete-btn`, `.dc-day-task-btn`, `.vid-action-btn`, إلخ) | كلها مُصلَحة تباينياً بالفعل من تمريرات سابقة (تحقَّق فردي لكل واحد وقتها) — الترحيل لعقد المكوّن الآن قيمته معمارية بحتة، بلا فائدة إصلاح خلل فعلي، وبمخاطرة تعديل ١٤ موضعاً بلا أداة visual-regression. |
-| ترحيل RTL لـlogical properties (`margin-inline` بدل `left`/`right`، ٤٩ حالة) | RTL يعمل بشكل صحيح ١٠٠٪ فعلياً الآن (تحقَّق: `dir="rtl"`/`lang="ar"` على كل الصفحات الـ٧٣). التحويل الآلي لكل حالة خطر حقيقي — كل `left`/`right` يحتاج قراءة السياق ليُقرَّر هل يقابله `inset-inline-start` أو `-end`، والتحويل الأعمى قد يقلب تخطيطاً. دَين تقني حقيقي، ليس bug. |
+| باقي ترحيل RTL لـlogical properties (٧ حالات متبقية زخرفية: شارة نجمة `.fast-day.arafah`, `.notif-dot`, `.fab-ai`, مثلث ▶ التشغيل، علامة الاقتباس الزخرفية، بسملة الخلفية، شريط `.pyramid-lead`) | **بدأ فعلياً هذه الجلسة (§3.9)** — الحالات الواضحة (٢٢ منها، بما فيها اكتشاف واكتشاف/إصلاح جذري لخلل `direction:rtl`) اتحوّلت واتحقّق منها حيّاً باتجاهين. المتبقّي حالات زخرفية غامضة (ركن ثابت مقصود؟ أو يجب أن ينعكس؟) تحتاج فحصاً بصرياً حقيقي (لقطة شاشة) لا رقمياً فقط — لم يتوفّر لي وسيلة تصوير موثوقة هذه الجلسة. |
 | حذف `injectComponentCSS()` نفسها (باقي كود `.zd-*` الميت في `js/ui/design-tokens.js`) | تنظيف صغير متبقٍّ، خارج نطاق §3.6 كما نُفِّذت. |
 | ربط زر "زهرة/العذر" من صفحة الإعدادات | قرار منتج، ليس تقنياً. |
 | `/api/gemini` بلا route | موثَّق بالكامل في `QA-FINDINGS-2026-08-23.md`، يحتاج قرار بنية تحتية. |
@@ -130,8 +140,9 @@ f677517  Migrate .scroll-top-btn onto the button component-token contract
 48c7d04  Remove the dead ZadDesign.Components builder
 f29ceca  Add focus management to kids-school.html/kids-heroes.html's dialogs
 d19d556  Make the shared quick-takbeer popup an accessible dialog
+4f59d62  Start RTL logical-properties migration, fix a direction:rtl hardcode that silently broke LTR mode site-wide
 ```
-(الجولة الأولى: `9137dd6` حتى `4fad628`، مذكورة بالتقرير الأصلي أعلاه في §2. commit `8bfcfe7` بينهما عمل جلسة متزامنة منفصلة — WCAG audit، غير مرتبط بهذا العمل.)
+(الجولة الأولى: `9137dd6` حتى `4fad628`، مذكورة بالتقرير الأصلي أعلاه في §2. commits `8bfcfe7`/`07418c2`/`ef24961` المتفرقة بين هذه — عمل جلسة متزامنة منفصلة على نفس الريبو، WCAG audit، غير مرتبط بهذا العمل.)
 
 ---
 
@@ -145,16 +156,19 @@ d19d556  Make the shared quick-takbeer popup an accessible dialog
 | كل حوار مُصلَح فعلاً accessible (Escape/تركيز) | عالية — اختبار وظيفي حيّ لكل واحد، لا افتراض |
 | حذف الكود الميت لا يكسر شيئاً | عالية — إعادة تحقّق مستقلة قبل الحذف + اختبار حيّ بعده |
 | لا يوجد تراجع (regression) في أي سلوك | عالية — 37/37 اختبار خلفي ثابت، syntax نظيف، لا تعارض ملفات مع الجلسة المتزامنة (تحقَّق بـ`git status`/`git diff` قبل كل commit) |
+| تحويلات RTL logical properties صحيحة باتجاهين | عالية — كل تحويل تحقَّق منه فعلياً بـ`dir="rtl"` ثم `dir="ltr"` على نفس العنصر، مش قراءة كود بس (اكتُشف بسبب هذا التحقق نفسه أن `direction:rtl` كان مفروضاً بـCSS بمعزل عن الـattribute) |
+| الحالات الزخرفية المتبقية (٧) المؤجَّلة صح تصنيفها | متوسطة — حكم هندسي بلا فحص بصري فعلي (لقطة شاشة)، الاعتماد كان على المنطق فقط |
 
 ---
 
 ```
 IMPLEMENTATION STATUS:
-- Code changes: COMPLETE for scoped items (canonical primitive/component/z-index token layers, Input component, typography conflict, dead-code removal, full dialog accessibility coverage) — PARTIAL overall (RTL logical-properties migration and full one-off-component migration deliberately deferred, see §4)
+- Code changes: COMPLETE for scoped items (canonical primitive/component/z-index token layers, Input component, typography conflict, dead-code removal, full dialog accessibility coverage, direction:rtl root-cause fix + first RTL logical-properties pass) — PARTIAL overall (7 decorative RTL cases and full one-off-component migration deliberately deferred, see §4)
 - Build: N/A (no build step for this static site)
-- Tests: PASS (37/37 backend, 0 changed across both rounds; all touched CSS/JS syntax-clean)
+- Tests: PASS (37/37 backend, 0 changed across all rounds; all touched CSS/JS syntax-clean)
 - Theme matrix: PASS for every token/component touched (light/dark/oled verified live); PARTIAL overall (no automated cross-page matrix exists)
 - Accessibility: Every reachable real dialog in the app (profile modal, quick-takbeer popup, 3 kids-page dialogs) now has role/aria-modal/Escape/backdrop-click/focus-restore — Input component gap closed for its one concrete instance; broader one-off component migration still PARTIAL
+- RTL/LTR: direction:rtl hardcode removed (was silently defeating language-switch on every page); sidebar+main now correctly mirror in LTR on desktop for the first time; verified live in both directions, not just RTL
 - Remaining blockers: /api/gemini has no backend route (infra/product decision, pre-existing, documented in QA-FINDINGS-2026-08-23.md)
 - Rollback point: 2511250d8ef5811741d6c5bcbf22f744b7c192c4
 ```
