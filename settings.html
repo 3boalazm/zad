@@ -601,6 +601,8 @@ function setTheme(t) {
     if (window.STATE) { window.STATE.theme = t; if (window.saveState) window.saveState(); }
   } catch(e) {}
   updateThemeBtns(t);
+  /* زامن مؤشر التحديد في الشريط الجانبي (.theme-opt) — نفس المنطق المستخدم في applyTheme() بـ app.js */
+  document.querySelectorAll('.theme-opt').forEach(c => c.classList.toggle('active', c.dataset.theme === t));
   if (typeof showToast === 'function') {
     const labels = { light:'☀️ الوضع الفاتح', dark:'🌙 الوضع الداكن', oled:'⚫ الوضع OLED' };
     showToast(labels[t] || t);
@@ -665,6 +667,16 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Theme buttons */
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
   updateThemeBtns(currentTheme);
+  /* زامن بطاقة "المظهر" أيضاً عند التبديل من الشريط الجانبي (.theme-opt يستدعي applyTheme() من app.js
+     مباشرة، وهي لا تعرف بوجود بطاقة الإعدادات في هذه الصفحة تحديداً) — بدون تعديل app.js نفسه */
+  if (typeof window.applyTheme === 'function' && !window.applyTheme.__settingsSynced) {
+    const _origApplyTheme = window.applyTheme;
+    window.applyTheme = function(theme) {
+      _origApplyTheme(theme);
+      updateThemeBtns(theme);
+    };
+    window.applyTheme.__settingsSynced = true;
+  }
   /* System font badge */
   detectAndShowSystemFont();
 });

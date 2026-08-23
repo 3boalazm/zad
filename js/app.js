@@ -822,6 +822,12 @@ function initSidebar() {
     sidebar.classList.remove('open');
     overlay.classList.remove('active');
   };
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+  });
 }
 let toastTimer;
 function showToast(msg) {
