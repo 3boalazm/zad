@@ -619,7 +619,7 @@
   ];
   function tkbrRead() { try { return JSON.parse(localStorage.getItem(ZKEY) || '{}') || {}; } catch { return {}; } }
   function tkbrWrite(s) { try { localStorage.setItem(ZKEY, JSON.stringify(s)); } catch {} }
-  let _qCount = 0, _qPhrase = 0;
+  let _qCount = 0, _qPhrase = 0, _tkbrTrigger = null;
 
   function buildTakbeerButton() {
     if (document.getElementById('zad-tkbr-fab')) return;
@@ -640,7 +640,7 @@
     pop = document.createElement('div');
     pop.id = 'zad-tkbr-pop';
     pop.className = 'zad-tkbr-pop';
-    pop.innerHTML = `<div class="zt-card" role="dialog">
+    pop.innerHTML = `<div class="zt-card" role="dialog" aria-modal="true">
       <button class="zt-close" aria-label="إغلاق">✕</button>
       <div class="zt-tabs" id="zt-tabs"></div>
       <div class="zt-phrase" id="zt-phrase"></div>
@@ -675,6 +675,9 @@
     });
     pop.querySelector('.zt-close').onclick = closeTakbeerPop;
     pop.onclick = e => { if (e.target === pop) closeTakbeerPop(); };
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && pop.classList.contains('open')) closeTakbeerPop();
+    });
     pop.querySelector('#zt-ring-wrap').onclick = doTakbeer;
     pop.querySelector('#zt-reset').onclick = () => { _qCount = 0; refreshPop(); };
     pop.querySelector('#zt-full').onclick = () => location.href = 'takbeer.html';
@@ -711,17 +714,22 @@
   }
 
   function openTakbeerPop() {
+    _tkbrTrigger = document.activeElement;
     const pop = ensurePopup();
     const phraseEl = document.getElementById('zt-phrase');
     if (phraseEl) phraseEl.textContent = TKBR_PHRASES[_qPhrase].text;
     refreshPop();
     pop.classList.add('open');
     document.body.style.overflow = 'hidden';
+    const closeBtn = pop.querySelector('.zt-close');
+    if (closeBtn) closeBtn.focus();
   }
   function closeTakbeerPop() {
     const pop = document.getElementById('zad-tkbr-pop');
     if (pop) pop.classList.remove('open');
     document.body.style.overflow = '';
+    if (_tkbrTrigger && typeof _tkbrTrigger.focus === 'function') _tkbrTrigger.focus();
+    _tkbrTrigger = null;
   }
 
   /* ══════════════════════════════════════════════════════════════════════
