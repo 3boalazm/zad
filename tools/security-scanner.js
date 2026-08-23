@@ -25,7 +25,8 @@
     "videos.html","asma.html","ai.html","kids.html","kids-fun.html","kids-creativity.html",
     "kids-school.html","kids-heroes.html","kids-parents.html","ghars.html","zahra.html",
     "profile.html","settings.html","report.html","about.html","developer.html","privacy.html",
-    "takbeer.html"];
+    "takbeer.html","groups-privacy.html","hasad-month.html","hawwa.html","hikayat-hajj.html",
+    "maktaba-nassiya.html","zakat-ahkam.html","zakat-anwa.html"];
 
   /* ══════════════════════════════════════════════
      مُحرك الفحص
