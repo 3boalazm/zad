@@ -167,6 +167,7 @@ html[data-theme="dark"] .btn-primary:hover,html[data-theme="oled"] .btn-primary:
 html[data-theme="dark"] .btn-ghost,html[data-theme="oled"] .btn-ghost{color:var(--sys-green);border-color:rgba(77,216,102,.35)}
 html[data-theme="dark"] .btn-ghost:hover,html[data-theme="oled"] .btn-ghost:hover{background:rgba(77,216,102,.1)}
 .btn-danger{background:var(--sys-red);color:#fff}
+.btn-danger:hover{opacity:.88;transform:translateY(-1px);box-shadow:var(--shadow-sm)}
 
 /* ── Stats Cards ───────────────────────────────────────── */
 .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:background var(--t),border-color var(--t)}

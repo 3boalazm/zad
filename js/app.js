@@ -2651,8 +2651,13 @@ function showProfileModal(forceNew = false) {
   /* Remove any existing modal */
   document.getElementById('profile-modal')?.remove();
 
+  const previouslyFocused = document.activeElement;
+
   const modal = document.createElement('div');
   modal.id = 'profile-modal';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-labelledby', 'pm-title');
   modal.style.cssText = `
     position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;
     display:flex;align-items:center;justify-content:center;padding:20px;
@@ -2666,7 +2671,7 @@ function showProfileModal(forceNew = false) {
       <!-- Header -->
       <div style="background:linear-gradient(135deg,#0e3b2e,#1a5d47);padding:28px 24px;text-align:center;color:#fff;position:relative">
         <div style="font-size:52px;margin-bottom:10px">🌙</div>
-        <div style="font-size:22px;font-weight:900;font-family:'ThmanyahSans',sans-serif;margin-bottom:4px">مرحباً بك في زاد</div>
+        <div id="pm-title" style="font-size:22px;font-weight:900;font-family:'ThmanyahSans',sans-serif;margin-bottom:4px">مرحباً بك في زاد</div>
         <div style="font-size:12px;color:rgba(255,255,255,.75)">رفيقك في أفضل أيام الدنيا</div>
       </div>
 
@@ -2735,6 +2740,21 @@ function showProfileModal(forceNew = false) {
   }
 
   document.getElementById('pm-name').focus();
+
+  /* إغلاق بالنقر على الخلفية أو بمفتاح Escape — بنفس سلوك زر الإلغاء/التخطي
+     الموجود بالفعل، مع إعادة التركيز لمكانه قبل فتح النافذة */
+  function closeAndRestoreFocus() {
+    if (existing) { modal.remove(); }
+    else { skipProfile(); }
+    if (previouslyFocused && typeof previouslyFocused.focus === 'function') previouslyFocused.focus();
+  }
+  modal.addEventListener('click', e => { if (e.target === modal) closeAndRestoreFocus(); });
+  document.addEventListener('keydown', function onEsc(e) {
+    if (e.key !== 'Escape') return;
+    if (!document.body.contains(modal)) { document.removeEventListener('keydown', onEsc); return; }
+    document.removeEventListener('keydown', onEsc);
+    closeAndRestoreFocus();
+  });
 }
 
 let _selectedType = null;
