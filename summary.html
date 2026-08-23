@@ -94,7 +94,7 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
-  <meta property="og:url" content="https://test.codeandcanvas.net/summary.html">
+  <meta property="og:url" content="https://zad.codeandcanvas.net/summary.html">
   <meta property="og:title" content="زاد — أفضل أيام الدنيا">
   <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
   <meta property="og:image" content="/og-image.png">
@@ -394,7 +394,7 @@ function shareHarvest() {
   const pct  = document.getElementById('sum-total-pct')?.textContent || '0%';
   const fast = document.getElementById('sum-fasting')?.textContent || '0';
   const tak  = document.getElementById('sum-takbeer')?.textContent || '0';
-  const text = encodeURIComponent(`🕋 حصادي في عشر ذي الحجة مع زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nحمّل زاد: https://test.codeandcanvas.net`);
+  const text = encodeURIComponent(`🕋 حصادي في عشر ذي الحجة مع زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nحمّل زاد: https://zad.codeandcanvas.net`);
   const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
   window.open((isMobile ? 'whatsapp://send?text=' : 'https://web.whatsapp.com/send?text=') + text, '_blank');
 }

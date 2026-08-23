@@ -866,7 +866,7 @@ function _findDua(id) {
 
 window.duCopy = function(id) {
   const d = _findDua(id); if (!d) return;
-  const txt = `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}${d.note ? '\n💡 ' + d.note : ''}\n\nمن زاد — test.codeandcanvas.net`;
+  const txt = `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}${d.note ? '\n💡 ' + d.note : ''}\n\nمن زاد — zad.codeandcanvas.net`;
   navigator.clipboard?.writeText(txt);
   if (typeof showToast === 'function') showToast('📋 تم نسخ الدعاء');
 };

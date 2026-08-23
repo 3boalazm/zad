@@ -812,7 +812,7 @@ window.nwToggleRead = function(n) {
 window.nwCopy = function(n) {
   const h = HADITHS.find(x => x.n === n);
   if (!h) return;
-  const txt = `📜 الحديث ${h.n}: ${h.title}\n\n${h.matn}\n\n📖 المصدر: ${h.src}\n\nمن زاد — test.codeandcanvas.net`;
+  const txt = `📜 الحديث ${h.n}: ${h.title}\n\n${h.matn}\n\n📖 المصدر: ${h.src}\n\nمن زاد — zad.codeandcanvas.net`;
   navigator.clipboard?.writeText(txt);
   if (typeof showToast === 'function') showToast('📋 تم نسخ المتن');
 };

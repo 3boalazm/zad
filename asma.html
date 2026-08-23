@@ -193,9 +193,12 @@ html[data-theme="oled"] .asma-card-ar{color:var(--sys-green,#4ade80)}
 .cat-jalal{background:rgba(122,26,26,.1);color:#7a1a1a}
 .cat-jamal{background:rgba(26,96,64,.1);color:#1a6040}
 .cat-kamal{background:rgba(26,58,122,.1);color:#1a3a7a}
-html[data-theme="dark"] .cat-jalal,.asma-card:hover .cat-jalal{background:rgba(200,0,0,.12)}
-html[data-theme="dark"] .cat-jamal,.asma-card:hover .cat-jamal{background:rgba(0,160,80,.1)}
-html[data-theme="dark"] .cat-kamal,.asma-card:hover .cat-kamal{background:rgba(60,120,220,.1)}
+html[data-theme="dark"] .cat-jalal,.asma-card:hover .cat-jalal{background:rgba(200,0,0,.12);color:var(--sys-red,#ff7a74)}
+html[data-theme="dark"] .cat-jamal,.asma-card:hover .cat-jamal{background:rgba(0,160,80,.1);color:var(--sys-green,#4dd866)}
+html[data-theme="dark"] .cat-kamal,.asma-card:hover .cat-kamal{background:rgba(60,120,220,.1);color:var(--sys-blue,#5aabff)}
+html[data-theme="oled"] .cat-jalal{color:var(--sys-red,#ff7a74)}
+html[data-theme="oled"] .cat-jamal{color:var(--sys-green,#4dd866)}
+html[data-theme="oled"] .cat-kamal{color:var(--sys-blue,#5aabff)}
 
 .asma-card-actions{
   display:flex;justify-content:center;gap:6px;margin-top:8px
@@ -584,7 +587,7 @@ window.randomName = function() {
 };
 window.shareHero = function() {
   const n = NAMES[currentHeroIdx];
-  const txt = `🌺 "${n.ar}" — ${n.en}\n\n${n.m.split('<br>').slice(0,2).join('\n')}\n\nمن تطبيق زاد: test.codeandcanvas.net`;
+  const txt = `🌺 "${n.ar}" — ${n.en}\n\n${n.m.split('<br>').slice(0,2).join('\n')}\n\nمن تطبيق زاد: zad.codeandcanvas.net`;
   if (navigator.share) navigator.share({title:'أسماء الله الحسنى',text:txt});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('✅ تم نسخ الاسم'); }
 };

@@ -153,7 +153,7 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
-  <meta property="og:url" content="https://test.codeandcanvas.net/hasad.html">
+  <meta property="og:url" content="https://zad.codeandcanvas.net/hasad.html">
   <meta property="og:title" content="زاد — أفضل أيام الدنيا">
   <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
   <meta property="og:image" content="/og-image.png">
@@ -605,6 +605,10 @@ function renderBalanceChart(state) {
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   const grid = isDark ? 'rgba(255,255,255,.1)' : 'rgba(14,59,46,.12)';
   const txt  = isDark ? '#9db8a0' : '#4a5a52';
+  /* خط/تعبئة الرادار — نفس أخضر --green-deep بس بمقاسه الفاتح في الوضع الداكن،
+     زي باقي القيم فوق (grid/txt) اللي بالفعل بتتغيّر حسب الثيم */
+  const lineColor = isDark ? '#4dd866' : '#2a7a5f';
+  const fillColor = isDark ? 'rgba(77,216,102,.18)' : 'rgba(42,122,95,.18)';
 
   if (_balanceChart) _balanceChart.destroy();
   _balanceChart = new Chart(ctx, {
@@ -614,9 +618,9 @@ function renderBalanceChart(state) {
       datasets: [{
         label: 'التوازن',
         data: vals,
-        borderColor: '#2a7a5f',
+        borderColor: lineColor,
         borderWidth: 2.5,
-        backgroundColor: 'rgba(42,122,95,.18)',
+        backgroundColor: fillColor,
         pointBackgroundColor: '#c9a14a',
         pointBorderColor: '#fff',
         pointRadius: 4,
@@ -766,7 +770,7 @@ function buildHarvestCardHTML(state) {
         <div style="font-size:12px;color:#e6c97a;margin-top:3px;font-weight:700">«ما من أيام العمل الصالح فيهن أحب إلى الله»</div>
       </div>
       <div style="padding:14px 20px;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(201,161,74,.1)">
-        <div><div style="font-size:13px;font-weight:700;color:#c9a14a">test.codeandcanvas.net</div><div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">رفيقك في أفضل أيام الدنيا</div></div>
+        <div><div style="font-size:13px;font-weight:700;color:#c9a14a">zad.codeandcanvas.net</div><div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">رفيقك في أفضل أيام الدنيا</div></div>
         <div style="font-size:30px">📲</div>
       </div>
     </div>
@@ -802,12 +806,12 @@ async function shareHarvest() {
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             title: 'حصادي في عشر ذي الحجة — زاد',
-            text: 'انضم إلي في تحدي العشر المباركة 🕋\ntest.codeandcanvas.net',
+            text: 'انضم إلي في تحدي العشر المباركة 🕋\nzad.codeandcanvas.net',
             files: [file]
           });
           showToast('✅ تم المشاركة!');
         } else if (navigator.share) {
-          await navigator.share({ title: 'حصادي في عشر ذي الحجة', url: 'https://test.codeandcanvas.net/hasad.html' });
+          await navigator.share({ title: 'حصادي في عشر ذي الحجة', url: 'https://zad.codeandcanvas.net/hasad.html' });
         } else {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');

@@ -562,7 +562,7 @@
 
   window._zadShareApp = function() {
     /* يشارك رابط الموقع — استبدل APP_APK_URL بملف APK فعلي حين يتوفر */
-    const APP_URL = 'https://test.codeandcanvas.net';
+    const APP_URL = 'https://zad.codeandcanvas.net';
     if (navigator.share) {
       navigator.share({ title: 'زاد', text: 'رفيقك في عشر ذي الحجة 🌙', url: APP_URL });
     } else {
@@ -804,7 +804,7 @@
      يبحث عن الكاردات المعروفة ويُضيف أزرار مشاركة (نص + PNG) عليها
      ════════════════════════════════════════════════════════════════════ */
 
-  const ZAD_APP_URL = 'https://test.codeandcanvas.net';
+  const ZAD_APP_URL = 'https://zad.codeandcanvas.net';
 
   /* ── خريطة أنواع الكاردات المدعومة ─────────────────────────────────── */
   const CARD_MAP = [
@@ -1057,7 +1057,7 @@
 
       cx.font = 'bold 16px Tajawal, sans-serif';
       cx.fillStyle = T.gold; cx.textAlign = 'right';
-      cx.fillText('🌙 test.codeandcanvas.net', W - PAD, footY);
+      cx.fillText('🌙 zad.codeandcanvas.net', W - PAD, footY);
       cx.font = '14px Tajawal, sans-serif';
       cx.fillStyle = T.muted; cx.textAlign = 'left';
       cx.fillText(isDark ? '🌑 نسخة داكنة' : '☀️ نسخة فاتحة', PAD, footY);
