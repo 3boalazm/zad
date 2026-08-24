@@ -45,7 +45,23 @@
       });
     },
 
-    signOut: function () { return this.ready() ? fb().auth.signOut() : Promise.resolve(); },
+    /* عند الخروج: نمسح فقط ربط الحساب السحابي (cloudUserId/userMode) — لا
+       نمسح تقدّم العبادة/السلسلة/الأوسمة المحلي، لأنه بيانات الجهاز نفسه
+       (local-first) وليس بيانات الحساب، ويجب أن يبقى متاحاً للمستخدم
+       التالي على هذا الجهاز إن كان هو صاحبه أصلاً. هذا يمنع ظهور المستخدم
+       التالي على هذا الجهاز وكأنه لا يزال مربوطاً بحساب الشخص السابق. */
+    signOut: function () {
+      var p = this.ready() ? fb().auth.signOut() : Promise.resolve();
+      return p.then(function () {
+        var ls = readLocal();
+        if (ls.cloudUserId || ls.userMode === 'registered') {
+          delete ls.cloudUserId;
+          ls.userMode = 'guest';
+          if (ls.nudge) ls.nudge.linked = false;
+          writeLocal(ls);
+        }
+      });
+    },
 
     /* الترقية الصامتة: نسخ بيانات zad_v2 المحلية إلى السحابة تحت users/{uid} عند أول ربط.
        لا تُرفع الحقول الحسّاسة (الدعاء الشخصي / الملاحظات) — تبقى محلية فقط. */

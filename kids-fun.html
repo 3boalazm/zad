@@ -453,6 +453,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
   'use strict';
   var ov=document.getElementById('kf-overlay'), fr=document.getElementById('kf-iframe'), yl=document.getElementById('kf-yt-link');
   function open(val,isList,title){
+    if(!navigator.onLine){ if(window.showToast)window.showToast('📡 الفيديو يحتاج اتصالاً بالإنترنت'); return; }
     var base='https://www.youtube-nocookie.com/embed/';
     fr.src = isList ? (base+'videoseries?list='+val+'&rel=0&modestbranding=1&autoplay=1')
                     : (base+val+'?rel=0&modestbranding=1&autoplay=1');

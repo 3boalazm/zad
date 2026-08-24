@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════
    زاد — Service Worker
-   Version: 20260823-z18
+   Version: 20260824-z19
    Strategy: Network-First WITH TIMEOUT (HTML/CSS/JS) + Cache-First (media)
 
    إصلاح حرج: إضافة مهلة زمنية للشبكة. على الشبكات الضعيفة (0 KB/s متصلة
@@ -16,9 +16,20 @@
         فتظهر لوحة التحكم بدل الصفحة المطلوبة وكأنها فتحت بنجاح. الآن
         يُرجَع fallback الصفحة الرئيسية فقط لطلبات الجذر الفعلية، وأي
         صفحة أخرى غير مخزّنة تعرض رسالة خطأ صريحة بدلاً من ذلك.
+
+   Z19 (Offline/PWA audit): توسيع PRECACHE ليشمل الصفحات الأساسية
+        المُعلَن أنها تعمل أوفلاين (القبلة، الحج/عرفة، الزكاة/الأضحية،
+        الأطفال، الذكاء الاصطناعي، برنامج اليوم، قارئ المصحف) والتي كانت
+        تفشل بصمت عند أول زيارة أوفلاين قبل زيارتها أونلاين ولو مرة —
+        رغم أن محتواها مُخزَّن محلياً بالكامل في الكود ولا يحتاج شبكة.
+        وإضافة نطاقات Firebase (RTDB + Auth) إلى BYPASS: لم تكن مُستثناة
+        من قبل، فكان بإمكان استجابات GET الخاصة بمستخدم (عبر fallback
+        الـ long-polling عندما يُحظَر WebSocket) أن تُخزَّن في كاش مشترك
+        بين كل مستخدمي نفس الجهاز/المتصفح — وأيضاً كانت مهلة الشبكة
+        (3 ثوانٍ) تقطع اتصالات long-polling الطويلة الطبيعية بالخطأ.
    ════════════════════════════════════════════════════════════ */
 
-const CACHE_STATIC = 'zad-20260823-z18';
+const CACHE_STATIC = 'zad-20260824-z19';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -41,6 +52,24 @@ const PRECACHE = [
   /* adhkar offline data */
   './js/adhkar-database.js', './js/adhkar-complete.js',
   './js/hasn-part1.js', './js/hasn-part2.js',
+  './js/adhkar-database-extended.js', './js/adhkar-content-sections.js',
+
+  /* ── Z19: أصول مشتركة كانت ناقصة من أغلب الصفحات ── */
+  './lang.js',
+  './js/seasons-module.js', './js/share-button.js', './js/gps-fix.js', './js/pwa-install-fab.js',
+  './js/sync-module.js',
+
+  /* ── Z19: صفحات مُعلَن أنها تعمل أوفلاين بالكامل (محتواها مُضمَّن في الكود) ── */
+  './qibla.html',                                   /* حساب اتجاه القبلة محلي بالكامل */
+  './barnamaj.html',                                /* الوجهة الفعلية لاختصار "ورد اليوم" و redirect صفحة worship.html */
+  './mushaf-quran.html', './js/quran-module.js',    /* قارئ المصحف: الصفحة نفسها + رسائل الخطأ المدمجة فيها أفضل من fallback الـ SW العام */
+  './zakat.html', './js/zakat-module.js', './zakat-ahkam.html', './zakat-anwa.html',
+  './odhiya.html',
+  './manasik.html', './js/hajj-module.js', './arafah.html', './js/audio-manager.js',
+  './arafah-dua.html', './hikayat-hajj.html',
+  './ai.html', './js/ai-guard.js', './js/advanced-ai-module.js', /* المساعد المحلي (أذكار/سيرة/فقه) يعمل أوفلاين؛ المحادثة فقط تحتاج نتاً وتُعرَض برسالة صريحة */
+  './kids.html', './kids-heroes.html', './kids-school.html',
+  './kids-fun.html', './kids-creativity.html', './kids-parents.html',
 ];
 
 /* ── لا تُخزَّن أبداً ── */
@@ -68,6 +97,15 @@ const BYPASS = [
 
   /* ── Media streams ── */
   'radiojar.com', 'zeno.fm',
+
+  /* ── Z19: Firebase (Auth + Realtime DB) — بيانات خاصة بالمستخدم.
+     لم تكن مُستثناة من قبل: عادةً تمر عبر WebSocket (لا تراه الـ SW أصلاً)،
+     لكن عند فشل WebSocket تتحول لـ long-polling عبر GET عادي يمر من هنا —
+     فكان بإمكان رد GET لمستخدم أن يُخزَّن ويُقدَّم لاحقاً لمستخدم آخر على
+     نفس الجهاز، وكانت مهلة الـ 3 ثوانٍ تقطع اتصال الـ long-poll الطبيعي. ── */
+  'firebasedatabase.app', 'firebaseio.com',
+  'identitytoolkit.googleapis.com', 'securetoken.googleapis.com',
+  'www.gstatic.com/firebasejs',
 ];
 const bypass = url => BYPASS.some(p => url.includes(p));
 

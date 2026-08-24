@@ -228,13 +228,16 @@ async function migrateFromLocalStorage() {
       } catch (e) { console.warn('[storage] ملف شخصي تالف — تم تخطّيه'); }
     }
 
-    /* بعد التأكد من النجاح — احذف localStorage القديم بأمان */
-    localStorage.removeItem(OLD_KEY);
-    localStorage.removeItem(PROFILE_KEY);
-    localStorage.removeItem(NOTIF_KEY);
-    /* احتفظ بـ: zad_profile_skipped, zad_clock, zad_sound_on لأنها خفيفة */
+    /* لا تحذف localStorage القديم: app.js وstate-manager.js ما زالا
+       يقرآن/يكتبان zad_v2 مباشرةً ولا يستخدمان جداول IndexedDB أعلاه على
+       الإطلاق. حذفه هنا كان يمسح تقدّم المستخدم الفعلي (الورد، السلسلة،
+       الأوسمة، الختمة) بصمت أول مرة يُشغَّل فيها هذا الملف على أي جهاز —
+       وأيضاً في كل مرة يُمسَح فيها IndexedDB وحده (Safari ITP، تنظيف
+       تخزين جزئي، إلخ) بينما تبقى zad_v2 تحتوي بيانات حقيقية جديدة.
+       النسخة في IndexedDB تبقى نسخة إضافية غير مستخدمة حالياً، لا مشكلة
+       في تركها؛ المشكلة كانت في حذف المصدر الحقيقي الوحيد. */
 
-    console.log('[ZadStorage] ✅ Migration from localStorage: نجحت الهجرة');
+    console.log('[ZadStorage] ✅ Migration from localStorage: نجحت الهجرة (localStorage محتفَظ به كمصدر أساسي)');
     
   } catch (err) {
     console.error('[ZadStorage] ❌ Migration failed:', err);
