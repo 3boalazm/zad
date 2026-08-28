@@ -27,7 +27,7 @@ html[data-theme="oled"]{--brand-deep:#4dd866;--brand-mid:#2eb84d;--brand-soft:#3
    stay the same hex in every theme, or white-on-color contrast breaks
    (e.g. white on the dark-mode --green-deep bright green is ~1.85:1).
    This is the single source of truth previously duplicated with
-   independent hex literals in js/design-system.js's --zad-green-*/
+   independent hex literals in js/design-system.js's --zad-green-* /
    --zad-gold-* and in several pages' own local :root blocks — those
    now alias these instead of re-declaring the values. */
 :root{--primitive-green-900:#0e3b2e;--primitive-green-700:#1a5d47;--primitive-green-500:#2a7a5f;--primitive-green-100:#e8f4ef;--primitive-gold-700:#b87200;--primitive-gold-500:#c9a14a;--primitive-gold-100:#fff8e8}
