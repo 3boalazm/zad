@@ -1,0 +1,43 @@
+# زاد (Zad)
+
+> رفيقك الروحاني في أفضل أيام الدنيا — عشر ذي الحجة. تطبيق ويب إسلامي (PWA) يعمل بدون إنترنت، يقدّم مواقيت الصلاة، الورد القرآني، الأذكار، المسبحة الرقمية، وجدول عبادات يومي لعشر ذي الحجة.
+
+Zad is an offline-first Islamic PWA focused on the first ten days of Dhū al-Ḥijjah: prayer times, a Quran reading plan, adhkar (remembrances), a digital tasbih counter, and a daily worship tracker. Content is in Arabic; the UI also supports English and French.
+
+## Core worship tools
+- [Dashboard](https://zad.codeandcanvas.net/index.html): home screen — daily progress, prayer times, verse of the day
+- [Prayer times](https://zad.codeandcanvas.net/prayers.html): daily salah times by location
+- [Qibla](https://zad.codeandcanvas.net/qibla.html): qibla direction finder
+- [Daily worship schedule](https://zad.codeandcanvas.net/barnamaj.html): the day's five prayers reframed as productivity windows, plus a worship tracker
+- [Adhkar](https://zad.codeandcanvas.net/adhkar.html): morning/evening remembrances
+- [Tasbih counter](https://zad.codeandcanvas.net/takbeer.html): digital dhikr/takbeer counter
+
+## Quran
+- [Quran reading plan](https://zad.codeandcanvas.net/mushaf.html): a structured Quran-reading wird for the ten days
+- [Full mushaf](https://zad.codeandcanvas.net/mushaf-quran.html): browse the Quran by surah/juz
+- [Recitation practice](https://zad.codeandcanvas.net/tasmee.html): self-testing recitation tool
+- [Quran radio](https://zad.codeandcanvas.net/Quran-radio.HTML): live reciter radio streams
+
+## The ten days of Dhū al-Ḥijjah
+- [Virtues of the ten days](https://zad.codeandcanvas.net/fadael.html): why these days matter
+- [Day of Arafah](https://zad.codeandcanvas.net/arafah.html): guidance and duas for the day of Arafah
+- [Hajj rites](https://zad.codeandcanvas.net/manasik.html): a guide to the pilgrimage rites
+- [Udhiyah (sacrifice)](https://zad.codeandcanvas.net/odhiya.html): rulings and a cost-sharing calculator
+- [Zakat calculator](https://zad.codeandcanvas.net/zakat.html): compute zakat due
+
+## Progress and community
+- [Ten-days summary](https://zad.codeandcanvas.net/summary.html): personal progress overview
+- [Badges](https://zad.codeandcanvas.net/badges.html): achievement badges
+- [Family groups](https://zad.codeandcanvas.net/groups.html): family/friend worship-tracking groups
+
+## Kids' corner
+- [Kids home](https://zad.codeandcanvas.net/kids.html): a simplified, child-safe mode of the app
+- [Prophets' stories](https://zad.codeandcanvas.net/kids-heroes.html): stories for children
+
+## Optional
+- [Settings](https://zad.codeandcanvas.net/settings.html): theme, language, notifications, prayer-calculation method
+- [About](https://zad.codeandcanvas.net/about.html): about the app
+- [Privacy](https://zad.codeandcanvas.net/privacy.html): privacy policy
+
+## Notes for agents
+All core features (prayer times once a location is granted, Quran reading, adhkar, tasbih, worship tracking) work fully offline via a service worker and localStorage — no account or login is required. An optional, still-in-development cloud-sync feature exists behind explicit opt-in and is clearly labeled "قريباً" (coming soon) in the UI; do not assume it is active. `/tools/`, `/diagnostics.html`, `/demo.html`, `/sync.html` and `/register.html` are internal developer/QA pages, not part of the core user experience — see robots.txt.
