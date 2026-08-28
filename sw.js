@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════
    زاد — Service Worker
-   Version: 20260824-z19
+   Version: 20260824-z20
    Strategy: Network-First WITH TIMEOUT (HTML/CSS/JS) + Cache-First (media)
 
    إصلاح حرج: إضافة مهلة زمنية للشبكة. على الشبكات الضعيفة (0 KB/s متصلة
@@ -27,47 +27,54 @@
         الـ long-polling عندما يُحظَر WebSocket) أن تُخزَّن في كاش مشترك
         بين كل مستخدمي نفس الجهاز/المتصفح — وأيضاً كانت مهلة الشبكة
         (3 ثوانٍ) تقطع اتصالات long-polling الطويلة الطبيعية بالخطأ.
+
+   Z20 (Performance pass): كل ملفات JS/CSS المشتركة بقت لها نسخة .min
+        (whitespace/comments بس — بدون mangle ولا compress، عشان أونكليك=
+        في الـ HTML بتنادي على أسماء الدوال دي مباشرة ومش بيشوفها أي
+        أداة تحليل استاتيكي). كل صفحات الموقع بتحمّل النسخ المصغّرة دلوقتي،
+        فـ PRECACHE اتحدّثت تتماشى معاها — لو فضلت بتحمّل النسخ القديمة
+        هتتخزّن كاش من غير فايدة وتضيع مساحة storage المستخدم.
    ════════════════════════════════════════════════════════════ */
 
-const CACHE_STATIC = 'zad-20260824-z19';
+const CACHE_STATIC = 'zad-20260824-z20';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
 const PRECACHE = [
   './', './index.html', './404.html',
   './register.html', './sync.html',
-  './js/api-client.js', './js/sync-manager.js',
+  './js/api-client.min.js', './js/sync-manager.min.js',
   './prayers.html', './adhkar.html', './mushaf.html', './takbeer.html',
   './hasn.html', './worship.html', './zahra.html', './settings.html', './hijri.html',
-  './css/style.css', './css/premium-ui.css', './manifest.json',
+  './css/style.min.css', './css/premium-ui.min.css', './manifest.json',
   './fonts/thmanyahserifdisplay-Bold.otf', './fonts/thmanyahserifdisplay-Regular.otf',
   './icons/icon-192.svg', './icons/icon-512.svg',
   /* core JS */
-  './js/app.js', './js/adhkar-azkar.js', './js/ghars-stories.js', './js/diagnostics.js', './js/storage.js', './js/calendar.js',
-  './menu.js', './command-palette.js', './js/ui/bottom-nav.js', './js/ui/progress-rollup.js',
-  './js/design-system.js', './js/fixes-module.js',
-  './js/utils/helpers.js', './js/core/state-manager.js', './js/core/router.js',
-  './js/ui/design-tokens.js', './js/ui/feedback.js',
-  './js/ui/daily-hub.js', './js/ui/micro-interactions.js', './js/ui/offline-ui.js', './js/nav-accordion.js',
+  './js/app.min.js', './js/adhkar-azkar.min.js', './js/ghars-stories.min.js', './js/diagnostics.min.js', './js/storage.min.js', './js/calendar.min.js',
+  './menu.min.js', './command-palette.min.js', './js/ui/bottom-nav.min.js', './js/ui/progress-rollup.min.js',
+  './js/design-system.min.js', './js/fixes-module.min.js',
+  './js/utils/helpers.min.js', './js/core/state-manager.min.js', './js/core/router.min.js',
+  './js/ui/design-tokens.min.js', './js/ui/feedback.min.js',
+  './js/ui/daily-hub.min.js', './js/ui/micro-interactions.min.js', './js/ui/offline-ui.min.js', './js/nav-accordion.min.js',
   /* adhkar offline data */
-  './js/adhkar-database.js', './js/adhkar-complete.js',
-  './js/hasn-part1.js', './js/hasn-part2.js',
-  './js/adhkar-database-extended.js', './js/adhkar-content-sections.js',
+  './js/adhkar-database.min.js', './js/adhkar-complete.min.js',
+  './js/hasn-part1.min.js', './js/hasn-part2.min.js',
+  './js/adhkar-database-extended.min.js', './js/adhkar-content-sections.min.js',
 
   /* ── Z19: أصول مشتركة كانت ناقصة من أغلب الصفحات ── */
-  './lang.js',
-  './js/seasons-module.js', './js/share-button.js', './js/gps-fix.js', './js/pwa-install-fab.js',
-  './js/sync-module.js',
+  './lang.min.js',
+  './js/seasons-module.min.js', './js/share-button.min.js', './js/gps-fix.min.js', './js/pwa-install-fab.min.js',
+  './js/sync-module.min.js',
 
   /* ── Z19: صفحات مُعلَن أنها تعمل أوفلاين بالكامل (محتواها مُضمَّن في الكود) ── */
   './qibla.html',                                   /* حساب اتجاه القبلة محلي بالكامل */
   './barnamaj.html',                                /* الوجهة الفعلية لاختصار "ورد اليوم" و redirect صفحة worship.html */
-  './mushaf-quran.html', './js/quran-module.js',    /* قارئ المصحف: الصفحة نفسها + رسائل الخطأ المدمجة فيها أفضل من fallback الـ SW العام */
-  './zakat.html', './js/zakat-module.js', './zakat-ahkam.html', './zakat-anwa.html',
+  './mushaf-quran.html', './js/quran-module.min.js',    /* قارئ المصحف: الصفحة نفسها + رسائل الخطأ المدمجة فيها أفضل من fallback الـ SW العام */
+  './zakat.html', './js/zakat-module.min.js', './zakat-ahkam.html', './zakat-anwa.html',
   './odhiya.html',
-  './manasik.html', './js/hajj-module.js', './arafah.html', './js/audio-manager.js',
+  './manasik.html', './js/hajj-module.min.js', './arafah.html', './js/audio-manager.min.js',
   './arafah-dua.html', './hikayat-hajj.html',
-  './ai.html', './js/ai-guard.js', './js/advanced-ai-module.js', /* المساعد المحلي (أذكار/سيرة/فقه) يعمل أوفلاين؛ المحادثة فقط تحتاج نتاً وتُعرَض برسالة صريحة */
+  './ai.html', './js/ai-guard.min.js', './js/advanced-ai-module.min.js', /* المساعد المحلي (أذكار/سيرة/فقه) يعمل أوفلاين؛ المحادثة فقط تحتاج نتاً وتُعرَض برسالة صريحة */
   './kids.html', './kids-heroes.html', './kids-school.html',
   './kids-fun.html', './kids-creativity.html', './kids-parents.html',
 ];
@@ -128,7 +135,7 @@ self.addEventListener('activate', e => {
       ))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ includeUncontrolled: true }))
-      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260823-z18' })))
+      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260824-z20' })))
   );
 });
 
