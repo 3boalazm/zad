@@ -2600,12 +2600,6 @@ function getProfile() {
   catch(e) { return null; }
 }
 
-function saveProfile(name, type) {
-  const p = { name: (name||"").trim(), type, since: Date.now() };
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
-  return p;
-}
-
 /* ── Apply profile to UI ─────────────────────────────────── */
 function applyProfile(profile) {
   if (!profile) return;
@@ -2636,194 +2630,10 @@ function applyProfile(profile) {
     chip.innerHTML = `
       <span style="font-size:16px">${ico}</span>
       <span style="flex:1;font-size:13px;font-weight:800;color:var(--ink)">${profile.name}</span>
-      <span style="font-size:10px;font-weight:700;background:var(--green-deep);color:#fff;border-radius:8px;padding:3px 9px;cursor:pointer;white-space:nowrap"
-        onclick="showProfileModal(true)">تغيير</span>
     `;
     chip.style.display = 'flex';
-    chip.style.cursor  = 'pointer';
-    chip.onclick = (e) => { if(typeof showProfileModal==='function') showProfileModal(true); };
   }
 }
-
-/* ── Onboarding Modal ────────────────────────────────────── */
-function showProfileModal(forceNew = false) {
-  const existing = getProfile();
-  if (existing && !forceNew) return; /* already set */
-
-  /* Remove any existing modal */
-  document.getElementById('profile-modal')?.remove();
-
-  const previouslyFocused = document.activeElement;
-
-  const modal = document.createElement('div');
-  modal.id = 'profile-modal';
-  modal.setAttribute('role', 'dialog');
-  modal.setAttribute('aria-modal', 'true');
-  modal.setAttribute('aria-labelledby', 'pm-title');
-  modal.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;
-    display:flex;align-items:center;justify-content:center;padding:20px;
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    animation:fadeIn .3s ease;
-  `;
-
-  modal.innerHTML = `
-    <div style="background:var(--card);border-radius:24px;width:100%;max-width:400px;
-                overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:slideUp .35s ease">
-      <!-- Header -->
-      <div style="background:linear-gradient(135deg,#0e3b2e,#1a5d47);padding:28px 24px;text-align:center;color:#fff;position:relative">
-        <div style="font-size:52px;margin-bottom:10px">🌙</div>
-        <div id="pm-title" style="font-size:22px;font-weight:900;font-family:'ThmanyahSans',sans-serif;margin-bottom:4px">مرحباً بك في زاد</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.75)">رفيقك في أفضل أيام الدنيا</div>
-      </div>
-
-      <!-- Body -->
-      <div style="padding:24px">
-        <!-- Name input -->
-        <div style="margin-bottom:20px">
-          <label for="pm-name" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px">اسمك الكريم <span style="font-size:11px;font-weight:400;color:rgba(var(--muted-rgb,150,150,150),.7)">(اختياري)</span></label>
-          <input id="pm-name" type="text" class="input" placeholder="أدخل اسمك... (اختياري)"
-            oninput="validateProfileForm()">
-        </div>
-
-        <!-- Profile type -->
-        <div style="margin-bottom:20px">
-          <label style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:10px">اختر وضعك</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-
-            <!-- Adult card -->
-            <div id="pm-adult" onclick="selectProfileType('adult')"
-              style="border:2px solid var(--border);border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:all .2s">
-              <div style="font-size:36px;margin-bottom:8px">👤</div>
-              <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px">راشد</div>
-              <div style="font-size:11px;color:var(--muted);line-height:1.5">جدول العبادات الكامل · فضائل العشر · المصحف · التدبر</div>
-            </div>
-
-            <!-- Child card -->
-            <div id="pm-child" onclick="selectProfileType('child')"
-              style="border:2px solid var(--border);border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:all .2s">
-              <div style="font-size:36px;margin-bottom:8px">🧒</div>
-              <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px">طفل</div>
-              <div style="font-size:11px;color:var(--muted);line-height:1.5">قصص الأنبياء · رحلة الحج · أنشطة · أناشيد · اختبارات</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Difference hint -->
-        <div id="pm-hint" style="background:rgba(201,161,74,.08);border:1px solid rgba(201,161,74,.2);border-radius:12px;padding:12px;margin-bottom:18px;font-size:12px;color:var(--muted);line-height:1.7;display:none">
-          <span id="pm-hint-text"></span>
-        </div>
-
-        <!-- Submit -->
-        <button id="pm-submit" onclick="submitProfile()" disabled
-          style="width:100%;padding:14px;border-radius:14px;border:none;
-                 background:linear-gradient(135deg,#0e3b2e,#1a5d47);color:#fff;
-                 font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
-                 opacity:.4;transition:all .2s;font-family:'ThmanyahSans',inherit">
-          ابدأ رحلتك →
-        </button>
-
-        ${existing ? `<button onclick="document.getElementById('profile-modal').remove()" style="width:100%;padding:10px;border:none;background:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;margin-top:8px">إلغاء</button>` : `<button onclick="skipProfile()" style="width:100%;padding:11px;border:none;background:none;font-family:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;margin-top:8px;text-decoration:underline">متابعة كزائر — بدون حساب</button>`}
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-
-  /* Pre-fill existing data */
-  if (existing) {
-    document.getElementById('pm-name').value = existing.name;
-    if (existing.type) selectProfileType(existing.type);
-  }
-
-  document.getElementById('pm-name').focus();
-
-  /* إغلاق بالنقر على الخلفية أو بمفتاح Escape — بنفس سلوك زر الإلغاء/التخطي
-     الموجود بالفعل، مع إعادة التركيز لمكانه قبل فتح النافذة */
-  function closeAndRestoreFocus() {
-    if (existing) { modal.remove(); }
-    else { skipProfile(); }
-    if (previouslyFocused && typeof previouslyFocused.focus === 'function') previouslyFocused.focus();
-  }
-  modal.addEventListener('click', e => { if (e.target === modal) closeAndRestoreFocus(); });
-  document.addEventListener('keydown', function onEsc(e) {
-    if (e.key !== 'Escape') return;
-    if (!document.body.contains(modal)) { document.removeEventListener('keydown', onEsc); return; }
-    document.removeEventListener('keydown', onEsc);
-    closeAndRestoreFocus();
-  });
-}
-
-let _selectedType = null;
-
-function selectProfileType(type) {
-  _selectedType = type;
-  const adultCard = document.getElementById('pm-adult');
-  const childCard = document.getElementById('pm-child');
-  const hint      = document.getElementById('pm-hint');
-  const hintText  = document.getElementById('pm-hint-text');
-
-  if (adultCard) {
-    adultCard.style.borderColor = type === 'adult' ? 'var(--green-deep)' : 'var(--border)';
-    adultCard.style.background  = type === 'adult' ? 'rgba(14,59,46,.06)' : '';
-  }
-  if (childCard) {
-    childCard.style.borderColor = type === 'child' ? 'var(--gold)' : 'var(--border)';
-    childCard.style.background  = type === 'child' ? 'rgba(201,161,74,.06)' : '';
-  }
-
-  if (hint && hintText) {
-    hint.style.display = '';
-    hintText.textContent = type === 'adult'
-      ? '🧑 وضع الراشد: كامل الميزات — جدول عبادات، فضائل، مصحف، تدبر بالذكاء الاصطناعي، وكل صفحات زاد.'
-      : '🧒 وضع الطفل: نفس الموقع بالكامل مع إبراز صفحات ثُريّا وغرس — قصص الأنبياء، خطوات الحج، أنشطة، وأناشيد للأطفال.';
-  }
-
-  validateProfileForm();
-
-  /* Auto-submit after 400ms when type chosen */
-  clearTimeout(window._autoT);
-  const _ah = document.getElementById('pm-auto-hint');
-  if (_ah) _ah.style.display = 'block';
-  const _sb = document.getElementById('pm-submit');
-  if (_sb) { _sb.style.opacity = '1'; _sb.disabled = false; }
-  window._autoT = setTimeout(submitProfile, 400);
-}
-
-function validateProfileForm() {
-  const btn = document.getElementById('pm-submit');
-  /* Name optional — only need type selection */
-  const valid = !!_selectedType;
-  if (btn) { btn.disabled = !valid; btn.style.opacity = valid ? '1' : '.4'; }
-}
-
-function submitProfile() {
-  const nameEl = document.getElementById('pm-name');
-  const name = nameEl?.value?.trim() || ''; /* optional */
-  if (!_selectedType) return;
-
-  const profile = saveProfile(name, _selectedType);
-  document.getElementById('profile-modal')?.remove();
-  applyProfile(profile);
-
-  /* Redirect child to ثريا on first visit */
-  const isFirstVisit = !getProfile()?.since || (Date.now() - getProfile().since < 5000);
-  if (_selectedType === 'child' && !window.location.href.includes('kids.html') && !window.location.href.includes('ghars.html')) {
-    if (typeof showToast === 'function') showToast(`أهلاً ${name}! 🌟 تم تفعيل وضع الأطفال`);
-  } else {
-    if (typeof showToast === 'function') showToast(`أهلاً ${name}! 🌙 مرحباً بك في زاد`);
-  }
-}
-
-/* ── متابعة كزائر (أنونيمس) — بدون حفظ أي بيانات ─────────── */
-function skipProfile() {
-  clearTimeout(window._autoT);
-  /* علامة أن المستخدم اختار وضع الزائر — حتى لا يظهر المودال كل مرة */
-  try { localStorage.setItem('zad_profile_skipped', '1'); } catch(e) {}
-  document.getElementById('profile-modal')?.remove();
-  if (typeof showToast === 'function') showToast('🌙 أهلاً بك — يمكنك إنشاء حساب لاحقاً من الإعدادات');
-}
-window.skipProfile = skipProfile;
 
 /* ── Add profile chip to sidebar ─────────────────────────── */
 function injectProfileChip() {
@@ -2883,9 +2693,6 @@ function injectProfileCSS() {
   const style = document.createElement('style');
   style.id = 'profile-css';
   style.textContent = `
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-    @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
-
     /* Child mode: highlight kids links in sidebar */
     body[data-profile="child"] .sidebar a[href="kids.html"],
     body[data-profile="child"] .sidebar a[href="ghars.html"] {
@@ -2898,10 +2705,6 @@ function injectProfileCSS() {
     body[data-profile="child"] .sidebar a[href="ghars.html"] .ico {
       font-size: 18px;
     }
-
-    /* Smooth profile modal input */
-    #pm-name { transition: border-color .2s; }
-    #pm-adult, #pm-child { transition: all .2s; }
   `;
   document.head.appendChild(style);
 }
@@ -2920,7 +2723,6 @@ function initProfileSystem() {
     }
   }
 }
-window.showProfileModal = showProfileModal;
 window.initProfileSystem = initProfileSystem;
 
 /* Global scheduleReminders (called from app.js) delegates to settings scheduler if available */
