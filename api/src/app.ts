@@ -77,3 +77,7 @@ export function createApp(): Application {
 
   return app;
 }
+
+// Vercel's zero-config Express detection bundles src/app.ts directly and
+// requires a default export that is the app itself (not the factory).
+export default createApp();
