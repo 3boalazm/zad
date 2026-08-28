@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════
    زاد — Service Worker
-   Version: 20260824-z20
+   Version: 20260824-z21
    Strategy: Network-First WITH TIMEOUT (HTML/CSS/JS) + Cache-First (media)
 
    إصلاح حرج: إضافة مهلة زمنية للشبكة. على الشبكات الضعيفة (0 KB/s متصلة
@@ -34,9 +34,13 @@
         أداة تحليل استاتيكي). كل صفحات الموقع بتحمّل النسخ المصغّرة دلوقتي،
         فـ PRECACHE اتحدّثت تتماشى معاها — لو فضلت بتحمّل النسخ القديمة
         هتتخزّن كاش من غير فايدة وتضيع مساحة storage المستخدم.
+
+   Z21: حوّلت كل خطوط الموقع الـ15 من .otf لـ .woff2 (68% أصغر إجمالاً —
+        3.65MB بقت 1.18MB)، والـ .otf الأصلي فضل موجود كـ fallback في كل
+        @font-face. حدّثت أسماء الخطوط في PRECACHE لنفس السبب.
    ════════════════════════════════════════════════════════════ */
 
-const CACHE_STATIC = 'zad-20260824-z20';
+const CACHE_STATIC = 'zad-20260824-z21';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -47,7 +51,7 @@ const PRECACHE = [
   './prayers.html', './adhkar.html', './mushaf.html', './takbeer.html',
   './hasn.html', './worship.html', './zahra.html', './settings.html', './hijri.html',
   './css/style.min.css', './css/premium-ui.min.css', './manifest.json',
-  './fonts/thmanyahserifdisplay-Bold.otf', './fonts/thmanyahserifdisplay-Regular.otf',
+  './fonts/thmanyahserifdisplay-Bold.woff2', './fonts/thmanyahserifdisplay-Regular.woff2',
   './icons/icon-192.svg', './icons/icon-512.svg',
   /* core JS */
   './js/app.min.js', './js/adhkar-azkar.min.js', './js/ghars-stories.min.js', './js/diagnostics.min.js', './js/storage.min.js', './js/calendar.min.js',
@@ -135,7 +139,7 @@ self.addEventListener('activate', e => {
       ))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ includeUncontrolled: true }))
-      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260824-z20' })))
+      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260824-z21' })))
   );
 });
 

@@ -207,10 +207,10 @@ main.main, #main-content {
 /* ═══════════════════════════════════════════════════════════
    خط ثُمانية للعناوين (Thmanyah Serif Display + Text)
    ═══════════════════════════════════════════════════════════ */
-@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Black.otf') format('opentype');font-weight:900;font-display:swap}
-@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Bold.otf') format('opentype');font-weight:700;font-display:swap}
-@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Medium.otf') format('opentype');font-weight:500;font-display:swap}
-@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Regular.otf') format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Black.woff2') format('woff2'),url('../fonts/thmanyahserifdisplay-Black.otf') format('opentype');font-weight:900;font-display:swap}
+@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Bold.woff2') format('woff2'),url('../fonts/thmanyahserifdisplay-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Medium.woff2') format('woff2'),url('../fonts/thmanyahserifdisplay-Medium.otf') format('opentype');font-weight:500;font-display:swap}
+@font-face{font-family:'ThmanyahDisplay';src:url('../fonts/thmanyahserifdisplay-Regular.woff2') format('woff2'),url('../fonts/thmanyahserifdisplay-Regular.otf') format('opentype');font-weight:400;font-display:swap}
 
 /* تطبيق الخط على العناوين فقط (بدون نصوص مُشكّلة — التشكيل يتقطّع على هذا الخط) */
 .page-title,

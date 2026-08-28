@@ -1110,16 +1110,16 @@ html[data-theme="dark"] .lang-option.active,html[data-theme="oled"] .lang-option
    ════════════════════════════════════════════════════════════ */
 
 /* ── ThmanyahSans @font-face ───────────────────────────── */
-@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Medium.otf') format('opentype');font-weight:500;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Regular.otf') format('opentype');font-weight:400;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Light.otf') format('opentype');font-weight:300;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Regular.otf') format('opentype');font-weight:400;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Medium.otf') format('opentype');font-weight:500;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Light.otf') format('opentype');font-weight:300;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Bold.otf') format('opentype');font-weight:700;font-display:swap;font-style:normal}
-@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Black.otf') format('opentype');font-weight:900;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Black.woff2') format('woff2'),url('../fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Bold.woff2') format('woff2'),url('../fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Medium.woff2') format('woff2'),url('../fonts/thmanyahsans-Medium.otf') format('opentype');font-weight:500;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Regular.woff2') format('woff2'),url('../fonts/thmanyahsans-Regular.otf') format('opentype');font-weight:400;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSans';src:url('../fonts/thmanyahsans-Light.woff2') format('woff2'),url('../fonts/thmanyahsans-Light.otf') format('opentype');font-weight:300;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Regular.woff2') format('woff2'),url('../fonts/thmanyahseriftext-Regular.otf') format('opentype');font-weight:400;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Medium.woff2') format('woff2'),url('../fonts/thmanyahseriftext-Medium.otf') format('opentype');font-weight:500;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Light.woff2') format('woff2'),url('../fonts/thmanyahseriftext-Light.otf') format('opentype');font-weight:300;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Bold.woff2') format('woff2'),url('../fonts/thmanyahseriftext-Bold.otf') format('opentype');font-weight:700;font-display:swap;font-style:normal}
+@font-face{font-family:'ThmanyahSerifText';src:url('../fonts/thmanyahseriftext-Black.woff2') format('woff2'),url('../fonts/thmanyahseriftext-Black.otf') format('opentype');font-weight:900;font-display:swap;font-style:normal}
 
 /* ── Body font ─────────────────────────────────────────── */
 html,body{font-family:'Tajawal','IBM Plex Sans Arabic',system-ui,sans-serif !important}
