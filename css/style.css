@@ -32,14 +32,6 @@ html[data-theme="oled"]{--brand-deep:#4dd866;--brand-mid:#2eb84d;--brand-soft:#3
    now alias these instead of re-declaring the values. */
 :root{--primitive-green-900:#0e3b2e;--primitive-green-700:#1a5d47;--primitive-green-500:#2a7a5f;--primitive-green-100:#e8f4ef;--primitive-gold-700:#b87200;--primitive-gold-500:#c9a14a;--primitive-gold-100:#fff8e8}
 
-/* ── Z-index scale ──────────────────────────────────────────
-   Shared, sitewide stacking layers only — not every z-index in the
-   codebase (202 declarations across the repo, most of them one-off
-   and page-local, were left as literals; migrating every single one
-   for no functional benefit wasn't worth the blast radius). This
-   covers the handful of shared components in this file where a real
-   collision was already found (sidebar_overlay_fix.js, since removed,
-   fought .sidebar's z-index:200 with its own competing 999/1000). */
 :root{--z-decor:1;--z-topbar:60;--z-tooltip:90;--z-sidebar:100;--z-sidebar-overlay:199;--z-sidebar-mobile:200;--z-overlay:500;--z-popup:800;--z-progress:999;--z-toast:9999}
 
 /* ── App Theme Variables ────────────────────────────────── */
@@ -1077,7 +1069,7 @@ html[data-theme="dark"] .dc-day-task-btn,html[data-theme="oled"] .dc-day-task-bt
 html[data-theme="dark"] .fab-ai,html[data-theme="oled"] .fab-ai{background:linear-gradient(135deg,var(--sys-green),#2eb84d);color:#001a08;box-shadow:0 8px 24px rgba(77,216,102,.3)}
 .fab-ai:hover{transform:scale(1.12) translateY(-3px);box-shadow:0 12px 32px rgba(14,59,46,.45)}
 .fab-ai:active{transform:scale(.95)}
-@media(max-width:768px){.fab-ai{bottom:20px;left:16px;width:48px;height:48px;font-size:20px}}
+@media(max-width:768px){.fab-ai{bottom:calc(84px + env(safe-area-inset-bottom, 0px));left:16px;width:48px;height:48px;font-size:20px}}
 
 /* ── Language Switcher ─────────────────────────────────── */
 .lang-btn{padding:6px 14px;border-radius:99px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
@@ -1486,6 +1478,27 @@ html[data-fs="lg"] .nav a{font-size:15px}
   html[data-theme="dark"] .tb-center .page-title{-webkit-text-fill-color:var(--ink) !important}
 }
 
+/* ══ Mobile: floating bottom pill bar ══════════════════════ */
+@media(max-width:768px){
+  .main{
+    padding-top:16px !important;
+    padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .main .topbar{
+    position:fixed !important;
+    top:auto !important;
+    bottom:calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    left:14px !important;
+    right:14px !important;
+    width:auto !important;
+    margin:0 !important;
+    border-radius:999px !important;
+    z-index:190 !important;
+    padding:8px 16px !important;
+    box-shadow:0 10px 32px -6px rgba(14,59,46,.42) !important;
+  }
+}
+
 /* ══ Desktop: normal topbar ════════════════════════════════ */
 @media(min-width:901px){
   .hamburger{display:none !important}
@@ -1499,20 +1512,25 @@ html[data-fs="lg"] .nav a{font-size:15px}
   }
 }
 
-/* ══ Hamburger: always dark/contrast ═══════════════════════ */
+/* ══ Hamburger: accessible touch target & theme contrast ══ */
 .hamburger{
-  width:38px !important;height:38px !important;
-  border-radius:11px !important;
+  width:44px !important;height:44px !important;min-width:44px;min-height:44px;
+  border-radius:12px !important;
   background:#1a1a1a !important;
   color:#fff !important;
   border:none !important;
   display:flex;align-items:center;justify-content:center;
-  font-size:17px !important;cursor:pointer;flex-shrink:0;
+  font-size:18px !important;cursor:pointer;flex-shrink:0;
   transition:background .2s;box-shadow:none !important
 }
 .hamburger:hover{background:#333 !important}
 html[data-theme="dark"] .hamburger,html[data-theme="oled"] .hamburger{
-  background:#e0e0e0 !important;color:#111 !important
+  background:rgba(255,255,255,.12) !important;
+  color:#f4ecd6 !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+}
+html[data-theme="dark"] .hamburger:hover,html[data-theme="oled"] .hamburger:hover{
+  background:rgba(255,255,255,.22) !important;
 }
 
 /* ══ Logo in topbar ═════════════════════════════════════════ */
@@ -2006,7 +2024,7 @@ html[data-theme="oled"] {
   --sand-2:   #111111;
   --border:   rgba(255,255,255,.08);
   --ink:      rgba(255,255,255,.92);
-  --muted:    rgba(255,255,255,.4);
+  --muted:    rgba(255,255,255,.68);
   --shadow:   0 4px 16px rgba(0,0,0,.9);
   --shadow-sm:0 2px 8px rgba(0,0,0,.8);
 }

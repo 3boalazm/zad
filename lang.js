@@ -8,21 +8,21 @@
 const TRANSLATIONS = {
 ar: {
   /* ─ App shell ─────────────────────────────────────────── */
-  'brand.name': 'زاد', 'brand.sub': 'أفضل أيام الدنيا',
+  'brand.name': 'زاد', 'brand.sub': 'رفيق العبادة والخير',
   'common.darkMode': '🌙 الوضع الداكن', 'common.language': '🌐 اللغة',
   'common.search': 'ابحث في التطبيق...', 'common.noAds': 'يعمل بدون إنترنت 📴',
   'common.done': '✅ تم', 'common.reset': 'إعادة', 'common.save': 'حفظ', 'common.send': 'إرسال',
   /* ─ Nav ────────────────────────────────────────────────── */
   'nav.dashboard':'لوحة التحكم','nav.virtues':'فضائل العشر',
-  'nav.worship':'جدول العبادات','nav.mushaf':'مصحف العشر',
+  'nav.worship':'جدول العبادات','nav.mushaf':'الورد القرآني',
   'nav.tasbih':'المُسبِّح والمُكبِّر','nav.adhkar':'الأذكار والدعاء',
   'nav.odhiya':'دليل الأضحية','nav.arafah':'يوم عرفة',
-  'nav.sadaqah':'صدقة العشر','nav.badges':'أوسمتي',
-  'nav.hasad':'حصاد العشر','nav.kids':'وضع الأطفال',
+  'nav.sadaqah':'الصدقة والبر','nav.badges':'أوسمتي',
+  'nav.hasad':'حصاد العبادات','nav.kids':'وضع الأطفال',
   'nav.tasmee':'تسميع القرآن','nav.ai':'تدبّر بالذكاء',
   'nav.settings':'الإعدادات','nav.report':'بلاغ مشكلة','nav.about':'عن التطبيق',
   /* ─ Index ──────────────────────────────────────────────── */
-  'index.title':'أفضل أيام الدنيا','index.sub':'تابع وردك اليومي وفضائل العشر في مكان واحد',
+  'index.title':'زاد اليومي','index.sub':'تابع وردك اليومي وعباداتك ومواسم الخير في مكان واحد',
   'index.install.title':'ثبّت التطبيق','index.install.sub':'يعمل بدون إنترنت في المصلى',
   'index.notif.title':'فعّل تذكيرات الصلاة','index.notif.sub':'لا تفوّت وردك في هذه الأيام المباركة',
   'index.countdown':'العد التنازلي',
@@ -37,7 +37,7 @@ ar: {
   'index.grid.ai':'تدبّر بالذكاء','index.grid.ai.sub':'اسأل عن آيات وأحكام',
   'index.grid.badges':'أوسمتي','index.grid.badges.sub':'إنجازاتك الروحانية',
   /* ─ Worship ────────────────────────────────────────────── */
-  'worship.title':'ورد العشر اليومي','worship.sub':'الله يرى كل خير تعمله',
+  'worship.title':'جدول العبادات اليومي','worship.sub':'الله يرى كل خير تعمله',
   'worship.label':'عبادة',
   'worship.fajr':'صلاة الفجر في جماعة','worship.zuhr':'صلاة الظهر في جماعة',
   'worship.asr':'صلاة العصر في جماعة','worship.maghrib':'صلاة المغرب في جماعة',
@@ -62,7 +62,7 @@ ar: {
   'index.days':'أيام','index.hero.heading':'إلى يوم عرفة المبارك',
   'index.hero.sub':'اغتنم ساعات هذه الأيام — فما من أيام العمل الصالح أحبّ إلى الله من هذه الأيام العشر.',
   'index.progress.title':'مؤشر الالتزام الروحاني','index.progress.lbl':'إنجاز',
-  'index.progress.heading':'ورد العشر اليومي',
+  'index.progress.heading':'جدول العبادات اليومي',
   'index.progress.li1':'الصلوات الخمس في جماعة','index.progress.li2':'السنن الرواتب والذكر',
   'index.progress.li3':'صيام النهار','index.progress.li4':'التكبير والاستغفار',
   'index.verse.title':'آية اليوم','common.install':'تثبيت',
@@ -140,16 +140,16 @@ ar: {
   'odhiya.step5':'توزيع الأضحية','odhiya.age.title':'السن الشرعي للأضحية',
   'odhiya.defects':'العيوب المانعة من الإجزاء',
   /* ─ Sadaqah ────────────────────────────────────────────── */
-  'sadaqah.title':'صدقة العشر','sadaqah.sub':'اختر بابك اليوم',
+  'sadaqah.title':'الصدقة والبر','sadaqah.sub':'اختر بابك اليوم',
   'sadaqah.log':'سجّل هذا العمل','sadaqah.done':'تم التسجيل ✅',
   /* ─ Badges ─────────────────────────────────────────────── */
   'badges.title':'أوسمتي والإنجازات','badges.sub':'أعمال البر — الأجر عند الله',
   'badges.earned':'المكتسبة','badges.streak':'يوم متتالي من الالتزام 🔥',
   /* ─ Hasad ──────────────────────────────────────────────── */
-  'hasad.title':'حصاد العشر','hasad.sub':'إحصائيات أدائك خلال أفضل أيام الدنيا',
+  'hasad.title':'حصاد العبادات','hasad.sub':'إحصائيات أدائك والتزامك بالعبادات والطاعات',
   'hasad.zad':'رصيد الزاد','hasad.streak':'الشريط الزمني',
   'hasad.streak.cta':'ابدأ Streak لزيادة نقاطك!',
-  'hasad.heatmap':'مسار الأداء خلال العشر',
+  'hasad.heatmap':'مسار الأداء والالتزام',
   'hasad.share':'مشاركة الحصاد','hasad.share.btn':'شارك حصادك',
   'hasad.complete':'مكتمل','hasad.days.left':'أيام متبقية',
   /* ─ Kids ───────────────────────────────────────────────── */
@@ -164,9 +164,9 @@ ar: {
   'tasmee.tip1.title':'تأكد من إخراج الحروف','tasmee.tip2.title':'بيئة هادئة',
   'tasmee.tip3.title':'الصوت العادي','tasmee.tip4.title':'المتصفح المناسب',
   /* ─ AI ──────────────────────────────────────────────────── */
-  'ai.title':'تدبّر بالذكاء','ai.sub':'اسأل عن آيات وأحكام العشر',
+  'ai.title':'تدبّر بالذكاء','ai.sub':'اسأل عن الآيات والأحكام والعبادات',
   'ai.placeholder':'اكتب سؤالك هنا...','ai.send':'إرسال',
-  'ai.greeting':'مرحبًا في مساعد العشر 🕌',
+  'ai.greeting':'مرحبًا في مساعد زاد الذكي 🕌',
   'ai.questions.title':'أسئلة مقترحة',
   /* ─ Report ─────────────────────────────────────────────── */
   'report.title':'بلاغ مشكلة','report.sub':'أعنّا على تحسين زادك الروحي',
@@ -190,14 +190,14 @@ ar: {
   'settings.dark.sub':'مريح للعين أثناء قيام الليل',
   'settings.oled':'OLED أسود حقيقي','settings.oled.sub':'يوفّر بطارية الشاشات',
   'settings.font.title':'حجم الخط','settings.font.quran':'حجم خط القرآن',
-  'settings.notif.toggle':'تفعيل الإشعارات','settings.notif.wird':'تذكير ورد العشر',
+  'settings.notif.toggle':'تفعيل الإشعارات','settings.notif.wird':'تذكير الورد والعبادات',
   'settings.notif.arafah':'تذكير ساعة إجابة عرفة',
   'settings.pwa':'تثبيت التطبيق','settings.pwa.sub':'يعمل بدون إنترنت في المصلى',
   'settings.data.title':'البيانات','settings.data.encrypted':'بياناتك مشفّرة محلياً',
   'settings.data.noads':'صفر إعلانات','settings.data.noads.sub':'خشوع رقمي بلا مشتّتات',
   'settings.data.reset':'مسح جميع البيانات',
   /* ─ About ───────────────────────────────────────────────── */
-  'about.title':'عن التطبيق','about.sub':'زاد — رفيقك الذكي في أفضل أيام الدنيا',
+  'about.title':'عن التطبيق','about.sub':'زاد — رفيقك الذكي في العبادة والخير',
   'about.dev':'مصطفى أبو العزم',
   'about.dev.title':'مصمم واجهات · مطور تطبيقات ويب · مبتكر تجربة المستخدم',
   'about.contact':'تواصل معي','about.social':'تابعني على',
@@ -206,7 +206,7 @@ ar: {
 },
 en: {
   /* ─ App shell ─────────────────────────────────────────── */
-  'brand.name': 'Zad Al-Ashr', 'brand.sub': 'The Best Days on Earth',
+  'brand.name': 'Zad', 'brand.sub': 'Worship & Good Deeds Companion',
   'common.darkMode': '🌙 Dark Mode', 'common.language': '🌐 Language',
   'common.search': 'Search the app...', 'common.noAds': 'Works offline 📴',
   'common.done': '✅ Done', 'common.reset': 'Reset', 'common.save': 'Save', 'common.send': 'Send',
@@ -215,12 +215,12 @@ en: {
   'nav.worship':'Worship Tracker','nav.mushaf':'Quran Recitation',
   'nav.tasbih':'Tasbih Counter','nav.adhkar':'Dhikr & Supplications',
   'nav.odhiya':'Sacrifice Guide','nav.arafah':'Day of Arafah',
-  'nav.sadaqah':'Charity','nav.badges':'My Badges',
-  'nav.hasad':'Harvest Summary','nav.kids':'Kids Mode',
+  'nav.sadaqah':'Charity & Giving','nav.badges':'My Badges',
+  'nav.hasad':'Worship Harvest','nav.kids':'Kids Mode',
   'nav.tasmee':'Quran Memorization','nav.ai':'AI Reflection',
   'nav.settings':'Settings','nav.report':'Report Issue','nav.about':'About',
   /* ─ Index ──────────────────────────────────────────────── */
-  'index.title':'The Best Days on Earth','index.sub':'Track your daily worship and virtues of the Ten Days — all in one place',
+  'index.title':'Daily Zad','index.sub':'Track your daily worship, dhikr, and seasons of good — all in one place',
   'index.install.title':'Install App','index.install.sub':'Works offline in the mosque',
   'index.notif.title':'Enable Prayer Reminders','index.notif.sub':'Don\'t miss your daily worship in these blessed days',
   'index.countdown':'Countdown',
@@ -338,16 +338,16 @@ en: {
   'odhiya.step5':'Distribution of Meat','odhiya.age.title':'Minimum Age Requirements',
   'odhiya.defects':'Defects That Invalidate',
   /* ─ Sadaqah ────────────────────────────────────────────── */
-  'sadaqah.title':'Charity','sadaqah.sub':'Choose your act of giving today',
+  'sadaqah.title':'Charity & Giving','sadaqah.sub':'Choose your act of giving today',
   'sadaqah.log':'Record This Act','sadaqah.done':'Recorded ✅',
   /* ─ Badges ─────────────────────────────────────────────── */
   'badges.title':'My Badges & Achievements','badges.sub':'Righteous deeds — reward with Allah',
   'badges.earned':'Earned','badges.streak':'consecutive days 🔥',
   /* ─ Hasad ──────────────────────────────────────────────── */
-  'hasad.title':'Harvest Summary','hasad.sub':'Your performance across the best days on Earth',
+  'hasad.title':'Worship Harvest','hasad.sub':'Your daily worship performance and spiritual consistency',
   'hasad.zad':'Zad Balance','hasad.streak':'Streak',
   'hasad.streak.cta':'Start your Streak to earn more points!',
-  'hasad.heatmap':'Performance Across the Ten Days',
+  'hasad.heatmap':'Performance & Consistency Tracker',
   'hasad.share':'Share Harvest','hasad.share.btn':'Share My Harvest',
   'hasad.complete':'Complete','hasad.days.left':'days remaining',
   /* ─ Kids ───────────────────────────────────────────────── */
@@ -362,9 +362,9 @@ en: {
   'tasmee.tip1.title':'Correct pronunciation','tasmee.tip2.title':'Quiet environment',
   'tasmee.tip3.title':'Natural voice','tasmee.tip4.title':'Recommended browser',
   /* ─ AI ──────────────────────────────────────────────────── */
-  'ai.title':'AI Reflection','ai.sub':'Ask about verses and rulings of the Ten Days',
+  'ai.title':'AI Reflection','ai.sub':'Ask about verses, dhikr, and Islamic rulings',
   'ai.placeholder':'Ask your question here...','ai.send':'Send',
-  'ai.greeting':'Welcome to the Ashur Assistant 🕌',
+  'ai.greeting':'Welcome to Zad Assistant 🕌',
   'ai.questions.title':'Suggested Questions',
   /* ─ Report ─────────────────────────────────────────────── */
   'report.title':'Report an Issue','report.sub':'Help us improve your spiritual companion',
@@ -395,17 +395,17 @@ en: {
   'settings.data.noads':'Zero Ads','settings.data.noads.sub':'Digital khushu\' free from distractions',
   'settings.data.reset':'Clear All Data',
   /* ─ About ───────────────────────────────────────────────── */
-  'about.title':'About the App','about.sub':'Zad Al-Ashr — Your smart companion for the best days on Earth',
+  'about.title':'About the App','about.sub':'Zad — Your smart companion in worship and good deeds',
   'about.dev':'Mustafa Abu Al-Azm',
   'about.dev.title':'UI Designer · Web Developer · UX Innovator',
   'about.contact':'Contact Me','about.social':'Follow Me On',
-  'about.app.title':'About Zad Al-Ashr','about.sources':'Islamic Sources',
+  'about.app.title':'About Zad','about.sources':'Islamic Sources',
   'about.tech':'Technologies Used',
 }
 ,
 fr: {
   /* ─ App shell ─ */
-  'brand.name': 'Zad Al-Ashr', 'brand.sub': 'Les meilleurs jours sur terre',
+  'brand.name': 'Zad', 'brand.sub': 'Compagnon d’adoration et de bienfaisance',
   'common.darkMode': '🌙 Mode sombre', 'common.language': '🌐 Langue',
   'common.search': "Rechercher dans l'application...", 'common.noAds': 'Fonctionne hors ligne 📴',
   'common.done': '✅ Fait', 'common.reset': 'Réinitialiser', 'common.save': 'Enregistrer', 'common.send': 'Envoyer',
@@ -414,12 +414,12 @@ fr: {
   'nav.worship':'Suivi des adorations','nav.mushaf':'Récitation du Coran',
   'nav.tasbih':'Compteur de Tasbih','nav.adhkar':'Dhikr et invocations',
   'nav.odhiya':'Guide du sacrifice','nav.arafah':'Jour de Arafah',
-  'nav.sadaqah':'Aumône','nav.badges':'Mes badges',
+  'nav.sadaqah':'Aumône et bienfaisance','nav.badges':'Mes badges',
   'nav.hasad':'Bilan des adorations','nav.kids':'Mode enfants',
   'nav.tasmee':'Mémorisation du Coran','nav.ai':'Réflexion par IA',
   'nav.settings':'Paramètres','nav.report':'Signaler un problème','nav.about':'À propos',
   /* ─ Index ─ */
-  'index.title':'Les meilleurs jours sur terre','index.sub':'Suivez vos adorations quotidiennes et les mérites des dix jours — au même endroit',
+  'index.title':'Zad Quotidien','index.sub':'Suivez vos adorations quotidiennes et saisons de bienfaits — au même endroit',
   'index.install.title':"Installer l'application",'index.install.sub':'Fonctionne hors ligne à la mosquée',
   'index.notif.title':'Activer les rappels de prière','index.notif.sub':'Ne manquez pas vos adorations en ces jours bénis',
   'index.countdown':'Compte à rebours',
@@ -534,16 +534,16 @@ fr: {
   'odhiya.step5':'Distribution de la viande','odhiya.age.title':'Âge minimum requis',
   'odhiya.defects':'Défauts qui invalident',
   /* ─ Sadaqah ─ */
-  'sadaqah.title':'Aumône','sadaqah.sub':'Choisissez votre acte de don aujourd’hui',
+  'sadaqah.title':'Aumône et bienfaisance','sadaqah.sub':'Choisissez votre acte de don aujourd’hui',
   'sadaqah.log':'Enregistrer cet acte','sadaqah.done':'Enregistré ✅',
   /* ─ Badges ─ */
   'badges.title':'Mes badges et réalisations','badges.sub':'Bonnes actions — récompense auprès d’Allah',
   'badges.earned':'Obtenu','badges.streak':'jours consécutifs 🔥',
   /* ─ Hasad ─ */
-  'hasad.title':'Bilan des adorations','hasad.sub':'Votre performance durant les meilleurs jours sur terre',
+  'hasad.title':'Bilan des adorations','hasad.sub':'Votre performance d’adoration quotidienne et constance spirituelle',
   'hasad.zad':'Solde Zad','hasad.streak':'Série',
   'hasad.streak.cta':'Commencez votre série pour gagner plus de points !',
-  'hasad.heatmap':'Performance durant les dix jours',
+  'hasad.heatmap':'Suivi de la performance et de la constance',
   'hasad.share':'Partager le bilan','hasad.share.btn':'Partager mon bilan',
   'hasad.complete':'Terminé','hasad.days.left':'jours restants',
   /* ─ Kids ─ */
@@ -558,9 +558,9 @@ fr: {
   'tasmee.tip1.title':'Prononciation correcte','tasmee.tip2.title':'Environnement calme',
   'tasmee.tip3.title':'Voix naturelle','tasmee.tip4.title':'Navigateur recommandé',
   /* ─ AI ─ */
-  'ai.title':'Réflexion par IA','ai.sub':'Posez des questions sur les versets et les règles des dix jours',
+  'ai.title':'Réflexion par IA','ai.sub':'Posez des questions sur les versets, invocations et règles',
   'ai.placeholder':'Posez votre question ici...','ai.send':'Envoyer',
-  'ai.greeting':'Bienvenue dans l’assistant des dix jours 🕌',
+  'ai.greeting':'Bienvenue dans l’assistant Zad 🕌',
   'ai.questions.title':'Questions suggérées',
   /* ─ Report ─ */
   'report.title':'Signaler un problème','report.sub':'Aidez-nous à améliorer votre compagnon spirituel',
@@ -591,11 +591,11 @@ fr: {
   'settings.data.noads':'Zéro publicité','settings.data.noads.sub':'Khushu’ numérique sans distractions',
   'settings.data.reset':'Effacer toutes les données',
   /* ─ About ─ */
-  'about.title':'À propos de l’application','about.sub':'Zad Al-Ashr — Votre compagnon intelligent pour les meilleurs jours sur terre',
+  'about.title':'À propos de l’application','about.sub':'Zad — Votre compagnon intelligent pour les adorations et le bien',
   'about.dev':'Mustafa Abu Al-Azm',
   'about.dev.title':'Designer UI · Développeur web · Innovateur UX',
   'about.contact':'Me contacter','about.social':'Suivez-moi sur',
-  'about.app.title':'À propos de Zad Al-Ashr','about.sources':'Sources islamiques',
+  'about.app.title':'À propos de Zad','about.sources':'Sources islamiques',
   'about.tech':'Technologies utilisées',
 }
 };
@@ -705,8 +705,8 @@ const I18N = {
     /* العلامة التجارية */
     const bn = document.querySelector('.brand-name');
     const bs = document.querySelector('.brand-sub');
-    if (bn) bn.textContent = isAr ? 'زاد' : 'Zad Al-Ashr';
-    if (bs) bs.textContent = isAr ? 'أفضل أيام الدنيا' : (lang==='fr' ? 'Les meilleurs jours sur terre' : 'The Best Days on Earth');
+    if (bn) bn.textContent = isAr ? 'زاد' : 'Zad';
+    if (bs) bs.textContent = isAr ? 'رفيق العبادة والخير' : (lang==='fr' ? 'Compagnon d’adoration' : 'Worship Companion');
 
     /* روابط القائمة + الفواصل */
     document.querySelectorAll('.nav a span:last-child, .nav .nav-sep').forEach(swap);
@@ -772,6 +772,7 @@ const UI_MAP = {
   'اتجاه القبلة':         { en:'Qibla Direction', fr:'Direction de la Qibla' },
   'التقويم الهجري':       { en:'Hijri Calendar', fr:'Calendrier Hégirien' },
   'ورد العشر':            { en:'Daily Quran Wird', fr:'Wird quotidien du Coran' },
+  'الورد القرآني':        { en:'Daily Quran Wird', fr:'Wird quotidien du Coran' },
   'المصحف الشريف':        { en:'Holy Quran', fr:'Saint Coran' },
   'تسميع القرآن':         { en:'Quran Memorization', fr:'Mémorisation du Coran' },
   'إذاعات القرآن':        { en:'Quran Radio', fr:'Radios du Coran' },
@@ -783,11 +784,15 @@ const UI_MAP = {
   'فضائل العشر':          { en:'Virtues of the 10 Days', fr:'Mérites des 10 jours' },
   'يوم عرفة':             { en:'Day of Arafah', fr:'Jour de Arafah' },
   'دليل الأضحية':         { en:'Sacrifice Guide', fr:'Guide du sacrifice' },
-  'صدقة العشر':           { en:'Charity in the 10 Days', fr:'Aumône des 10 jours' },
+  'صدقة العشر':           { en:'Charity & Giving', fr:'Aumône et bienfaisance' },
+  'الصدقة والبر':         { en:'Charity & Giving', fr:'Aumône et bienfaisance' },
   'حصاد العشر':           { en:'Worship Harvest', fr:'Bilan des adorations' },
-  'إحصاء العشر':          { en:'Ten Days Summary', fr:'Récapitulatif des dix jours' },
+  'حصاد العبادات':        { en:'Worship Harvest', fr:'Bilan des adorations' },
+  'إحصاء العشر':          { en:'Worship Summary', fr:'Récapitulatif des adorations' },
+  'إحصاء العبادات':       { en:'Worship Summary', fr:'Récapitulatif des adorations' },
   'أوسمتي':               { en:'My Badges', fr:'Mes badges' },
   'محاضرات العشر':        { en:'Lectures of the 10 Days', fr:'Conférences des 10 jours' },
+  'المرئيات والمحاضرات':   { en:'Islamic Lectures', fr:'Conférences islamiques' },
   'قائمة التشغيل':        { en:'Playlist', fr:'Liste de lecture' },
   'ثُريّا — وضع الأطفال': { en:'Thuraya — Kids Mode', fr:'Thuraya — Mode enfants' },
   'غرس — رحلة الحج':     { en:'Ghars — Hajj Journey', fr:'Ghars — Voyage du Hajj' },
@@ -833,6 +838,7 @@ const UI_MAP = {
   'إغلاق':     { en:'Close', fr:'Fermer' },
   'عرض الكل ←': { en:'View all ←', fr:'Voir tout ←' },
   'ملخص العشر ←': { en:'Summary ←', fr:'Récapitulatif ←' },
+  'ملخص العبادات ←': { en:'Summary ←', fr:'Récapitulatif ←' },
   'تذكيرات':   { en:'Reminders', fr:'Rappels' },
   'تغيير':     { en:'Change', fr:'Changer' },
   /* أيام/أوقات */
@@ -844,23 +850,24 @@ const UI_MAP = {
 
 /* ── خريطة عناوين الصفحات (عربي/إنجليزي/فرنسي) ─────────────── */
 const PAGE_TITLES = {
-  'index.html':       { ar:['زاد','العشر'], en:['Zad','Al-Ashr'], fr:['Zad','Al-Ashr'] },
+  'index.html':       { ar:['زاد','اليومي'], en:['Daily','Zad'], fr:['Zad','Quotidien'] },
   'prayers.html':     { ar:['مواقيت','الصلاة'], en:['Prayer','Times'], fr:['Heures de','prière'] },
   'worship.html':     { ar:['جدول','العبادات'], en:['Worship','Tracker'], fr:['Suivi des','adorations'] },
   'adhkar.html':      { ar:['الأذكار','والدعاء'], en:['Dhikr &','Supplications'], fr:['Dhikr et','invocations'] },
   'fadael.html':      { ar:['فضائل','العشر'], en:['Virtues of the','10 Days'], fr:['Mérites des','10 jours'] },
-  'hasad.html':       { ar:['حصاد','العشر'], en:['Worship','Harvest'], fr:['Bilan des','adorations'] },
+  'hasad.html':       { ar:['حصاد','العبادات'], en:['Worship','Harvest'], fr:['Bilan des','adorations'] },
+  'summary.html':     { ar:['ملخص','العبادات'], en:['Worship','Summary'], fr:['Récapitulatif','adorations'] },
   'badges.html':      { ar:['أوسمتي',''], en:['My','Badges'], fr:['Mes','badges'] },
   'ai.html':          { ar:['تدبّر','بالذكاء'], en:['AI','Reflection'], fr:['Réflexion','par IA'] },
-  'videos.html':      { ar:['محاضرات','العشر'], en:['Lectures of','the 10 Days'], fr:['Conférences','des 10 jours'] },
+  'videos.html':      { ar:['المرئيات','والمحاضرات'], en:['Islamic','Lectures'], fr:['Conférences','islamiques'] },
   'settings.html':    { ar:['الإعدادات',''], en:['','Settings'], fr:['','Paramètres'] },
   'about.html':       { ar:['عن','التطبيق'], en:['About','the App'], fr:['À propos de','l’app'] },
-  'mushaf.html':      { ar:['ورد','العشر'], en:['Daily','Wird'], fr:['Wird','quotidien'] },
+  'mushaf.html':      { ar:['الورد','القرآني'], en:['Daily','Wird'], fr:['Wird','quotidien'] },
   'takbeer.html':     { ar:['المسبحة',''], en:['','Tasbih'], fr:['','Tasbih'] },
   'mushaf-quran.html':{ ar:['المصحف','الشريف'], en:['Holy','Quran'], fr:['Saint','Coran'] },
   'arafah.html':      { ar:['يوم','عرفة'], en:['Day of','Arafah'], fr:['Jour de','Arafah'] },
   'odhiya.html':      { ar:['دليل','الأضحية'], en:['Sacrifice','Guide'], fr:['Guide du','sacrifice'] },
-  'sadaqah.html':     { ar:['صدقة','العشر'], en:['Charity in the','10 Days'], fr:['Aumône des','10 jours'] },
+  'sadaqah.html':     { ar:['الصدقة','والبر'], en:['Charity &','Giving'], fr:['Aumône et','bien'] },
   'hijri.html':       { ar:['التقويم','الهجري'], en:['Hijri','Calendar'], fr:['Calendrier','Hégirien'] },
   'kids.html':        { ar:['ثُريّا',''], en:['','Thuraya'], fr:['','Thuraya'] },
   'ghars.html':       { ar:['غرس',''], en:['','Ghars'], fr:['','Ghars'] },

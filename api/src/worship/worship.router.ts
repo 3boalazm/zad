@@ -95,7 +95,10 @@ router.post(
         }
       }
 
-      // ── Upsert worship_log ────────────────────────────────────────────────
+      // ── Upsert worship_log within transaction + advisory lock ───────
+      await client.query('BEGIN');
+      await client.query('SELECT pg_advisory_xact_lock(hashtext($1::text))', [userId]);
+
       const payloadJson = JSON.stringify(
         payload !== undefined && payload !== null ? payload : {}
       );
@@ -132,7 +135,7 @@ router.post(
         await client.query(
           `INSERT INTO idempotency_keys (key, user_id, status, body)
            VALUES ($1, $2, $3, $4)
-           ON CONFLICT (key) DO NOTHING`,
+           ON CONFLICT (user_id, key) DO NOTHING`,
           [idempotency_key, userId, httpStatus, JSON.stringify(body)]
         );
       }
@@ -148,8 +151,10 @@ router.post(
         [userId, record.server_seq]
       );
 
+      await client.query('COMMIT');
       res.status(httpStatus).json(body);
     } catch (err) {
+      try { await client.query('ROLLBACK'); } catch (_) {}
       next(err);
     } finally {
       client.release();

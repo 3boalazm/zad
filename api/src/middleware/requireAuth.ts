@@ -41,7 +41,14 @@ export async function requireAuth(
     return;
   }
 
-  const session = await getSession(pool, raw).catch(() => null);
+  let session;
+  try {
+    session = await getSession(pool, raw);
+  } catch (err) {
+    res.status(503).json({ error: { code: 'DB_UNAVAILABLE', message: 'Database query failed' } });
+    return;
+  }
+
   if (session === null) {
     res.clearCookie(SESSION_COOKIE, { path: '/' });
     res.status(401).json({ error: { code: 'SESSION_INVALID', message: 'Session expired or revoked' } });

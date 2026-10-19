@@ -176,4 +176,55 @@ describe('GET /auth/me — no session cookie', () => {
       req.end();
     });
   });
+
+  it('register with missing fields returns 422', async () => {
+    return new Promise((resolve, reject) => {
+      const addr = server.address() as { port: number };
+      const payload = JSON.stringify({ email: 'test@example.com' }); // missing password
+      const req = http.request(
+        { host: '127.0.0.1', port: addr.port, path: '/api/v1/auth/register',
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) } },
+        (res) => {
+          let data = '';
+          res.on('data', (c: string) => { data += c; });
+          res.on('end', () => {
+            try {
+              assert.equal(res.statusCode, 422);
+              const body = JSON.parse(data) as Record<string, unknown>;
+              const err = body['error'] as Record<string, unknown>;
+              assert.equal(err['code'], 'VALIDATION_ERROR');
+              resolve();
+            } catch (e) { reject(e); }
+          });
+        }
+      );
+      req.on('error', reject);
+      req.write(payload);
+      req.end();
+    });
+  });
+
+  it('register with DB unavailable returns 503', async () => {
+    return new Promise((resolve, reject) => {
+      const addr = server.address() as { port: number };
+      const payload = JSON.stringify({ email: 'test@example.com', password: 'password123' });
+      const req = http.request(
+        { host: '127.0.0.1', port: addr.port, path: '/api/v1/auth/register',
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) } },
+        (res) => {
+          let data = '';
+          res.on('data', (c: string) => { data += c; });
+          res.on('end', () => {
+            try {
+              assert.equal(res.statusCode, 503);
+              resolve();
+            } catch (e) { reject(e); }
+          });
+        }
+      );
+      req.on('error', reject);
+      req.write(payload);
+      req.end();
+    });
+  });
 });

@@ -14,7 +14,7 @@
     {h:'qibla.html',i:'🧭',t:'اتجاه القبلة'},
     {h:'hijri.html',i:'🗓️',t:'التقويم الهجري'},
     {h:'barnamaj.html',i:'📅',t:'برنامج اليوم'},
-    {h:'mushaf.html',i:'📖',t:'ورد العشر'},
+    {h:'mushaf.html',i:'📖',t:'الورد القرآني'},
     {h:'mushaf-quran.html',i:'🕋',t:'المصحف الشريف'},
     {h:'Quran-radio.HTML',i:'📻',t:'إذاعات القرآن'},
     {h:'takbeer.html',i:'📿',t:'المسبحة والتكبير'},
@@ -29,9 +29,9 @@
     {h:'arafah.html',i:'🌄',t:'يوم عرفة'},
     {h:'arafah-dua.html',i:'🤲',t:'دعاء يوم عرفة'},
     {h:'odhiya.html',i:'🐏',t:'دليل الأضحية'},
-    {h:'sadaqah.html',i:'💚',t:'صدقة العشر'},
+    {h:'sadaqah.html',i:'💚',t:'الصدقة والبر'},
     {h:'zakat.html',i:'🧮',t:'حاسبة الزكاة'},
-    {h:'videos.html',i:'🎬',t:'محاضرات العشر'},
+    {h:'videos.html',i:'🎬',t:'المرئيات والمحاضرات'},
     {h:'playlist.html',i:'🎵',t:'قائمة التشغيل'},
     {h:'asma.html',i:'🌺',t:'أسماء الله الحسنى'},
     {h:'kids.html',i:'🌟',t:'ثُريّا — الأطفال'},
@@ -41,8 +41,8 @@
     {h:'kids-fun.html',i:'🎮',t:'شاشة المرح'},
     {h:'kids-creativity.html',i:'🎨',t:'نادي الإبداع'},
     {h:'kids-parents.html',i:'👨‍👧',t:'دليل المربي'},
-    {h:'hasad.html',i:'📊',t:'حصاد العشر'},
-    {h:'summary.html',i:'📈',t:'إحصاء العشر'},
+    {h:'hasad.html',i:'📊',t:'حصاد العبادات'},
+    {h:'summary.html',i:'📈',t:'إحصاء العبادات'},
     {h:'groups.html',i:'👨‍👩‍👧',t:'التنافس العائلي'},
     {h:'badges.html',i:'🏅',t:'أوسمتي'},
     {h:'profile.html',i:'👤',t:'حسابي'},
@@ -70,7 +70,7 @@
   function go(href){ location.href=href; }
 
   /* ── إنشاء واجهة الـ palette ── */
-  var overlay, input, list, items=[], activeIdx=0, filtered=[];
+  var overlay, input, list, items=[], activeIdx=0, filtered=[], prevFocus=null;
 
   function build(){
     overlay=document.createElement('div');
@@ -92,12 +92,19 @@
     input=document.getElementById('zad-cmd-input');
     list=document.getElementById('zad-cmd-list');
     overlay.onclick=function(e){ if(e.target===overlay) close(); };
+    overlay.onkeydown=function(e){
+      if(e.key==='Tab'){
+        e.preventDefault();
+        if(input) input.focus();
+      }
+    };
     input.oninput=function(){ render(input.value); };
     input.onkeydown=function(e){
       if(e.key==='ArrowDown'){ e.preventDefault(); activeIdx=Math.min(activeIdx+1,filtered.length-1); paint(); }
       else if(e.key==='ArrowUp'){ e.preventDefault(); activeIdx=Math.max(activeIdx-1,0); paint(); }
       else if(e.key==='Enter'){ e.preventDefault(); exec(filtered[activeIdx]); }
       else if(e.key==='Escape'){ close(); }
+      else if(e.key==='Tab'){ e.preventDefault(); }
     };
   }
 
@@ -120,7 +127,8 @@
     list.innerHTML='';
     filtered.forEach(function(it,idx){
       var row=document.createElement('div');
-      row.style.cssText='padding:10px 12px;border-radius:10px;display:flex;align-items:center;gap:12px;cursor:pointer;'+(idx===activeIdx?'background:var(--green-pale,#e8f4ef)':'');
+      var isSel = (idx===activeIdx);
+      row.style.cssText='padding:10px 12px;border-radius:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;'+(isSel?'background:var(--sand-2,#ebdfc4);outline:2px solid var(--gold,#e6c97a);':'');
       row.innerHTML='<span style="font-size:18px;width:24px;text-align:center">'+it.i+'</span>'+
         '<span style="flex:1;font-weight:600;font-size:14px">'+it.t+'</span>'+
         '<span style="font-size:11px;color:var(--muted,#999)">'+it.sub+'</span>';
@@ -136,12 +144,18 @@
 
   function open(){
     if(!overlay) build();
+    prevFocus = document.activeElement;
     overlay.style.display='flex';
     input.value='';
     render('');
     setTimeout(function(){ input.focus(); },50);
   }
-  function close(){ if(overlay) overlay.style.display='none'; }
+  function close(){
+    if(overlay) overlay.style.display='none';
+    if(prevFocus && typeof prevFocus.focus==='function'){
+      try{ prevFocus.focus(); }catch(e){}
+    }
+  }
 
   function toast(msg){
     var t=document.createElement('div');

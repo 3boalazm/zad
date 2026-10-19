@@ -1,8 +1,8 @@
 # زاد (Zad)
 
-> رفيقك الروحاني في أفضل أيام الدنيا — عشر ذي الحجة. تطبيق ويب إسلامي (PWA) يعمل بدون إنترنت، يقدّم مواقيت الصلاة، الورد القرآني، الأذكار، المسبحة الرقمية، وجدول عبادات يومي لعشر ذي الحجة.
+> رفيقك اليومي في العبادة والخير ومواسم الطاعات. تطبيق ويب إسلامي (PWA) يعمل بدون إنترنت، يقدّم مواقيت الصلاة، الورد القرآني، الأذكار، المسبحة الرقمية، وجدول عبادات يومي ومتابعة مواسم الخيرات.
 
-Zad is an offline-first Islamic PWA focused on the first ten days of Dhū al-Ḥijjah: prayer times, a Quran reading plan, adhkar (remembrances), a digital tasbih counter, and a daily worship tracker. Content is in Arabic; the UI also supports English and French.
+Zad is an offline-first Islamic PWA and daily worship companion: prayer times, a Quran reading plan, adhkar (remembrances), a digital tasbih counter, daily worship tracking, and specialized seasonal guides (Dhū al-Ḥijjah, Arafah, and Ramadan). Content is in Arabic; the UI also supports English and French.
 
 ## Core worship tools
 - [Dashboard](https://zad.codeandcanvas.net/index.html): home screen — daily progress, prayer times, verse of the day
@@ -13,20 +13,22 @@ Zad is an offline-first Islamic PWA focused on the first ten days of Dhū al-Ḥ
 - [Tasbih counter](https://zad.codeandcanvas.net/takbeer.html): digital dhikr/takbeer counter
 
 ## Quran
-- [Quran reading plan](https://zad.codeandcanvas.net/mushaf.html): a structured Quran-reading wird for the ten days
+- [Quran reading plan](https://zad.codeandcanvas.net/mushaf.html): a structured daily Quran-reading wird and completion plans
 - [Full mushaf](https://zad.codeandcanvas.net/mushaf-quran.html): browse the Quran by surah/juz
 - [Recitation practice](https://zad.codeandcanvas.net/tasmee.html): self-testing recitation tool
 - [Quran radio](https://zad.codeandcanvas.net/Quran-radio.HTML): live reciter radio streams
 
-## The ten days of Dhū al-Ḥijjah
+## Specialized guides: Dhū al-Ḥijjah & Hajj season
 - [Virtues of the ten days](https://zad.codeandcanvas.net/fadael.html): why these days matter
 - [Day of Arafah](https://zad.codeandcanvas.net/arafah.html): guidance and duas for the day of Arafah
 - [Hajj rites](https://zad.codeandcanvas.net/manasik.html): a guide to the pilgrimage rites
 - [Udhiyah (sacrifice)](https://zad.codeandcanvas.net/odhiya.html): rulings and a cost-sharing calculator
+- [Charity and giving](https://zad.codeandcanvas.net/sadaqah.html): charitable acts and daily giving
 - [Zakat calculator](https://zad.codeandcanvas.net/zakat.html): compute zakat due
 
 ## Progress and community
-- [Ten-days summary](https://zad.codeandcanvas.net/summary.html): personal progress overview
+- [Worship harvest](https://zad.codeandcanvas.net/hasad.html): detailed worship stats and radar balance chart
+- [Worship summary](https://zad.codeandcanvas.net/summary.html): personal progress overview and daily worship consistency
 - [Badges](https://zad.codeandcanvas.net/badges.html): achievement badges
 - [Family groups](https://zad.codeandcanvas.net/groups.html): family/friend worship-tracking groups
 

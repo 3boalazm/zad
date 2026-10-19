@@ -42,8 +42,8 @@
     { href: 'arafah.html',       icon: '🌄', label: 'يوم عرفة',         section: 'sec-hajj' },
     { href: 'arafah-dua.html',   icon: '🤲', label: 'دعاء يوم عرفة',   section: 'sec-hajj' },
     { href: 'odhiya.html',       icon: '🐏', label: 'دليل الأضحية',     section: 'sec-hajj' },
-    { href: 'sadaqah.html',      icon: '💚', label: 'صدقة العشر',       section: 'sec-hajj' },
-    { href: 'hasad.html',        icon: '📊', label: 'حصاد العشر',       section: 'sec-hajj' },
+    { href: 'sadaqah.html',      icon: '💚', label: 'الصدقة والبر',     section: 'sec-hajj' },
+    { href: 'hasad.html',        icon: '📊', label: 'حصاد العبادات',     section: 'sec-hajj' },
     { href: 'hikayat-hajj.html', icon: '🕋', label: 'حكاية حج (للأطفال)', section: 'sec-hajj' },
 
     { sep: 'الزكاة 💰', id: 'sec-tools' },
@@ -67,7 +67,7 @@
 
     { sep: 'المتابعة', id: 'sec-track' },
     { href: 'hasad-month.html',  icon: '🗓️', label: 'حصاد الشهر',       section: 'sec-track' },
-    { href: 'summary.html',      icon: '📈', label: 'إحصاء العشر',     section: 'sec-track' },
+    { href: 'summary.html',      icon: '📈', label: 'إحصاء العبادات',     section: 'sec-track' },
     { href: 'badges.html',       icon: '🏅', label: 'أوسمتي',           section: 'sec-track' },
 
     { sep: 'التنافس العائلي 👨‍👩‍👧', id: 'sec-family' },
@@ -265,7 +265,7 @@
   /* ═══ زر التكبير العائم (FAB) — زي زر الماسنجر ═══ */
   .zad-tkbr-fab{
     position:fixed; z-index:195;
-    bottom:84px; left:18px;            /* فوق الشريط السفلي العائم */
+    bottom:calc(84px + env(safe-area-inset-bottom, 0px)); left:18px;            /* فوق الشريط السفلي العائم */
     width:58px; height:58px; border-radius:50%;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     border:none; cursor:pointer;
@@ -286,7 +286,7 @@
   body.zad-menu-open .zad-tkbr-fab{opacity:0;transform:translateY(40px) scale(.8);pointer-events:none;transition:opacity .25s,transform .25s}
   /* على الديسكتوب: أسفل يمين */
   @media(min-width:769px){
-    .zad-tkbr-fab{bottom:24px;left:auto;right:24px}
+    .zad-tkbr-fab{bottom:calc(24px + env(safe-area-inset-bottom, 0px));left:auto;right:24px}
   }
 
   .zad-tkbr-pop{position:fixed;inset:0;z-index:10001;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(6,23,15,.72);backdrop-filter:blur(4px)}
@@ -324,7 +324,7 @@
     .main .topbar{
       position:fixed !important;
       top:auto !important;
-      bottom:14px !important;
+      bottom:calc(14px + env(safe-area-inset-bottom, 0px)) !important;
       left:14px !important;
       right:14px !important;
       width:auto !important;
@@ -336,7 +336,7 @@
       transition:opacity .3s var(--ease,ease), transform .3s var(--ease,ease) !important;
     }
     /* مساحة أسفل المحتوى حتى لا يغطّي الشريط آخر عنصر */
-    .main{ padding-bottom:92px !important; }
+    .main{ padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px)) !important; }
     /* يختفي الشريط تماماً عند فتح القائمة الجانبية */
     body:has(.sidebar.open) .main .topbar,
     body.zad-menu-open .main .topbar{
@@ -359,6 +359,7 @@
       left:0 !important; right:auto !important;
       transform-origin:bottom center !important;
       max-height:60vh !important;
+      max-width:calc(100vw - 32px) !important;
       overflow-y:auto !important;
       z-index:200 !important;
     }
@@ -564,7 +565,7 @@
     /* يشارك رابط الموقع — استبدل APP_APK_URL بملف APK فعلي حين يتوفر */
     const APP_URL = 'https://zad.codeandcanvas.net';
     if (navigator.share) {
-      navigator.share({ title: 'زاد', text: 'رفيقك في عشر ذي الحجة 🌙', url: APP_URL });
+      navigator.share({ title: 'زاد', text: 'زاد — رفيقك في العبادة والخير 🌙', url: APP_URL });
     } else {
       navigator.clipboard?.writeText(APP_URL).then(() => {
         if (typeof showToast === 'function') showToast('✅ تم نسخ رابط التطبيق');
@@ -622,6 +623,8 @@
   let _qCount = 0, _qPhrase = 0, _tkbrTrigger = null;
 
   function buildTakbeerButton() {
+    const curPath = (window.location.pathname || '').toLowerCase();
+    if (curPath.endsWith('takbeer.html') || curPath.includes('/takbeer') || curPath === 'takbeer') return;
     if (document.getElementById('zad-tkbr-fab')) return;
     const s = tkbrRead();
     const total = (s.takbeer && s.takbeer.total) || 0;
@@ -741,7 +744,7 @@
   const SIDEBAR_SHELL =
     '<a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">' +
       '<div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>' +
-      '<div><div class="brand-name">زاد</div><div class="brand-sub">أفضل أيام الدنيا</div></div>' +
+      '<div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>' +
     '</a>' +
     '<div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>' +
     '<div class="theme-seg" id="theme-seg">' +
@@ -1000,7 +1003,7 @@
       cx.fillStyle = T.gold; cx.fill();
       cx.font = '14px Tajawal, sans-serif';
       cx.fillStyle = T.muted; cx.textAlign = 'left';
-      cx.fillText('عشر ذي الحجة', PAD + 22, 74);
+      cx.fillText('رفيق العبادة والخير', PAD + 22, 74);
 
       /* ── خط فاصل علوي متدرّج ── */
       cx.save();
@@ -1107,7 +1110,7 @@
   }
 
   /* تصدير عام */
-  window.ZadShare = { text: _zadShareText, png: _zadSharePng };
+  window.ZadShare = Object.assign(window.ZadShare || {}, { text: _zadShareText, png: _zadSharePng });
 })();
 /* ═══ شريط التنقل السفلي (bottom-nav) — مُعطَّل بناءً على طلب المستخدم ═══
    الاعتماد على القائمة الجانبية (الهامبرجر) كتنقّل أساسي. لإعادة تفعيله مستقبلاً

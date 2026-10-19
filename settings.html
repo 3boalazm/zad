@@ -81,20 +81,20 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
   <meta property="og:url" content="https://zad.codeandcanvas.net/settings.html">
-  <meta property="og:title" content="زاد — أفضل أيام الدنيا">
-  <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
+  <meta property="og:title" content="زاد — رفيق العبادة والخير">
+  <meta property="og:description" content="زاد — رفيقك اليومي في العبادة والذكر: مواقيت الصلاة، الورد القرآني، الأذكار، المسبحة، وجدول العبادات ومواسم الخير">
   <meta property="og:image" content="/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="زاد — تطبيق العبادة في عشر ذي الحجة">
+  <meta property="og:image:alt" content="زاد — رفيقك اليومي في العبادة والطاعة ومواسم الخير">
   <meta property="og:locale" content="ar_SA">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="زاد — أفضل أيام الدنيا">
-  <meta name="twitter:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر">
+  <meta name="twitter:title" content="زاد — رفيق العبادة والخير">
+  <meta name="twitter:description" content="زاد — رفيقك اليومي في العبادة والذكر والقرآن ومواسم الطاعات">
   <meta name="twitter:image" content="/og-image.png">
   <!-- WhatsApp / general -->
-  <meta name="description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
+  <meta name="description" content="زاد — رفيقك اليومي في العبادة والذكر: مواقيت الصلاة، الورد القرآني، الأذكار، المسبحة، وجدول العبادات ومواسم الخير">
   <link rel="apple-touch-icon" href="/og-image.png">
   <!-- Vercel Web Analytics -->
   <script>
@@ -109,7 +109,7 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
     <aside class="sidebar">
     <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
       <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
-      <div><div class="brand-name">زاد</div><div class="brand-sub">أفضل أيام الدنيا</div></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
     </a>
     <!-- Profile chip injected by JS -->
     <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
@@ -464,7 +464,7 @@ function scheduleAllReminders(){
     const id=setTimeout(()=>{try{new Notification(title,{body,icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}at(h,m,title,body,key);},t-now);
     window._rTimers.push(id);
   }
-  at(5,30,'📿 ورد الصباح','ابدأ وردك في أفضل أيام الدنيا','wird_morning');
+  at(5,30,'📿 ورد الصباح','ابدأ وردك بطاعة الرحمن والذكر والقرآن','wird_morning');
   at(17,0,'🌙 ورد المساء','لا تنسَ أذكار المساء','wird_evening');
   at(6,15,'☀️ أذكار الصباح','3 دقائق تحمي يومك بإذن الله','adhkar_morning');
   at(15,45,'🌆 أذكار المساء','حصّن نفسك قبل الغروب','adhkar_evening');
@@ -477,7 +477,7 @@ function scheduleAllReminders(){
   /* Weekly video — Friday 8pm */
   if(saved['video_weekly']!==false){
     const now=new Date(),fri=new Date(now);fri.setDate(now.getDate()+((5-now.getDay()+7)%7||7));fri.setHours(20,0,0,0);
-    window._rTimers.push(setTimeout(()=>{try{new Notification('🎬 محاضرة الجمعة',{body:'شاهد محاضرات العشر المختارة',icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}},fri-now));
+    window._rTimers.push(setTimeout(()=>{try{new Notification('🎬 محاضرة الجمعة',{body:'شاهد المحاضرات والدروس المختارة',icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}},fri-now));
   }
 }
 
@@ -489,7 +489,7 @@ function updateInstallBtn(){
 }
 
 function shareApp(){
-  const d={title:'🌙 زاد',text:'رفيقك في أفضل أيام الدنيا',url:'https://zad.codeandcanvas.net'};
+  const d={title:'🌙 زاد',text:'زاد — رفيقك اليومي في العبادة والخير',url:'https://zad.codeandcanvas.net'};
   if(navigator.share)navigator.share(d).catch(()=>{navigator.clipboard?.writeText(d.url);if(typeof showToast==='function')showToast('✅ تم نسخ الرابط');});
   else{navigator.clipboard?.writeText(d.url);if(typeof showToast==='function')showToast('✅ تم نسخ الرابط');}
 }

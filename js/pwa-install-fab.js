@@ -44,7 +44,7 @@
       /* wrapper */
       '#zad-pwa-fab{',
         'position:fixed;',
-        'bottom:28px;',
+        'bottom:calc(28px + env(safe-area-inset-bottom, 0px));',
         'left:20px;',         /* يسار — RTL: الزاوية الطبيعية للـ FAB */
         'z-index:99998;',
         'display:flex;',
@@ -65,6 +65,7 @@
         'backdrop-filter:blur(10px);',
         '-webkit-backdrop-filter:blur(10px);',
       '}',
+      '@media(max-width:768px){#zad-pwa-fab{bottom:calc(84px + env(safe-area-inset-bottom, 0px));left:16px;}}',
       /* entrada */
       '#zad-pwa-fab.visible{transform:translateY(0);opacity:1}',
       /* hover */
