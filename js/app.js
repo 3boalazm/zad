@@ -2589,7 +2589,7 @@ function initContentArchitecture() {
 window.initContentArchitecture = initContentArchitecture;
 
 /* ════════════════════════════════════════════════════════════
-   PROFILE SYSTEM — First-visit onboarding
+   PROFILE SYSTEM — Optional saved-profile personalization
    Stores: { name, type: 'adult'|'child', since }
    ════════════════════════════════════════════════════════════ */
 
@@ -2687,7 +2687,7 @@ function injectKidsShortcut(profile) {
   topbar.parentNode.insertBefore(bar, topbar.nextSibling);
 }
 
-/* ── Modal CSS injection ─────────────────────────────────── */
+/* ── Saved-profile CSS injection ────────────────────────── */
 function injectProfileCSS() {
   if (document.getElementById('profile-css')) return;
   const style = document.createElement('style');
@@ -2711,10 +2711,12 @@ function injectProfileCSS() {
 
 /* ── Init (called from DOMContentLoaded) ─────────────────── */
 function initProfileSystem() {
+  // Guests enter directly: no welcome modal, forced setup, or storage writes.
+  const profile = getProfile();
+  if (!profile) return;
+
   injectProfileCSS();
   injectProfileChip();
-  const profile = getProfile();
-
   if (profile) {
     applyProfile(profile);
     /* If on index, inject kids shortcut if child */
