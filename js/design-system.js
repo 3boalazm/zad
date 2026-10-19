@@ -330,10 +330,10 @@ function applyCalmUX() {
   /* ── 4.1 Reduced Motion: إيقاف GSAP animations ─────────────────────── */
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) {
-    /* إخبار GSAP بالإيقاف */
+    /* لا توقف الخط الزمني العام: إيقافه قد يعلّق عناصر التنقّل على opacity:0. */
     if (window.gsap) {
-      gsap.globalTimeline.pause();
       gsap.defaults({ duration: 0 });
+      gsap.globalTimeline.timeScale(20);
     }
     /* إيقاف CSS animations */
     document.documentElement.style.setProperty('--transition-fast', '0ms');

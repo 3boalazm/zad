@@ -814,21 +814,24 @@ function initSidebar() {
   const sidebar   = document.querySelector('.sidebar');
   const overlay   = document.querySelector('.sidebar-overlay');
   if (!hamburgers.length || !sidebar) return;
-  hamburgers.forEach(hamburger => {
-    hamburger.onclick = () => {
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('active');
-    };
-  });
-  overlay.onclick = () => {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('active');
+
+  if (!sidebar.id) sidebar.id = 'main-sidebar';
+  const setOpen = open => {
+    sidebar.classList.toggle('open', open);
+    overlay?.classList.toggle('active', open);
+    hamburgers.forEach(button => button.setAttribute('aria-expanded', String(open)));
   };
+
+  hamburgers.forEach(hamburger => {
+    hamburger.type = 'button';
+    hamburger.setAttribute('aria-controls', sidebar.id);
+    if (!hamburger.hasAttribute('aria-label')) hamburger.setAttribute('aria-label', 'القائمة');
+    hamburger.setAttribute('aria-expanded', String(sidebar.classList.contains('open')));
+    hamburger.onclick = () => setOpen(!sidebar.classList.contains('open'));
+  });
+  if (overlay) overlay.onclick = () => setOpen(false);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('active');
-    }
+    if (e.key === 'Escape' && sidebar.classList.contains('open')) setOpen(false);
   });
 }
 let toastTimer;

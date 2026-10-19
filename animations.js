@@ -10,20 +10,29 @@ if (typeof gsap === 'undefined') {
   }
 })();
 function runAnimInit() {
-  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    initPageEnter();
-    initScrollReveal();
-    initInteractiveGSAP();
-    initHoverSparks();
-  } else if (typeof gsap !== 'undefined') {
-    /* GSAP loaded but no ScrollTrigger — basic animations only */
-    initPageEnter();
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  /* Reduced-motion users should never have navigation placed at opacity:0
+     while an animation timeline is paused or waiting to complete. */
+  if (!reduceMotion) {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      initPageEnter();
+      initScrollReveal();
+      initInteractiveGSAP();
+      initHoverSparks();
+    } else if (typeof gsap !== 'undefined') {
+      /* GSAP loaded but no ScrollTrigger — basic animations only */
+      initPageEnter();
+    }
+    initAmbientOrbs();
+    overrideConfetti();
+    initCounterAnimations();
   }
-  initAmbientOrbs();
+
+  /* Glass state is a static visual treatment; CSS transitions are disabled
+     by the design system when reduced motion is requested. */
   initGlassTopbar();
-  overrideConfetti();
-  initCounterAnimations();
 }
 function initPageEnter() {
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });

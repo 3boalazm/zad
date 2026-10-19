@@ -1478,27 +1478,7 @@ html[data-fs="lg"] .nav a{font-size:15px}
   html[data-theme="dark"] .tb-center .page-title{-webkit-text-fill-color:var(--ink) !important}
 }
 
-/* ══ Mobile: floating bottom pill bar ══════════════════════ */
-@media(max-width:768px){
-  .main{
-    padding-top:16px !important;
-    padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-  .main .topbar{
-    position:fixed !important;
-    top:auto !important;
-    bottom:calc(14px + env(safe-area-inset-bottom, 0px)) !important;
-    left:14px !important;
-    right:14px !important;
-    width:auto !important;
-    margin:0 !important;
-    border-radius:999px !important;
-    z-index:190 !important;
-    padding:8px 16px !important;
-    box-shadow:0 10px 32px -6px rgba(14,59,46,.42) !important;
-  }
-}
-
+/* The mobile header stays at the top; the hamburger must remain reachable while scrolling. */
 /* ══ Desktop: normal topbar ════════════════════════════════ */
 @media(min-width:901px){
   .hamburger{display:none !important}
@@ -1670,39 +1650,41 @@ html[data-theme="oled"] #next-reset-time{color:var(--sys-green)}
   .hamburger{display:none !important}
 }
 
-/* Mobile: sticky floating glass pill */
+/* Mobile: fixed top header — keeps navigation reachable while scrolling */
 @media(max-width:768px){
   .topbar{
     display:grid !important;
     grid-template-columns:auto 1fr auto !important;
     align-items:center !important;
     gap:8px !important;
-    /* STICKY — stays visible when scrolling */
-    position:sticky !important;
-    top:6px !important;
-    z-index:var(--z-sidebar-mobile) !important;
-    /* Floating glass look */
-    margin:6px 8px 14px 8px !important;
-    width:calc(100% - 16px) !important;
+    position:fixed !important;
+    top:calc(6px + env(safe-area-inset-top, 0px)) !important;
+    bottom:auto !important;
+    left:14px !important;
+    right:14px !important;
+    z-index:var(--z-topbar) !important;
+    margin:0 !important;
+    width:auto !important;
     border-radius:18px !important;
-    padding:9px 12px !important;
-    background:rgba(250,246,236,.94) !important;
+    padding:8px 12px !important;
+    background:rgba(250,246,236,.96) !important;
     backdrop-filter:blur(18px) saturate(1.8) !important;
     -webkit-backdrop-filter:blur(18px) saturate(1.8) !important;
     border:1px solid rgba(201,161,74,.18) !important;
     box-shadow:0 4px 18px -6px rgba(14,59,46,.22) !important;
   }
   html[data-theme="dark"] .topbar{
-    background:rgba(6,10,8,.94) !important;
+    background:rgba(6,10,8,.96) !important;
     border-color:rgba(255,255,255,.08) !important;
     box-shadow:0 4px 18px -6px rgba(0,0,0,.55) !important;
   }
   html[data-theme="oled"] .topbar{
-    background:rgba(0,0,0,.96) !important;
+    background:rgba(0,0,0,.97) !important;
     border-color:rgba(255,255,255,.05) !important;
   }
-  /* Mobile main: no top padding (topbar handles spacing) */
-  .main{padding:6px 12px 80px !important}
+  .topbar .hamburger{display:flex !important;visibility:visible !important;opacity:1 !important}
+  /* Reserve space for the fixed header and the mobile safe area. */
+  .main{padding:calc(78px + env(safe-area-inset-top, 0px)) 12px calc(80px + env(safe-area-inset-bottom, 0px)) !important}
 }
 
 /* ══ Video Carousel ════════════════════════════════════════ */
