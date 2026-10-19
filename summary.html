@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0e3b2e">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
-<title>إحصاء العشر — زاد</title>
+<title>ملخص العبادات — زاد</title>
 <style>
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
@@ -95,20 +95,20 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
   <meta property="og:url" content="https://zad.codeandcanvas.net/summary.html">
-  <meta property="og:title" content="زاد — أفضل أيام الدنيا">
-  <meta property="og:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
+  <meta property="og:title" content="زاد — رفيق العبادة والخير">
+  <meta property="og:description" content="زاد — رفيقك اليومي في العبادة والذكر: مواقيت الصلاة، الورد القرآني، الأذكار، المسبحة، وجدول العبادات ومواسم الخير">
   <meta property="og:image" content="/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="زاد — تطبيق العبادة في عشر ذي الحجة">
+  <meta property="og:image:alt" content="زاد — رفيقك اليومي في العبادة والطاعة ومواسم الخير">
   <meta property="og:locale" content="ar_SA">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="زاد — أفضل أيام الدنيا">
-  <meta name="twitter:description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر">
+  <meta name="twitter:title" content="زاد — رفيق العبادة والخير">
+  <meta name="twitter:description" content="زاد — رفيقك اليومي في العبادة والذكر والقرآن ومواسم الطاعات">
   <meta name="twitter:image" content="/og-image.png">
   <!-- WhatsApp / general -->
-  <meta name="description" content="رفيقك في عشر ذي الحجة — مواقيت الصلاة، ورد القرآن، المسبحة، فضائل العشر، جدول العبادات وأكثر">
+  <meta name="description" content="زاد — رفيقك اليومي في العبادة والذكر: مواقيت الصلاة، الورد القرآني، الأذكار، المسبحة، وجدول العبادات ومواسم الخير">
   <link rel="apple-touch-icon" href="/og-image.png">
   <!-- Vercel Web Analytics -->
   <script>
@@ -123,7 +123,7 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
     <aside class="sidebar">
     <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
       <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
-      <div><div class="brand-name">زاد</div><div class="brand-sub">أفضل أيام الدنيا</div></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
     </a>
     <!-- Profile chip injected by JS -->
     <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
@@ -142,7 +142,7 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   </aside>
 
   <main class="main">
-    <h1 class="sr-only">حصاد العشر</h1>
+    <h1 class="sr-only">ملخص العبادات</h1>
     <div class="topbar">
       <!-- LEFT: Burger + Logo -->
       <div class="tb-left">
@@ -153,7 +153,7 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
       </div>
       <!-- CENTER: Page name -->
       <div class="tb-center">
-        <div class="page-title">حصاد <span>العشر</span></div>
+        <div class="page-title">ملخص <span>العبادات</span></div>
       </div>
       <!-- RIGHT: Notif + Lang + Theme -->
       <div class="tb-right">
@@ -169,7 +169,7 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
     <!-- Hero total score -->
     <div class="sum-hero">
       <div class="sum-hero-num" id="sum-total-pct">0%</div>
-      <div class="sum-hero-lbl">متوسط الالتزام في العشر</div>
+      <div class="sum-hero-lbl">متوسط الالتزام بالعبادات</div>
       <div class="sum-hero-sub" id="sum-days-active">0 من 10 أيام مسجّلة</div>
     </div>
 
@@ -227,10 +227,10 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
 
     <!-- Share -->
     <button class="share-harvest-btn" onclick="shareHarvest()">
-      📤 شارك حصادك في العشر
+      📤 شارك حصاد طاعاتك
     </button>
     <a class="btn btn-ghost" href="hasad.html" style="display:flex;justify-content:center;margin-top:10px">
-      📊 عرض حصاد العشر المفصّل ←
+      📊 عرض حصاد العبادات المفصّل ←
     </a>
   </main>
   <a href="ai.html" class="fab-ai" aria-label="AI Assistant">🤖</a>
@@ -394,7 +394,7 @@ function shareHarvest() {
   const pct  = document.getElementById('sum-total-pct')?.textContent || '0%';
   const fast = document.getElementById('sum-fasting')?.textContent || '0';
   const tak  = document.getElementById('sum-takbeer')?.textContent || '0';
-  const rawText = `🕋 حصادي في عشر ذي الحجة مع زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nحمّل زاد: https://zad.codeandcanvas.net`;
+  const rawText = `🕌 حصادي مع تطبيق زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nتطبيق زاد: https://zad.codeandcanvas.net`;
 
   if (navigator.share) {
     navigator.share({

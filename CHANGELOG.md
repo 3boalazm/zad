@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented keyboard accessibility (`tabindex="0"`, `Space`, and `Enter` handling) for the central Tasbeeh counter ring in `takbeer.html`.
 - Added focus trapping and previous focus restoration on open/close in `command-palette.js`.
 
+### Changed
+- **Content Generalization & Year-Round Spiritual Companion:**
+  - Generalized application branding, slogans, navigation labels, and meta descriptions across 58 HTML pages and JS components from Dhul-Hijjah-only to year-round worship companion ("زاد — رفيقك في العبادة والخير" / "رفيقك اليومي في الطاعات").
+  - Updated navigation items: "الصدقة والبر" (was "صدقة العشر"), "حصاد العبادات" (was "حصاد العشر"), "إحصاء العبادات" (was "إحصاء العشر"), "الورد القرآني" (was "مصحف العشر"), and "المرئيات والمحاضرات" (was "محاضرات العشر").
+  - Retained dedicated seasonal sections (`fadael.html`, `arafah.html`, `odhiya.html`, `manasik.html`) as specialized guides within the broader year-round application.
+  - Synchronized localization dictionaries (`lang.js`, `lang.min.js`), menu bundles (`menu.js`, `menu.min.js`), search command palette (`command-palette.js`, `command-palette.min.js`), PWA manifest (`manifest.json`), and AI agent index (`llms.txt`).
+
 ### Fixed
 - **Mobile Navigation Dock Collision:** Resolved collision between the mobile floating topbar, `.fab-ai`, and `#zad-pwa-fab` by incorporating `env(safe-area-inset-bottom, 0px)` and raising secondary widgets to `bottom: calc(84px + safe-area)`.
 - **Cumulative Layout Shift (CLS):** Pre-rendered the mobile bottom floating dock directly in `css/style.css` at CSS parse time rather than waiting for dynamic injection in `menu.js`.

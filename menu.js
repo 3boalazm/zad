@@ -42,8 +42,8 @@
     { href: 'arafah.html',       icon: '🌄', label: 'يوم عرفة',         section: 'sec-hajj' },
     { href: 'arafah-dua.html',   icon: '🤲', label: 'دعاء يوم عرفة',   section: 'sec-hajj' },
     { href: 'odhiya.html',       icon: '🐏', label: 'دليل الأضحية',     section: 'sec-hajj' },
-    { href: 'sadaqah.html',      icon: '💚', label: 'صدقة العشر',       section: 'sec-hajj' },
-    { href: 'hasad.html',        icon: '📊', label: 'حصاد العشر',       section: 'sec-hajj' },
+    { href: 'sadaqah.html',      icon: '💚', label: 'الصدقة والبر',     section: 'sec-hajj' },
+    { href: 'hasad.html',        icon: '📊', label: 'حصاد العبادات',     section: 'sec-hajj' },
     { href: 'hikayat-hajj.html', icon: '🕋', label: 'حكاية حج (للأطفال)', section: 'sec-hajj' },
 
     { sep: 'الزكاة 💰', id: 'sec-tools' },
@@ -67,7 +67,7 @@
 
     { sep: 'المتابعة', id: 'sec-track' },
     { href: 'hasad-month.html',  icon: '🗓️', label: 'حصاد الشهر',       section: 'sec-track' },
-    { href: 'summary.html',      icon: '📈', label: 'إحصاء العشر',     section: 'sec-track' },
+    { href: 'summary.html',      icon: '📈', label: 'إحصاء العبادات',     section: 'sec-track' },
     { href: 'badges.html',       icon: '🏅', label: 'أوسمتي',           section: 'sec-track' },
 
     { sep: 'التنافس العائلي 👨‍👩‍👧', id: 'sec-family' },
@@ -565,7 +565,7 @@
     /* يشارك رابط الموقع — استبدل APP_APK_URL بملف APK فعلي حين يتوفر */
     const APP_URL = 'https://zad.codeandcanvas.net';
     if (navigator.share) {
-      navigator.share({ title: 'زاد', text: 'رفيقك في عشر ذي الحجة 🌙', url: APP_URL });
+      navigator.share({ title: 'زاد', text: 'زاد — رفيقك في العبادة والخير 🌙', url: APP_URL });
     } else {
       navigator.clipboard?.writeText(APP_URL).then(() => {
         if (typeof showToast === 'function') showToast('✅ تم نسخ رابط التطبيق');
@@ -744,7 +744,7 @@
   const SIDEBAR_SHELL =
     '<a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">' +
       '<div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>' +
-      '<div><div class="brand-name">زاد</div><div class="brand-sub">أفضل أيام الدنيا</div></div>' +
+      '<div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>' +
     '</a>' +
     '<div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>' +
     '<div class="theme-seg" id="theme-seg">' +
@@ -1003,7 +1003,7 @@
       cx.fillStyle = T.gold; cx.fill();
       cx.font = '14px Tajawal, sans-serif';
       cx.fillStyle = T.muted; cx.textAlign = 'left';
-      cx.fillText('عشر ذي الحجة', PAD + 22, 74);
+      cx.fillText('رفيق العبادة والخير', PAD + 22, 74);
 
       /* ── خط فاصل علوي متدرّج ── */
       cx.save();
