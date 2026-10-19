@@ -31,3 +31,6 @@ api/*.log
 # backups/runtime
 backups/
 *.tar.gz
+
+# Generated website output
+public/
