@@ -69,7 +69,7 @@ async function initDB() {
     history:      'date',
     tasbih:       'id',
     adhkar:       '++id, sectionId, date',
-    zakatCalc:    '++id, date',      /* حسابات الزكاة */
+    zakatCalc:    '++id, date, ts',  /* حسابات الزكاة */
     profile:      'key',             /* الملف الشخصي */
   });
 
@@ -370,7 +370,13 @@ const ZadStore = {
 
   async getZakatHistory() {
     const db = await initDB();
-    return await db.zakatCalc.orderBy('ts').reverse().toArray();
+    try {
+      const rows = await db.zakatCalc.toArray();
+      return rows.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    } catch (e) {
+      console.error('[Storage] getZakatHistory error:', e);
+      return [];
+    }
   },
 
   /* ── PROFILE ─────────────────────────────────────────────────────────── */

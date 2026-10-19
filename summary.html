@@ -394,9 +394,25 @@ function shareHarvest() {
   const pct  = document.getElementById('sum-total-pct')?.textContent || '0%';
   const fast = document.getElementById('sum-fasting')?.textContent || '0';
   const tak  = document.getElementById('sum-takbeer')?.textContent || '0';
-  const text = encodeURIComponent(`🕋 حصادي في عشر ذي الحجة مع زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nحمّل زاد: https://zad.codeandcanvas.net`);
+  const rawText = `🕋 حصادي في عشر ذي الحجة مع زاد:\n✅ متوسط الالتزام: ${pct}\n🌙 أيام الصيام: ${fast}\n📿 التكبير: ${tak} تكبيرة\n\nحمّل زاد: https://zad.codeandcanvas.net`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: 'حصاد زاد',
+      text: rawText,
+    }).catch(err => {
+      if (err.name !== 'AbortError') fallbackShare(rawText);
+    });
+  } else {
+    fallbackShare(rawText);
+  }
+}
+
+function fallbackShare(rawText) {
   const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
-  window.open((isMobile ? 'whatsapp://send?text=' : 'https://web.whatsapp.com/send?text=') + text, '_blank');
+  const text = encodeURIComponent(rawText);
+  const url = isMobile ? ('whatsapp://send?text=' + text) : ('https://api.whatsapp.com/send?text=' + text);
+  window.open(url, '_blank');
 }
 
 document.addEventListener('DOMContentLoaded', loadSummary);

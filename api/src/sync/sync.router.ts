@@ -138,118 +138,135 @@ router.post(
     const results: PushResult[] = [];
     const counts: Record<PushStatus, number> = { accepted: 0, updated: 0, skipped_duplicate: 0, failed: 0 };
 
-    for (const rawChange of changes) {
-      const change = rawChange as Record<string, unknown>;
-      const { log_date, payload, idempotency_key } = change;
+    // Single client for the entire batch — eliminates connection pool exhaustion
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      // Serialize concurrent writes per user to eliminate server_seq race conditions
+      await client.query('SELECT pg_advisory_xact_lock(hashtext($1::text))', [userId]);
 
-      // ── Per-item validation (no DB access for these) ──────────────────────
-      if (!isIsoDate(log_date)) {
-        results.push({ log_date: typeof log_date === 'string' ? log_date : '', status: 'failed', error: 'invalid log_date' });
-        counts['failed']++;
-        continue;
-      }
+      for (const rawChange of changes) {
+        const change = rawChange as Record<string, unknown>;
+        const { log_date, payload, idempotency_key } = change;
 
-      if (payload !== undefined && payload !== null) {
-        if (typeof payload !== 'object' || Array.isArray(payload)) {
-          results.push({ log_date, status: 'failed', error: 'payload must be object' });
+        // ── Per-item validation (no DB access for these) ──────────────────────
+        if (!isIsoDate(log_date)) {
+          results.push({ log_date: typeof log_date === 'string' ? log_date : '', status: 'failed', error: 'invalid log_date' });
           counts['failed']++;
           continue;
         }
-      }
 
-      if (idempotency_key !== undefined) {
-        if (typeof idempotency_key !== 'string' || idempotency_key.length > 128) {
-          results.push({ log_date, status: 'failed', error: 'invalid idempotency_key' });
-          counts['failed']++;
-          continue;
-        }
-      }
-
-      // ── DB operations per item (isolated — one item error ≠ abort batch) ──
-      const client = await pool.connect();
-      try {
-        // Idempotency check
-        if (typeof idempotency_key === 'string') {
-          const cached = await client.query<{ body: { status: PushStatus; server_seq?: string } }>(
-            `SELECT body
-             FROM idempotency_keys
-             WHERE key = $1 AND user_id = $2 AND expires_at > now()`,
-            [idempotency_key, userId]
-          );
-          if (cached.rows.length > 0) {
-            const cachedBody = cached.rows[0].body;
-            results.push({ log_date, status: 'skipped_duplicate', server_seq: cachedBody?.server_seq });
-            counts['skipped_duplicate']++;
+        if (payload !== undefined && payload !== null) {
+          if (typeof payload !== 'object' || Array.isArray(payload)) {
+            results.push({ log_date, status: 'failed', error: 'payload must be object' });
+            counts['failed']++;
             continue;
           }
         }
 
-        // Detect insert vs update
-        const existing = await client.query<{ id: string }>(
-          `SELECT id FROM worship_log WHERE user_id = $1 AND log_date = $2`,
-          [userId, log_date]
-        );
-        const isNew = existing.rows.length === 0;
-
-        // Upsert
-        const payloadJson = JSON.stringify(payload !== undefined && payload !== null ? payload : {});
-        const upsert = await client.query<{ server_seq: string }>(
-          `INSERT INTO worship_log (user_id, log_date, payload, server_seq)
-           VALUES (
-             $1, $2, $3,
-             COALESCE((SELECT MAX(server_seq) FROM worship_log WHERE user_id = $1), 0) + 1
-           )
-           ON CONFLICT (user_id, log_date)
-           DO UPDATE SET
-             payload    = EXCLUDED.payload,
-             server_seq = COALESCE((SELECT MAX(server_seq) FROM worship_log WHERE user_id = $1), 0) + 1,
-             updated_at = now()
-           RETURNING server_seq`,
-          [userId, log_date, payloadJson]
-        );
-
-        const { server_seq } = upsert.rows[0] as { server_seq: string };
-        const itemStatus: PushStatus = isNew ? 'accepted' : 'updated';
-
-        // Cache idempotency
-        if (typeof idempotency_key === 'string') {
-          await client.query(
-            `INSERT INTO idempotency_keys (key, user_id, status, body)
-             VALUES ($1, $2, $3, $4)
-             ON CONFLICT (key) DO NOTHING`,
-            [idempotency_key, userId, 200, JSON.stringify({ status: itemStatus, server_seq })]
-          );
+        if (idempotency_key !== undefined) {
+          if (typeof idempotency_key !== 'string' || idempotency_key.length > 128) {
+            results.push({ log_date, status: 'failed', error: 'invalid idempotency_key' });
+            counts['failed']++;
+            continue;
+          }
         }
 
-        // Advance sync cursor
-        await client.query(
-          `INSERT INTO sync_cursors (user_id, last_seq)
-           VALUES ($1, $2)
-           ON CONFLICT (user_id)
-           DO UPDATE SET
-             last_seq   = GREATEST(sync_cursors.last_seq, EXCLUDED.last_seq),
-             updated_at = now()`,
-          [userId, server_seq]
-        );
+        // ── DB operations per item (isolated with savepoint) ─────────────────
+        await client.query('SAVEPOINT item_sp');
+        try {
+          // Idempotency check (handles both sync and worship log cached shapes)
+          if (typeof idempotency_key === 'string') {
+            const cached = await client.query<{ body: any }>(
+              `SELECT body
+               FROM idempotency_keys
+               WHERE key = $1 AND user_id = $2 AND expires_at > now()`,
+              [idempotency_key, userId]
+            );
+            if (cached.rows.length > 0) {
+              const cachedBody = cached.rows[0].body;
+              const seq = cachedBody?.server_seq || cachedBody?.data?.server_seq;
+              results.push({ log_date, status: 'skipped_duplicate', server_seq: seq });
+              counts['skipped_duplicate']++;
+              await client.query('RELEASE SAVEPOINT item_sp');
+              continue;
+            }
+          }
 
-        results.push({ log_date, status: itemStatus, server_seq });
-        counts[itemStatus]++;
+          // Detect insert vs update
+          const existing = await client.query<{ id: string }>(
+            `SELECT id FROM worship_log WHERE user_id = $1 AND log_date = $2`,
+            [userId, log_date]
+          );
+          const isNew = existing.rows.length === 0;
 
-      } catch (itemErr) {
-        results.push({ log_date, status: 'failed', error: 'internal error' });
-        counts['failed']++;
-        process.stderr.write(
-          JSON.stringify({
-            ts: new Date().toISOString(),
-            level: 'error',
-            msg: 'sync/push item error',
-            log_date,
-            error: itemErr instanceof Error ? itemErr.message : String(itemErr),
-          }) + '\n'
-        );
-      } finally {
-        client.release();
+          // Upsert
+          const payloadJson = JSON.stringify(payload !== undefined && payload !== null ? payload : {});
+          const upsert = await client.query<{ server_seq: string }>(
+            `INSERT INTO worship_log (user_id, log_date, payload, server_seq)
+             VALUES (
+               $1, $2, $3,
+               COALESCE((SELECT MAX(server_seq) FROM worship_log WHERE user_id = $1), 0) + 1
+             )
+             ON CONFLICT (user_id, log_date)
+             DO UPDATE SET
+               payload    = EXCLUDED.payload,
+               server_seq = COALESCE((SELECT MAX(server_seq) FROM worship_log WHERE user_id = $1), 0) + 1,
+               updated_at = now()
+             RETURNING server_seq`,
+            [userId, log_date, payloadJson]
+          );
+
+          const { server_seq } = upsert.rows[0] as { server_seq: string };
+          const itemStatus: PushStatus = isNew ? 'accepted' : 'updated';
+
+          // Cache idempotency
+          if (typeof idempotency_key === 'string') {
+            await client.query(
+              `INSERT INTO idempotency_keys (key, user_id, status, body)
+               VALUES ($1, $2, $3, $4)
+               ON CONFLICT (user_id, key) DO NOTHING`,
+              [idempotency_key, userId, 200, JSON.stringify({ status: itemStatus, server_seq })]
+            );
+          }
+
+          // Advance sync cursor
+          await client.query(
+            `INSERT INTO sync_cursors (user_id, last_seq)
+             VALUES ($1, $2)
+             ON CONFLICT (user_id)
+             DO UPDATE SET
+               last_seq   = GREATEST(sync_cursors.last_seq, EXCLUDED.last_seq),
+               updated_at = now()`,
+            [userId, server_seq]
+          );
+
+          results.push({ log_date, status: itemStatus, server_seq });
+          counts[itemStatus]++;
+          await client.query('RELEASE SAVEPOINT item_sp');
+
+        } catch (itemErr) {
+          await client.query('ROLLBACK TO SAVEPOINT item_sp');
+          results.push({ log_date, status: 'failed', error: 'internal error' });
+          counts['failed']++;
+          process.stderr.write(
+            JSON.stringify({
+              ts: new Date().toISOString(),
+              level: 'error',
+              msg: 'sync/push item error',
+              log_date,
+              error: itemErr instanceof Error ? itemErr.message : String(itemErr),
+            }) + '\n'
+          );
+        }
       }
+
+      await client.query('COMMIT');
+    } catch (batchErr) {
+      try { await client.query('ROLLBACK'); } catch (_) {}
+      throw batchErr;
+    } finally {
+      client.release();
     }
 
     res.json({ results, meta: counts });

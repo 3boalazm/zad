@@ -8,8 +8,9 @@
  */
 
 import { Router, Request, Response, NextFunction } from 'express';
+import { randomUUID } from 'crypto';
 import { getPool } from '../db/index.js';
-import { verifyPassword } from './password.js';
+import { verifyPassword, hashPassword } from './password.js';
 import {
   SESSION_COOKIE,
   SESSION_DURATION_DAYS,
@@ -35,6 +36,104 @@ function cookieOptions() {
     path: '/',
   };
 }
+
+// ── POST /auth/register ──────────────────────────────────────────────────────
+router.post('/register', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const rawEmail = typeof req.body?.email === 'string'
+      ? req.body.email.trim().toLowerCase()
+      : '';
+    const rawPassword = typeof req.body?.password === 'string'
+      ? req.body.password
+      : '';
+
+    if (!rawEmail || !rawPassword) {
+      res.status(422).json({
+        error: { code: 'VALIDATION_ERROR', message: 'email and password are required' },
+        detail: 'email and password are required',
+      });
+      return;
+    }
+
+    if (!rawEmail.includes('@') || rawEmail.indexOf('.') === -1 || rawEmail.length < 5) {
+      res.status(422).json({
+        error: { code: 'VALIDATION_ERROR', message: 'invalid email format' },
+        detail: 'invalid email format',
+      });
+      return;
+    }
+
+    if (rawPassword.length < 8) {
+      res.status(422).json({
+        error: { code: 'VALIDATION_ERROR', message: 'password must be at least 8 characters' },
+        detail: 'password must be at least 8 characters',
+      });
+      return;
+    }
+
+    const pool = getPool();
+    if (pool === null) {
+      res.status(503).json({ error: { code: 'DB_UNAVAILABLE', message: 'Database not configured' } });
+      return;
+    }
+
+    const client = await pool.connect();
+    try {
+      const dupCheck = await client.query<{ exists: boolean }>(
+        `SELECT EXISTS(
+           SELECT 1 FROM users_auth WHERE LOWER(email) = $1
+         ) AS exists`,
+        [rawEmail]
+      );
+      if (dupCheck.rows[0]?.exists) {
+        res.status(409).json({ error: { code: 'EMAIL_EXISTS', message: 'Email already registered' } });
+        return;
+      }
+
+      const passwordHash = await hashPassword(rawPassword);
+
+      await client.query('BEGIN');
+      const userId: string = randomUUID();
+
+      await client.query(
+        `INSERT INTO users (id, is_anonymous) VALUES ($1, false)`,
+        [userId]
+      );
+
+      await client.query(
+        `INSERT INTO users_auth (user_id, email, password_hash)
+         VALUES ($1, $2, $3)`,
+        [userId, rawEmail, passwordHash]
+      );
+
+      await client.query('COMMIT');
+
+      const rawToken = await createSession(pool, userId, {
+        ip: req.socket.remoteAddress,
+        userAgent: (req.get('user-agent') ?? '').substring(0, 256),
+      });
+
+      res.cookie(SESSION_COOKIE, rawToken, cookieOptions());
+      res.status(201).json({ status: 'ok', userId, email: rawEmail });
+    } catch (err: unknown) {
+      try { await client.query('ROLLBACK'); } catch (_) {}
+      if (
+        err !== null &&
+        typeof err === 'object' &&
+        'code' in err &&
+        (err as { code: string }).code === '23505'
+      ) {
+        res.status(409).json({ error: { code: 'EMAIL_EXISTS', message: 'Email already registered' } });
+        return;
+      }
+      throw err;
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 
 // ── POST /auth/login ─────────────────────────────────────────────────────────
 router.post('/login', async (req: Request, res: Response, next: NextFunction): Promise<void> => {

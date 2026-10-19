@@ -127,14 +127,25 @@ const HASN_CATS = {
 
 let hasnData = [];
 let activeCat = 'all';
-const counters = {};
+const HASN_KEY = 'zad_hasn_counters';
+
+function getHasnCounters() {
+  try { return JSON.parse(localStorage.getItem(HASN_KEY) || '{}'); } catch { return {}; }
+}
+function saveHasnCounter(key, val) {
+  const c = getHasnCounters();
+  c[key] = val;
+  try { localStorage.setItem(HASN_KEY, JSON.stringify(c)); } catch {}
+}
 
 function renderHasn() {
   const grid = document.getElementById('hasn-grid');
-  if (!hasnData.length) { grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">لا توجد بيانات بعد</div>'; return; }
+  if (!hasnData.length) { grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">جارٍ تحميل الأذكار...</div>'; return; }
   
   const filtered = activeCat === 'all' ? hasnData :
     hasnData.filter(s => (HASN_CATS[activeCat] || []).includes(s.num));
+
+  const savedCounts = getHasnCounters();
 
   grid.innerHTML = filtered.map(sec => `
     <div class="hasn-chapter" style="border-color:${sec.color}" data-num="${sec.num}" onclick="toggleHasnChapter(this)">
@@ -147,18 +158,24 @@ function renderHasn() {
         <span class="hasn-ch-arrow">←</span>
       </div>
       <div class="hasn-ch-items">
-        ${sec.items.map((item, i) => `
+        ${sec.items.map((item, i) => {
+          const key = `${sec.num}-${i}`;
+          const current = savedCounts[key] || 0;
+          const target = item.count || 1;
+          const done = current >= target;
+          const label = done ? '✅ تمّ' : (current > 0 ? `عُدّ (${current}/${target})` : `عُدّ (${target})`);
+          return `
           <div class="hasn-dhikr">
             <div class="hasn-dhikr-ar">${item.ar}</div>
             <div class="hasn-dhikr-meta">
               <span class="hasn-dhikr-source">📖 ${item.source}</span>
-              <button class="hasn-count-btn" id="hcb-${sec.num}-${i}"
-                      onclick="event.stopPropagation();countHasn(${sec.num},${i},${item.count||1})">
-                عُدّ (${item.count||1})
+              <button class="hasn-count-btn ${done ? 'done' : ''}" id="hcb-${sec.num}-${i}"
+                      onclick="event.stopPropagation();countHasn(${sec.num},${i},${target})">
+                ${label}
               </button>
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
     </div>
   `).join('');
@@ -178,28 +195,44 @@ function filterHasn(cat) {
 
 function countHasn(chNum, itemIdx, target) {
   const key = `${chNum}-${itemIdx}`;
-  counters[key] = (counters[key] || 0) + 1;
+  const c = getHasnCounters();
+  const current = (c[key] || 0) + 1;
+  saveHasnCounter(key, current);
   const btn = document.getElementById(`hcb-${chNum}-${itemIdx}`);
   if (btn) {
-    const done = counters[key] >= target;
-    btn.textContent = done ? '✅ تمّ' : `عُدّ (${counters[key]}/${target})`;
+    const done = current >= target;
+    btn.textContent = done ? '✅ تمّ' : `عُدّ (${current}/${target})`;
     if (done) btn.classList.add('done');
   }
   if (navigator.vibrate) navigator.vibrate(15);
 }
 
-/* تحميل البيانات بعد تحميل الـ JS */
+/* تحميل البيانات بعد تحميل الـ JS بموثوقية */
 function loadHasnData() {
   const allParts = [window.HASN_PART1, window.HASN_PART2];
   hasnData = allParts.flat().filter(Boolean);
+  if (!hasnData.length) return false;
   renderHasn();
   console.log('[Hasn] ✅ ' + hasnData.length + ' باب محمّل');
+  return true;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // انتظر تحميل كل الـ scripts
-  setTimeout(loadHasnData, 600);
-});
+function initHasnLoader() {
+  if (loadHasnData()) return;
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts++;
+    if (loadHasnData() || attempts > 30) {
+      clearInterval(timer);
+      if (!hasnData.length) {
+        const grid = document.getElementById('hasn-grid');
+        if (grid) grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">تعذّر تحميل الأذكار — يرجى التحقق من الاتصال وإعادة المحاولة<br><br><button class="btn btn-primary" onclick="initHasnLoader()">إعادة المحاولة</button></div>';
+      }
+    }
+  }, 100);
+}
+
+document.addEventListener('DOMContentLoaded', initHasnLoader);
 </script>
   <script src="animations.min.js" defer></script>
   <script src="menu.min.js" defer></script>

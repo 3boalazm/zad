@@ -29,13 +29,29 @@ $$;
 
 -- Idempotency keys — prevent duplicate offline retries
 CREATE TABLE IF NOT EXISTS idempotency_keys (
-    key         TEXT        PRIMARY KEY,
+    key         TEXT,
     user_id     UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     status      INTEGER,
     body        JSONB,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-    expires_at  TIMESTAMPTZ NOT NULL DEFAULT (now() + INTERVAL '24 hours')
+    expires_at  TIMESTAMPTZ NOT NULL DEFAULT (now() + INTERVAL '24 hours'),
+    PRIMARY KEY (user_id, key)
 );
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE table_name = 'idempotency_keys' AND constraint_name = 'idempotency_keys_pkey'
+    ) THEN
+        IF (SELECT COUNT(*) FROM information_schema.key_column_usage
+            WHERE table_name = 'idempotency_keys' AND constraint_name = 'idempotency_keys_pkey') = 1 THEN
+            ALTER TABLE idempotency_keys DROP CONSTRAINT idempotency_keys_pkey;
+            ALTER TABLE idempotency_keys ADD PRIMARY KEY (user_id, key);
+        END IF;
+    END IF;
+END;
+$$;
 
 CREATE INDEX IF NOT EXISTS idx_idempotency_keys_user
     ON idempotency_keys (user_id);
