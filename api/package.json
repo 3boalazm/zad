@@ -4,7 +4,7 @@
   "description": "ZAD backend API — Sprint Z6 Worship Sync",
   "private": true,
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
