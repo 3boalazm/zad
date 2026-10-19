@@ -124,7 +124,7 @@
           stroke-dashoffset="502.65"
           transform="rotate(-90 100 100)"
           style="transition:stroke-dashoffset .2s ease,stroke .25s ease"/>
-  <g id="ts-ring" class="ts-ring-tap" role="button" aria-label="انقر للذكر">
+  <g id="ts-ring" class="ts-ring-tap" role="button" aria-label="انقر للذكر" tabindex="0">
     <circle cx="100" cy="100" r="78" fill="transparent"/>
     <text id="ts-count" x="100" y="96"
           text-anchor="middle" dominant-baseline="central"
@@ -287,9 +287,10 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ring wired via window.countTasbih proxy in app.js — no re-wire needed */
   }
 
-  /* ── Space bar shortcut ── */
+  /* ── Space / Enter keyboard shortcut ── */
   document.addEventListener('keydown', e => {
-    if (e.code === 'Space' && !e.target.matches('input,textarea,button,details,summary')) {
+    const isRing = (document.activeElement && document.activeElement.id === 'ts-ring');
+    if ((e.code === 'Space' || (e.key === 'Enter' && isRing)) && !e.target.matches('input,textarea,button,details,summary')) {
       e.preventDefault();
       window.countTasbih?.();
     }

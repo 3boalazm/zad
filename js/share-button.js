@@ -181,7 +181,7 @@ const ZadShare = {
   },
 };
 
-window.ZadShare = ZadShare;
+window.ZadShare = Object.assign(window.ZadShare || {}, ZadShare);
 
 document.addEventListener('DOMContentLoaded', () => {
   ZadShare.init();

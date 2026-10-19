@@ -7,6 +7,9 @@ function initNavAccordion() {
   const nav = document.querySelector('.nav');
   if (!nav) return;
 
+  /* If menu.js is already running and managing accordion groups (.nav-group or .sep-arrow), exit cleanly */
+  if (nav.querySelector('.sep-arrow') || nav.querySelector('.nav-group')) return;
+
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   const seps = nav.querySelectorAll('.nav-sep');
 
