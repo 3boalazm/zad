@@ -1,13 +1,13 @@
 {
   "name": "zad-api",
   "version": "0.6.0",
-  "description": "ZAD backend API — Sprint Z6 Worship Sync",
+  "description": "ZAD backend API \u2014 Sprint Z6 Worship Sync",
   "private": true,
   "engines": {
     "node": "24.x"
   },
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only backend-src/server.ts",
     "build": "tsc --project tsconfig.json",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
