@@ -1,4 +1,22 @@
 {
+  "rewrites": [
+    {
+      "source": "/health",
+      "destination": "/api/src/app"
+    },
+    {
+      "source": "/health/(.*)",
+      "destination": "/api/src/app"
+    },
+    {
+      "source": "/api",
+      "destination": "/api/src/app"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/src/app"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
