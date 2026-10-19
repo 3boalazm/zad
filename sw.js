@@ -40,7 +40,8 @@
         @font-face. حدّثت أسماء الخطوط في PRECACHE لنفس السبب.
    ════════════════════════════════════════════════════════════ */
 
-const CACHE_STATIC = 'zad-20260824-z21';
+// Invalidate older cached bundles that may still contain the welcome modal.
+const CACHE_STATIC = 'zad-20261019-no-welcome';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -139,7 +140,7 @@ self.addEventListener('activate', e => {
       ))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ includeUncontrolled: true }))
-      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20260824-z21' })))
+      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20261019-no-welcome' })))
   );
 });
 
