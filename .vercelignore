@@ -1,0 +1,9 @@
+# Vercel deployment ignore rules
+# Prevents test suites, documentation, and migration scripts from being bundled as serverless functions
+
+api/src/tests/**
+api/scripts/**
+api/docs/**
+api/db/**
+docs/**
+scripts/**
