@@ -105,7 +105,7 @@
 
   /* ── الأقسام المفتوحة افتراضياً ─────────────────────────────────────── */
   /* sec-dhikr و sec-tools كانتا غائبتين: قسمُ الذكر والزكاة يبدآن مطويَّين في أول زيارة */
-  const ALL_SECTIONS = ['sec-prayer','sec-quran','sec-tools','sec-hajj','sec-dhikr','sec-learn','sec-kids','sec-track','sec-family','sec-settings'];
+  const ALL_SECTIONS = ['sec-prayer','sec-quran','sec-tools','sec-hajj','sec-dhikr','sec-learn','sec-kids','sec-track','sec-family','sec-settings','sec-special'];
   function getOpenSections() {
     try {
       const stored = localStorage.getItem(STORE_OPEN);
