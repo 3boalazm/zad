@@ -177,7 +177,9 @@ html[data-theme="dark"] .k-reward,html[data-theme="oled"] .k-reward{color:var(--
   var ZKEY='zad_v2';
   function today(){return new Date().toISOString().split('T')[0];}
   function read(){try{return JSON.parse(localStorage.getItem(ZKEY)||'{}')||{};}catch(e){return{};}}
-  function write(s){try{localStorage.setItem(ZKEY,JSON.stringify(s));}catch(e){}}
+  /* الكتابة المباشرة «أوامر» غير مرئية لـSTATE المقيم في الذاكرة، فأي
+     saveState() لاحق يمحوها. نمرّ بطبقة الحالة عندما تكون متاحة. */
+  function write(s){try{ if(window.zadPatchState){ window.zadPatchState(s); return; } localStorage.setItem(ZKEY,JSON.stringify(s)); }catch(e){}}
   /* تحدي الذكاء */
   var QS=[
     {q:'ما اسمُ الغار الذي تعبّد فيه النبي ﷺ؟',a:'غارُ حِراء'},
@@ -230,7 +232,9 @@ html[data-theme="dark"] .k-reward,html[data-theme="oled"] .k-reward{color:var(--
   var ZKEY='zad_v2';
   function today(){return new Date().toISOString().split('T')[0];}
   function read(){try{return JSON.parse(localStorage.getItem(ZKEY)||'{}')||{};}catch(e){return{};}}
-  function write(s){try{localStorage.setItem(ZKEY,JSON.stringify(s));}catch(e){}}
+  /* الكتابة المباشرة «أوامر» غير مرئية لـSTATE المقيم في الذاكرة، فأي
+     saveState() لاحق يمحوها. نمرّ بطبقة الحالة عندما تكون متاحة. */
+  function write(s){try{ if(window.zadPatchState){ window.zadPatchState(s); return; } localStorage.setItem(ZKEY,JSON.stringify(s)); }catch(e){}}
   function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   function cc(){var s=read();s.kidsCreativity=s.kidsCreativity||{};return s;}
   /* نفس محفظة النور المستخدمة في «مدرستي الجميلة» */

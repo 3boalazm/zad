@@ -29,6 +29,10 @@
     'zad_mfont', 'zad_custom_from', 'zad_custom_to',
     'zad_radio_bgplay', 'zad_radio_last',
     'zad_badges_asma', 'asma_fav', 'asma_reflected', 'nw_read',
+    /* أوديت ركن الأطفال: كان تقدّم الطفل كله خارج النسخة الاحتياطية —
+       النجوم والأوسمة (zad_kids_v2)، وعدّاد التكبير في «غرس»
+       (ghars_takbeer)، وبيانات لوحة رمضان الجديدة (zad_ramadan). */
+    'zad_kids_v2', 'ghars_takbeer', 'zad_ramadan',
   ];
 
   const AVATARS = ['🌙','⭐','🌸','🌿','🕌','📿','🤲','🌺','🦋','🌕','🪷','🕋','📖','✨','🧒'];

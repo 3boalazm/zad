@@ -498,7 +498,9 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
 
   /* ── المفضّلة ── */
   function getKidsFavs(){ try{var s=JSON.parse(localStorage.getItem('zad_v2')||'{}');return (s.kidsFunFavs||[]);}catch(e){return [];} }
-  function setKidsFavs(arr){ try{var s=JSON.parse(localStorage.getItem('zad_v2')||'{}');s.kidsFunFavs=arr;localStorage.setItem('zad_v2',JSON.stringify(s));}catch(e){} }
+  /* كانت تكتب zad_v2 مباشرة ⇒ المفضّلة تُمسح بأول saveState() من app.js */
+  function setKidsFavs(arr){ try{var s=JSON.parse(localStorage.getItem('zad_v2')||'{}');s.kidsFunFavs=arr;
+    if(window.zadPatchState){window.zadPatchState(s);}else{localStorage.setItem('zad_v2',JSON.stringify(s));}}catch(e){} }
   window.addKidsFav=function(id,evt){
     if(evt) evt.stopPropagation();
     var favs=getKidsFavs(), i=favs.indexOf(id);

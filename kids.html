@@ -481,7 +481,25 @@ function zadSafeParse(key, fallback) {
 
 const KIDS_KEY = 'zad_kids_v2';
 let kState = zadSafeParse(KIDS_KEY, {tasks:{},stars:0,badges:[]});
-function saveKids(){ localStorage.setItem(KIDS_KEY, JSON.stringify(kState)); }
+function saveKids(){ try{ localStorage.setItem(KIDS_KEY, JSON.stringify(kState)); }catch(e){} }
+
+/* ══ تصفير المهام اليومية ══════════════════════════════════════
+   كانت المهام تُحفَظ بلا تاريخ إطلاقًا، فمن يُنجز الثمانية في يومه
+   الأول يظل يرى «8 من 8 مهام مكتملة» ووسام البطل للأبد — بينما العنوان
+   نفسه يقول «مهام يومية»، وصفحتا «مدرستي» و«نادي الإبداع» تُصفّران
+   مهامهما كل يوم. الآن للمهام مفتاح يوم، وتُصفَّر عند تغيّره. */
+function kidsDayKey(){
+  var d = new Date();
+  return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
+}
+function ensureKidsDay(){
+  if(kState.day === kidsDayKey()) return false;
+  kState.day = kidsDayKey();
+  kState.tasks = {};
+  kState.hero_badge = false;   /* بطل اليوم يُحرَز من جديد */
+  saveKids();
+  return true;
+}
 
 /* ══ 1. STORY ═══════════════════════════════════════════════ */
 const STORIES = [
@@ -590,6 +608,7 @@ function renderTasks() {
 }
 
 function toggleTask(t) {
+  ensureKidsDay();
   if (!kState.tasks) kState.tasks = {};
   const wasDone = !!kState.tasks[t.id];
   kState.tasks[t.id] = !wasDone;
@@ -864,6 +883,7 @@ function triggerKidConfetti() {
 document.addEventListener('DOMContentLoaded', () => {
   /* Fix sidebar */
   if (typeof initSidebar === 'function') initSidebar();
+  ensureKidsDay();
   renderStory();
   renderTasks();
   renderBadges();

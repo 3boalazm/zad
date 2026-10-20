@@ -203,6 +203,21 @@ function cycleTheme() {
 window.cycleTheme = cycleTheme;
 function toggleTheme() { cycleTheme(); }
 window.toggleTheme = toggleTheme;
+/* ══ طبقة كتابة موحّدة لأقسام الأطفال ══════════════════════════════════
+   صفحات الأطفال (المدرسه/الإبداع/الأبطال/المرح) كانت تكتب zad_v2 مباشرة
+   بعد JSON.parse. والكتابة المباشرة غير مرئية لـSTATE المقيم في الذاكرة،
+   فأول saveState() من أي نقرة في التطبيق (تبديل سمة مثلًا) يمحو تقدّم
+   الطفل كله: النور والأوسمة والميثاق والمفضّلة. هذه الدالة تُطبِّق الترقيع
+   على STATE ثم تحفظه، فتبقى النسختان متطابقتين. */
+function zadPatchState(partial) {
+  if (!partial || typeof partial !== 'object') return;
+  try {
+    Object.assign(STATE, partial);
+    saveState();
+  } catch (e) {}
+}
+window.zadPatchState = zadPatchState;
+
 function applyQuranFont(size) {
   /* P2-Q10: قيد واحد 16–36 في كل المسارات (كان mushaf-quran.html يقصّ عند 18
      وmushaf.html عند 16 ⇒ تفضيل 16px يتحول إلى 18 عند الانتقال بين الصفحتين). */
