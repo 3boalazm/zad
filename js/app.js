@@ -2866,10 +2866,21 @@ function formatPrayerTime(time24) {
 window.formatPrayerTime = formatPrayerTime;
 
 /* Re-render all visible prayer time elements */
+/* P1-5أ: كتابة النص **فقط عند اختلافه**. كان applyClockFormat يكتب
+   textContent بلا شرط، وكتابة textContent تُنتج طفرة childList دائمًا (حتى لو
+   كان النص نفسه) — والمراقب في initClockFormat يرصد childList على .main ⇒
+   حلقة إعادة رسم ذاتية لا تنتهي كل 200ms على كل صفحة، تُعاد فيها كتابة كل
+   عناصر الوقت إلى ما لا نهاية. الشرط يُنهي الحلقة ويُبقي الرصد لما يُضاف
+   ديناميكيًا. */
+function _setTimeText(el, txt) {
+  if (txt == null) return;
+  if (el.textContent !== txt) el.textContent = txt;
+}
+
 function applyClockFormat() {
   /* Collect raw 24h times stored in data-time24 */
   document.querySelectorAll('[data-time24]').forEach(el => {
-    el.textContent = formatPrayerTime(el.getAttribute('data-time24'));
+    _setTimeText(el, formatPrayerTime(el.getAttribute('data-time24')));
   });
 
   /* Also update any .pp-time elements that have a time value */
@@ -2877,7 +2888,7 @@ function applyClockFormat() {
     const raw = el.getAttribute('data-time24') || el.textContent.trim();
     if (/^\d{1,2}:\d{2}/.test(raw)) {
       if (!el.getAttribute('data-time24')) el.setAttribute('data-time24', raw);
-      el.textContent = formatPrayerTime(raw);
+      _setTimeText(el, formatPrayerTime(raw));
     }
   });
 
@@ -2887,14 +2898,14 @@ function applyClockFormat() {
     const raw = npTime.getAttribute('data-time24') || npTime.textContent;
     if (raw && /^\d{1,2}:\d{2}/.test(raw)) {
       if (!npTime.getAttribute('data-time24')) npTime.setAttribute('data-time24', raw);
-      npTime.textContent = formatPrayerTime(raw);
+      _setTimeText(npTime, formatPrayerTime(raw));
     }
   }
 
   /* Update countdown time display labels */
   document.querySelectorAll('.hijri-time, .prayer-time-display').forEach(el => {
     const raw = el.getAttribute('data-time24');
-    if (raw) el.textContent = formatPrayerTime(raw);
+    if (raw) _setTimeText(el, formatPrayerTime(raw));
   });
 }
 window.applyClockFormat = applyClockFormat;
