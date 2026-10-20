@@ -665,7 +665,7 @@
    ٣) الورد: خانة لكل عبادة — app.js يربطها ويتكفّل بالحفظ.
    ═══════════════════════════════════════════════════════════════ */
 
-const ZH = { dates: null };
+const ZH = { dates: null, day: new Date().toDateString() };
 
 /* ── أدوات ───────────────────────────────────────────────────── */
 const zhPad = n => String(Math.max(0, Math.floor(n))).padStart(2, '0');
@@ -787,6 +787,7 @@ function zhNextKey() {
 /* ── المواقيت: adhan محليًا، ثم الكاش، ثم الشبكة ─────────────── */
 function zhPaintTimes(times) {
   ZH.dates = times;
+  ZH.day = new Date().toDateString();
 
   const map = { fajr:'pt-fajr', sunrise:'pt-sunrise', dhuhr:'pt-dhuhr', asr:'pt-asr', maghrib:'pt-maghrib', isha:'pt-isha' };
   const strings = {};
@@ -1202,7 +1203,18 @@ function zhInit() {
       if (pb) pb.classList.add('zh-no-times');   /* بلا موقع: نخفي «--:--» ونُبقي أسماء الصلوات */
       zhNowCard();
     }
-    setInterval(zhDrawArc, 60000);
+    /* كل دقيقة: حرّك الشمس — وعند تغيّر اليوم أعد حساب كل ما يعتمد على التاريخ */
+    setInterval(() => {
+      const today = new Date().toDateString();
+      if (today !== ZH.day) {
+        ZH.day = today;
+        zhInitHijri();
+        zhInitVerse();
+        zhRenderBadges();
+        zhComputeTimes();
+      }
+      zhDrawArc();
+    }, 60000);
     setTimeout(zhDrawArc, 800);
   });
 
