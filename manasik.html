@@ -138,6 +138,54 @@ html[data-theme="dark"] .feat-tag.soon,html[data-theme="oled"] .feat-tag.soon{co
 .src-card h3{font-size:14px;font-weight:800;color:var(--green-deep);margin-bottom:10px;font-family:'ThmanyahSans',sans-serif}
 html[data-theme="dark"] .src-card h3,html[data-theme="oled"] .src-card h3{color:var(--sys-green)}
 .src-note{font-size:12px;color:var(--muted-2);line-height:1.7}
+
+/* ══ أين أنا الآن؟ (جولة ٩) ══ */
+.mn-now{margin:0 0 16px}
+.mn-now-in{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#0e3b2e,#1a5d47);color:#fff;box-shadow:0 12px 30px -16px rgba(14,59,46,.6);flex-wrap:wrap;position:relative;overflow:hidden}
+.mn-now-in::after{content:'';position:absolute;inset-inline-start:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(201,161,74,.35),transparent 70%)}
+.mn-now-in.off{background:linear-gradient(135deg,var(--card),var(--gold-pale));color:var(--ink);border:1.5px solid rgba(201,161,74,.35);box-shadow:var(--shadow-sm)}
+.mn-now-ico{font-size:32px;flex-shrink:0;position:relative;z-index:1}
+.mn-now-body{flex:1;min-width:180px;position:relative;z-index:1}
+.mn-now-day{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.8}
+.mn-now-title{font-size:17px;font-weight:900;font-family:'ThmanyahSans',sans-serif;margin:2px 0 3px}
+.mn-now-in.off .mn-now-title{color:var(--green-deep)}
+html[data-theme="dark"] .mn-now-in.off .mn-now-title,html[data-theme="oled"] .mn-now-in.off .mn-now-title{color:var(--sys-green)}
+.mn-now-hint{font-size:12px;opacity:.85;line-height:1.7}
+.mn-now-in.off .mn-now-hint{color:var(--muted);opacity:1}
+.mn-now-btn{flex-shrink:0;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:12.5px;font-weight:800;padding:10px 16px;border-radius:99px;cursor:pointer;position:relative;z-index:1;transition:all .2s}
+.mn-now-btn:hover{background:rgba(255,255,255,.26)}
+.mn-now-in.off .mn-now-btn{background:var(--green-deep);border-color:transparent}
+.mn-now-days{display:flex;gap:4px;position:relative;z-index:1}
+.mn-now-days span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25)}
+.mn-now-days span.on{background:var(--gold)}
+.tl-stage.now .tl-card{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,161,74,.18)}
+.tl-stage.now .tl-dot{background:var(--gold);color:#1a1206;animation:zadPulse 2s ease-in-out infinite}
+@keyframes zadPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+
+/* ══ الجمرات الثلاث ══ */
+.cc-jam{padding:12px 14px;border-radius:14px;background:var(--sand);margin:12px 0}
+.cc-jam-days{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.cc-jday{padding:5px 12px;border-radius:99px;border:1.5px solid var(--border);background:var(--card);font-family:inherit;font-size:12px;font-weight:800;color:var(--muted);cursor:pointer}
+.cc-jday.active{background:var(--green-deep);color:#fff;border-color:transparent}
+.cc-jam-list{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cc-jam-btn{padding:9px 6px;border-radius:11px;border:1.5px solid var(--border);background:var(--card);font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.cc-jam-btn{font-variant-numeric:tabular-nums}
+.cc-jam-btn.active{border-color:var(--gold);background:var(--gold-pale)}
+.cc-jam-btn.done{color:var(--sys-green,#1f9d55);border-color:rgba(42,122,95,.4)}
+@media(max-width:420px){.cc-jam-list{grid-template-columns:1fr}.cc-jam-btn{flex-direction:row;justify-content:center;gap:8px}}
+
+/* ══ الوضع الهادئ ══ */
+.quiet{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 30%,#0f2b21,#050b08 70%);color:#e9f5ec;-webkit-tap-highlight-color:transparent}
+.quiet[hidden]{display:none}
+.quiet-top{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;padding-top:calc(18px + env(safe-area-inset-top,0px))}
+.quiet-t{font-size:14px;font-weight:800;letter-spacing:1px;color:#c9a14a}
+.quiet-x{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:16px;cursor:pointer}
+.quiet-tap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none}
+.quiet-num{font-size:clamp(96px,34vw,190px);font-weight:900;line-height:1;font-family:'ThmanyahSans',monospace;color:#fff;text-shadow:0 0 60px rgba(201,161,74,.35);transition:transform .12s}
+.quiet-tap:active .quiet-num{transform:scale(.97)}
+.quiet-of{font-size:15px;color:rgba(255,255,255,.5);margin-top:6px;letter-spacing:2px}
+.quiet-tap.done .quiet-num{color:#7fe3a2;text-shadow:0 0 70px rgba(127,227,162,.45)}
+.quiet-hint{padding:0 22px calc(28px + env(safe-area-inset-bottom,0px));text-align:center;font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.8}
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
 <script src="js/font-scale.js"></script><script>(function(){})();</script>
@@ -199,7 +247,7 @@ html[data-theme="dark"] .src-card h3,html[data-theme="oled"] .src-card h3{color:
       </div>
     </div>
 
-    <section class="card" style="margin-bottom:16px"><h2 class="section-title">📿 متابعة المناسك التفاعلية</h2><div id="hajj-state-machine"></div></section>
+    <div class="mn-now" id="mn-now" aria-live="polite"></div>
 
     <!-- Sticky progress -->
     <div class="mn-progress-bar">
@@ -244,9 +292,23 @@ html[data-theme="dark"] .src-card h3,html[data-theme="oled"] .src-card h3{color:
         <div class="cc-label" id="cc-label">شوط الطواف</div>
         <div class="cc-hint">انقر الدائرة لاحتساب كل شوط — اهتزازٌ خفيف يصاحب كل عَدّة</div>
       </div>
+      <div class="cc-jam" id="cc-jam" hidden>
+        <div class="cc-jam-days">
+          <span>يوم الرمي:</span>
+          <button class="cc-jday" data-jday="11">١١</button>
+          <button class="cc-jday" data-jday="12">١٢</button>
+          <button class="cc-jday" data-jday="13">١٣</button>
+        </div>
+        <div class="cc-jam-list">
+          <button class="cc-jam-btn" data-jam="sughra">الصغرى 0/7</button>
+          <button class="cc-jam-btn" data-jam="wusta">الوسطى 0/7</button>
+          <button class="cc-jam-btn" data-jam="kubra">الكبرى 0/7</button>
+        </div>
+      </div>
       <div class="cc-done" id="cc-done"></div>
       <div class="cc-actions">
         <button class="cc-btn" id="cc-minus">− تراجع</button>
+        <button class="cc-btn" id="cc-quiet">🌙 وضع هادئ</button>
         <button class="cc-btn primary" id="cc-reset">إعادة الضبط</button>
       </div>
     </div>
@@ -288,6 +350,19 @@ html[data-theme="dark"] .src-card h3,html[data-theme="oled"] .src-card h3{color:
   </main>
 </div>
 
+<!-- ═══ وضع الطواف الهادئ: شاشة كاملة بعدّادٍ واحد بلا مشتّتات ═══ -->
+<div class="quiet" id="quiet" hidden role="dialog" aria-modal="true" aria-label="وضع العدّ الهادئ">
+  <div class="quiet-top">
+    <span class="quiet-t" id="quiet-t">شوط الطواف</span>
+    <button class="quiet-x" id="quiet-x" aria-label="خروج من الوضع الهادئ">✕</button>
+  </div>
+  <div class="quiet-tap" id="quiet-tap" role="button" tabindex="0" aria-label="اضغط للعدّ">
+    <div class="quiet-num" id="quiet-num">0</div>
+    <div class="quiet-of">من <span id="quiet-target">7</span></div>
+  </div>
+  <div class="quiet-hint" id="quiet-hint">انقر في أي مكان للزيادة</div>
+</div>
+
 <script>
 /* ══════════════════════════════════════════════════════════════
    حالة المناسك — تُخزَّن داخل zad_v2.hajj دون المساس بـ app.js
@@ -309,6 +384,9 @@ function writeHajj(obj){
 let HAJJ = readHajj();
 if (!HAJJ.stages)   HAJJ.stages   = {};
 if (!HAJJ.counters) HAJJ.counters = { tawaf:0, sai:0, jamarat:0 };
+/* جمراتٌ ثلاث لكل يوم — كانت عدّادًا واحدًا لا يفرّق بين الصغرى والكبرى */
+if (!HAJJ.jam || typeof HAJJ.jam !== 'object') HAJJ.jam = { sughra:0, wusta:0, kubra:0 };
+if (!HAJJ.jamTab) HAJJ.jamTab = 'sughra';
 if (!HAJJ.nusuk)    HAJJ.nusuk    = 'tamattu';   /* النسك الافتراضي */
 
 function toast(msg){
@@ -331,47 +409,155 @@ const CC_META = {
 let ccMode = 'tawaf';
 const CIRC = 2 * Math.PI * 78; /* ≈ 490 */
 
+const JAM_LBL = { sughra:'حصاة الجمرة الصغرى', wusta:'حصاة الجمرة الوسطى', kubra:'حصاة جمرة العقبة (الكبرى)' };
+const JAM_DONE = { sughra:'🪨 تمّت الصغرى — سبع حصيات', wusta:'🪨 تمّت الوسطى — سبع حصيات', kubra:'🪨 تمّت الكبرى — سبع حصيات' };
+
+function jamKey(){ return (HAJJ.jamTab && JAM_LBL[HAJJ.jamTab]) ? HAJJ.jamTab : 'sughra'; }
+function curCount(){
+  if (ccMode === 'jamarat') return (HAJJ.jam && HAJJ.jam[jamKey()]) || 0;
+  return HAJJ.counters[ccMode] || 0;
+}
+function setCount(v){
+  if (ccMode === 'jamarat'){ if (!HAJJ.jam) HAJJ.jam = {}; HAJJ.jam[jamKey()] = v; }
+  else HAJJ.counters[ccMode] = v;
+}
+function ccLabel(){ return ccMode === 'jamarat' ? JAM_LBL[jamKey()] : CC_META[ccMode].label; }
+function ccDoneMsg(){ return ccMode === 'jamarat' ? JAM_DONE[jamKey()] : CC_META[ccMode].done; }
+
 function ccRender(){
   const m = CC_META[ccMode];
-  const n = HAJJ.counters[ccMode] || 0;
+  const n = curCount();
   document.getElementById('cc-num').textContent = n;
   document.getElementById('cc-target').textContent = m.target;
-  document.getElementById('cc-label').textContent = m.label;
+  document.getElementById('cc-label').textContent = ccLabel();
   const fg = document.getElementById('cc-fg');
   const pct = Math.min(1, n / m.target);
   fg.style.strokeDasharray = CIRC.toFixed(1);
   fg.style.strokeDashoffset = (CIRC * (1 - pct)).toFixed(1);
-  document.getElementById('cc-done').textContent = n >= m.target ? m.done : '';
+  document.getElementById('cc-done').textContent = n >= m.target ? ccDoneMsg() : '';
+  const jamBar = document.getElementById('cc-jam');
+  if (jamBar) jamBar.hidden = ccMode !== 'jamarat';
+  renderJamBar();
+  renderQuiet();
 }
+
+const JAM_SHORT = { sughra:'الصغرى', wusta:'الوسطى', kubra:'الكبرى' };
+function renderJamBar(){
+  const bar = document.getElementById('cc-jam');
+  if (!bar || !HAJJ.jam) return;
+  /* لا نُدخل وسومًا داخل الأزرار: lang.js يفلطح التمرير الداخلي (data-ar).
+     النصّ يُكتب كاملًا في العقدة النصية. */
+  ['sughra','wusta','kubra'].forEach(k => {
+    const b = bar.querySelector('[data-jam="' + k + '"]');
+    if (!b) return;
+    const n = HAJJ.jam[k] || 0;
+    b.textContent = JAM_SHORT[k] + ' ' + n + '/7';
+    b.classList.toggle('active', k === jamKey());
+    b.classList.toggle('done', n >= 7);
+  });
+  bar.querySelectorAll('[data-jday]').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.jday,10) === (HAJJ.jamDay || 11));
+  });
+}
+
 function ccBump(delta){
   const m = CC_META[ccMode];
-  let n = (HAJJ.counters[ccMode] || 0) + delta;
+  const was = curCount();
+  let n = was + delta;
   if (n < 0) n = 0;
-  const was = HAJJ.counters[ccMode] || 0;
-  HAJJ.counters[ccMode] = n;
+  setCount(n);
   writeHajj(HAJJ);
   ccRender();
   if (delta > 0 && navigator.vibrate){
     navigator.vibrate(n >= m.target ? [40,40,80] : 25);
   }
-  if (delta > 0 && n === m.target && was < m.target){ toast(m.done); }
+  if (delta > 0 && n === m.target && was < m.target){ toast(ccDoneMsg()); }
 }
+
+/* أي جمرةٍ يرميها الحاج اليوم؟ (١١ صغرى · ١٢ وسطى · ١٣ كبرى) */
+function autoJamForToday(){
+  let day = 11;
+  try {
+    const h = new Date().toLocaleDateString('en-u-ca-islamic-umalqura', { day:'numeric' });
+    day = parseInt(h, 10) || 11;
+  } catch (e) {}
+  HAJJ.jamDay = (day >= 11 && day <= 13) ? day : 11;
+  HAJJ.jamTab = HAJJ.jamDay === 12 ? 'wusta' : (HAJJ.jamDay === 13 ? 'kubra' : 'sughra');
+}
+
 function ccBindTabs(){
   document.querySelectorAll('.cc-tab').forEach(t => t.addEventListener('click', () => {
     document.querySelectorAll('.cc-tab').forEach(x => x.classList.remove('active'));
     t.classList.add('active');
     ccMode = t.dataset.mode;
+    if (ccMode === 'jamarat' && !HAJJ.jamDay) autoJamForToday();
     ccRender();
   }));
 }
+
+/* ══════════════════ وضع الطواف الهادئ (شاشة كاملة) ══════════════════ */
+let _quietWl = null;
+function renderQuiet(){
+  const n = curCount(), m = CC_META[ccMode];
+  const num = document.getElementById('quiet-num');
+  if (!num) return;
+  num.textContent = n;
+  document.getElementById('quiet-target').textContent = m.target;
+  document.getElementById('quiet-t').textContent = ccLabel();
+  const tap = document.getElementById('quiet-tap');
+  if (tap) tap.classList.toggle('done', n >= m.target);
+  document.getElementById('quiet-hint').textContent = n >= m.target
+    ? '✓ أتممتَ — تقبّل الله. يمكنك التراجع من الصفحة.'
+    : 'انقر في أي مكان للزيادة · ' + (m.target - n) + ' متبقّية';
+}
+function quietOpen(){
+  const el = document.getElementById('quiet');
+  if (!el) return;
+  el.hidden = false;
+  document.body.style.overflow = 'hidden';
+  renderQuiet();
+  if (navigator.wakeLock && navigator.wakeLock.request) {
+    navigator.wakeLock.request('screen').then(l => { _quietWl = l; }).catch(() => {});
+  }
+}
+function quietClose(){
+  const el = document.getElementById('quiet');
+  if (!el) return;
+  el.hidden = true;
+  document.body.style.overflow = '';
+  if (_quietWl && _quietWl.release) { try { _quietWl.release(); } catch (e) {} _quietWl = null; }
+}
+
 function ccInit(){
   ccBindTabs();
   const ring = document.getElementById('cc-ring');
   ring.addEventListener('click', () => ccBump(1));
   ring.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ccBump(1); } });
   document.getElementById('cc-minus').addEventListener('click', () => ccBump(-1));
+  const jam = document.getElementById('cc-jam');
+  if (jam) {
+    jam.querySelectorAll('[data-jam]').forEach(b => b.addEventListener('click', () => {
+      HAJJ.jamTab = b.dataset.jam; writeHajj(HAJJ); ccRender();
+    }));
+    jam.querySelectorAll('[data-jday]').forEach(b => b.addEventListener('click', () => {
+      HAJJ.jamDay = parseInt(b.dataset.jday, 10);
+      HAJJ.jamTab = HAJJ.jamDay === 12 ? 'wusta' : (HAJJ.jamDay === 13 ? 'kubra' : 'sughra');
+      writeHajj(HAJJ); ccRender();
+    }));
+  }
+  const qb = document.getElementById('cc-quiet');
+  if (qb) qb.addEventListener('click', quietOpen);
+  const qx = document.getElementById('quiet-x');
+  if (qx) qx.addEventListener('click', quietClose);
+  const qt = document.getElementById('quiet-tap');
+  if (qt) {
+    qt.addEventListener('click', () => ccBump(1));
+    qt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ccBump(1); } });
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') quietClose(); });
+
   document.getElementById('cc-reset').addEventListener('click', () => {
-    HAJJ.counters[ccMode] = 0; writeHajj(HAJJ); ccRender();
+    setCount(0); writeHajj(HAJJ); ccRender();
     if (navigator.vibrate) navigator.vibrate(15);
   });
   ccRender();
@@ -488,6 +674,7 @@ function setNusuk(type){
   renderNusukTabs();
   renderTimeline();
   updateProgress();
+  renderNowBanner();
   if (navigator.vibrate) navigator.vibrate(15);
   toast('🧭 المسار الآن لنُسك ' + NUSUK_META[type].label);
 }
@@ -514,6 +701,7 @@ function renderTimeline(){
       </div>
     </div>`;
   }).join('');
+  highlightNowStage(window.ZadHajj ? window.ZadHajj.phase() : null);
   document.querySelectorAll('.tl-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
@@ -541,6 +729,60 @@ function updateProgress(){
   const md = document.getElementById('mpb-done'); if (md) md.textContent = done;
   const mt = document.getElementById('mpb-total'); if (mt) mt.textContent = total;
   const hd = document.getElementById('hs-done'); if (hd) hd.textContent = done;
+}
+
+/* ══════════════════ «أين أنا الآن؟» ══════════════════
+   يقرأ التقويم الهجري من js/ui/hajj-now.js (Intl محلي — أوفلاين)
+   ويُبرز مرحلة اليوم في المسار تلقائيًا. */
+function renderNowBanner(){
+  const wrap = document.getElementById('mn-now');
+  if (!wrap) return;
+  const P = window.ZadHajj ? window.ZadHajj.phase() : null;
+  if (!P || !P.ok) { wrap.innerHTML = ''; return; }
+
+  if (P.inSeason) {
+    const stageId = (P.stages || []).find(id => STAGES.some(s => s.id === id));
+    const stage = stageId ? STAGES.find(s => s.id === stageId) : null;
+    const dots = [1,2,3,4,5,6,7,8,9,10].map(d =>
+      '<span class="' + (d <= Math.min(P.day,10) ? 'on' : '') + '"></span>').join('');
+    wrap.innerHTML = `
+      <div class="mn-now-in">
+        <div class="mn-now-ico">${P.isArafah ? '🌄' : P.isNahr ? '🐏' : '🕋'}</div>
+        <div class="mn-now-body">
+          <div class="mn-now-day">${P.day} ذو الحجة ${P.year} هـ</div>
+          <div class="mn-now-title">${stage ? (stage.name.indexOf(P.label) === 0 ? stage.name : P.label + ' — ' + stage.name) : P.label}</div>
+          <div class="mn-now-hint">${P.hint}</div>
+        </div>
+        <div class="mn-now-days">${dots}</div>
+        ${stage ? `<button class="mn-now-btn" data-goto="${stage.id}">خُذني لمرحلتي ←</button>` : ''}
+      </div>`;
+  } else {
+    wrap.innerHTML = `
+      <div class="mn-now-in off">
+        <div class="mn-now-ico">⏳</div>
+        <div class="mn-now-body">
+          <div class="mn-now-day">${P.hijri ? P.hijri.d + ' ' + ['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'][P.hijri.m-1] + ' ' + P.hijri.y + ' هـ' : ''}</div>
+          <div class="mn-now-title">${P.daysToArafah} يومًا على يوم عرفة</div>
+          <div class="mn-now-hint">${P.daysToDhul > 0 ? 'يبدأ موسم العشر بعد ' + P.daysToDhul + ' يومًا — ' : ''}استعدّ الآن: راجع مناسكك، واحفظ أدعيتك.</div>
+        </div>
+        <a class="mn-now-btn" href="fadael.html" style="text-decoration:none">✨ فضائل العشر</a>
+      </div>`;
+  }
+
+  wrap.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => {
+    const el = document.querySelector('.tl-stage[data-id="' + b.dataset.goto + '"]');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }));
+  highlightNowStage(P);
+}
+
+function highlightNowStage(P){
+  document.querySelectorAll('.tl-stage.now').forEach(el => el.classList.remove('now'));
+  if (!P || !P.inSeason) return;
+  const id = (P.stages || []).find(x => STAGES.some(s => s.id === x));
+  if (!id) return;
+  const el = document.querySelector('.tl-stage[data-id="' + id + '"]');
+  if (el) el.classList.add('now');
 }
 
 /* ══════════════════ Tools + UX cards ══════════════════ */
@@ -587,10 +829,12 @@ function bindTOC(){
 
 document.addEventListener('DOMContentLoaded', () => {
   ccInit();
+  if (!HAJJ.jamDay) autoJamForToday();
   renderNusukTabs();
   renderTimeline();
   renderFeatures();
   updateProgress();
+  renderNowBanner();
   bindTOC();
 });
 </script>
@@ -599,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
   <script src="js/design-system.min.js" defer></script>
-  <script src="js/hajj-module.min.js" defer></script>
+  <script src="js/ui/hajj-now.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>

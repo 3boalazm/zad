@@ -135,6 +135,10 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   .sum-stat-grid{grid-template-columns:repeat(2,1fr)}
   .perf-label{width:70px;font-size:12px}
 }
+
+.chart-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:180px;text-align:center;font-size:13px;color:var(--muted);line-height:1.8;padding:18px;border:1.5px dashed var(--border);border-radius:14px;background:var(--sand)}
+.chart-fallback b{color:var(--green-deep);font-size:18px}
+html[data-theme="dark"] .chart-fallback b,html[data-theme="oled"] .chart-fallback b{color:var(--sys-green)}
 </style>
 
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light',fs=24;try{var p=JSON.parse(s);t=p.theme||'light';fs=p.quranFontSize||24}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){};document.documentElement.style.setProperty('--qf-size',fs+'px')})();</script>
@@ -377,7 +381,32 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
    MERGED HARVEST PAGE — Complete 10-Day Stats Dashboard
    ════════════════════════════════════════════════════════════ */
 
-const HASAD_HIJRI_REF = { greg: new Date(2026, 4, 18), h_day: 1, h_month: 12, h_year: 1447 };
+/* كان المرجع مثبّتًا على 1 ذي الحجة 1447 → تبقى لوحة «حصاد العشر» تعرض
+   عشرَ سنةٍ مضت مهما مرّ الزمن. الآن يُحسب مرجع السنة الهجرية الحالية. */
+const HASAD_HIJRI_REF = (function () {
+  function hp(d) {
+    try {
+      const f = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day:'numeric', month:'numeric', year:'numeric' });
+      const p = f.formatToParts(d);
+      const g = t => parseInt(p.find(x => x.type === t).value, 10);
+      const h = { y: g('year'), m: g('month'), d: g('day') };
+      return h.y ? h : null;
+    } catch (e) { return null; }
+  }
+  function dhulStart(y) {
+    const est = Date.UTC(2026, 4, 18) + Math.round((y - 1447) * 354.367 * 86400000);
+    for (let off = -20; off <= 20; off++) {
+      const dt = new Date(est + off * 86400000);
+      const h = hp(dt);
+      if (h && h.y === y && h.m === 12 && h.d === 1) return dt;
+    }
+    return new Date(est);
+  }
+  const h = hp(new Date());
+  let y = h ? h.y : 1447;
+  if (h && h.m === 12 && h.d > 13) y = h.y + 1; /* انقضت العشر → نستعدّ للقادمة */
+  return { greg: dhulStart(y), h_day: 1, h_month: 12, h_year: y };
+})();
 const MONTH_LEN = [30,29,30,29,30,29,30,29,30,29,30,29];
 const DAY_NAMES = ['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر'];
 const SPECIAL_DAYS = { 8: 'التروية', 9: 'عرفة ⭐', 10: 'العيد 🎉' };
@@ -526,9 +555,28 @@ function renderPerformanceBars(days) {
   setBar('pb-dhikr', 'pv-dhikr', avgPct * 0.7);
 }
 
+/* Chart.js يُحمَّل من CDN — بلا إنترنت كان `new Chart` يرمي استثناءً
+   فيقطع bootstrap الصفحة ويترك «الحصاد» و«الأوسمة» فارغين. */
+function chartFallback(canvas, msg) {
+  if (!canvas || !canvas.parentElement) return;
+  const box = canvas.parentElement;
+  if (box.querySelector('.chart-fallback')) return;
+  canvas.style.display = 'none';
+  const d = document.createElement('div');
+  d.className = 'chart-fallback';
+  d.innerHTML = '<div style="font-size:26px;opacity:.7">📉</div><div>' + msg + '</div>' +
+    '<div style="font-size:11px;opacity:.75">الرسم البياني يحتاج اتصالًا أول مرة؛ أرقامك تُحفظ محليًا كما هي.</div>';
+  box.appendChild(d);
+}
+
 function renderActivityChart(days) {
   const ctx = document.getElementById('activity-chart');
   if (!ctx) return;
+  if (typeof Chart === 'undefined') {
+    const avg = days.length ? Math.round(days.reduce((a, b) => a + (b.pct || 0), 0) / days.length) : 0;
+    chartFallback(ctx, 'متوسط إنجازك في العشر: <b>' + avg + '%</b>');
+    return;
+  }
   const labels = Array.from({length:10}, (_,i) => (i+1).toString());
   const data = days.map(d => d.pct);
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
@@ -578,7 +626,8 @@ function renderActivityChart(days) {
 let _balanceChart = null;
 function renderBalanceChart(state) {
   const ctx = document.getElementById('balance-chart');
-  if (!ctx || typeof Chart === 'undefined') return;
+  if (!ctx) return;
+  if (typeof Chart === 'undefined') { chartFallback(ctx, 'مؤشّر التوازن متاح مع الرسم البياني.'); return; }
 
   /* احسب نسبة كل محور (0-100) من البيانات المتاحة محلياً */
   const w = state.worship || {};
@@ -706,7 +755,7 @@ function renderBadgesCabinet(badges) {
     { id:'kamil', emoji:'👑', name:'جامع الخير', desc:'5 أيام متتالية' },
     { id:'saher', emoji:'🌠', name:'فجر العشر', desc:'5 أيام Streak' },
     { id:'sabiq', emoji:'⭐', name:'السابق', desc:'جدول عرفة كاملاً' },
-    { id:'lisan', emoji:'📣', name:'لسان ذاكر', desc:'1000 تكبيرة' },
+    { id:'lisan', emoji:'📣', name:'لسان ذاكر', desc:'1000 تسبيحة' },
     { id:'khatim2', emoji:'📚', name:'الراسخون', desc:'15 جزء قرآن' },
     { id:'wasil', emoji:'🤝', name:'الواصلون', desc:'5 أعمال خير' },
   ];

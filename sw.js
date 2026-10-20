@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261021-library-r14';
+const CACHE_STATIC = 'zad-20261021-zakat-r15';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -84,9 +84,9 @@ const PRECACHE = [
   './qibla.html',                                   /* حساب اتجاه القبلة محلي بالكامل */
   './barnamaj.html',                                /* الوجهة الفعلية لاختصار "ورد اليوم" و redirect صفحة worship.html */
   './mushaf-quran.html', './js/quran-module.min.js',    /* قارئ المصحف: الصفحة نفسها + رسائل الخطأ المدمجة فيها أفضل من fallback الـ SW العام */
-  './zakat.html', './js/zakat-module.min.js', './zakat-ahkam.html', './zakat-anwa.html',
-  './odhiya.html',
-  './manasik.html', './js/hajj-module.min.js', './arafah.html', './js/audio-manager.min.js',
+  './zakat.html', './js/ui/zakat-engine.js', './zakat-ahkam.html', './zakat-anwa.html',
+  './odhiya.html', './js/ui/hajj-now.js',
+  './manasik.html', './arafah.html', './js/audio-manager.min.js', './hasad.html', './sadaqah.html',
   './arafah-dua.html', './hikayat-hajj.html',
   './ai.html', './js/ai-guard.min.js', './js/advanced-ai-module.min.js', /* المساعد المحلي (أذكار/سيرة/فقه) يعمل أوفلاين؛ المحادثة فقط تحتاج نتاً وتُعرَض برسالة صريحة */
   './kids.html', './kids-tales.html', './kids-garden.html', './kids-gazette.html',

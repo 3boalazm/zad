@@ -104,7 +104,8 @@
   const STORE_SCROLL  = 'zad_menu_scroll';  /* موضع التمرير */
 
   /* ── الأقسام المفتوحة افتراضياً ─────────────────────────────────────── */
-  const ALL_SECTIONS = ['sec-prayer','sec-quran','sec-hajj','sec-learn','sec-kids','sec-track','sec-family','sec-settings'];
+  /* sec-dhikr و sec-tools كانتا غائبتين: قسمُ الذكر والزكاة يبدآن مطويَّين في أول زيارة */
+  const ALL_SECTIONS = ['sec-prayer','sec-quran','sec-tools','sec-hajj','sec-dhikr','sec-learn','sec-kids','sec-track','sec-family','sec-settings'];
   function getOpenSections() {
     try {
       const stored = localStorage.getItem(STORE_OPEN);
