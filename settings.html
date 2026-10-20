@@ -230,8 +230,42 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
         <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🌙 ورد المساء</div><div style="font-size:11px;color:var(--muted)">5:00 مساءً</div></div><label class="toggle-pill"><input type="checkbox" class="reminder-switch" data-key="wird_evening" aria-label="ورد المساء — 5:00 مساءً" checked><span class="tgl-sl"></span></label></div>
         <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">☀️ أذكار الصباح</div><div style="font-size:11px;color:var(--muted)">بعد الفجر</div></div><label class="toggle-pill"><input type="checkbox" class="reminder-switch" data-key="adhkar_morning" aria-label="أذكار الصباح — بعد الفجر" checked><span class="tgl-sl"></span></label></div>
         <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🌆 أذكار المساء</div><div style="font-size:11px;color:var(--muted)">بعد العصر</div></div><label class="toggle-pill"><input type="checkbox" class="reminder-switch" data-key="adhkar_evening" aria-label="أذكار المساء — بعد العصر" checked><span class="tgl-sl"></span></label></div>
-        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">⭐ يوم عرفة</div><div style="font-size:11px;color:var(--muted)">26 مايو 2026</div></div><label class="toggle-pill"><input type="checkbox" class="reminder-switch" data-key="arafah_reminder" aria-label="تذكير يوم عرفة" checked><span class="tgl-sl"></span></label></div>
+        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">⭐ يوم عرفة</div><div style="font-size:11px;color:var(--muted)" id="arafah-date-label">9 ذو الحجة</div></div><label class="toggle-pill"><input type="checkbox" class="reminder-switch" data-key="arafah_reminder" aria-label="تذكير يوم عرفة" checked><span class="tgl-sl"></span></label></div>
         <div class="reminder-row" style="border-bottom:none"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🎬 فيديو أسبوعي</div><div style="font-size:11px;color:var(--muted)">كل جمعة مساءً</div></div><label class="toggle-pill"><input type="checkbox" class="reminder-switch" data-key="video_weekly" aria-label="فيديو أسبوعي — كل جمعة مساءً" checked><span class="tgl-sl"></span></label></div>
+      </div>
+    </div>
+
+    <!-- ══ 2ب. تنبيه الأذان — P1-7 ════════════════════════════
+         المواقيت تُحسب على الجهاز بمحرك adhan-js المُوطَّن، فلا حاجة لإنترنت.
+         التسليم عبر Service Worker (لا new Notification التي لا تظهر على Android). -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="settings-row" style="padding-bottom:14px;border-bottom:1px solid var(--border)">
+        <div class="ic">🕌</div>
+        <div class="lbl"><b>تنبيه الأذان</b><small id="pn-sub">إشعار عند دخول وقت كل صلاة — يُحسب على الجهاز بلا إنترنت</small></div>
+        <label class="toggle-pill"><input type="checkbox" id="pn-master" onchange="pnToggleMaster(this)" aria-label="تنبيه الأذان عند دخول وقت كل صلاة"><span class="tgl-sl"></span></label>
+      </div>
+      <div id="pn-detail" style="padding-top:10px;display:none">
+        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🌅 الفجر</div><div style="font-size:11px;color:var(--muted)" id="pn-time-fajr">—</div></div><label class="toggle-pill"><input type="checkbox" data-pn="fajr" onchange="pnTogglePrayer('fajr',this)" aria-label="تنبيه أذان الفجر" checked><span class="tgl-sl"></span></label></div>
+        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">☀️ الظهر</div><div style="font-size:11px;color:var(--muted)" id="pn-time-dhuhr">—</div></div><label class="toggle-pill"><input type="checkbox" data-pn="dhuhr" onchange="pnTogglePrayer('dhuhr',this)" aria-label="تنبيه أذان الظهر" checked><span class="tgl-sl"></span></label></div>
+        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🌤️ العصر</div><div style="font-size:11px;color:var(--muted)" id="pn-time-asr">—</div></div><label class="toggle-pill"><input type="checkbox" data-pn="asr" onchange="pnTogglePrayer('asr',this)" aria-label="تنبيه أذان العصر" checked><span class="tgl-sl"></span></label></div>
+        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🌇 المغرب</div><div style="font-size:11px;color:var(--muted)" id="pn-time-maghrib">—</div></div><label class="toggle-pill"><input type="checkbox" data-pn="maghrib" onchange="pnTogglePrayer('maghrib',this)" aria-label="تنبيه أذان المغرب" checked><span class="tgl-sl"></span></label></div>
+        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🌙 العشاء</div><div style="font-size:11px;color:var(--muted)" id="pn-time-isha">—</div></div><label class="toggle-pill"><input type="checkbox" data-pn="isha" onchange="pnTogglePrayer('isha',this)" aria-label="تنبيه أذان العشاء" checked><span class="tgl-sl"></span></label></div>
+        <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">🕌 تذكير الجمعة</div><div style="font-size:11px;color:var(--muted)">قبل الظهر بـ45 دقيقة</div></div><label class="toggle-pill"><input type="checkbox" id="pn-jumuah" onchange="pnToggleJumuah(this)" aria-label="تذكير الجمعة قبل الظهر" checked><span class="tgl-sl"></span></label></div>
+        <div class="reminder-row" style="border-bottom:none">
+          <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">⏱️ نبّهني قبل الأذان</div><div style="font-size:11px;color:var(--muted)">مهلة الاستعداد للصلاة</div></div>
+          <select id="pn-before" onchange="pnSetBefore(this.value)" aria-label="التنبيه قبل الأذان بكم دقيقة" style="padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">
+            <option value="0">عند الأذان</option>
+            <option value="5">قبل 5 دقائق</option>
+            <option value="10">قبل 10 دقائق</option>
+            <option value="15">قبل 15 دقيقة</option>
+            <option value="20">قبل 20 دقيقة</option>
+          </select>
+        </div>
+        <div id="pn-battery" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--sand);font-size:11px;color:var(--muted);line-height:1.7;display:none"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button onclick="pnTest()" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink)">🔔 جرّب إشعارًا</button>
+          <button onclick="pnShowBattery()" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted)">🔋 لا يصلني الإشعار؟</button>
+        </div>
       </div>
     </div>
 
@@ -382,6 +416,8 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
+  <!-- P1-7: إشعارات مواقيت الصلاة (يعتمد calcPrayerTimes من calendar.js) -->
+  <script src="js/prayer-notifications.min.js" defer></script>
   <script src="js/design-system.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/sync-module.min.js" defer></script>
@@ -457,29 +493,171 @@ function scheduleAllReminders(){
   const saved=JSON.parse(localStorage.getItem(REMINDERS_KEY)||'{}');
   if(window._rTimers)window._rTimers.forEach(clearTimeout);
   window._rTimers=[];
+  /* P1-7: التسليم عبر zadNotify (الـService Worker) بدل `new Notification`
+     التي لا تُعرض على Chrome/Android إطلاقًا — كانت التذكيرات «تُجدول بنجاح»
+     ولا يظهر منها شيء على الجوال. */
+  const send=(title,body,url)=>{
+    if(typeof window.zadNotify==='function')return window.zadNotify(title,body,{url:url||'index.html'});
+    try{new Notification(title,{body,icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}
+  };
   function at(h,m,title,body,key){
     if(saved[key]===false)return;
     const now=new Date(),t=new Date();t.setHours(h,m,0,0);
     if(t<=now)t.setDate(t.getDate()+1);
-    const id=setTimeout(()=>{try{new Notification(title,{body,icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}at(h,m,title,body,key);},t-now);
+    const id=setTimeout(()=>{send(title,body);at(h,m,title,body,key);},t-now);
     window._rTimers.push(id);
   }
   at(5,30,'📿 ورد الصباح','ابدأ وردك بطاعة الرحمن والذكر والقرآن','wird_morning');
   at(17,0,'🌙 ورد المساء','لا تنسَ أذكار المساء','wird_evening');
   at(6,15,'☀️ أذكار الصباح','3 دقائق تحمي يومك بإذن الله','adhkar_morning');
   at(15,45,'🌆 أذكار المساء','حصّن نفسك قبل الغروب','adhkar_evening');
-  /* Arafa */
+  /* Arafa — كان new Date(2026,4,26) مثبّتًا فمات بعد 26 مايو 2026 ولن يتكرر.
+     صار يُحسب من التقويم الهجري عبر findHijriDateInGreg (يعمل كل سنة ويحترم
+     إزاحة المستخدم)، مع سقوط آمن إن غاب js/calendar.js. */
   if(saved['arafah_reminder']!==false){
-    const af=new Date(2026,4,26,5,0,0),af2=new Date(2026,4,26,12,0,0),now=new Date();
-    if(af>now)window._rTimers.push(setTimeout(()=>{try{new Notification('⭐ يوم عرفة!',{body:'أكثر من الدعاء — خير الدعاء دعاء عرفة',icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}},af-now));
-    if(af2>now)window._rTimers.push(setTimeout(()=>{try{new Notification('🌄 عرفة الظهر',{body:'لا تفوّت — صيامك يكفّر سنتين',icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}},af2-now));
+    const day=(typeof window.findHijriDateInGreg==='function')?window.findHijriDateInGreg(12,9):null;
+    if(day){
+      const now=new Date();
+      const af=new Date(day);af.setHours(5,0,0,0);
+      const af2=new Date(day);af2.setHours(12,0,0,0);
+      if(af>now)window._rTimers.push(setTimeout(()=>send('⭐ يوم عرفة!','أكثر من الدعاء — خير الدعاء دعاء عرفة','arafah.html'),af-now));
+      if(af2>now)window._rTimers.push(setTimeout(()=>send('🌄 عرفة الظهر','لا تفوّت — صيامك يكفّر سنتين','arafah.html'),af2-now));
+    }
   }
   /* Weekly video — Friday 8pm */
   if(saved['video_weekly']!==false){
     const now=new Date(),fri=new Date(now);fri.setDate(now.getDate()+((5-now.getDay()+7)%7||7));fri.setHours(20,0,0,0);
-    window._rTimers.push(setTimeout(()=>{try{new Notification('🎬 محاضرة الجمعة',{body:'شاهد المحاضرات والدروس المختارة',icon:'/icons/icon-192.svg',dir:'rtl'});}catch(e){}},fri-now));
+    window._rTimers.push(setTimeout(()=>send('🎬 محاضرة الجمعة','شاهد المحاضرات والدروس المختارة','videos.html'),fri-now));
+  }
+  /* P1-7: إشعارات مواقيت الصلاة تُجدول مع بقية التذكيرات، لكنها تحتفظ
+     بإعداداتها المفتاح الخاص (zad_prayer_notif) وحسابها المحلي الخاص. */
+  if(window.ZadPrayerNotif&&window.ZadPrayerNotif.settings.enabled){
+    try{window.ZadPrayerNotif.schedule();}catch(e){}
   }
 }
+
+/* ══ P1-7: واجهة تنبيه الأذان ═══════════════════════════════════════════
+   كل شيء يمر عبر window.ZadPrayerNotif (js/prayer-notifications.js).
+   إن غاب الملف (كاش قديم مثلًا) تُخفى البطاقة بدل أن تظهر معطّلة. */
+function pnAvail(){return !!window.ZadPrayerNotif;}
+
+function pnSyncUI(){
+  if(!pnAvail())return;
+  const s=window.ZadPrayerNotif.settings;
+  const master=document.getElementById('pn-master');
+  const detail=document.getElementById('pn-detail');
+  if(master)master.checked=s.enabled;
+  if(detail)detail.style.display=s.enabled?'block':'none';
+  document.querySelectorAll('[data-pn]').forEach(cb=>{cb.checked=s.prayers[cb.dataset.pn]!==false;});
+  const jb=document.getElementById('pn-jumuah');if(jb)jb.checked=s.jumuah!==false;
+  const bs=document.getElementById('pn-before');if(bs)bs.value=String(s.beforeMin);
+}
+
+async function pnFillTimes(){
+  if(!pnAvail())return;
+  const list=await window.ZadPrayerNotif.upcomingPrayers(1);
+  const now=Date.now();
+  list.forEach(p=>{
+    const el=document.getElementById('pn-time-'+p.id);
+    if(!el)return;
+    /* أول وقت قادم لهذه الصلاة — إن فاتت اليوم نعرض وقت الغد */
+    let at=p.at;
+    const same=list.filter(x=>x.id===p.id);
+    if(same.length&&same[0].at.getTime()<now)at=same[same.length-1].at;
+    el.textContent='اليوم '+at.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+  });
+  const loc=window.ZadPrayerNotif.getLocation();
+  const sub=document.getElementById('pn-sub');
+  if(sub&&loc.city)sub.textContent='إشعار عند دخول وقت كل صلاة في '+loc.city+' — يُحسب على الجهاز بلا إنترنت';
+}
+
+async function pnToggleMaster(cb){
+  if(!pnAvail()){cb.checked=false;return;}
+  if(cb.checked){
+    const res=await window.ZadPrayerNotif.enable();
+    if(!res.ok){
+      cb.checked=false;
+      if(typeof showToast==='function')showToast('🔕 '+res.message);
+      /* إن كان السبب رفض المتصفح نشرح كيف يُصلح بدل ترك المستخدم حائرًا */
+      if(res.error==='denied')pnShowBattery(true);
+      return;
+    }
+    if(typeof showToast==='function')showToast('🔔 تنبيه الأذان مفعّل — '+res.scheduled+' إشعارات مجدولة');
+  }else{
+    window.ZadPrayerNotif.disable();
+    if(typeof showToast==='function')showToast('🔕 تم إيقاف تنبيه الأذان');
+  }
+  pnSyncUI();
+  pnFillTimes();
+}
+
+function pnTogglePrayer(id,cb){
+  if(!pnAvail())return;
+  const s=window.ZadPrayerNotif.settings;
+  const prayers=Object.assign({},s.prayers);prayers[id]=cb.checked;
+  window.ZadPrayerNotif.setSettings({prayers:prayers});
+  window.ZadPrayerNotif.schedule();
+  if(typeof showToast==='function')showToast(cb.checked?'🔔 تنبيه '+cb.getAttribute('aria-label'):'🔕 تم الإيقاف');
+}
+
+function pnToggleJumuah(cb){
+  if(!pnAvail())return;
+  window.ZadPrayerNotif.setSettings({jumuah:cb.checked});
+  window.ZadPrayerNotif.schedule();
+  if(typeof showToast==='function')showToast(cb.checked?'🕌 تذكير الجمعة مفعّل':'🔕 تم إيقاف تذكير الجمعة');
+}
+
+function pnSetBefore(v){
+  if(!pnAvail())return;
+  window.ZadPrayerNotif.setSettings({beforeMin:parseInt(v,10)||0});
+  window.ZadPrayerNotif.schedule();
+  if(typeof showToast==='function')showToast('⏱️ '+(parseInt(v,10)>0?'قبل الأذان بـ'+v+' دقيقة':'عند الأذان'));
+}
+
+async function pnTest(){
+  if(!pnAvail())return;
+  if(Notification.permission!=='granted'){
+    if(typeof showToast==='function')showToast('⚠️ فعّل الإشعارات أولًا من الأعلى');
+    return;
+  }
+  const path=await window.ZadPrayerNotif.deliver('🕌 اختبار تنبيه الأذان','هكذا سيصلك التنبيه عند دخول وقت الصلاة — حيّ على الصلاة',{tag:'zad-prayer-test',vibrate:true,url:'prayers.html'});
+  if(typeof showToast==='function'){
+    showToast(path==='sw'?'✅ أُرسل عبر Service Worker':path==='legacy'?'✅ أُرسل (مسار سطح المكتب)':'⚠️ تعذّر الإرسال — راجع إعدادات المتصفح');
+  }
+}
+
+function pnShowBattery(force){
+  if(!pnAvail())return;
+  const box=document.getElementById('pn-battery');
+  if(!box)return;
+  const h=window.ZadPrayerNotif.batteryHelp();
+  box.style.display='block';
+  box.innerHTML='<b style="color:var(--ink)">لماذا قد لا يصل الإشعار؟</b><br>'+
+    'جهازك: <b>'+h.vendor+'</b><br>'+h.steps+
+    '<br><br>كذلك: تطبيقات الويب لا تستطيع إيقاظ نفسها إن أُغلقت بالكامل — أبقِ التبويب مفتوحًا في الخلفية، أو ثبّت التطبيق (PWA) وافتحه مرة يوميًا على الأقل.';
+  if(force)box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function pnInitArafahLabel(){
+  /* كان النص مثبّتًا «26 مايو 2026» فصار قديمًا — نُظهر التاريخ المحسوب */
+  const el=document.getElementById('arafah-date-label');
+  if(!el||typeof window.findHijriDateInGreg!=='function')return;
+  const d=window.findHijriDateInGreg(12,9);
+  if(d)el.textContent='9 ذو الحجة · '+d.toLocaleDateString('ar-EG',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function pnInit(){
+  if(!pnAvail()){
+    const card=document.getElementById('pn-detail');
+    if(card&&card.parentElement)card.parentElement.style.display='none';
+    return;
+  }
+  pnSyncUI();
+  pnFillTimes();
+  pnInitArafahLabel();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',pnInit);
+else setTimeout(pnInit,0);
 
 function updateInstallBtn(){
   const btn=document.getElementById('install-pwa-btn');if(!btn)return;

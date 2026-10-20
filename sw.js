@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // Invalidate older cached bundles so returning PWAs receive the expanded video library.
-const CACHE_STATIC = 'zad-20261020-prayer-audit-r1';
+const CACHE_STATIC = 'zad-20261020-prayer-audit-r2';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -57,8 +57,9 @@ const PRECACHE = [
   /* core JS */
   './js/app.min.js', './js/adhkar-azkar.min.js', './js/ghars-stories.min.js', './js/diagnostics.min.js', './js/storage.min.js', './js/calendar.min.js',
   /* P1-2: محرك المواقيت مُوطَّن محليًا بدل cdn.jsdelivr.net (المدرج في BYPASS
-     أدناه، فكان يرفض تخزينه ويموت الحساب أوفلاين). 15 KB فقط. */
-  './js/vendor/adhan.min.js',
+     أدناه، فكان يرفض تخزينه ويموت الحساب أوفلاين). 15 KB فقط.
+     P1-7: وحدة إشعارات المواقيت. */
+  './js/vendor/adhan.min.js', './js/prayer-notifications.min.js',
   './menu.min.js', './command-palette.min.js', './js/ui/bottom-nav.min.js', './js/ui/progress-rollup.min.js',
   './js/design-system.min.js', './js/fixes-module.min.js',
   './js/utils/helpers.min.js', './js/core/state-manager.min.js', './js/core/router.min.js',
@@ -164,6 +165,35 @@ function fetchWithTimeout(request, timeout) {
 /* ── استقبال أمر التفعيل الفوري من الصفحة ── */
 self.addEventListener('message', e => {
   if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
+/* ── P1-7: النقر على إشعار مواقيت الصلاة ─────────────────────────────────────
+   بدون هذا المعالج يفتح Chrome صفحة about:blank أو لا يفعل شيئًا، فيظن
+   المستخدم أن الإشعار معطّل. نفتح الصفحة المسجّلة في notification.data.url
+   (تضعها js/prayer-notifications.js) ونعيد استخدام تبويب مفتوح إن وُجد بدل
+   تكديس التبويبات عند كل أذان. */
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || 'prayers.html';
+  let targetUrl;
+  try { targetUrl = new URL(target, self.location.origin).href; }
+  catch (e) { targetUrl = self.location.origin + '/prayers.html'; }
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      /* 1) نفس الصفحة مفتوحة بالفعل → ركّز عليها */
+      for (const c of list) {
+        if (c.url === targetUrl && 'focus' in c) return c.focus();
+      }
+      /* 2) أي تبويب للتطبيق مفتوح → أعِد توجيهه بدل فتح تبويب جديد */
+      for (const c of list) {
+        if ('navigate' in c && 'focus' in c) return c.navigate(targetUrl).then(x => x.focus());
+      }
+      /* 3) لا شيء مفتوح → افتح نافذة */
+      if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
+      return undefined;
+    })
+  );
 });
 
 self.addEventListener('fetch', e => {

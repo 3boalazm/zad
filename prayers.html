@@ -293,6 +293,19 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
       <div class="pt-date-sub" id="pt-date-sub">—</div>
       <div class="pt-offline-note" id="pt-offline-note">📴 لا يوجد اتصال — المواقيت المعروضة محفوظة من آخر تحميل</div>
 
+      <!-- ══ P1-7: تنبيه الأذان ══════════════════════════════════════
+           المواقيت تُحسب محليًا بمحرك adhan-js المُوطَّن، والإشعار يُسلَّم
+           عبر Service Worker. التفاصيل الدقيقة (لكل صلاة، قبل الأذان بدقائق)
+           في صفحة الإعدادات. -->
+      <div id="pt-notif-bar" style="display:flex;align-items:center;gap:10px;margin:10px 0;padding:12px 14px;border-radius:14px;background:var(--sand);border:1.5px solid var(--border)">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--ink)">🕌 نبّهني عند الأذان</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px" id="pt-notif-sub">إشعار عند دخول وقت كل صلاة — يُحسب على جهازك بلا إنترنت</div>
+        </div>
+        <button id="pt-notif-btn" type="button" onclick="ptToggleNotif()" aria-pressed="false"
+          style="padding:9px 16px;border-radius:10px;border:none;background:var(--green-deep);color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">تفعيل</button>
+      </div>
+
       <!-- Method selector -->
       <div class="method-row">
         <label style="font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap">طريقة الحساب:</label>
@@ -362,6 +375,8 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
+  <!-- P1-7: إشعارات مواقيت الصلاة (يعتمد calcPrayerTimes من calendar.js) -->
+  <script src="js/prayer-notifications.min.js" defer></script>
   <script src="js/design-system.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
@@ -940,6 +955,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => { if (typeof applyClockFormat === 'function') applyClockFormat(); }, 500);
+});
+
+/* ══ P1-7: تنبيه الأذان من صفحة المواقيت ══════════════════════════════════
+   js/prayer-notifications.min.js يُحمَّل بـdefer، أي أنه يعمل قبل
+   DOMContentLoaded — لذا القراءة الآمنة تكون داخل هذا المستمع أو عند النداء. */
+function ptNotifAvail() { return !!window.ZadPrayerNotif; }
+
+function ptSyncNotifBtn() {
+  const bar = document.getElementById('pt-notif-bar');
+  const btn = document.getElementById('pt-notif-btn');
+  if (!bar || !btn) return;
+  if (!ptNotifAvail()) { bar.style.display = 'none'; return; }   /* كاش قديم → نخفيه بدل زر ميت */
+
+  const s = window.ZadPrayerNotif.settings;
+  const on = s.enabled && ('Notification' in window) && Notification.permission === 'granted';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  if (on) {
+    btn.textContent = '✅ مفعّل';
+    btn.style.background = 'rgba(52,199,89,.12)';
+    btn.style.color = 'var(--sys-green, #34c759)';
+    btn.style.border = '1.5px solid rgba(52,199,89,.35)';
+    const n = Object.keys(s.prayers).filter(k => s.prayers[k] !== false).length;
+    document.getElementById('pt-notif-sub').textContent =
+      n + ' صلوات · ' + (s.beforeMin > 0 ? 'قبل الأذان بـ' + s.beforeMin + ' دقيقة' : 'عند الأذان') + ' — ضبط أدق في الإعدادات';
+  } else {
+    btn.textContent = 'تفعيل';
+    btn.style.background = 'var(--green-deep)';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+  }
+}
+
+async function ptToggleNotif() {
+  if (!ptNotifAvail()) {
+    if (typeof showToast === 'function') showToast('⚠️ وحدة الإشعارات غير محمّلة — أعد تحميل الصفحة');
+    return;
+  }
+  const res = await window.ZadPrayerNotif.toggle();
+  if (typeof showToast === 'function') {
+    if (res && res.ok && res.scheduled !== undefined) showToast('🔔 تنبيه الأذان مفعّل — ' + res.scheduled + ' إشعارات مجدولة');
+    else if (res && res.ok) showToast('🔕 تم إيقاف تنبيه الأذان');
+    else if (res && res.message) showToast('🔕 ' + res.message);
+  }
+  /* من رُفض إذنُه نشرح له السبب بدل تركه يضغط بلا نتيجة */
+  if (res && !res.ok && res.error === 'denied') {
+    const h = window.ZadPrayerNotif.batteryHelp();
+    alert('الإشعارات مرفوضة من المتصفح.\n\n' + h.vendor + ':\n' + h.steps);
+  }
+  ptSyncNotifBtn();
+}
+window.ptToggleNotif = ptToggleNotif;
+
+document.addEventListener('DOMContentLoaded', () => {
+  /* deferred scripts have run by now */
+  ptSyncNotifBtn();
+  /* الموقع يتغيّر من هذه الصفحة نفسها — حدّث الحالة بعد أي اختيار */
+  setTimeout(ptSyncNotifBtn, 1500);
 });
 </script>
   <script src="animations.min.js" defer></script>
