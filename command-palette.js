@@ -37,6 +37,8 @@
     {h:'asma.html',i:'🌺',t:'أسماء الله الحسنى'},
     {h:'kids.html',i:'🌟',t:'ثُريّا — الأطفال'},
     {h:'kids-tales.html',i:'🏮',t:'حكايات القرية'},
+    {h:'kids-garden.html',i:'🌱',t:'بستان الذكر'},
+    {h:'kids-gazette.html',i:'📰',t:'صحيفة القرية'},
     {h:'ghars.html',i:'🌱',t:'غرس — قصص الأطفال'},
     {h:'kids-heroes.html',i:'🦁',t:'عرين الأبطال'},
     {h:'kids-school.html',i:'🏫',t:'مدرستي الجميلة'},

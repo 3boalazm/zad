@@ -43,6 +43,8 @@
   <url><loc>https://zad.codeandcanvas.net/maktaba-nassiya.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids-tales.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-garden.html</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-gazette.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids-heroes.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids-fun.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids-creativity.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
