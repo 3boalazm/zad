@@ -9,7 +9,7 @@ const ZadRouter = (() => {
 
   /* خريطة الصفحات الرئيسية */
   const ROUTES = {
-    'index.html':         { tab: 'home',    title: 'لوحة التحكم' },
+    'index.html':         { tab: 'home',    title: 'يومك' },
     'mushaf.html':        { tab: 'quran',   title: 'الورد القرآني' },
     'mushaf-quran.html':  { tab: 'quran',   title: 'المصحف الشريف' },
     'adhkar.html':        { tab: 'adhkar',  title: 'الأذكار والدعاء' },
