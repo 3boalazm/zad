@@ -482,7 +482,7 @@ async function fetchPrayerTimes(lat,lng){
   const btn=document.getElementById('prayer-loc-btn'),bar=document.getElementById('prayer-bar');
   try{
     const now=new Date();
-    const url=`https://api.aladhan.com/v1/timings/${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}-${now.getFullYear()}?latitude=${lat}&longitude=${lng}&method=4`;
+    const url=`https://api.aladhan.com/v1/timings/${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}-${now.getFullYear()}?latitude=${lat}&longitude=${lng}&method=${localStorage.getItem('zad_prayer_method_id')||'5'}`;
     const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),10000);
     const res=await fetch(url,{signal:ctrl.signal});
     const json=await res.json();

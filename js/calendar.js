@@ -9,14 +9,25 @@ const HIJRI_SETTING_KEY = 'zad_hijri_offset';
 
 /* الإزاحة اليدوية: يختارها المستخدم من الإعدادات (+1/-1/0) */
 function getHijriOffset() {
-  return parseInt(localStorage.getItem(HIJRI_SETTING_KEY) || '0', 10);
+  const n = parseInt(localStorage.getItem(HIJRI_SETTING_KEY) || '0', 10);
+  return (isNaN(n) || n < -3 || n > 3) ? 0 : n;   /* P3-4: حدّ آمن ±3 أيام */
 }
 function setHijriOffset(n) {
-  localStorage.setItem(HIJRI_SETTING_KEY, String(n));
+  const v = Math.max(-3, Math.min(3, parseInt(n, 10) || 0));   /* P3-4 */
+  localStorage.setItem(HIJRI_SETTING_KEY, String(v));
   refreshHijriDisplay();
+  return v;
 }
 window.setHijriOffset = setHijriOffset;
 window.getHijriOffset = getHijriOffset;
+
+/* يحوّل الأرقام العربية المشرقية/الفارسية إلى لاتينية حتى لا يفشل parseInt */
+function _toLatinDigits(v) {
+  return String(v)
+    .replace(/[\u0660-\u0669]/g, d => '\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669'.indexOf(d))
+    .replace(/[\u06F0-\u06F9]/g, d => '\u06F0\u06F1\u06F2\u06F3\u06F4\u06F5\u06F6\u06F7\u06F8\u06F9'.indexOf(d));
+}
+window._toLatinDigits = _toLatinDigits;
 
 /* ── الطريقة الأساسية: islamic-umalqura (التقويم السعودي الرسمي) ─────────── */
 function getHijriDateAccurate(date = new Date()) {
@@ -25,13 +36,21 @@ function getHijriDateAccurate(date = new Date()) {
   adjusted.setDate(adjusted.getDate() + offset);
 
   try {
-    /* نجرّب islamic-umalqura أولاً (الأدق) */
-    const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+    /* P0-5: 'ar-SA' تُخرج أرقاماً عربية مشرقية (١٤٤٨) و parseInt() عليها = NaN،
+       فكان التاريخ الهجري يظهر «NaN undefined NaN هـ» في لوحة التحكم والإعدادات
+       ويُخزَّن كذلك في zad_hijri_today. الحل: nu-latn + مُطبِّع أرقام احتياطي. */
+    const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn', {
       day: 'numeric', month: 'numeric', year: 'numeric'
     });
     const parts = fmt.formatToParts(adjusted);
-    const get = type => parseInt(parts.find(p => p.type === type)?.value || '0', 10);
-    return { year: get('year'), month: get('month'), day: get('day'), source: 'umalqura' };
+    const get = type => {
+      const n = parseInt(_toLatinDigits(parts.find(p => p.type === type)?.value || '0'), 10);
+      return isNaN(n) ? 0 : n;
+    };
+    const h = { year: get('year'), month: get('month'), day: get('day'), source: 'umalqura' };
+    /* إن فشل التحليل لسبب ما نسقط إلى المرجع الثابت بدل عرض NaN */
+    if (!h.year || !h.month || !h.day) return getHijriDateFallback(adjusted);
+    return h;
   } catch {
     /* Fallback: المرجع الثابت المبرمج في app.js الأصلي */
     return getHijriDateFallback(adjusted);
@@ -116,8 +135,8 @@ window.fetchAndCacheHijriDate = async function() {
 const CALC_METHOD_KEY = 'zad_prayer_method';
 
 const CALC_METHODS = {
+  'Egypt':      { name: 'الهيئة المصرية للمساحة', key: 'Egypt'      },
   'UmmAlQura':  { name: 'أم القرى (السعودية)',   key: 'UmmAlQura'  },
-  'Egypt':      { name: 'الهيئة المصرية',         key: 'Egypt'      },
   'MWL':        { name: 'رابطة العالم الإسلامي', key: 'MWL'        },
   'ISNA':       { name: 'أمريكا الشمالية',        key: 'ISNA'       },
   'Karachi':    { name: 'كراتشي',                 key: 'Karachi'    },
@@ -126,7 +145,7 @@ const CALC_METHODS = {
 };
 
 function getPrayerMethod() {
-  return localStorage.getItem(CALC_METHOD_KEY) || 'UmmAlQura';
+  return localStorage.getItem(CALC_METHOD_KEY) || 'Egypt';   /* P1-1: مطابق لافتراضي prayers.html */
 }
 function setPrayerMethod(method) {
   localStorage.setItem(CALC_METHOD_KEY, method);
@@ -150,7 +169,7 @@ async function calcPrayerTimes(lat, lng, date = new Date()) {
 
   function fmt(t) {
     if (!t) return '--:--';
-    return t.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: false });
+    return t.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });   /* P3-3: h23 بدل hour12:false (تجنّب ٢٤:٠٠) */
   }
 
   return {
@@ -218,7 +237,11 @@ async function renderPrayerTimesPage() {
     if (typeof applyClockFormat === 'function') applyClockFormat();
 
   } catch (e) {
-    container.innerHTML = '<div class="error-state">تعذّر الحصول على الموقع — تأكد من تفعيل GPS</div>';
+    /* P1-2: كان أي فشل (حتى تعذّر تحميل adhan-js من CDN) يُعرض كخطأ GPS مضلِّل */
+    const msg = (!window.adhan || (e && e.message === 'adhan.js timeout'))
+      ? 'تعذّر تحميل محرك حساب المواقيت — تحقّق من اتصال الإنترنت ثم أعد المحاولة'
+      : 'تعذّر الحصول على الموقع — فعّل GPS أو اختر مدينتك يدوياً من صفحة المواقيت';
+    container.innerHTML = `<div class="error-state">${msg}</div>`;
   }
 }
 window.renderPrayerTimesPage = renderPrayerTimesPage;
@@ -284,9 +307,9 @@ function injectHijriOffsetControl() {
 /* Override setHijriOffset لتحديث العرض */
 const _origSetOffset = window.setHijriOffset;
 window.setHijriOffset = function(n) {
-  _origSetOffset(n);
+  const v = _origSetOffset(n);   /* P3-4: القيمة بعد القصّ، لا المطلوبة */
   const display = document.getElementById('hijri-offset-display');
-  if (display) display.textContent = n > 0 ? `+${n}` : String(n);
+  if (display) display.textContent = v > 0 ? `+${v}` : String(v);
   const current = document.getElementById('hijri-current-display');
   if (current) current.textContent = formatHijriDate();
 };
@@ -297,4 +320,3 @@ document.addEventListener('DOMContentLoaded', () => {
   injectHijriOffsetControl();
 });
 
-console.log('[ZadCalendar] ✅ التقويم الهجري الدقيق + مواقيت adhan-js جاهزة');

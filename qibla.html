@@ -590,19 +590,19 @@ function handleOrientation(e) {
 
   if (e.webkitCompassHeading !== undefined) {
     heading = e.webkitCompassHeading; // لنظام iOS
-    console.log('📱 iOS heading:', heading);
   } else if (e.absolute === true && e.alpha !== null) {
     heading = 360 - e.alpha; // لنظام أندرويد (Absolute)
-    console.log('📱 Android absolute heading:', heading);
   } else if (e.alpha !== null) {
-    heading = 360 - e.alpha; // كخيار احتياطي للـ أندرويد
-    console.log('📱 Android fallback heading:', heading);
+    /* P2-7: إطار نسبي لا مطلَق — الاتجاه تقريبي، ننبّه مرة واحدة بدل عرضه بثقة */
+    heading = 360 - e.alpha;
+    if (!window._qiblaRelWarned) {
+      window._qiblaRelWarned = true;
+      if (typeof showToast === 'function') showToast('🧭 البوصلة غير معايرة — حرّك الهاتف على شكل ٨ ثم أعد المحاولة');
+    }
   }
 
-  if (heading === null) {
-    console.warn('⚠️ No heading available');
-    return;
-  }
+  /* P2-8: كان console.log يُنفَّذ مع كل حدث بوصلة (عشرات المرات/ثانية) */
+  if (heading === null) return;
 
   // حل مشكلة القفز المفاجئ بين الزاويتين 0 و 360
   if (lastRawHeading === null) {

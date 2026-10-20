@@ -241,7 +241,7 @@ html[data-theme="dark"] .type-tab.active,html[data-theme="oled"] .type-tab.activ
     <!-- Legend -->
     <div class="cal-legend">
       <div class="leg-item"><div class="leg-dot" style="background:var(--green-soft)"></div>اليوم</div>
-      <div class="leg-item"><div class="leg-dot" style="background:rgba(201,161,74,.6)"></div>أيام العشر</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(201,161,74,.6)"></div>مناسبات إسلامية</div>
       <div class="leg-item"><div class="leg-dot" style="background:#ff9500"></div>يوم عرفة</div>
       <div class="leg-item"><div class="leg-dot" style="background:#ff3b30"></div>العيد</div>
     </div>
@@ -311,9 +311,20 @@ function _hijParts(date){
     d:+p.find(x=>x.type==='day').value
   };
 }
+/* P0-4: احترم الإزاحة اليدوية zad_hijri_offset التي يضبطها المستخدم من الإعدادات.
+   كانت الصفحة تتجاهلها فتُظهر تاريخاً يخالف الشريط العلوي داخل القسم نفسه. */
+function _hijOffset(){
+  const n = parseInt(localStorage.getItem('zad_hijri_offset') || '0', 10);
+  return (isNaN(n) || n < -3 || n > 3) ? 0 : n;
+}
+function _shiftDays(date, days){
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  d.setDate(d.getDate() + days);
+  return d;
+}
 function gregToHijri(date){
-  try { return _hijParts(date); }
-  catch(e){ return {y:1447, m:12, d:1}; }
+  try { return _hijParts(_shiftDays(date, _hijOffset())); }
+  catch(e){ return {y:1448, m:5, d:1}; }
 }
 function hijriToGreg(hy, hm, hd){
   /* تقدير مبدئي من المرجع DH1 ثم بحثٌ دقيق عن اليوم المطابق */
@@ -322,24 +333,33 @@ function hijriToGreg(hy, hm, hd){
   for (let off=-45; off<=45; off++){
     const dt = new Date(guess.getFullYear(), guess.getMonth(), guess.getDate()+off);
     const x  = _hijParts(dt);
-    if (x.y===hy && x.m===hm && x.d===hd) return dt;
+    if (x.y===hy && x.m===hm && x.d===hd) return _shiftDays(dt, -_hijOffset());  /* P0-4 */
   }
   return guess;
 }
 
 /* ── Special days ─────────────────────────────────────────── */
+/* P0-2: المفاتيح كانت مركّبة من السنة ومثبّتة على 1447 — فمنذ دخول 1448
+   اختفت كل المناسبات (عرفة/الأضحى/التشريق). الآن مستقلة عن السنة وموسّعة لكل العام. */
 const SPECIAL_DH = {
-  '1447-12-1':  { label:'أول ذو الحجة 🌙',  cls:'special' },
-  '1447-12-8':  { label:'يوم التروية 💧',   cls:'special' },
-  '1447-12-9':  { label:'يوم عرفة ⭐',      cls:'arafah'  },
-  '1447-12-10': { label:'عيد الأضحى 🎉',    cls:'eid'     },
-  '1447-12-11': { label:'أول أيام التشريق', cls:'special' },
-  '1447-12-12': { label:'ثاني أيام التشريق',cls:'special' },
-  '1447-12-13': { label:'ثالث أيام التشريق',cls:'special' },
+  '1-1':   { label:'رأس السنة الهجرية 🌙',    cls:'special', badge:'محرم'  },
+  '1-10':  { label:'يوم عاشوراء 🤍',          cls:'special', badge:'عاشوراء' },
+  '3-12':  { label:'المولد النبوي ﷺ',         cls:'special', badge:'المولد' },
+  '7-27':  { label:'الإسراء والمعراج 🌌',     cls:'special', badge:'إسراء' },
+  '9-1':   { label:'أول رمضان 🌙',            cls:'special', badge:'رمضان' },
+  '9-27':  { label:'ليلة القدر (المرجّحة) ✨', cls:'arafah',  badge:'القدر' },
+  '10-1':  { label:'عيد الفطر 🎉',            cls:'eid',     badge:'عيد'   },
+  '12-1':  { label:'أول ذو الحجة 🌙',         cls:'special', badge:'عشر'   },
+  '12-8':  { label:'يوم التروية 💧',          cls:'special', badge:'تروية' },
+  '12-9':  { label:'يوم عرفة ⭐',             cls:'arafah',  badge:'عرفة'  },
+  '12-10': { label:'عيد الأضحى 🎉',           cls:'eid',     badge:'عيد'   },
+  '12-11': { label:'أول أيام التشريق',        cls:'special', badge:'تشريق' },
+  '12-12': { label:'ثاني أيام التشريق',       cls:'special', badge:'تشريق' },
+  '12-13': { label:'ثالث أيام التشريق',       cls:'special', badge:'تشريق' },
 };
 
 function getSpecialKey(hy, hm, hd) {
-  return `${hy}-${hm}-${hd}`;
+  return `${hm}-${hd}`;   /* بلا سنة — المناسبات تتكرر كل عام */
 }
 
 /* ── Global Hijri state (shared with app.js) ─────────────── */
@@ -422,7 +442,7 @@ function renderHijriMonth(hy, hm) {
     if (isFri)       cls += ' friday-col';
 
     const badge = sp
-      ? `<div class="cd-badge ${sp.cls}">${d===9?'عرفة':d===10?'عيد':d<=7&&d>=1?'عشر':''}</div>`
+      ? `<div class="cd-badge ${sp.cls}">${sp.badge || ''}</div>`
       : '';
 
     html += `<div class="${cls}" onclick="showDayPopup(${hy},${hm},${d})">

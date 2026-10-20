@@ -64,6 +64,8 @@ html[data-theme="dark"] .method-select,html[data-theme="oled"] .method-select{ba
 
 /* ── Location info ───────────────────────────────────────── */
 .loc-info{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:10px;flex-wrap:wrap}
+.pt-date-sub{font-size:12.5px;font-weight:700;color:var(--gold-dark,#8a6822);margin:-4px 0 12px;text-align:center}
+.pt-offline-note{display:none;align-items:center;justify-content:center;gap:6px;font-size:11.5px;font-weight:700;color:#8a5a12;background:rgba(201,161,74,.18);border:1px solid rgba(201,161,74,.45);border-radius:10px;padding:6px 10px;margin:0 0 12px;text-align:center}
 .loc-badge{background:var(--sand);border:1px solid var(--border);padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;color:var(--green-deep)}
 html[data-theme="dark"] .loc-badge,html[data-theme="oled"] .loc-badge{color:var(--sys-green)}
 
@@ -288,6 +290,8 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
         <span id="loc-name" class="loc-badge">—</span>
         <button onclick="showLocationPicker()" style="background:none;border:none;color:var(--gold-dark);font-size:12px;cursor:pointer;padding:0;font-family:inherit">تغيير ↻</button>
       </div>
+      <div class="pt-date-sub" id="pt-date-sub">—</div>
+      <div class="pt-offline-note" id="pt-offline-note">📴 لا يوجد اتصال — المواقيت المعروضة محفوظة من آخر تحميل</div>
 
       <!-- Method selector -->
       <div class="method-row">
@@ -295,12 +299,17 @@ html[data-theme="dark"] .city-chip,html[data-theme="oled"] .city-chip{background
         <select class="method-select" id="method-select" aria-label="طريقة حساب مواقيت الصلاة" onchange="reloadWithMethod()">
           <option value="4">أم القرى — مكة المكرمة</option>
           <option value="5" selected>الهيئة المصرية للمساحة</option>
-          <option value="2">رابطة العالم الإسلامي</option>
-          <option value="3">جامعة العلوم الإسلامية — كراتشي</option>
+          <option value="3">رابطة العالم الإسلامي</option>
+          <option value="2">أمريكا الشمالية (ISNA)</option>
+          <option value="1">جامعة العلوم الإسلامية — كراتشي</option>
+          <option value="13">ديانت — تركيا</option>
+          <option value="23">وزارة الأوقاف — الأردن</option>
+          <option value="21">المغرب</option>
+          <option value="19">الجزائر</option>
+          <option value="18">تونس</option>
           <option value="8">منطقة الخليج</option>
           <option value="9">الكويت</option>
           <option value="10">قطر</option>
-          <option value="1">مركز الدراسات الإسلامية — كاليفورنيا</option>
         </select>
       </div>
 
@@ -442,12 +451,20 @@ function startCountdown(targetTime) {
   clearInterval(window._prayerTimer);
   const el = () => document.getElementById('np-remains');
   if (!targetTime || targetTime.indexOf(':') < 0) { const e=el(); if(e) e.textContent='--:--:--'; return; }
+  let lastDayKey = new Date().toDateString();
   function tick() {
     const now = new Date();
+    /* P0-3: عند مرور وقت الصلاة المستهدفة أعد حساب «القادمة» بدل العدّ لنفس الوقت غدًا */
+    if (_curTimings) {
+      const nxt = getNextPrayer(_curTimings);
+      if (nxt.time && nxt.time !== targetTime) { renderTodayPrayers(_curTimings); return; }
+    }
+    /* P1-6: عبر منتصف الليل — أعد الجلب ليوم جديد (أو اعرض الكاش مع تنبيه) */
+    const dayKey = now.toDateString();
+    if (dayKey !== lastDayKey) { lastDayKey = dayKey; rolloverToNewDay(); return; }
     const [hh, mm] = targetTime.split(':').map(Number);
     let target = new Date(now);
     target.setHours(hh, mm, 0, 0);
-    /* لو الوقت عدّى اليوم، انقله لبكرة — يصحّح نفسه تلقائياً عبر منتصف الليل */
     if (target <= now) target.setDate(target.getDate() + 1);
     const diff = Math.max(0, target - now);
     const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
@@ -461,7 +478,33 @@ function startCountdown(targetTime) {
 }
 
 /* ── عرض صلوات اليوم ─────────────────────────────────────── */
+let _curTimings = null;   /* P0-3: يُستخدم لإعادة حساب الصلاة القادمة داخل tick */
+
+async function rolloverToNewDay() {
+  if (_lat == null || _lng == null) return;
+  const method = parseInt(document.getElementById('method-select')?.value || '5');
+  try { await loadTodayPrayers(_lat, _lng, method); }
+  catch(e) { showFromCacheWithWarning(); }
+  loadTenDaysTable(_lat, _lng, method);
+}
+
+/* P1-6: لا شبكة + يوم جديد → اعرض آخر مواقيت محفوظة مع تنبيه صريح بدل شاشة خطأ */
+function showFromCacheWithWarning() {
+  try {
+    const c = JSON.parse(localStorage.getItem('zad_prayer_today') || 'null');
+    if (!c || !c.timings) return false;
+    document.getElementById('prayer-error').style.display   = 'none';
+    document.getElementById('prayer-loading').style.display = 'none';
+    document.getElementById('prayer-content').style.display = 'block';
+    const note = document.getElementById('pt-offline-note');
+    if (note) note.style.display = 'flex';
+    renderTodayPrayers(c.timings);
+    return true;
+  } catch(e) { return false; }
+}
+
 function renderTodayPrayers(timings) {
+  _curTimings = timings;
   const grid = document.getElementById('prayers-grid');
   if (!grid) return;
   const now    = new Date();
@@ -494,7 +537,7 @@ function renderTodayPrayers(timings) {
 async function loadTodayPrayers(lat, lng, method = 5) {
   const dateStr = formatDateForAPI(new Date());
   const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${method}`;
-  const res  = await fetch(url);
+  const res  = await fetch(url, { signal: AbortSignal.timeout(8000) });
   const data = await res.json();
   if (data.code !== 200) throw new Error('API error: ' + data.status);
 
@@ -505,8 +548,16 @@ async function loadTodayPrayers(lat, lng, method = 5) {
   const sub = document.getElementById('pt-date-sub');
   if (sub) sub.textContent = `${hijri.day} ${hijri.month.ar} ${hijri.year} هـ · ${greg.weekday.ar||''}`;
 
-  localStorage.setItem('zad_prayer_today', JSON.stringify({ timings, hijri, greg, ts: Date.now() }));
+  localStorage.setItem('zad_prayer_today', JSON.stringify({ timings, hijri, greg, ts: Date.now(), method }));
   localStorage.setItem('zad_prayer_today_date', new Date().toDateString());
+  localStorage.setItem('zad_prayer_method_id', String(method));
+  /* P1-5: نفس المفتاح الذي تقرأه لوحة التحكم (index.html) و daily-hub.js —
+     القيم منزوعة لاحقة المنطقة الزمنية لأن daily-hub يعمل split(':') عليها */
+  try {
+    const strip = {};
+    ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'].forEach(k => { if (timings[k]) strip[k] = String(timings[k]).substring(0,5); });
+    localStorage.setItem('zad_prayer_cache', JSON.stringify({ timings: strip, ts: Date.now() }));
+  } catch {}
 
   renderTodayPrayers(timings);
 
@@ -533,15 +584,17 @@ async function loadTodayPrayers(lat, lng, method = 5) {
 }
 
 /* ── تحميل جدول العشر ────────────────────────────────────── */
-async function loadTenDaysTable(lat, lng, method = 5) {
-  /* الشهر الهجري الحالي تلقائياً (أم القرى) — يتدوّر طوال السنة */
-  let hy = 1447, hm = 12;
+/* P1-4: الشهر الهجري الحالي في مكان واحد — يُستخدم في الجلب وفي قراءة الكاش عند الإقلاع */
+function currentHijriYM() {
   try {
-    const _f = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{month:'numeric',year:'numeric'});
-    const _p = _f.formatToParts(new Date());
-    hm = +_p.find(x=>x.type==='month').value;
-    hy = +_p.find(x=>x.type==='year').value;
-  } catch(e){}
+    const f = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{month:'numeric',year:'numeric'});
+    const p = f.formatToParts(new Date());
+    return { hy: +p.find(x=>x.type==='year').value, hm: +p.find(x=>x.type==='month').value };
+  } catch(e) { return { hy: 1448, hm: 5 }; }
+}
+
+async function loadTenDaysTable(lat, lng, method = 5) {
+  const { hy, hm } = currentHijriYM();
   const cacheKey = `zad_month_table_${hy}_${hm}`;
   try {
     const url = `https://api.aladhan.com/v1/hijriCalendar/${hy}/${hm}?latitude=${lat}&longitude=${lng}&method=${method}`;
@@ -642,11 +695,19 @@ async function applyLocation(lat, lng, name) {
   if (tt) tt.style.display = 'none';
 
   const method = parseInt(document.getElementById('method-select')?.value || '5');
+  localStorage.setItem('zad_prayer_method_id', String(method));
+  const note = document.getElementById('pt-offline-note');
+  if (note) note.style.display = 'none';
   try {
-    await loadTodayPrayers(lat, lng, method);
-    await loadTenDaysTable(lat, lng, method);
+    /* P2-15: على التوازي — الجدول يمسك أخطاءه داخلياً فلا يُسقط مواقيت اليوم */
+    await Promise.all([
+      loadTodayPrayers(lat, lng, method),
+      loadTenDaysTable(lat, lng, method)
+    ]);
   } catch(e) {
-    showErr('خطأ في تحميل المواقيت', 'تحقق من اتصال الإنترنت وأعد المحاولة');
+    /* P1-6: جرّب آخر مواقيت محفوظة قبل إعلان الخطأ */
+    if (!showFromCacheWithWarning())
+      showErr('خطأ في تحميل المواقيت', 'تحقق من اتصال الإنترنت وأعد المحاولة');
   }
 }
 
@@ -803,6 +864,7 @@ function refreshLastKnownButton() {
 function reloadWithMethod() {
   if (_lat != null && _lng != null) {
     const method = parseInt(document.getElementById('method-select').value);
+    localStorage.setItem('zad_prayer_method_id', String(method));   /* P2-14 */
     Promise.resolve(loadTodayPrayers(_lat, _lng, method)).catch(() => {});
     loadTenDaysTable(_lat, _lng, method); /* تمسك أخطاءها داخلياً الآن */
   }
@@ -852,13 +914,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* الجدول: من الكاش أو تحميل جديد */
-  const cachedTable = localStorage.getItem('zad_ten_days_table');
+  /* P2-14: استعادة الطريقة المحفوظة (كانت تعود دائماً إلى 5) */
+  const savedMethod = localStorage.getItem('zad_prayer_method_id');
+  if (savedMethod) {
+    const sel = document.getElementById('method-select');
+    if (sel && [...sel.options].some(o => o.value === savedMethod)) sel.value = savedMethod;
+  }
+
+  /* P1-4: كان يقرأ 'zad_ten_days_table' وهو مفتاح لا يُكتب في أي مكان بالريبو */
+  const { hy, hm } = currentHijriYM();
+  const cachedTable = localStorage.getItem(`zad_month_table_${hy}_${hm}`);
+  const mSel = parseInt(document.getElementById('method-select')?.value || '5');
   if (cachedTable) {
     try { renderTenDays(JSON.parse(cachedTable)); }
-    catch(e) { loadTenDaysTable(lat, lng, parseInt(document.getElementById('method-select')?.value || '5')); }
+    catch(e) { loadTenDaysTable(lat, lng, mSel); }
   } else {
-    loadTenDaysTable(lat, lng, parseInt(document.getElementById('method-select')?.value || '5'));
+    loadTenDaysTable(lat, lng, mSel);
   }
+  /* P1-4: تنظيف مفاتيح الشهور القديمة — نبقي آخر 3 فقط */
+  try {
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('zad_month_table_')).sort();
+    while (keys.length > 3) localStorage.removeItem(keys.shift());
+  } catch {}
 });
 
 document.addEventListener('DOMContentLoaded', () => {

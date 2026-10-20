@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // Invalidate older cached bundles so returning PWAs receive the expanded video library.
-const CACHE_STATIC = 'zad-20261020-video-library-r2';
+const CACHE_STATIC = 'zad-20261020-prayer-audit-r1';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */

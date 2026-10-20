@@ -22,12 +22,44 @@
 
 | الخطورة | العدد | الطبيعة |
 |---|---|---|
-| 🔴 P0 حرج | 4 | أرقام/تواريخ خاطئة تظهر للمستخدم |
-| 🟠 P1 عالٍ | 8 | معمارية + أوفلاين + تكامل |
+| 🔴 P0 حرج | 5 | أرقام/تواريخ خاطئة تظهر للمستخدم |
+| 🟠 P1 عالٍ | 7 *(بند واحد مسحوب بعد التحقق)* | معمارية + أوفلاين + تكامل |
 | 🟡 P2 متوسط | 17 | نقص مزايا + جودة كود + وصولية |
 | ⚪ P3 ملاحظات | 8 | تسمية ونظافة |
 
-**سياق زمني مهم:** وقت كتابة هذا التقرير التاريخ الهجري هو **5 رمضان 1448هـ** — أي أن خلل المناسبات (P0-2) فعّال الآن، وأن كل ما يخص رمضان (الإمساكية/الإفطار) غائب تمامًا في ذروة الحاجة إليه.
+**سياق زمني:** التاريخ الهجري وقت الفحص هو **9 جمادى الأولى 1448هـ** — أي أن خلل المناسبات (P0-2) فعّال الآن فعلًا: السنة الجارية 1448 بينما مفاتيح المناسبات مثبّتة على 1447.
+
+> **تصحيح (أثناء التنفيذ):** مسودة هذا التقرير ذكرت «5 رمضان 1448» بسبب قراءة `Intl.format` في ترتيب `شهر/يوم` على أنه `يوم/شهر`. تحقّق: `formatToParts` تُرجع `[{month:5},{day:9},{year:1448}]`. التاريخ الصحيح **9 جمادى الأولى 1448هـ**. لا يؤثر هذا على أي استنتاج — جوهر P0-2 هو أن السنة 1448 ≠ 1447.
+
+---
+
+## حالة التنفيذ *(محدَّث بعد جولة الإصلاح)*
+
+تم تنفيذ **الشريحة «أ» من خريطة الطريق كاملة** — كل العلل الحرجة الخمسة وأربعة من العالية — في `prayers.html` و`hijri.html` و`qibla.html` و`index.html` و`js/calendar.js` (+ `js/calendar.min.js` المُعاد بناؤه، وهو ما تُحمّله الصفحات فعلًا).
+
+| البند | الحالة | ما نُفِّذ |
+|---|---|---|
+| **P0-1** الطرق المبدَّلة | ✅ | العناوين صُحِّحت من جدول aladhan الرسمي، وأُضيفت 13·تركيا، 23·الأردن، 21·المغرب، 19·الجزائر، 18·تونس، وحُذف الخيار المُعنون خطأً |
+| **P0-2** مناسبات 1447 | ✅ | المفاتيح صارت `"شهر-يوم"` بلا سنة → تعمل لكل السنوات؛ 14 مناسبة بدل 4؛ لكلٍّ `badge` نصي |
+| **P0-3** العدّاد لا يتقدّم | ✅ | إعادة حساب للهدف بدل `setDate(+1)`، مع `rolloverToNewDay()` عند منتصف الليل |
+| **P0-4** تجاهل الإزاحة | ✅ | `_hijriOffset()` / `_shiftDays()` مطبَّقة في `gregToHijri` (+o) و`hijriToGreg` (−o) |
+| **P0-5** `NaN` الهجري | ✅ | `-nu-latn` + `_toLatinDigits()` + سقوط صريح إلى المرجع الثابت |
+| **P1-1** محركان مختلفان | 🟡 جزئي | الافتراضي موحَّد على **مصر** في المحركين + `zad_prayer_method_id` يُحفظ ويُسترجع + `index.html` يقرأه بدل `method=4` المثبَّتة |
+| **P1-3** BYPASS بلا مهلة | ✅ | `AbortSignal.timeout(8000)` على aladhan وNominatim + `showFromCacheWithWarning()` و`#pt-offline-note` |
+| **P1-4** مفتاح الكاش الميت | ✅ | يُقرأ الآن `zad_month_table_${hy}_${hm}` مع تشذيب لأحدث 3 جداول |
+| **P1-5** الحالة المشتتة | 🟡 جزئي | `prayers.html` تكتب `zad_prayer_today` المشترك (بالصيغة `HH:MM` التي يتوقعها `daily-hub.js`) |
+| **P1-6** لا مسار أوفلاين | ✅ | كاش اليوم السابق يُعرض مع تحذير صريح بدل فراغ/توقف |
+| **P1-8** ~~خيارات GPS~~ | ✅ مسحوب | الخيارات موجودة أصلًا — راجع البند |
+| **P2** (منها) | ✅ | إزالة `console.log` من `qibla.html` و`js/calendar.js`، `hourCycle:'h23'`، قصّ الإزاحة ±3 أيام، رسالة خطأ تفصل adhan عن GPS، تصحيح تسمية «أيام العشر» |
+| **P1-2** adhan-js من CDN | ⬜ لم يبدأ | يتطلب تضمين المكتبة محليًا — الشريحة «ب» |
+| **P1-7** صفر إشعارات | ⬜ لم يبدأ | أكبر بند متبقٍ — الشريحة «ج» |
+
+**تحقّق بعد التنفيذ** (كله مُشغَّل فعليًا وليس مراجعة بصرية):
+- `node --check` على `js/calendar.js` و`sw.js` — سليم
+- كل الكتل الداخلية (`<script>` غير المُصدَّرة) في الصفحات الأربع — 11 كتلة، كلها سليمة
+- اختبار دخاني لـ`js/calendar.min.js` داخل sandbox بـ`localStorage`/`document`/`Intl`: `formatHijriDate()` → `9 جمادى الأولى 1448 هـ`، `getPrayerMethod()` → `Egypt`، `setHijriOffset(-99)` → `-3`
+- اختبار وظيفي لمنطق المناسبات: عرفة/الأضحى/عاشوراء/رمضان/الفطر تُصيب في 1447 و1448 و1449
+- `js/calendar.min.js` أُعيد بناؤه بـ`terser` (ما تُحمّله الصفحات هو `.min`، فبدون هذه الخطوة لا يصل أي إصلاح من `calendar.js` للمستخدم)
 
 ---
 
@@ -124,6 +156,37 @@ function tick() {
 
 **الإصلاح:** تمرير الإزاحة في حساب شبكة الشهر وفي `renderTodayBanner`، وقراءة `zad_hijri_offset` عند بناء المصفوفة.
 
+## P0-5 · التاريخ الهجري يظهر `NaN undefined NaN هـ` في لوحة التحكم *(اكتُشفت أثناء التنفيذ)*
+
+`js/calendar.js:32` يبني المنسّق بلغة عربية سعودية:
+
+```js
+const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day:'numeric', month:'numeric', year:'numeric' });
+const parts = fmt.formatToParts(adjusted);
+const get = type => parseInt(parts.find(p => p.type === type)?.value || '0', 10);
+```
+
+**التحقق الفعلي:**
+
+```
+ar-SA-u-ca-islamic-umalqura            → السنة الخام: ١٤٤٨   → parseInt: NaN
+en-u-ca-islamic-umalqura               → السنة الخام: 1448    → parseInt: 1448
+ar-SA-u-ca-islamic-umalqura-nu-latn    → السنة الخام: 1448    → parseInt: 1448
+```
+
+`ar-SA` تستخدم نظام الأرقام العربية المشرقية افتراضيًا، و`parseInt('١٤٤٨', 10)` = **NaN** في V8. ولأن `formatToParts` **لا يرمي استثناءً**، فإن `catch` الذي يسقط إلى `getHijriDateFallback` **لا يُنفَّذ أبدًا**.
+
+**الأثر المتسلسل:**
+- `getHijriDateAccurate()` → `{year:NaN, month:NaN, day:NaN}`
+- `formatHijriDate()` → `"NaN undefined NaN هـ"` (`HIJRI_MONTHS[NaN-1]` = `undefined`)
+- `refreshHijriDisplay()` يكتبها في `#hijri-full` / `.hd-hijri` / `[data-hijri]` عند `DOMContentLoaded` — و`index.html:148` يملك `<span class="hd-hijri" id="hijri-full">` فعلًا، **فالشريط العلوي في لوحة التحكم يعرض النص حرفيًا**
+- `fetchAndCacheHijriDate()` يخزّن `{y:NaN,m:NaN,d:NaN}` في `zad_hijri_today` → **تسميم الكاش** لكل مستهلك آخر
+- `settings.html` (ضبط الإزاحة) و`taqweem.html` و`js/seasons-module.js` — وكلها تستدعي `formatHijriDate` — تعرض النتيجة نفسها
+
+**نطاق الانتشار:** العلة **معزولة في `js/calendar.js` فقط**. تحقّق: كل المواضع الأخرى تستخدم `'en-u-ca-islamic-umalqura'` الصحيح (`hijri.html:306`، `index.html:423`، `prayers.html:590`، `js/ui/daily-hub.js:56`، `barnamaj.html:637`).
+
+**الإصلاح (مطبَّق):** `ar-SA-u-ca-islamic-umalqura-nu-latn` + مُطبِّع أرقام `_toLatinDigits()` كخط دفاع ثانٍ + سقوط صريح إلى `getHijriDateFallback` إذا خرجت قيم صفرية. النتيجة بعد الإصلاح: `formatHijriDate()` → `9 جمادى الأولى 1448 هـ`.
+
 ---
 
 # 🟠 P1 — علل عالية (معمارية، أوفلاين، تكامل)
@@ -140,7 +203,9 @@ function tick() {
 
 **الأثر:** أي صفحة تستدعي `renderPrayerTimesPage()` من `calendar.js` تعرض مواقيت **بطريقة أم القرى** (العشاء = المغرب + 90 دقيقة) بينما `prayers.html` تعرضها بالهيئة المصرية (العشاء = زاوية 17.5°) — فرق يتجاوز 20 دقيقة في مصر. مستخدم واحد، تطبيق واحد، رقمان مختلفان.
 
-**التوصية:** توحيد على محرك واحد **محلي** (adhan-js مُضمَّن في الريبو) مع إبقاء aladhan كمصدر اختياري للمقارنة/للتقويم الشهري. هذا يحل P1-2 وP1-3 وP1-5 معًا.
+**مثال ملموس اكتُشف أثناء التنفيذ:** `index.html:485` يستدعي aladhan بـ**`method=4` (أم القرى) مثبّتة في الكود**، بينما `prayers.html` افتراضيها `method=5` (الهيئة المصرية). أي أن لوحة التحكم وصفحة المواقيت تعرضان **وقتين مختلفين لنفس الموقع في مصر** — والفرق في العشاء وحدها ≈ 20 دقيقة.
+
+**التوصية:** توحيد على محرك واحد **محلي** (adhan-js مُضمَّن في الريبو) مع إبقاء aladhan كمصدر اختياري للمقارنة/للتقويم الشهري، ومفتاح طريقة واحد مشترك. هذا يحل P1-2 وP1-3 وP1-5 معًا.
 
 ## P1-2 · adhan-js يُحمَّل من CDN محجوب عن الكاش → المحرك الثاني ميت أوفلاين
 
@@ -202,17 +267,15 @@ const res = await fetch(url);              // بلا AbortSignal ولا timeout
 
 هذا هو أكبر فرق تنافسي مقابل أي تطبيق مواقيت (انظر قسم المقترحات).
 
-## P1-8 · `getCurrentPosition` بلا أي خيارات
+## ~~P1-8~~ · `getCurrentPosition` بلا خيارات — **مسحوب (ليس خللًا)**
 
-`prayers.html` (داخل `useGPS`) يستدعي:
-
-```js
-navigator.geolocation.getCurrentPosition(onSuccess, onError);   // بلا كائن خيارات
-```
-
-بلا `timeout` → **الافتراضي في المواصفة هو `Infinity`** (قد يبقى «جارٍ تحديد الموقع...» للأبد)، بلا `maximumAge` → محاولة GPS جديدة باردة في كل زيارة (ثوانٍ وبطارية)، وبلا `enableHighAccuracy` → دقة قد تنخفض لمستوى الشبكة.
-
-**الإصلاح:** `{ enableHighAccuracy:true, timeout:10000, maximumAge:600000 }` مع سقوط إلى `zad_last_location`.
+> **تصحيح (أثناء التنفيذ):** هذا البند سُجّل خطأً في المسودة لأن استخراج الكود وقت الفحص اقتطع الاستدعاء قبل معاملاته. بالرجوع إلى `prayers.html:677` فإن الخيارات **ممرَّرة فعلًا وبشكل سليم**:
+>
+> ```js
+> { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 }
+> ```
+>
+> `enableHighAccuracy:false` قرار معقول هنا — دقة مستوى المدينة تكفي لحساب المواقيت وتوفّر بطارية ووقتًا. **لا إجراء مطلوب**، وقد نُقل هذا إلى قائمة «ما هو سليم».
 
 ---
 
@@ -228,7 +291,7 @@ navigator.geolocation.getCurrentPosition(onSuccess, onError);   // بلا كائ
 | P2-6 | **لا انحراف مغناطيسي (declination) في البوصلة** — كلمة «الانحراف» في الواجهة تعني الفرق الزاوي عن الكعبة لا الانحراف المغناطيسي | `qibla.html:295, 630, 644` | في مصر الانحراف ≈ +5° → سهم القبلة مائل فعليًا بنفس القدر |
 | P2-7 | **فرع بوصلة احتياطي غير مطلق**: عند غياب `absolute` يُستخدم `alpha` النسبي كما لو كان شمالًا حقيقيًا | `qibla.html:596-598` | اتجاه اعتباطي يُعرض بثقة بلا تحذير |
 | P2-8 | **`console.log` داخل `handleOrientation`** — يُنفَّذ مع كل حدث بوصلة (عشرات/ثانية) | `qibla.html:592, 594, 596` | تقطيع أداء على أندرويد منخفض المواصفات + إغراق سجل الأخطاء |
-| P2-9 | **`Imsak` و`Midnight` و`Lastthird` تُرجَع من aladhan وتُهمَل** | `prayers.html:470-476` | في رمضان (الآن!) لا إمساك ولا إفطار صريح، ولا وقت قيام/ثلث الليل |
+| P2-9 | **`Imsak` و`Midnight` و`Lastthird` تُرجَع من aladhan وتُهمَل** | `prayers.html:470-476` | لا إمساك/إفطار صريح في رمضان، ولا وقت قيام أو ثلث الليل الأخير |
 | P2-10 | **عنصر `pt-date-sub` غير موجود في HTML** لكنه مُشار إليه مرتين | `prayers.html:505, 840` | التاريخ الهجري **لا يظهر إطلاقًا** في صفحة المواقيت — كود ميت + ميزة مفقودة |
 | P2-11 | **المناسبات محصورة في ذي الحجة**: لا عاشوراء، لا الإسراء والمعراج، لا المولد، لا رأس السنة، لا أول رمضان، لا ليلة القدر، لا عيد الفطر | `hijri.html:331-339` | التقويم الهجري بلا هوية موسمية |
 | P2-12 | **بطاقات الصلوات `div` بلا دلالات**: لا `role="list"`/`listitem`، ولا `aria-live` منضبط للعدّ التنازلي الذي يتغير كل ثانية | `prayers.html:466-486` | قارئ الشاشة إما يتجاهل القائمة أو يُغرق المستخدم بثوانٍ متتالية |
@@ -278,7 +341,7 @@ navigator.geolocation.getCurrentPosition(onSuccess, onError);   // بلا كائ
 4. **مبدل المذهب (العصر حنفي/شافعي) + تعديل دقائق لكل صلاة.** «A good app lets you switch» [2] — وهو معيار مقبول لا رفاهية.
 5. **شفافية الحساب والخصوصية**: عرض الزوايا الفعلية (فجر 19.5°/عشاء 17.5°) والمصدر. Qibla Daily يُصنَّف أولًا بسبب «on-device calculation, no tracking» و«calculation transparency» [4] — يناسب هوية زاد («بدون إعلانات 📴») ويعالج P2-16.
 
-### الشريحة الثانية — موسمية وعالية الأثر الآن (رمضان 1448)
+### الشريحة الثانية — موسمية عالية الأثر (تُبنى قبل رمضان 1449)
 
 6. **لوحة رمضان**: الإمساكية (سحور/إفطار) حسب GPS + جدول 30 يومًا + **وضع صامت تلقائي أثناء الصلاة** — كلها مزايا مُعلَنة في Athan Pro [13]. بيانات `Imsak` تصلنا بالفعل من aladhan وتُرمى (P2-9).
 7. **متابعة الصلاة والصيام بسلاسل (streaks) لطيفة**: Pillars «Minimalist prayer tracker… beautifully designed» [3]، وFivePrayer «Gentle streak tracking» مقابل «Aggressive» في Muslim Pro [6]. عندنا أصول جاهزة للربط: `badges.html` + `summary.html` + `worship.html`.
@@ -350,7 +413,7 @@ grep -nE "aladhan|nominatim|jsdelivr" sw.js               # → 99, 105, 108 (BY
 
 # التاريخ الهجري الحالي (يثبت P0-2)
 node -e "console.log(new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'}).format(new Date()))"
-# → 5/9/1448 AH
+# → 5/9/1448 AH  (الترتيب شهر/يوم ⇒ 9 جمادى الأولى 1448)
 ```
 
 **مصادر المقترحات:** [1] muslimnow.app/blog/best-muslim-apps-2026 · [2] ummahapi.com/best-prayer-times-apps · [3] niyatapp.com/articles/best-islamic-apps · [4] scihub101.com/blog/best-prayer-times-and-qibla-apps-2026 · [5] blog.yalamediagroup.com/the-best-prayer-time-apps-for-iphone-in-2026 · [6] fiveprayer.app/blog/best-muslim-apps-2026 · [7] r/MuslimLounge — Top 5 Islamic Apps 2026 · [8] niyatapp.com/articles/muslim-pro-alternatives · [9] unstar.app/blog/muslim-pro-quran-majeed-athan-pillars-tarteel · [13] play.google.com — Athan Pro · والمرجع الرسمي للطرق: `api.aladhan.com/v1/methods`
