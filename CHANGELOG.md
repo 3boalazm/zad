@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased] - 2026-10-19
+## [Unreleased] - 2026-10-20
 
 ### Added
 - Comprehensive engineering documentation suite in `docs/`:
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Root `README.md`: Clarified repository identity as an Islamic Offline-First PWA + Express API.
 - Implemented `POST /api/v1/auth/register` route in `api/src/auth/auth.router.ts` with input validation, duplicate email detection, atomic user creation, and argon2id password hashing.
 - Added test coverage in `api/src/tests/auth.test.ts` for registration validation and database availability boundaries.
+- Added `scripts/test-mobile-navigation.cjs` regression tests for hamburger state, fixed mobile-header rules, and reduced-motion safety.
 - Added `viewport-fit=cover` to meta viewport tags across `demo.html`, `diagnostics.html`, `duas.html`, `register.html`, `sync.html`, `worship.html`, and `zad_al_ashr.html`.
 - Implemented keyboard accessibility (`tabindex="0"`, `Space`, and `Enter` handling) for the central Tasbeeh counter ring in `takbeer.html`.
 - Added focus trapping and previous focus restoration on open/close in `command-palette.js`.
@@ -30,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Synchronized localization dictionaries (`lang.js`, `lang.min.js`), menu bundles (`menu.js`, `menu.min.js`), search command palette (`command-palette.js`, `command-palette.min.js`), PWA manifest (`manifest.json`), and AI agent index (`llms.txt`).
 
 ### Fixed
+- **Mobile Header Navigation Disappearing:** Keep the hamburger/header pinned at the top on mobile, preserve its visibility while the drawer opens, account for safe-area insets, and expose the drawer state with `aria-expanded`/`aria-controls`.
+- **Reduced-Motion Navigation Freeze:** Avoid pausing GSAP's global timeline and skip shared entrance animations when reduced motion is requested, preventing the home/sidebar navigation from remaining transparent.
+- **Service Worker Asset Refresh:** Bump the static cache version so installed PWAs replace stale navigation bundles.
 - **Mobile Navigation Dock Collision:** Resolved collision between the mobile floating topbar, `.fab-ai`, and `#zad-pwa-fab` by incorporating `env(safe-area-inset-bottom, 0px)` and raising secondary widgets to `bottom: calc(84px + safe-area)`.
 - **Cumulative Layout Shift (CLS):** Pre-rendered the mobile bottom floating dock directly in `css/style.css` at CSS parse time rather than waiting for dynamic injection in `menu.js`.
 - **Global Share Object Overwrite:** Fixed `window.ZadShare` collision where `menu.js` erased `js/share-button.js` methods, breaking the share sheet cancel button.

@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════
    زاد — Service Worker
-   Version: 20260824-z21
+   Version: 20261020-z22
    Strategy: Network-First WITH TIMEOUT (HTML/CSS/JS) + Cache-First (media)
 
    إصلاح حرج: إضافة مهلة زمنية للشبكة. على الشبكات الضعيفة (0 KB/s متصلة
@@ -40,8 +40,8 @@
         @font-face. حدّثت أسماء الخطوط في PRECACHE لنفس السبب.
    ════════════════════════════════════════════════════════════ */
 
-// Invalidate older cached bundles that may still contain the welcome modal.
-const CACHE_STATIC = 'zad-20261019-no-welcome';
+// Invalidate older cached bundles so returning PWAs receive the fixed mobile header.
+const CACHE_STATIC = 'zad-20261020-mobile-nav';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */

@@ -319,56 +319,49 @@
     .nav-group{transition:none}
   }
 
-  /* ═══ التوب بار → شريط سفلي عائم دائري بالكامل (موبايل فقط) ═══ */
+  /* ═══ تثبيت الهيدر أعلى الشاشة على الموبايل ═══ */
   @media(max-width:768px){
     .main .topbar{
       position:fixed !important;
-      top:auto !important;
-      bottom:calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+      top:calc(6px + env(safe-area-inset-top, 0px)) !important;
+      bottom:auto !important;
       left:14px !important;
       right:14px !important;
       width:auto !important;
       margin:0 !important;
-      border-radius:999px !important;      /* دائري بالكامل */
-      z-index:190 !important;
-      padding:8px 16px !important;
-      box-shadow:0 10px 32px -6px rgba(14,59,46,.42) !important;
-      transition:opacity .3s var(--ease,ease), transform .3s var(--ease,ease) !important;
+      border-radius:18px !important;
+      z-index:var(--z-topbar,60) !important;
+      padding:8px 12px !important;
+      box-shadow:0 4px 18px -6px rgba(14,59,46,.22) !important;
     }
-    /* مساحة أسفل المحتوى حتى لا يغطّي الشريط آخر عنصر */
-    .main{ padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px)) !important; }
-    /* يختفي الشريط تماماً عند فتح القائمة الجانبية */
-    body:has(.sidebar.open) .main .topbar,
-    body.zad-menu-open .main .topbar{
-      opacity:0 !important;
-      transform:translateY(60px) scale(.96) !important;
-      pointer-events:none !important;
+    .main .topbar .hamburger{
+      display:flex !important;
+      visibility:visible !important;
+      opacity:1 !important;
+      pointer-events:auto !important;
+    }
+    /* احجز مساحة للهيدر الثابت واحترم المساحة الآمنة أسفل الشاشة */
+    .main{
+      padding-top:calc(78px + env(safe-area-inset-top, 0px)) !important;
+      padding-bottom:calc(80px + env(safe-area-inset-bottom, 0px)) !important;
     }
     /* إخفاء زر fab-ai القديم لو موجود (ليبقى شريط واحد فقط) */
     .fab-ai{ display:none !important; }
 
-    /* مسافة علوية للمحتوى بعد نقل التوب بار تحت */
-    .main{ padding-top:16px !important; }
-
-    /* القائمة المنسدلة للإشعارات تفتح لأعلى (التوب بار صار تحت) */
+    /* الإشعارات تفتح أسفل الهيدر */
     .main .topbar .notif-wrap{ position:relative !important; }
     .main .topbar .notif-dropdown{
       position:absolute !important;
-      top:auto !important;
-      bottom:calc(100% + 12px) !important;
-      left:0 !important; right:auto !important;
-      transform-origin:bottom center !important;
+      top:calc(100% + 12px) !important;
+      bottom:auto !important;
+      left:auto !important;
+      right:0 !important;
+      transform:translateY(0) !important;
+      transform-origin:top right !important;
       max-height:60vh !important;
       max-width:calc(100vw - 32px) !important;
       overflow-y:auto !important;
-      z-index:200 !important;
-    }
-    /* سهم القائمة يتقلب لأسفل */
-    .main .topbar .notif-dropdown::before,
-    .main .topbar .notif-dropdown::after{
-      top:auto !important;
-      bottom:-8px !important;
-      transform:rotate(180deg) !important;
+      z-index:var(--z-popup,800) !important;
     }
   }`;
 
