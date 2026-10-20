@@ -215,6 +215,14 @@
   html[data-theme="dark"] .zh-verse,html[data-theme="oled"] .zh-verse{background:linear-gradient(160deg,#1a1608,#141f1a);border-color:rgba(201,161,74,.32)}
   .zh-verse::before{content:'﴿';position:absolute;top:-14px;inset-inline-start:10px;font-size:88px;color:rgba(201,161,74,.14);font-family:Amiri,serif;line-height:1;pointer-events:none}
   .zh-v-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;position:relative;z-index:1}
+.zh-v-fade{animation:zhVFade .55s cubic-bezier(.22,1,.36,1) both}
+@keyframes zhVFade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.zh-v-fade{animation:none}}
+.zh-v-theme{font-size:10px;font-weight:800;color:var(--gold-dark);background:rgba(201,161,74,.14);border:1px solid rgba(201,161,74,.35);border-radius:999px;padding:2px 9px;margin-inline-start:auto;margin-inline-end:6px;white-space:nowrap}
+@supports (background:color-mix(in srgb,red 1%,transparent)){.zh-v-theme{background:color-mix(in srgb,var(--gold) 14%,transparent);border-color:color-mix(in srgb,var(--gold) 35%,transparent)}}
+.zh-shuf{font-family:inherit;font-size:11px;font-weight:800;color:var(--gold-dark);background:transparent;border:1px solid rgba(201,161,74,.4);border-radius:999px;padding:4px 10px;cursor:pointer;transition:background .18s,transform .18s;white-space:nowrap}
+.zh-shuf:hover{background:rgba(201,161,74,.12);transform:translateY(-1px)}
+.zh-shuf:active{transform:scale(.95)}
   .zh-v-eye{font-size:10.5px;font-weight:900;letter-spacing:1.2px;color:var(--gold-dark)}
   .zh-v-share{background:rgba(201,161,74,.14);border:1px solid rgba(201,161,74,.28);color:var(--gold-dark);width:30px;height:30px;border-radius:9px;cursor:pointer;font-size:14px;line-height:1}
   .zh-v-share:hover{background:rgba(201,161,74,.26)}
@@ -269,6 +277,19 @@
   .zh-install b{display:block;font-size:12.5px;font-weight:900;color:var(--ink)}
   .zh-install small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
   .zh-install button{background:var(--green-deep);color:#fff;border:none;border-radius:11px;padding:8px 14px;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer}
+
+  /* ── بطاقة المكتبة النصية ── */
+  .zh-lib-link{display:flex;align-items:center;gap:13px;margin-top:18px;padding:14px 16px;border-radius:18px;
+    background:linear-gradient(135deg,rgba(14,59,46,.92),rgba(26,93,71,.92) 60%,rgba(201,161,74,.85));
+    color:#fff;text-decoration:none;position:relative;overflow:hidden;
+    box-shadow:0 12px 30px -14px rgba(14,59,46,.55);transition:transform .18s,box-shadow .18s}
+  .zh-lib-link::after{content:'📚';position:absolute;left:10px;bottom:-8px;font-size:56px;opacity:.1;line-height:1}
+  .zh-lib-link:hover{transform:translateY(-2px);box-shadow:0 16px 36px -14px rgba(14,59,46,.6)}
+  .zh-lib-link .ll-ico{font-size:26px;line-height:1;flex-shrink:0}
+  .zh-lib-link .ll-t{flex:1;min-width:0;position:relative;z-index:1}
+  .zh-lib-link b{display:block;font-size:13px;font-weight:900;margin-bottom:2px}
+  .zh-lib-link small{display:block;font-size:10.5px;color:rgba(255,255,255,.78);line-height:1.5}
+  .zh-lib-link .ll-go{font-size:20px;color:#f2dc9a;flex-shrink:0;position:relative;z-index:1}
 
   /* ── الشبكة: عمودان مستقلّان فلا يفرض عمودٌ طويل فراغًا على الآخر ── */
   .zh-grid{display:flex;flex-direction:column;gap:14px}
@@ -552,6 +573,7 @@
       <section class="zh-verse-wrap zh-card zh-verse" id="daily-verse-card" aria-label="آية اليوم">
         <div class="zh-v-head">
           <span class="zh-v-eye" id="dvc-eyebrow">☀️ آية الصباح</span>
+          <span class="zh-v-theme" id="dvc-theme" hidden></span>
           <button id="dvc-share" class="zh-v-share" aria-label="مشاركة الآية">🖼️</button>
         </div>
         <div class="zh-v-text" id="dvc-text">…</div>
@@ -609,7 +631,10 @@
     <section class="zh-media" aria-label="شاهد واستمع">
       <div class="zh-media-h">
         <h2>🎬 محاضرات مرئية</h2>
-        <a href="videos.html">عرض الكل ←</a>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button type="button" id="vc-shuffle" class="zh-shuf" aria-label="فيديوهات أخرى">🎲 فيديوهات أخرى</button>
+          <a href="videos.html">عرض الكل ←</a>
+        </div>
       </div>
       <div class="vid-carousel" id="vid-carousel"><div class="vc-track" id="vc-track"></div></div>
 
@@ -619,6 +644,16 @@
       </div>
       <div class="vid-carousel" id="pl-carousel"><div class="vc-track" id="pl-track"></div></div>
     </section>
+
+    <!-- ٨.٥ · المكتبة النصية -->
+    <a class="zh-lib-link" href="maktaba-nassiya.html">
+      <span class="ll-ico">📖</span>
+      <span class="ll-t">
+        <b>المكتبة النصية</b>
+        <small>٤٢٧٣ حديثًا مشروحًا في ٧ أبواب — وبحث يعمل بلا إنترنت</small>
+      </span>
+      <span class="ll-go">‹</span>
+    </a>
 
     <!-- ٩ · التثبيت -->
     <div class="zh-install" id="pwa-card" onclick="installPWA?.()">
@@ -644,6 +679,10 @@
 <script src="js/share-button.min.js" defer></script>
 <script src="js/gps-fix.min.js" defer></script>
 <script src="js/nav-accordion.min.js" defer></script>
+<script src="js/data/verses.js" defer></script>
+<script src="js/data/videos.js" defer></script>
+<script src="js/ui/daily-verse.js" defer></script>
+<script src="js/ui/media-random.js" defer></script>
 <script src="js/utils/helpers.min.js" defer></script>
 <script src="js/core/state-manager.min.js" defer></script>
 <script src="js/core/router.min.js" defer></script>
@@ -1027,38 +1066,52 @@ function zhSeedNotif() {
 }
 
 /* ── آية الصباح / المساء ────────────────────────────────────── */
+/* احتياط أخير فقط: لو فشل تحميل js/data/verses.js لأي سبب */
 const ZH_MORNING = [
   { t:'وَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ الشَّمْسِ وَقَبْلَ غُرُوبِهَا', s:'طه: 130' },
   { t:'فَسُبْحَانَ اللَّهِ حِينَ تُمْسُونَ وَحِينَ تُصْبِحُونَ', s:'الروم: 17' },
-  { t:'وَاذْكُر رَّبَّكَ فِي نَفْسِكَ تَضَرُّعًا وَخِيفَةً', s:'الأعراف: 205' },
   { t:'الَّذِينَ يَذْكُرُونَ اللَّهَ قِيَامًا وَقُعُودًا وَعَلَىٰ جُنُوبِهِمْ', s:'آل عمران: 191' }
 ];
 const ZH_EVENING = [
   { t:'وَمِنَ اللَّيْلِ فَتَهَجَّدْ بِهِ نَافِلَةً لَّكَ', s:'الإسراء: 79' },
-  { t:'تَتَجَافَىٰ جُنُوبُهُمْ عَنِ الْمَضَاجِعِ يَدْعُونَ رَبَّهُمْ خَوْفًا وَطَمَعًا', s:'السجدة: 16' },
-  { t:'وَبِالْأَسْحَارِ هُمْ يَسْتَغْفِرُونَ', s:'الذاريات: 18' },
-  { t:'كَانُوا قَلِيلًا مِّنَ اللَّيْلِ مَا يَهْجَعُونَ', s:'الذاريات: 17' }
+  { t:'وَبِالْأَسْحَارِ هُمْ يَسْتَغْفِرُونَ', s:'الذاريات: 18' }
 ];
 
+/**
+ * آية اليوم: مصرف ١٧٧ آية (js/data/verses.js) بدل ٨.
+ * الاختيار تابع لليوم — لا يتغيّر بالتحديث، ويتغيّر كل يوم ومع صباح/مساء.
+ */
 function zhInitVerse() {
-  const h = new Date().getHours();
-  const isMorning = h >= 4 && h < 16;
-  const pool = isMorning ? ZH_MORNING : ZH_EVENING;
-  const v = pool[new Date().getDate() % pool.length];
+  const isMorning = new Date().getHours() >= 4 && new Date().getHours() < 16;
+  let v;
+  if (window.ZadVerse) {
+    v = window.ZadVerse.today();
+  } else {
+    const pool = isMorning ? ZH_MORNING : ZH_EVENING;
+    const f = pool[new Date().getDate() % pool.length];
+    v = { text: f.t, source: '﴿ ' + f.s + ' ﴾', eyebrow: isMorning ? '☀️ آية الصباح' : '🌙 آية المساء',
+          theme: '', share: (isMorning ? '☀️ آية الصباح' : '🌙 آية المساء') + '\n\n' + f.t + '\n﴿ ' + f.s + ' ﴾\n\nزاد' };
+  }
 
   const eye = document.getElementById('dvc-eyebrow');
   const textEl = document.getElementById('dvc-text');
   const srcEl = document.getElementById('dvc-src');
-  if (eye) eye.textContent = isMorning ? '☀️ آية الصباح' : '🌙 آية المساء';
-  if (textEl) textEl.textContent = v.t;
-  if (srcEl) srcEl.textContent = '﴿ ' + v.s + ' ﴾';
+  const themeEl = document.getElementById('dvc-theme');
+  if (eye) eye.textContent = v.eyebrow;
+  if (textEl) {
+    textEl.textContent = v.text;
+    textEl.classList.remove('zh-v-fade');
+    void textEl.offsetWidth;              /* إعادة تشغيل الحركة */
+    textEl.classList.add('zh-v-fade');
+  }
+  if (srcEl) srcEl.textContent = v.source;
+  if (themeEl) { themeEl.textContent = v.theme || ''; themeEl.hidden = !v.theme; }
 
   const shareBtn = document.getElementById('dvc-share');
   if (shareBtn) {
     shareBtn.onclick = () => {
-      const txt = (isMorning ? '☀️ آية الصباح' : '🌙 آية المساء') + '\n\n' + v.t + '\n﴿ ' + v.s + ' ﴾\n\nزاد';
-      if (navigator.share) navigator.share({ text: txt }).catch(() => {});
-      else if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => {});
+      if (navigator.share) navigator.share({ text: v.share }).catch(() => {});
+      else if (navigator.clipboard) navigator.clipboard.writeText(v.share).catch(() => {});
     };
   }
 }
@@ -1077,25 +1130,48 @@ function zhDragScroll(car) {
   });
 }
 
-const VC_VIDEOS = [
-  { id:'57p126d5w9k', title:'عشر ذي الحجة — التخطيط العملي', badge:'⭐ مميز' },
-  { id:'smro5XFkoj0', title:'لا تدخل العشر قبل مشاهدة هذا', badge:'🔥 مهم' },
+/* احتياط أخير فقط — المكتبة الكاملة في js/data/videos.js (٨٠ بطاقة) */
+const VC_FALLBACK = [
+  { id:'57p126d5w9k', title:'عشر ذي الحجة — التخطيط العملي', badge:'' },
+  { id:'smro5XFkoj0', title:'لا تدخل العشر قبل مشاهدة هذا', badge:'' },
   { id:'OusUlCU5WBI', title:'العَشر الأُوَل من ذي الحِجَّة', badge:'' },
-  { id:'YgKfcLUbu60', title:'أوائل ذي الحجة | أفضل أيام الدهر', badge:'' },
-  { id:'ZSo0_0zxYHQ', title:'السر وراء يوم عرفة وعلاقته بالدعاء', badge:'🌄 عرفة' },
-  { id:'zetXiUuqkiY', title:'عشر ذي الحجة موسم الخواص', badge:'' },
-  { id:'BMMa16hvRU8', title:'موسم العَشر والذكر: حِكَم وأسرار', badge:'' },
-  { id:'Ul1FBSoszZk', title:'لقاء العشر من ذي الحجة', badge:'' }
+  { id:'YgKfcLUbu60', title:'أوائل ذي الحجة | أفضل أيام الدهر', badge:'' }
 ];
 
-function zhVideoCarousel() {
+/* عيّنة عشوائية من المكتبة — تتغيّر مع كل زيارة، ولا تعيد نفس الدفعة مرتين */
+function zhVideoBatch() {
+  if (window.ZadMedia) {
+    const list = window.ZadMedia.pickVideos(8, { prefer: 'yt', avoidLast: true, remember: true });
+    if (list.length) return list.map(v => ({ id: v.id, title: v.t, badge: v.b || '', dur: v.b || '' }));
+  }
+  return VC_FALLBACK;
+}
+
+function zhVideoCarousel(batch) {
   const track = document.getElementById('vc-track');
   if (!track) return;
-  track.innerHTML = VC_VIDEOS.map(v =>
+  const list = batch || zhVideoBatch();
+  track.innerHTML = list.map(v =>
     `<a class="vc-card" href="https://youtu.be/${v.id}" target="_blank" rel="noopener">`
-    + `<img class="vc-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${v.id}/default.jpg'" alt="${v.title}" loading="lazy">`
+    + `<img class="vc-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${v.id}/default.jpg'" alt="${v.title.replace(/"/g, '&quot;')}" loading="lazy">`
     + `<div class="vc-info"><div class="vc-title">${v.title}</div>${v.badge ? `<div class="vc-badge">${v.badge}</div>` : ''}</div></a>`).join('');
   zhDragScroll(document.getElementById('vid-carousel'));
+}
+
+/* 🎲 فيديوهات أخرى — دفعة جديدة في نفس الموضع */
+function zhBindVideoShuffle() {
+  const btn = document.getElementById('vc-shuffle');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const track = document.getElementById('vc-track');
+    if (track) { track.style.opacity = '0'; track.style.transition = 'opacity .18s'; }
+    setTimeout(() => {
+      zhVideoCarousel(zhVideoBatch());
+      if (track) { track.style.opacity = '1'; track.scrollLeft = 0; }
+      const car = document.getElementById('vid-carousel');
+      if (car) car.scrollTo({ left: 0, behavior: 'smooth' });
+    }, 180);
+  });
 }
 
 const PL_FEATURED = [
@@ -1193,6 +1269,7 @@ function zhInit() {
   zhSeedNotif();
   zhRenderNotifBadge();
   zhVideoCarousel();
+  zhBindVideoShuffle();
   zhPlaylistCarousel();
   zhNowCard();
 

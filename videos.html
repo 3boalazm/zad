@@ -332,6 +332,8 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         <button type="button" class="ftab active" data-cols="4" onclick="setVidCols(4,this)">4 أعمدة</button>
         <button type="button" class="ftab vid-cols-6-btn" data-cols="6" onclick="setVidCols(6,this)">6 أعمدة</button>
       </div>
+      <button type="button" class="ftab" id="vid-shuffle" onclick="shuffleVideos()" aria-label="خلط ترتيب الفيديوهات">🎲 خلط</button>
+      <button type="button" class="ftab" id="vid-order-reset" onclick="restoreVideoOrder()" hidden>↩ الترتيب الأصلي</button>
     </div>
 
     <div class="vid-links-note" id="vid-links-note">
@@ -3600,6 +3602,41 @@ function setVidCols(n, btn) {
     b.classList.toggle('active', b === btn);
   });
 }
+/* ── خلط الفيديوهات ───────────────────────────────────────
+   الترتيب الأصلي محفوظ في الذاكرة، فيمكن الرجوع إليه في أي لحظة. */
+var VID_ORIGINAL_ORDER = null;
+
+function shuffleVideos() {
+  var box = document.getElementById('vids-container');
+  if (!box) return;
+  var cards = Array.prototype.filter.call(box.children, function (n) { return n.classList.contains('vid-card'); });
+  if (cards.length < 2) return;
+  if (!VID_ORIGINAL_ORDER) VID_ORIGINAL_ORDER = cards.slice();
+
+  for (var i = cards.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = cards[i]; cards[i] = cards[j]; cards[j] = t;
+  }
+  box.style.transition = 'opacity .16s';
+  box.style.opacity = '0';
+  setTimeout(function () {
+    cards.forEach(function (c) { box.appendChild(c); });
+    box.style.opacity = '1';
+    var reset = document.getElementById('vid-order-reset');
+    if (reset) reset.hidden = false;
+    var anchor = document.getElementById('vid-filter-tabs');
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 170);
+}
+
+function restoreVideoOrder() {
+  var box = document.getElementById('vids-container');
+  if (!box || !VID_ORIGINAL_ORDER) return;
+  VID_ORIGINAL_ORDER.forEach(function (c) { box.appendChild(c); });
+  var reset = document.getElementById('vid-order-reset');
+  if (reset) reset.hidden = true;
+}
+
 (function () {
   var box = document.getElementById('vids-container');
   if (!box) return;

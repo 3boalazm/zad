@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261020-home-r13';
+const CACHE_STATIC = 'zad-20261021-library-r14';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -95,6 +95,12 @@ const PRECACHE = [
   './kids-lab.html', './kids-hospitality.html', './kids-day.html',
   './kids-heroes.html', './kids-school.html',
   './kids-fun.html', './kids-creativity.html', './kids-parents.html',
+
+  /* ── R14: المكتبة النصية + محرّكات اليوم ──
+     صفحة المكتبة وبياناتها تُخزَّن مسبقًا، فيعمل البحث في ١٥٠ حديثًا بلا شبكة.
+     الجلب الحيّ لبقية الموسوعة يمرّ عبر /api/ وهو مستثنى من الكاش أصلًا. */
+  './maktaba-nassiya.html', './js/data/maktaba.js', './js/ui/library-data.js',
+  './js/data/verses.js', './js/data/videos.js', './js/ui/daily-verse.js', './js/ui/media-random.js',
 ];
 
 /* ── لا تُخزَّن أبداً ── */

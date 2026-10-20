@@ -304,8 +304,8 @@ html[data-theme="oled"] .pl-card.playing .pl-title{color:var(--sys-green,#4ade80
       <div class="pl-hero-row">
         <div class="pl-cover" id="pl-cover">🎧</div>
         <div class="pl-hero-info">
-          <div class="pl-hero-name">العظماء</div>
-          <div class="pl-hero-sub">مصطفى أبو العزم · تلاوات ومحاضرات</div>
+          <div class="pl-hero-name" id="pl-title">العظماء</div>
+          <div class="pl-hero-sub" id="pl-sub">مصطفى أبو العزم · تلاوات ومحاضرات</div>
             <div class="pl-stats">
               <div class="pl-stat"><span>🎵</span><b id="st-n">—</b> محاضرة</div>
               <div class="pl-stat"><span>🎓</span><b>9</b> علماء</div>
@@ -325,6 +325,14 @@ html[data-theme="oled"] .pl-card.playing .pl-title{color:var(--sys-green,#4ade80
             </div>
         </div>
       </div>
+    </div>
+
+    <!-- ═════ اختيار القائمة ══════════════════════════════════
+         كان هذا العنصر غير موجود في الصفحة أصلًا، فكان منتقي القوائم
+         يُبنى في الذاكرة ولا يظهر للمستخدم، ولا طريقة للوصول إلى kmr. -->
+    <div class="playlist-selector-wrap">
+      <div class="pl-sel-label">🎚️ اختر القائمة الصوتية</div>
+      <div id="playlist-selector" role="group" aria-label="اختر القائمة الصوتية"></div>
     </div>
 
     <!-- ═════ MEDIA PLAYER ══════════════════════════════════ -->
@@ -475,23 +483,22 @@ window.mpEq = function(btn, mode) {
 /* ── Init ─────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   LIKES = JSON.parse(localStorage.getItem('pl_likes') || '{}');
-  const frame = document.getElementById('sc-frame');
   if (typeof SC === 'undefined') {
-    // SC script not loaded yet — wait
-    const wait = setInterval(()=>{
-      if (typeof SC !== 'undefined') { clearInterval(wait); bootWidget(frame); }
+    /* api.js يُحمَّل من w.soundcloud.com — قد يتأخر أو يُحجب */
+    let tries = 0;
+    const wait = setInterval(() => {
+      if (typeof SC !== 'undefined') { clearInterval(wait); attachWidget(); return; }
+      if (++tries > 16) {
+        clearInterval(wait);
+        showErr('لم يُحمَّل مشغّل SoundCloud — تحقق من الشبكة أو أداة حجب الإعلانات');
+      }
     }, 300);
     return;
   }
-  bootWidget(frame);
+  attachWidget();
 });
 
-function bootWidget(frame) {
-  try { SC_W = SC.Widget(frame); } catch(e) { showErr(e.message); return; }
-
-  SC_W.bind(SC.Widget.Events.READY, () => {
-    
-/* ═══════ PLAYLISTS REGISTRY ═══════ */
+/* ═══════════ سجلّ القوائم ═══════════ */
 const PLAYLISTS = [
   {
     id: 'azma',
@@ -500,7 +507,7 @@ const PLAYLISTS = [
     icon: '🌟',
     color: '#c9a14a',
     scUrl: 'https://soundcloud.com/mustafa-aboalazm/sets/oduvkogxsqaf',
-    embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/oduvkogxsqaf&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false&show_artwork=false',
+    embedUrl: 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mustafa-aboalazm/sets/oduvkogxsqaf&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false&show_artwork=false',
   },
   {
     id: 'kmr',
@@ -531,80 +538,147 @@ function renderPlaylistSelector() {
   `).join('');
 }
 
+/**
+ * تبديل القائمة.
+ * إصلاح: كان الكود يبحث عن id="sc-iframe" بينما الإطار اسمه "sc-frame"،
+ * فكان الصوت يظلّ على القائمة الأولى بينما الواجهة تقول إنها الثانية.
+ */
 function selectPlaylist(id) {
   const pl = PLAYLISTS.find(p => p.id === id);
   if (!pl) return;
+  const changed = activePlaylist.id !== pl.id;
   activePlaylist = pl;
-  /* تحديث الـ SoundCloud embed */
-  const iframe = document.getElementById('sc-iframe');
-  if (iframe) iframe.src = pl.embedUrl;
-  /* تحديث العنوان */
+
+  const frame = document.getElementById('sc-frame');
+  if (frame && changed) {
+    frame.src = pl.embedUrl;
+    ALL = []; FILTERED = []; CUR = -1; IS_PLAY = false;
+    const list = document.getElementById('pl-list');
+    if (list) list.innerHTML = '<div class="pl-loading" style="padding:24px;text-align:center;color:var(--muted)">⏳ جارٍ تحميل القائمة…</div>';
+    const sn = document.getElementById('st-n'); if (sn) sn.textContent = '—';
+    const sd = document.getElementById('st-d'); if (sd) sd.textContent = '—';
+    if (typeof updatePlayBtn === 'function') updatePlayBtn();
+    if (typeof updatePlayerUI === 'function') updatePlayerUI(null);
+    /* الإطار يُعاد تحميله، فنُنشئ ودجتًا جديدًا بعده */
+    setTimeout(() => { if (typeof attachWidget === 'function') attachWidget(); }, 900);
+  }
+
   const title = document.getElementById('pl-title');
   if (title) title.textContent = pl.icon + ' ' + pl.name;
-  /* تحديث الأزرار */
+  const sub = document.getElementById('pl-sub');
+  if (sub) sub.textContent = pl.desc;
+  const mpSub = document.getElementById('mp-sub');
+  if (mpSub) mpSub.textContent = pl.name;
   document.querySelectorAll('.pl-sel-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.pl === id);
+    b.setAttribute('aria-pressed', b.dataset.pl === id ? 'true' : 'false');
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  /* دعم ?pl= من شورت كت الصفحة الرئيسية */
+/**
+ * تحميل المسارات من الودجت.
+ * reset=true يبدأ العدّ من الصفر (عند تبديل القائمة).
+ */
+let attempts = 0;
+let lastCount = 0;
+
+function loadSounds(reset) {
+  if (reset) { attempts = 0; lastCount = 0; }
+  if (!SC_W) return;
+
+  const fail = (msg) => { if (typeof showErr === 'function') showErr(msg); };
+
+  const trySounds = () => {
+    if (!SC_W) return;
+    if (!ALL.length && attempts > 12) { fail('تعذّر قراءة القائمة من SoundCloud'); return; }
+    let asked = false;
+    try {
+      SC_W.getSounds(sounds => {
+        asked = true;
+        if (!sounds || !sounds.length) {
+          if (++attempts < 10) { setTimeout(trySounds, 2500); return; }
+          fail('القائمة فارغة — تأكد من عدم حجب SoundCloud');
+          return;
+        }
+
+        ALL = sounds.map((t, i) => ({
+          id       : t?.id       || i,
+          title    : t?.title    || `مسار ${i + 1}`,
+          duration : t?.duration || 0,
+          artwork  : ((t?.artwork_url || t?.user?.avatar_url || '')
+                       .replace('-large', '-t300x300')),
+          permalink: t?.permalink_url || `https://soundcloud.com/${SC_USER}`,
+          plays    : t?.playback_count || 0,
+          liked    : !!LIKES[t?.id],
+        }));
+
+        if (ALL.length > lastCount) {
+          lastCount = ALL.length;
+          if (++attempts < 8) { setTimeout(trySounds, 3000); return; }
+        }
+
+        const sn = document.getElementById('st-n');
+        const sd = document.getElementById('st-d');
+        if (sn) sn.textContent = ALL.length;
+        const totMin = Math.floor(ALL.reduce((s, t) => s + t.duration, 0) / 60000);
+        if (sd) sd.textContent = totMin >= 60 ? `${Math.floor(totMin / 60)}س ${totMin % 60}د` : `${totMin}د`;
+        if (typeof updateLikesStat === 'function') updateLikesStat();
+        const firstArt = ALL.find(t => t.artwork)?.artwork;
+        const cover = document.getElementById('pl-cover');
+        if (firstArt && cover)
+          cover.innerHTML = `<img loading="lazy" decoding="async" src="${firstArt}" alt="" onerror="this.parentNode.innerHTML='🎵'">`;
+
+        applyFilter();
+      });
+    } catch (e) {
+      asked = false;
+    }
+    if (!asked) {
+      /* الودجت لم يجهز بعد */
+      if (++attempts < 10) setTimeout(trySounds, 2000);
+      else fail('تعذّر الاتصال بمشغّل SoundCloud');
+    }
+  };
+  setTimeout(trySounds, reset ? 600 : 1500);
+}
+
+/* اختيار القائمة من ?pl= قبل رسم الصفحة */
+(function initPlaylistChoice() {
   try {
     const plId = new URLSearchParams(location.search).get('pl');
     if (plId) {
       const found = PLAYLISTS.find(p => p.id === plId);
       if (found) activePlaylist = found;
     }
-  } catch(e) {}
-  renderPlaylistSelector();
-});
+  } catch (e) {}
+  /* نطبّق الاختيار فورًا (السكربت أسفل الصفحة، والعناصر موجودة قبله)
+     حتى يجد attachWidget الإطار على القائمة الصحيحة من أول مرة. */
+  function applyChoice() {
+    renderPlaylistSelector();
+    /* الإطار ثابت في HTML على القائمة الأولى — نُصحّحه للاختيار المطلوب */
+    if (activePlaylist.id !== PLAYLISTS[0].id) {
+      const frame = document.getElementById('sc-frame');
+      if (frame) frame.src = activePlaylist.embedUrl;
+    }
+    const title = document.getElementById('pl-title');
+    if (title) title.textContent = activePlaylist.icon + ' ' + activePlaylist.name;
+    const sub = document.getElementById('pl-sub');
+    if (sub) sub.textContent = activePlaylist.desc;
+  }
+  if (document.getElementById('playlist-selector')) applyChoice();
+  else document.addEventListener('DOMContentLoaded', applyChoice);
+})();
 
-// Retry getSounds up to 5 times — playlist may still be loading
-    let attempts = 0;
-    let lastCount = 0;   // track count stability check
-    const trySounds = () => {
-      SC_W.getSounds(sounds => {
-        if (!sounds || !sounds.length) {
-          if (++attempts < 10) { setTimeout(trySounds, 2500); return; }
-          showErr('القائمة فارغة — تأكد من عدم حجب SoundCloud'); return;
-        }
+function attachWidget() {
+  const frame = document.getElementById('sc-frame');
+  if (!frame) return;
+  if (typeof SC === 'undefined' || !SC.Widget) {
+    showErr('لم يُحمَّل مشغّل SoundCloud — قد يكون محجوبًا في شبكتك');
+    return;
+  }
+  try { SC_W = SC.Widget(frame); } catch (e) { showErr(e.message); return; }
 
-        /* Keep ALL tracks — use fallback for undefined fields, never discard */
-        ALL = sounds.map((t, i) => ({
-          id       : t?.id       || i,
-          title    : t?.title    || `مسار ${i+1}`,      /* fallback لا حذف */
-          duration : t?.duration || 0,
-          artwork  : ((t?.artwork_url || t?.user?.avatar_url || '')
-                       .replace('-large','-t300x300')),
-          permalink: t?.permalink_url || `https://soundcloud.com/${SC_USER}`,
-          plays    : t?.playback_count || 0,
-          liked    : !!LIKES[t?.id],
-        }));
-
-        /* Stability check: if count grew, wait more (widget still loading) */
-        if (ALL.length > lastCount) {
-          lastCount = ALL.length;
-          if (++attempts < 8) { setTimeout(trySounds, 3000); return; }
-        }
-
-        /* Stats */
-        document.getElementById('st-n').textContent = ALL.length;
-        const totMin = Math.floor(ALL.reduce((s,t)=>s+t.duration,0)/60000);
-        document.getElementById('st-d').textContent =
-          totMin >= 60 ? `${Math.floor(totMin/60)}س ${totMin%60}د` : `${totMin}د`;
-        updateLikesStat();
-        const firstArt = ALL.find(t=>t.artwork)?.artwork;
-        if (firstArt)
-          document.getElementById('pl-cover').innerHTML =
-            `<img loading="lazy" decoding="async" src="${firstArt}" alt="" onerror="this.parentNode.innerHTML='🎵'">`;
-
-        applyFilter();
-      });
-    };
-    // First call after a short warm-up
-    setTimeout(trySounds, 1500);
-  });
-
+  SC_W.bind(SC.Widget.Events.READY, () => { try { SC_W.setVolume(CUR_VOL); } catch (e) {} });
   SC_W.bind(SC.Widget.Events.PLAY, () => {
     IS_PLAY = true; updatePlayBtn(); startEQ();
   });
@@ -614,18 +688,24 @@ document.addEventListener('DOMContentLoaded', () => {
   SC_W.bind(SC.Widget.Events.FINISH, () => mpNext());
   SC_W.bind(SC.Widget.Events.PLAY_PROGRESS, d => {
     const pct = d.relativePosition * 100;
-    document.getElementById('mp-fill').style.width = pct + '%';
+    const fill = document.getElementById('mp-fill');
+    if (fill) fill.style.width = pct + '%';
     const cur = Math.floor(d.currentPosition / 1000);
-    const tot = ALL[CUR]?.duration ? Math.floor(ALL[CUR].duration/1000) : 0;
-    document.getElementById('mp-cur').textContent = fmt(cur);
-    document.getElementById('mp-tot').textContent = fmt(tot);
+    const tot = ALL[CUR]?.duration ? Math.floor(ALL[CUR].duration / 1000) : 0;
+    const mc = document.getElementById('mp-cur');
+    const mt = document.getElementById('mp-tot');
+    if (mc) mc.textContent = fmt(cur);
+    if (mt) mt.textContent = fmt(tot);
   });
 
-  // Set initial volume
-  SC_W.bind(SC.Widget.Events.READY, () => SC_W.setVolume(CUR_VOL));
+  /* لا ننتظر READY لطلب القائمة: بعض المتصفحات لا تعيد إطلاقه بعد إعادة تحميل الإطار */
+  loadSounds(true);
 
-  // Timeout fallback
-  setTimeout(()=>{ if(!ALL.length) showErr('انتهت مهلة تحميل القائمة'); }, 20000);
+  setTimeout(() => {
+    if (!ALL.length && !document.querySelector('.pl-error')) {
+      showErr('انتهت مهلة تحميل القائمة');
+    }
+  }, 20000);
 }
 
 /* ── EQ animation ──────────────────────────────────────── */
@@ -735,13 +815,28 @@ window.setPlView = setPlView;
 setTimeout(() => setPlView(_plView), 300);
 
 function updatePlayerUI(t) {
-  document.getElementById('mp-name').textContent = t.title;
-  document.getElementById('mp-cur').textContent  = '0:00';
-  document.getElementById('mp-tot').textContent  = fmt(Math.floor(t.duration/1000));
-  document.getElementById('mp-fill').style.width = '0%';
-  const art = document.getElementById('mp-art');
-  art.innerHTML = t.artwork
-    ? `<img loading="lazy" decoding="async" src="${t.artwork}" alt="${t.title}" onerror="this.parentNode.innerHTML='🎵'">`
+  const name = document.getElementById('mp-name');
+  const cur  = document.getElementById('mp-cur');
+  const tot  = document.getElementById('mp-tot');
+  const fill = document.getElementById('mp-fill');
+  const art  = document.getElementById('mp-art');
+
+  /* بلا مسار: أعِد المشغّل إلى حالته الأولى (يُستخدم عند تبديل القائمة) */
+  if (!t) {
+    if (name) name.textContent = 'اختر محاضرة';
+    if (cur)  cur.textContent  = '0:00';
+    if (tot)  tot.textContent  = '0:00';
+    if (fill) fill.style.width = '0%';
+    if (art)  art.innerHTML    = '🎵';
+    return;
+  }
+
+  if (name) name.textContent = t.title || 'محاضرة';
+  if (cur)  cur.textContent  = '0:00';
+  if (tot)  tot.textContent  = fmt(Math.floor((t.duration || 0) / 1000));
+  if (fill) fill.style.width = '0%';
+  if (art)  art.innerHTML = t.artwork
+    ? `<img loading="lazy" decoding="async" src="${t.artwork}" alt="${t.title || ''}" onerror="this.parentNode.innerHTML='🎵'">`
     : '🎵';
 }
 
