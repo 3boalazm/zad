@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="الطريق إلى البيت: بوصلة وريح تغيّر اتجاهك — ثلاث خرائط وعددٌ محدود من الخطوات.">
+<title>الطريق إلى البيت · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+/* ══ هيكل مشترك ══ */
+.kx-hero{background:linear-gradient(135deg,#123f52 0%,#1a6b7a 55%,#9ac9a0 140%);border-radius:24px;padding:24px 22px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -14px rgba(18,63,82,.55)}
+.kx-hero::after{content:'🧭';position:absolute;top:6px;left:16px;font-size:60px;opacity:.16;line-height:1}
+.kx-eyebrow{font-size:11px;color:#ffe9a8;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.kx-title{font-size:26px;font-weight:900;margin-bottom:8px}
+.kx-sub{font-size:13px;color:rgba(255,255,255,.92);line-height:1.95;max-width:620px}
+.kx-sub b{color:#ffe9a8}
+
+.kx-panel{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.kx-panel h3{margin:0 0 10px;font-size:15px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:7px}
+.kx-panel p{font-size:12.5px;line-height:1.95;color:var(--muted);margin:0 0 12px}
+.kx-panel p:last-child{margin-bottom:0}
+.kx-panel b{color:var(--ink)}
+
+.kx-btn{width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6);margin-top:12px;transition:transform .15s,opacity .15s}
+.kx-btn:hover:not(:disabled){transform:translateY(-1px)}
+.kx-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
+.kx-btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
+.kx-btn.gold{background:linear-gradient(135deg,#8a6a1f,#c9a14a);color:#fff}
+.kx-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.kx-row .kx-btn{width:auto;flex:1;min-width:118px;margin-top:0}
+
+.kx-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:900;background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:4px 11px;color:var(--muted)}
+.kx-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+
+.kx-fb{display:none;border-radius:13px;padding:11px 14px;font-size:12.5px;font-weight:800;line-height:1.85;text-align:center;margin-top:11px}
+.kx-fb.ok{display:block;background:var(--green-pale);color:var(--green-deep);border:1px solid var(--green-soft)}
+.kx-fb.no{display:block;background:rgba(192,57,43,.1);color:#c0392b;border:1px solid rgba(192,57,43,.3)}
+.kx-fb.warn{display:block;background:rgba(201,161,74,.14);color:#8a6a1f;border:1px solid rgba(201,161,74,.35)}
+
+.kx-end{text-align:center;background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:24px;padding:26px 22px;box-shadow:0 18px 50px -20px rgba(201,161,74,.6);animation:kxIn .4s ease both}
+@keyframes kxIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.kx-end .em{font-size:52px;line-height:1;margin-bottom:8px}
+.kx-end .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--green-deep);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
+.kx-end h2{font-size:22px;font-weight:900;color:var(--green-deep);margin:0 0 10px}
+html[data-theme="dark"] .kx-end h2,html[data-theme="oled"] .kx-end h2{color:var(--sys-green,var(--green-deep))}
+.kx-end p{font-size:14px;line-height:2.1;color:var(--ink);margin:0 auto 12px;max-width:560px}
+.kx-end .moral{font-size:12.5px;font-weight:800;color:#8a6a1f;background:rgba(201,161,74,.14);border-radius:13px;padding:11px 14px;max-width:560px;margin:0 auto 16px;line-height:1.9}
+html[data-theme="dark"] .kx-end .moral,html[data-theme="oled"] .kx-end .moral{color:#e6c97a}
+
+.kx-foot{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.9;margin:10px 0 26px}
+
+/* ══ رأس لكل صفحة ══ */
+
+.cp-map{background:linear-gradient(160deg,#e8f0e4,#d6e4d0);border:2px solid #b8c9b0;border-radius:18px;padding:9px;margin-bottom:12px;direction:ltr;position:relative;overflow:hidden}
+html[data-theme="dark"] .cp-map,html[data-theme="oled"] .cp-map{background:linear-gradient(160deg,#16241c,#101a14);border-color:#2a4032}
+.cp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cp-cell{aspect-ratio:1;border-radius:7px;background:rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;position:relative}
+html[data-theme="dark"] .cp-cell,html[data-theme="oled"] .cp-cell{background:rgba(255,255,255,.06)}
+.cp-cell.water{background:rgba(90,150,200,.35)}
+.cp-cell.tree{background:rgba(70,130,80,.3)}
+.cp-cell.ghost{box-shadow:inset 0 0 0 2px var(--gold);background:rgba(201,161,74,.25)}
+.cp-cell.hero{background:var(--green-deep);box-shadow:0 0 0 3px rgba(201,161,74,.6);z-index:2}
+.cp-cell.home{background:#ffe9a8;box-shadow:0 0 0 2px #c9a14a}
+.cp-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:250px;margin:0 auto}
+.cp-pad button{padding:13px 0;border-radius:13px;border:1.5px solid var(--border);background:var(--card);color:var(--ink);font-family:inherit;font-size:12px;font-weight:900;cursor:pointer;transition:all .15s}
+.cp-pad button:hover:not(:disabled){border-color:var(--gold);background:var(--sand);transform:translateY(-1px)}
+.cp-pad button:disabled{opacity:.32;cursor:not-allowed}
+.cp-pad .sp{visibility:hidden}
+.cp-wind{display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,#dbe8f5,#eef4fa);border:1.5px solid #b9cfe6;border-radius:14px;padding:10px;margin-bottom:12px;font-size:12.5px;font-weight:900;color:#1a4a6b}
+html[data-theme="dark"] .cp-wind,html[data-theme="oled"] .cp-wind{background:linear-gradient(135deg,#16283a,#101a24);border-color:#2a4a6a;color:#9ac9ee}
+.cp-wind .ar{font-size:22px;animation:cpSpin 3s ease-in-out infinite}
+@keyframes cpSpin{0%,100%{transform:rotate(0)}50%{transform:rotate(12deg)}}
+.cp-stats{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>(function(){var t='light';try{var p=JSON.parse(localStorage.getItem('zad_v2')||'{}');t=p.theme||'light';if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on');}catch(e){}document.documentElement.setAttribute('data-theme',t);})();</script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&amp;&amp;applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&amp;&amp;applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&amp;&amp;applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA&amp;&amp;installPWA()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="kids-recipe.html"><span class="ico">📐</span><span>الوصفة</span></a>
+      <a href="kids-lab.html"><span class="ico">🔁</span><span>التجربة</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">الطريق إلى البيت</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">الطريق إلى <span>البيت</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="kx-hero">
+      <div class="kx-eyebrow">🧭 بوصلةٌ وريحٌ لا تهدأ</div>
+      <div class="kx-title">الطريق إلى البيت</div>
+      <div class="kx-sub">لا خرائطَ بأسماء شوارع. الريحُ تدفعك معها أو تعاندك — <b>خطّط الخطوتين</b> قبل أن تتحرّك.</div>
+    </div>
+
+    <div id="cp-stage"></div>
+
+    <div class="kx-foot">مع الريح خطوتان · ضدّها خطوة · متعامدة قطريّة. والريحُ لا تمنعك، بل تُغيّر شكل طريقك.</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function readAll(){ try{ return JSON.parse(localStorage.getItem('zad_v2')||'{}')||{}; }catch(e){ return {}; } }
+  function saveAll(o){ try{ if (window.zadPatchState){ window.zadPatchState(o); return; } localStorage.setItem('zad_v2', JSON.stringify(o)); }catch(e){} }
+  function addStars(n){
+    try{
+      var st = JSON.parse(localStorage.getItem('zad_kids_v2')||'{}')||{};
+      st.stars = (st.stars||0) + n;
+      localStorage.setItem('zad_kids_v2', JSON.stringify(st));
+    }catch(e){}
+  }
+  function pop(em){
+    try{
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (window.confetti && !reduce) window.confetti({ particleCount: 130, spread: 76, origin:{ y:.62 } });
+    }catch(e){}
+  }
+  function stage(){ return document.getElementById('cp-stage'); }
+
+  /* ══ ١. القاعدة ════════════════════════════════════════════════
+     اتجاهُك + الريح:
+       مع الريح      → خطوتان في اتجاهها
+       ضدّ الريح     → خطوة واحدة (تقاومها)
+       متعامدة       → خطوتك + خطوةٌ مع الريح (قطريّة)
+     ═════════════════════════════════════════════════════════════ */
+  var DIRS = { N:{x:0,y:1, ar:'شمال', em:'⬆️'}, S:{x:0,y:-1, ar:'جنوب', em:'⬇️'},
+               E:{x:1,y:0, ar:'شرق',  em:'➡️'}, W:{x:-1,y:0, ar:'غرب', em:'⬅️'} };
+  var OPP = { N:'S', S:'N', E:'W', W:'E' };
+  var SIZE = 7;
+
+  var LEVELS = [
+    { id:'l1', title:'أول الطريق', wind:'E', budget:5,
+      start:{x:1,y:1}, home:{x:4,y:4},
+      note:'الريح شرقيّة. إن مشيتَ شمالًا، ستدفعك خطوةً شرقًا معها — فتصير حركتك قُطريّة.',
+      trees:[[0,6],[2,6],[6,2],[6,5]], water:[[0,0],[5,0]] },
+    { id:'l2', title:'ريحٌ من الشمال', wind:'N', budget:6,
+      start:{x:1,y:2}, home:{x:4,y:5},
+      note:'الريح شماليّة الآن. مشيُك شرقًا يجعلك تعلو خطوةً وأنت تتقدّم — فكّر بالزوايا لا بالخطوط.',
+      trees:[[3,0],[6,1],[0,3]], water:[[2,2],[3,3]] },
+    { id:'l3', title:'الريح التي تغيّر رأيها', wind:'E', winds:['E','E','E','S','S','S','S','S'], budget:7,
+      start:{x:0,y:5}, home:{x:5,y:2},
+      note:'خطر: الريحُ ستتحوّل جنوبًا بعد ثلاث خطوات. خطّط للنصف الثاني قبل أن تبدأ.',
+      trees:[[0,6],[6,6],[2,4]], water:[[1,1],[4,0]] }
+  ];
+
+  function windAt(lv, step){ return (lv.winds && lv.winds[step]) || lv.wind; }
+
+  /* حركةٌ واحدة: تُرجِع الموضع الجديد أو ok=false إن خرجت عن الخريطة */
+  function applyMove(lv, pos, wind, dir){
+    var d = DIRS[dir]; if (!d) return { ok:false, x:pos.x, y:pos.y };
+    var nx = pos.x, ny = pos.y;
+    if (dir === wind){ nx += d.x * 2; ny += d.y * 2; }
+    else if (dir === OPP[wind]){ nx += d.x; ny += d.y; }
+    else { nx += d.x + DIRS[wind].x; ny += d.y + DIRS[wind].y; }
+    if (nx < 0 || ny < 0 || nx >= SIZE || ny >= SIZE) return { ok:false, x:pos.x, y:pos.y, nx:nx, ny:ny };
+    return { ok:true, x:nx, y:ny, nx:nx, ny:ny };
+  }
+
+  /* ══ ٢. التخزين ════════════════════════════════════════════════ */
+  var prog = (function(){
+    var s = readAll(), p = s.kidsCompass || {};
+    p.levels = p.levels || {};
+    return p;
+  })();
+  function persist(){ var s = readAll(); s.kidsCompass = prog; saveAll(s); }
+  function solvedCount(){ return Object.keys(prog.levels).length; }
+
+  /* ══ ٣. الحالة ═════════════════════════════════════════════════ */
+  var g = null;  /* { lv, pos, step, trace[] } */
+
+  function homeView(){
+    g = null;
+    var cards = LEVELS.map(function(lv, i){
+      var done = prog.levels[lv.id];
+      return '<button type="button" class="lr-check" data-lv="' + i + '" style="padding:15px 14px">'
+        + '<span class="ic" style="font-size:28px">' + ['🧭','🌬️','🌀'][i] + '</span>'
+        + '<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:900">' + esc(lv.title) + '</span>'
+        + '<span style="display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:3px">' + (lv.winds ? 'الريح تتغيّر' : 'ريح ' + DIRS[lv.wind].ar) + ' · ' + lv.budget + ' خطوات</span></span>'
+        + (done ? '<span class="kx-pill" style="background:#ffe9a8;color:#3a2e10;border-color:#e6c97a">✅ وصلت</span>' : '')
+        + '<span style="font-size:17px;opacity:.45">←</span></button>';
+    }).join('');
+
+    stage().innerHTML =
+      '<div class="kx-panel">'
+      + '<div class="kx-bar"><h3>🧭 الطرق</h3><span class="kx-pill">' + solvedCount() + ' / ' + LEVELS.length + ' وصلت</span></div>'
+      + '<p>لا خرائطَ بأسماء شوارع — فقط بوصلة، وريحٌ تدفع. اضغط أيَّ اتجاهٍ لترى <b>أين ستهبط</b> قبل أن تتحرّك.</p>'
+      + cards + '</div>'
+      + '<div class="kx-panel"><h3>📜 قاعدة الريح</h3>'
+      + '<p style="line-height:2.2"><b>مع الريح</b> ← خطوتان · <b>ضدّها</b> ← خطوةٌ واحدة · <b>متعامدة</b> ← خطوةٌ لك وخطوةٌ معها (قطريّة).</p>'
+      + '<p>الريح لا تمنعك — بل تُغيّر شكل طريقك.</p></div>';
+    var bs = stage().querySelectorAll('[data-lv]');
+    for (var i=0;i<bs.length;i++){
+      (function(b){ b.addEventListener('click', function(){ startLevel(parseInt(b.getAttribute('data-lv'),10)); }); })(bs[i]);
+    }
+  }
+
+  function startLevel(i){
+    var lv = LEVELS[i];
+    g = { lv: lv, pos: { x: lv.start.x, y: lv.start.y }, step: 0, trace: [] };
+    playView();
+  }
+
+  function cellAt(x, y){
+    var lv = g.lv;
+    for (var i=0;i<lv.trees.length;i++){ if (lv.trees[i][0] === x && lv.trees[i][1] === y) return 'tree'; }
+    for (var k=0;k<lv.water.length;k++){ if (lv.water[k][0] === x && lv.water[k][1] === y) return 'water'; }
+    return '';
+  }
+
+  function drawGrid(preview){
+    var lv = g.lv, cells = '';
+    for (var y=SIZE-1;y>=0;y--){
+      for (var x=0;x<SIZE;x++){
+        var cls = 'cp-cell ' + cellAt(x, y);
+        if (x === g.pos.x && y === g.pos.y) cls += ' hero';
+        if (x === lv.home.x && y === lv.home.y) cls += ' home';
+        if (preview && preview.x === x && preview.y === y) cls += ' ghost';
+        var inner = '';
+        if (x === g.pos.x && y === g.pos.y) inner = '🧒';
+        else if (x === lv.home.x && y === lv.home.y) inner = '🏠';
+        else if (cls.indexOf('tree') > -1) inner = '🌳';
+        else if (cls.indexOf('water') > -1) inner = '💧';
+        cells += '<div class="' + cls + '">' + inner + '</div>';
+      }
+    }
+    return '<div class="cp-grid" id="cp-grid">' + cells + '</div>';
+  }
+
+  function playView(preview){
+    var lv = g.lv;
+    var wind = windAt(lv, g.step);
+    var left = lv.budget - g.step;
+    var pads = [['NW','','NE'],['W','','E'],['SW','','SE']];
+    var padHtml = '';
+    var order = ['N','W','E','S'];
+    var grid = [['','N',''],['W','','E'],['','S','']];
+    for (var r=0;r<3;r++){
+      for (var c=0;c<3;c++){
+        var dir = grid[r][c];
+        if (!dir){ padHtml += '<button class="sp" disabled tabindex="-1"></button>'; continue; }
+        padHtml += '<button type="button" data-dir="' + dir + '" aria-label="' + DIRS[dir].ar + '">'
+          + DIRS[dir].em + ' ' + DIRS[dir].ar + '</button>';
+      }
+    }
+
+    stage().innerHTML =
+      '<div class="kx-panel">'
+      + '<div class="kx-bar"><h3>🧭 ' + esc(lv.title) + '</h3>'
+      + '<span class="kx-pill">' + left + ' خطوة · الحادية ' + (g.step+1) + '</span></div>'
+      + '<div class="cp-wind"><span class="ar">' + (wind==='N'?'⬆️':wind==='S'?'⬇️':wind==='E'?'➡️':'⬅️') + '</span>'
+      + '<span>الريح ' + DIRS[wind].ar + 'يّة' + (lv.winds ? ' — وستتحوّل' : '') + '</span></div>'
+      + '<div class="cp-map">' + drawGrid(preview) + '</div>'
+      + '<div class="cp-pad">' + padHtml + '</div>'
+      + '<div class="kx-row" style="margin-top:12px"><button class="kx-btn ghost" id="cp-restart">↩︎ ابدأ المستوى من جديد</button>'
+      + '<button class="kx-btn ghost" id="cp-all">🏠 الطرق</button></div>'
+      + '<p style="margin-top:11px;font-size:11.5px;text-align:center">مرّر على أي اتجاه لترى الموضع المتوقّع. لا تراجُع عن خطوة — لكن يمكنك البدء من جديد.</p>'
+      + '</div>';
+
+    var bs = stage().querySelectorAll('[data-dir]');
+    for (var i=0;i<bs.length;i++){
+      (function(b){
+        var dir = b.getAttribute('data-dir');
+        b.addEventListener('mouseenter', function(){ hover(dir); });
+        b.addEventListener('focus', function(){ hover(dir); });
+        b.addEventListener('click', function(){ move(dir); });
+      })(bs[i]);
+    }
+    $('cp-restart').addEventListener('click', function(){ startLevel(LEVELS.indexOf(lv)); });
+    $('cp-all').addEventListener('click', homeView);
+  }
+
+  function hover(dir){
+    if (!g) return;
+    var wind = windAt(g.lv, g.step);
+    var r = applyMove(g.lv, g.pos, wind, dir);
+    var grid = $('cp-grid');
+    if (!grid) return;
+    var old = grid.querySelectorAll('.ghost');
+    for (var i=0;i<old.length;i++) old[i].classList.remove('ghost');
+    if (!r.ok) return;
+    var cells = grid.children;
+    /* الصفوف مرسومة من الأعلى (y=6) إلى الأسفل (y=0) */
+    var idx = (SIZE - 1 - r.y) * SIZE + r.x;
+    if (cells[idx]) cells[idx].classList.add('ghost');
+  }
+
+  function move(dir){
+    if (!g) return;
+    var lv = g.lv;
+    var wind = windAt(lv, g.step);
+    var r = applyMove(lv, g.pos, wind, dir);
+    if (!r.ok){
+      playView();
+      var fb = document.createElement('div');
+      fb.className = 'kx-fb warn';
+      fb.textContent = '🚧 الحافة! هذه الحركة تخرجك عن الخريطة — لم تُحسب خطوة.';
+      stage().querySelector('.kx-panel').appendChild(fb);
+      return;
+    }
+    g.pos = { x: r.x, y: r.y };
+    g.step++;
+    g.trace.push(dir);
+    if (g.pos.x === lv.home.x && g.pos.y === lv.home.y){ win(); return; }
+    if (g.step >= lv.budget){ lose(); return; }
+    playView();
+  }
+
+  function win(){
+    var lv = g.lv;
+    var first = !prog.levels[lv.id];
+    prog.levels[lv.id] = { steps: Math.min(prog.levels[lv.id] ? prog.levels[lv.id].steps : 99, g.step) };
+    persist();
+    if (first) addStars(3);
+    var all = Object.keys(prog.levels).length === LEVELS.length;
+
+    stage().innerHTML =
+      '<div class="kx-end"><div class="em">🏠</div>'
+      + '<div class="tag">' + (first ? 'أول وصول' : 'وصلتَ مجددًا') + '</div>'
+      + '<h2>وصلتَ في ' + g.step + ' خطوة</h2>'
+      + '<p>لم تمشِ في خطٍّ مستقيم — مشيتَ <b>مع</b> الريح حين وافقتك، و<b>ضدّها</b> حين لزم. الطريقُ ليس أقصر مسافة، بل أذكى خطوة.</p>'
+      + '<div class="moral">' + (first ? '⭐ +٣ نجوم' : 'لا نجوم هذه المرة — الوصولُ يعيد نفسه.') + (all ? ' · 🏅 أكملتَ كل الطرق!' : '') + '</div>'
+      + '<div class="kx-row" style="justify-content:center">'
+      + '<button class="kx-btn" id="cp-next">🧭 الطريق التالي</button>'
+      + '<button class="kx-btn ghost" id="cp-home2">🏠 كل الطرق</button></div></div>';
+    if (first) pop();
+    $('cp-next').addEventListener('click', function(){ startLevel((LEVELS.indexOf(lv) + 1) % LEVELS.length); });
+    $('cp-home2').addEventListener('click', homeView);
+  }
+
+  function lose(){
+    var lv = g.lv;
+    stage().innerHTML =
+      '<div class="kx-end"><div class="em">🌬️</div>'
+      + '<div class="tag">نفدت الخطوات</div><h2>الريح أخذتك بعيدًا</h2>'
+      + '<p>لا شيء انكسر — البوصلةُ ما زالت في يدك. جرّب أن تحسب: أين ستقف بعد خطوتين؟ ثم اختر ما يقرّبك، لا ما يبعدك.</p>'
+      + '<div class="moral">تلميح: مع الريح تتقدّم بخطوتين، ومتعامدًا معها تتقدّم خطوةً وتنحرف خطوة — القُطر هو طريقك.</div>'
+      + '<div class="kx-row" style="justify-content:center">'
+      + '<button class="kx-btn" id="cp-retry">🔄 أعِد المحاولة</button>'
+      + '<button class="kx-btn ghost" id="cp-home3">🏠 كل الطرق</button></div></div>';
+    $('cp-retry').addEventListener('click', function(){ startLevel(LEVELS.indexOf(lv)); });
+    $('cp-home3').addEventListener('click', homeView);
+  }
+
+  /* ══ ٤. التصدير ══════════════════════════════════════════════ */
+  window._cpPure = {
+    LEVELS: LEVELS, DIRS: DIRS, SIZE: SIZE,
+    applyMove: applyMove,
+    windAt: windAt,
+    /* يحاكي مسارًا كاملًا ويقول هل وصل */
+    simulate: function(levelId, dirs){
+      var lv = null;
+      for (var i=0;i<LEVELS.length;i++){ if (LEVELS[i].id === levelId) lv = LEVELS[i]; }
+      if (!lv) return null;
+      var pos = { x:lv.start.x, y:lv.start.y }, path = [{x:pos.x,y:pos.y}];
+      for (var s=0;s<dirs.length;s++){
+        var w = windAt(lv, s);
+        var r = applyMove(lv, pos, w, dirs[s]);
+        if (!r.ok) return { ok:false, reason:'edge', steps:s, pos:pos, path:path };
+        pos = { x:r.x, y:r.y };
+        path.push({ x:pos.x, y:pos.y });
+        if (pos.x === lv.home.x && pos.y === lv.home.y) return { ok:true, steps:s+1, pos:pos, path:path };
+      }
+      return { ok:false, reason:'not-there', steps:dirs.length, pos:pos, path:path };
+    },
+    progress: function(){ return prog; }
+  };
+
+  /* ══ الإقلاع ══════════════════════════════════════════════════ */
+  var __booted = false;
+  function boot(){ if (__booted) return; __booted = true; homeView(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
+</script>
+</body>
+</html>

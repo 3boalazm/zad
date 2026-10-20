@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // Invalidate older cached bundles so returning PWAs receive the expanded video library.
-const CACHE_STATIC = 'zad-20261020-kids-mind-r11';
+const CACHE_STATIC = 'zad-20261020-kids-mind-r12';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -91,6 +91,8 @@ const PRECACHE = [
   './ai.html', './js/ai-guard.min.js', './js/advanced-ai-module.min.js', /* المساعد المحلي (أذكار/سيرة/فقه) يعمل أوفلاين؛ المحادثة فقط تحتاج نتاً وتُعرَض برسالة صريحة */
   './kids.html', './kids-tales.html', './kids-garden.html', './kids-gazette.html',
   './kids-detectives.html', './kids-city.html', './kids-memory.html',
+  './kids-liars.html', './kids-recipe.html', './kids-compass.html',
+  './kids-lab.html', './kids-hospitality.html', './kids-day.html',
   './kids-heroes.html', './kids-school.html',
   './kids-fun.html', './kids-creativity.html', './kids-parents.html',
 ];
