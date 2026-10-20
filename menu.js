@@ -20,6 +20,7 @@
     { href: 'qibla.html',        icon: '🧭', label: 'اتجاه القبلة',    section: 'sec-prayer' },
     { href: 'hijri.html',        icon: '🗓️', label: 'التقويم الهجري',  section: 'sec-prayer' },
     { href: 'barnamaj.html',     icon: '📅', label: 'برنامج اليوم',     section: 'sec-prayer' },
+    { href: 'ramadan.html',      icon: '🌙', label: 'لوحة رمضان',      section: 'sec-prayer' },
 
     { sep: 'القرآن الكريم', id: 'sec-quran' },
     { href: 'mushaf.html',       icon: '📖', label: 'الورد اليومي',      section: 'sec-quran' },
@@ -58,6 +59,12 @@
 
     { sep: 'ركن الأطفال 🌟', id: 'sec-kids' },
     { href: 'kids.html',             icon: '🌟', label: 'ثُريّا — الرئيسية',  section: 'sec-kids' },
+    { href: 'kids-tales.html',       icon: '🏮', label: 'حكايات القرية',    section: 'sec-kids' },
+    { href: 'kids-garden.html',      icon: '🌱', label: 'بستان الذكر',      section: 'sec-kids' },
+    { href: 'kids-gazette.html',     icon: '📰', label: 'صحيفة القرية',     section: 'sec-kids' },
+    { href: 'kids-detectives.html',  icon: '🔎', label: 'محقّق القرية',     section: 'sec-kids' },
+    { href: 'kids-city.html',        icon: '🏙️', label: 'مدينة الميزان',    section: 'sec-kids' },
+    { href: 'kids-memory.html',      icon: '🏛️', label: 'قصر الذاكرة',      section: 'sec-kids' },
     { href: 'ghars.html',            icon: '🌱', label: 'غرس — قصص للأطفال', section: 'sec-kids' },
     { href: 'kids-heroes.html',      icon: '🦁', label: 'عرين الأبطال',      section: 'sec-kids' },
     { href: 'kids-school.html',      icon: '🏫', label: 'مدرستي الجميلة',    section: 'sec-kids' },

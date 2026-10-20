@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="مدينة الميزان — قرارات محدودة بين الماء والطعام والظل. كل توزيع يرسم مدينة مختلفة.">
+<title>مدينة الميزان · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+.ct-hero{background:linear-gradient(135deg,#143a2b 0%,#1a5d47 45%,#c9a14a 140%);border-radius:24px;padding:26px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -12px rgba(14,59,46,.45)}
+.ct-hero::after{content:'🏙️';position:absolute;top:8px;left:18px;font-size:62px;opacity:.15;line-height:1}
+.ct-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.ct-title{font-size:27px;font-weight:900;margin-bottom:8px}
+.ct-sub{font-size:13.5px;color:rgba(255,255,255,.9);line-height:1.95;max-width:620px}
+
+/* ══ المدينة ══ */
+.ct-scene{position:relative;height:250px;border-radius:24px;overflow:hidden;margin-bottom:14px;transition:background 1s;box-shadow:inset 0 -30px 50px -22px rgba(0,0,0,.35)}
+.ct-sun{position:absolute;top:14px;left:22px;border-radius:50%;background:radial-gradient(circle,#fff3b0,#ffb340);transition:all .8s;box-shadow:0 0 40px rgba(255,180,60,.75)}
+.ct-cloud{position:absolute;font-size:24px;opacity:.75;animation:ctDrift 44s linear infinite}
+@keyframes ctDrift{from{transform:translateX(-120%)}to{transform:translateX(130vw)}}
+.ct-ground{position:absolute;left:-10%;right:-10%;bottom:-28px;height:110px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,#9bbf6a,#6b9a45);transition:background .9s}
+.ct-house{position:absolute;bottom:44px;font-size:30px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.18))}
+.ct-well{position:absolute;bottom:34px;width:46px;height:56px;border-radius:8px;background:#8d7a5e;box-shadow:inset 0 -8px 0 rgba(0,0,0,.18),0 6px 14px -6px rgba(0,0,0,.4);overflow:hidden}
+.ct-well i{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#4fc3f7,#1e88c7);transition:height .9s cubic-bezier(.34,1.4,.64,1)}
+.ct-well::after{content:'💧';position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-size:14px}
+.ct-field{position:absolute;bottom:30px;height:34px;border-radius:8px;background:linear-gradient(180deg,#c9e06a,#93b545);transition:background .9s;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
+.ct-tree{position:absolute;bottom:26px;font-size:26px;transform-origin:bottom center;animation:ctSway 5s ease-in-out infinite}
+@keyframes ctSway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.ct-badge{position:absolute;top:12px;right:14px;background:rgba(0,0,0,.3);color:#fff;font-size:11px;font-weight:800;padding:6px 12px;border-radius:999px;backdrop-filter:blur(4px)}
+
+/* ══ الأشرطة ══ */
+.ct-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.ct-stat{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:11px 12px;text-align:center;box-shadow:var(--shadow-sm)}
+.ct-stat .top{display:flex;align-items:center;justify-content:center;gap:5px;font-size:11.5px;font-weight:800;color:var(--muted);margin-bottom:6px}
+.ct-stat b{font-size:22px;font-weight:900;color:var(--green-deep);line-height:1;display:block;margin-bottom:7px}
+html[data-theme="dark"] .ct-stat b,html[data-theme="oled"] .ct-stat b{color:var(--sys-green)}
+.ct-bar{height:7px;background:var(--sand);border-radius:99px;overflow:hidden}
+.ct-bar i{display:block;height:100%;border-radius:99px;transition:width .5s cubic-bezier(.34,1.4,.64,1)}
+.ct-stat.low b{color:#c0392b}
+.ct-stat.low .ct-bar i{background:#c0392b!important}
+
+/* ══ لوحة التوزيع ══ */
+.ct-panel{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.ct-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.ct-head h3{margin:0;font-size:15px;font-weight:900;color:var(--ink)}
+.ct-left{font-size:12px;font-weight:900;background:var(--green-pale);color:var(--green-deep);border:1.5px solid var(--green-soft);border-radius:999px;padding:5px 12px}
+.ct-left.zero{background:rgba(192,57,43,.1);color:#c0392b;border-color:rgba(192,57,43,.35)}
+.ct-alloc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.ct-need{border:2px solid var(--border);background:var(--sand);border-radius:16px;padding:11px 8px;text-align:center;font-family:inherit;color:var(--ink);cursor:pointer;transition:all .18s}
+.ct-need:hover{border-color:var(--green-soft);transform:translateY(-2px)}
+.ct-need:active{transform:scale(.97)}
+.ct-need .em{font-size:24px;display:block;line-height:1.2}
+.ct-need .nm{font-size:11.5px;font-weight:800;display:block;margin-top:2px}
+.ct-need .add{font-size:15px;font-weight:900;color:var(--green-deep);display:block;margin-top:5px;min-height:20px}
+.ct-need .add.zero{color:var(--muted);opacity:.5}
+.ct-alloc-dots{display:flex;gap:5px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.ct-dot{width:9px;height:9px;border-radius:50%;background:var(--green-deep);animation:ctPop .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes ctPop{from{transform:scale(0)}to{transform:scale(1)}}
+.ct-note{font-size:11px;color:var(--muted);line-height:1.8;margin:11px 0 0;text-align:center;font-weight:700}
+
+.ct-btn{width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6);margin-top:12px}
+.ct-btn:disabled{opacity:.5;cursor:default;box-shadow:none}
+.ct-btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
+.ct-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.ct-row .ct-btn{width:auto;flex:1;min-width:130px;margin-top:0}
+
+/* ══ الحدث ══ */
+.ct-event{background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:20px;padding:18px 18px 20px;box-shadow:0 14px 36px -18px rgba(201,161,74,.65);animation:ctIn .35s ease both}
+@keyframes ctIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ct-event .kick{font-size:10.5px;font-weight:900;letter-spacing:1px;color:var(--gold-dark,#8a6a1f);margin-bottom:7px}
+.ct-event h3{margin:0 0 8px;font-size:17px;font-weight:900;color:var(--ink)}
+.ct-event p{margin:0 0 12px;font-size:13.5px;line-height:1.95;color:var(--ink)}
+
+/* ══ النهاية ══ */
+.ct-end{text-align:center;background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:24px;padding:26px 22px;box-shadow:0 18px 50px -20px rgba(201,161,74,.6);animation:ctIn .45s ease both}
+.ct-end .em{font-size:52px;line-height:1;margin-bottom:8px}
+.ct-end .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--green-deep);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
+.ct-end h2{font-size:23px;font-weight:900;color:var(--green-deep);margin:0 0 10px}
+html[data-theme="dark"] .ct-end h2,html[data-theme="oled"] .ct-end h2{color:var(--sys-green)}
+.ct-end p{font-size:14px;line-height:2.1;color:var(--ink);margin:0 auto 12px;max-width:540px}
+.ct-end .moral{font-size:12.5px;font-weight:800;color:var(--gold-dark,#8a6a1f);background:rgba(201,161,74,.14);border-radius:13px;padding:11px 14px;max-width:540px;margin:0 auto 16px;line-height:1.9}
+.ct-final{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:420px;margin:0 auto 14px}
+.ct-final div{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;font-size:10.5px;font-weight:800;color:var(--muted)}
+.ct-final div b{display:block;font-size:19px;color:var(--ink);margin-top:2px}
+
+.ct-foot{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.9;margin:10px 0 26px}
+.ct-hidden{display:none!important}
+@media(max-width:420px){.ct-scene{height:210px}.ct-stats{grid-template-columns:1fr 1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="kids-detectives.html"><span class="ico">🔎</span><span>محقّق القرية</span></a>
+      <a href="kids-tales.html"><span class="ico">🏮</span><span>حكايات القرية</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">مدينة الميزان</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">مدينة <span>الميزان</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="ct-hero">
+      <div class="ct-eyebrow">🏙️ موارد · مقايضات · عواقب</div>
+      <div class="ct-title">مدينة الميزان</div>
+      <div class="ct-sub">خمسُ جولات، وفي كلِّ جولةٍ <b style="color:#ffe9a8">أربع نقاطٍ فقط</b>. تُوزّعها بين الماء والطعام والظل… ثم تأتي الأحداث. لا يمكن إرضاءُ الجميع — لكن يمكنك أن تختار <b style="color:#ffe9a8">من ينتظر</b>.</div>
+    </div>
+
+    <!-- ══ المدينة ══ -->
+    <div class="ct-scene" id="ct-scene">
+      <div class="ct-sun" id="ct-sun"></div>
+      <div class="ct-cloud" style="top:34px;right:-20px">☁️</div>
+      <div class="ct-badge" id="ct-badge">الجولة ١ من ٥</div>
+      <div class="ct-ground"></div>
+      <div class="ct-house" style="right:12%">🏠</div>
+      <div class="ct-house" style="right:26%">🏠</div>
+      <div class="ct-house" style="right:38%">🕌</div>
+      <div class="ct-well" style="right:68%"><i id="ct-water-fill" style="height:10%"></i></div>
+      <div class="ct-field" style="right:46%;width:64px" id="ct-field"></div>
+      <div id="ct-trees"></div>
+    </div>
+
+    <!-- ══ الأشرطة ══ -->
+    <div class="ct-stats" id="ct-stats">
+      <div class="ct-stat" data-need="water"><div class="top">💧 الماء</div><b id="ct-v-water">2</b><div class="ct-bar"><i id="ct-b-water" style="width:20%;background:linear-gradient(90deg,#4fc3f7,#1e88c7)"></i></div></div>
+      <div class="ct-stat" data-need="food"><div class="top">🌾 الطعام</div><b id="ct-v-food">2</b><div class="ct-bar"><i id="ct-b-food" style="width:20%;background:linear-gradient(90deg,#e6c97a,#c9a14a)"></i></div></div>
+      <div class="ct-stat" data-need="shade"><div class="top">🌳 الظل</div><b id="ct-v-shade">2</b><div class="ct-bar"><i id="ct-b-shade" style="width:20%;background:linear-gradient(90deg,#8fdc8a,#3f8f47)"></i></div></div>
+    </div>
+
+    <!-- ══ الحاوية ══ -->
+    <div id="ct-stage"></div>
+
+    <div class="ct-foot">«القريةُ لا تُبنى بقرارٍ واحد… بل بخمسةٍ متوازنة.» 🌿</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ══ 1. الإعداد ════════════════════════════════════════════════ */
+  var ROUNDS = 5, PER_ROUND = 4;
+  var NEEDS = [
+    { k:'water', n:'الماء', em:'💧', c:'linear-gradient(90deg,#4fc3f7,#1e88c7)' },
+    { k:'food',  n:'الطعام', em:'🌾', c:'linear-gradient(90deg,#e6c97a,#c9a14a)' },
+    { k:'shade', n:'الظل',  em:'🌳', c:'linear-gradient(90deg,#8fdc8a,#3f8f47)' }
+  ];
+
+  /* كل جولة تنتهي بحدث. forced = تعديل إجباري، choice = قرار بين خسارتين */
+  var EVENTS = {
+    1: { type:'choice', kick:'حدث · بعد الجولة الأولى', title:'ضيوفٌ من القرية المجاورة',
+         text:'وصل سبعةُ ضيوفٍ متعبين، وليس في المدينة ما يكفي الجميع. لا بدّ أن تختار: من تُعطي أولًا؟',
+         options:[ {t:'أطعمهم من مخزون القمح', eff:{ food:-1 }, says:'شبع الضيوف، وقلّ طعام المدينة.' },
+                   {t:'اسقِهم من ماء البئر',    eff:{ water:-1 }, says:'ارتوَوا، ونزل ماء البئر قليلًا.' } ] },
+    2: { type:'forced', kick:'حدث · بعد الجولة الثانية', title:'ريحٌ حارّة',
+         text:'هبّت ريحٌ حارّة ثلاثة أيام، ويبست أوراقُ الظلّ. لا مفرّ من خسارة بعض الظل.',
+         eff:{ shade:-1 } },
+    3: { type:'forced', kick:'حدث · بعد الجولة الثالثة', title:'البئرُ تعِب',
+         text:'سحبَ أهلُ المدينة من البئر أكثر من طاقته، فنزل الماءُ درجة. الأرضُ تحتاج صبرًا.',
+         eff:{ water:-1 } },
+    4: { type:'forced', kick:'حدث · بعد الجولة الرابعة', title:'موسمُ الحصاد',
+         text:'نضج القمحُ في الحقول، فامتلأ المخزن بلا جهد منك. هديةٌ من الأرض… لأنك سقيتها من قبل.',
+         eff:{ food:+1 } }
+  };
+
+  /* النهايات — تُختار بأضعف عنصر لا بأقواه */
+  var ENDINGS = {
+    perfect: { em:'🌟', title:'مدينةٌ متوازنة تمامًا', body:'ثلاثةُ أعمدةٍ متساوية: ماءٌ يكفي، وطعامٌ يكفي، وظلٌّ يكفي. لا شيءَ زائد ولا شيء ناقص، وهذا أصعبُ ما يمكن أن يفعله قائد.', moral:' العدلُ في التوزيع ليس أن تعطي الجميع بالتساوي… بل أن لا يبقى عمودٌ فارغ.' },
+    strong:  { em:'🏙️', title:'مدينةٌ مزدهرة', body:'كلُّ شيءٍ في مكانه. نما البستان، وامتلأ البئر، وامتدّ الظلّ حتى باب المسجد. أهلُ المدينة لا يعرفون اسم من وزّع، لكنهم يشعرون بأثره كلَّ يوم.', moral:'القائدُ الجيّد يُعرف بأثره، لا بذكره.' },
+    steady:  { em:'🌿', title:'مدينةٌ صامدة', body:'لم تكن الحياة رخاءً، لكنها لم تنكسر. تعلّم أهلُ المدينة أن يقنعوا، وأن يتقاسموا، وأن ينتظروا قليلًا حتى يأتي ما يحتاجونه.', moral:'الثباتُ في الأزمات نوعٌ من الإنجاز لا يراه أحد.' },
+    water:   { em:'🥵', title:'مدينةٌ عطشى', body:'عمّ الظلُّ وامتلأ المخزن، لكن البئر جفّ. لا معنى للطعام والظلّ حين لا يوجد ماءٌ واحدٌ يُشرب. خرج أهلُ المدينة بأكوابهم… ولم يجدوا أحدًا يملؤها.', moral:'أضعفُ ما في المدينة هو أولُ ما يجب أن تُصلحه.' },
+    food:    { em:'🍂', title:'مدينةٌ جائعة', body:'الماءُ يكفي، والظلُّ وارف، لكن المخزن فارغ. شرب الجميع، ثم نظروا إلى المائدة الخالية. لا شيء يُغني عن الطعام.', moral:'لا تكفي كرامةُ العيش بلا خبز.' },
+    shade:   { em:'🔥', title:'مدينةٌ محترقة', body:'الماءُ يجري، والقمحُ في المخزن، لكن لا ظلَّ واحد. وقفت الشمسُ فوق الأسطح حتى تعب الناسُ من الخروج في النهار.', moral:'أحيانًا يكون ما نتجاهله — الظلُّ — هو ما يجعل الحياة مُحتملة.' },
+    learn:   { em:'🌱', title:'مدينةٌ تتعلّم', body:'لم تنجح كلُّ الجولات. نقص شيء، وقلّ شيء، لكن المدينةَ لم تمت — والأهم أن أهلها بدأوا يسألون: «أين أخطأنا؟»', moral:'المدينةُ التي تتعلم من نقصها تعيش أطول من التي تنكر.' }
+  };
+
+  /* ══ 2. التخزين ════════════════════════════════════════════════ */
+  function readAll(){ try{ return JSON.parse(localStorage.getItem('zad_v2')||'{}')||{}; }catch(e){ return {}; } }
+  function saveAll(o){ try{ if (window.zadPatchState){ window.zadPatchState(o); return; } localStorage.setItem('zad_v2', JSON.stringify(o)); }catch(e){} }
+  var prog = (function(){
+    var s = readAll(), c = s.kidsCity || {};
+    c.endings = c.endings || {};
+    c.plays = c.plays || 0;
+    return c;
+  })();
+  function persist(){ var s = readAll(); s.kidsCity = prog; saveAll(s); }
+  function addStars(n){
+    try{
+      var st = JSON.parse(localStorage.getItem('zad_kids_v2')||'{}')||{};
+      st.stars = (st.stars||0) + n;
+      localStorage.setItem('zad_kids_v2', JSON.stringify(st));
+    }catch(e){}
+  }
+
+  /* ══ 3. الحالة ════════════════════════════════════════════════ */
+  var st = null;   /* {water, food, shade, round, left, alloc:{water,food,shade}} */
+  var stage = $('ct-stage');
+
+  function newGame(){
+    st = { water:2, food:2, shade:2, round:1, left:PER_ROUND, alloc:{water:0,food:0,shade:0} };
+    renderAll();
+    stage.innerHTML =
+      '<div class="ct-panel"><div class="ct-head"><h3>🎯 كيف تُوزّع نقاطك؟</h3></div>'
+      + '<p style="font-size:13px;line-height:2;color:var(--ink);margin:0 0 8px">في كل جولةٍ <b>٤ نقاط</b>. اضغط على العنصر لتضيف له نقطة، وسترى المدينةَ تتغيّر أمامك. حين تفرغ النقاط، أنهِ الجولة… وانتظر الحدث.</p>'
+      + '<p class="ct-note">لا تحاول إرضاءَ الثلاثة دائمًا — المستحيل هو ما يجعل القرارَ قرارًا.</p>'
+      + '<button class="ct-btn" id="ct-start">ابدأ الجولة الأولى ←</button></div>';
+    $('ct-start').addEventListener('click', allocView);
+  }
+
+  function renderScene(){
+    var sunSize = 34 + Math.max(0, 10 - st.shade) * 3;
+    var sun = $('ct-sun');
+    if (sun){ sun.style.width = sunSize + 'px'; sun.style.height = sunSize + 'px'; }
+    var heat = Math.max(0, Math.min(10, st.shade));
+    var skyTop = heat >= 8 ? '#b9e3ff' : heat >= 5 ? '#cfe4f7' : heat >= 3 ? '#e8dcc0' : '#f0cfa0';
+    var skyBot = heat >= 8 ? '#e6f6ff' : heat >= 5 ? '#eef6fb' : heat >= 3 ? '#f7ecd2' : '#f6d9ae';
+    var sc = $('ct-scene');
+    if (sc) sc.style.background = 'linear-gradient(180deg,' + skyTop + ' 0%,' + skyBot + ' 62%,#cdeccd 100%)';
+
+    var wf = $('ct-water-fill');
+    if (wf) wf.style.height = Math.max(4, Math.min(100, st.water * 10)) + '%';
+
+    var fld = $('ct-field');
+    if (fld){
+      var g = Math.max(0, Math.min(10, st.food));
+      fld.style.background = g >= 8 ? 'linear-gradient(180deg,#d9ec6a,#8fbb35)'
+        : g >= 5 ? 'linear-gradient(180deg,#c9e06a,#93b545)'
+        : g >= 3 ? 'linear-gradient(180deg,#d8cf7a,#b3a34a)'
+        : 'linear-gradient(180deg,#d9c58a,#a88b52)';
+    }
+
+    var tr = $('ct-trees');
+    if (tr){
+      var n = Math.max(0, Math.min(7, Math.floor(st.shade / 2)));
+      if (tr.children.length !== n){
+        tr.innerHTML = '';
+        for (var i=0;i<n;i++){
+          var t = document.createElement('span');
+          t.className = 'ct-tree';
+          t.textContent = '🌳';
+          t.style.right = (4 + i * 8) + '%';
+          t.style.animationDelay = (i * .4) + 's';
+          tr.appendChild(t);
+        }
+      }
+    }
+
+    if ($('ct-badge')) $('ct-badge').textContent = 'الجولة ' + st.round + ' من ' + ROUNDS;
+    renderStats();
+  }
+
+  function renderStats(){
+    NEEDS.forEach(function(nd){
+      var v = st[nd.k];
+      if ($('ct-v-' + nd.k)) $('ct-v-' + nd.k).textContent = v;
+      if ($('ct-b-' + nd.k)) $('ct-b-' + nd.k).style.width = Math.max(3, Math.min(100, v * 10)) + '%';
+      var card = document.querySelector('.ct-stat[data-need="' + nd.k + '"]');
+      if (card) card.classList.toggle('low', v <= 3);
+    });
+  }
+
+  function renderAll(){ renderScene(); }
+
+  /* ══ 4. التوزيع ════════════════════════════════════════════════ */
+  function allocView(){
+    renderAll();
+    var cards = NEEDS.map(function(nd){
+      var add = st.alloc[nd.k];
+      var dots = '';
+      for (var i=0;i<add;i++) dots += '<span class="ct-dot"></span>';
+      return '<button type="button" class="ct-need" data-alloc="' + nd.k + '">'
+        + '<span class="em">' + nd.em + '</span><span class="nm">' + nd.n + '</span>'
+        + '<span class="add' + (add ? '' : ' zero') + '">' + (add ? '+' + add : '−') + '</span>'
+        + '<span class="ct-alloc-dots">' + dots + '</span></button>';
+    }).join('');
+
+    stage.innerHTML =
+      '<div class="ct-panel">'
+      + '<div class="ct-head"><h3>🎯 الجولة ' + st.round + ' — وزّع ' + PER_ROUND + ' نقاط</h3>'
+      + '<span class="ct-left' + (st.left === 0 ? ' zero' : '') + '">بقي ' + st.left + '</span></div>'
+      + '<div class="ct-alloc">' + cards + '</div>'
+      + '<div class="ct-row">'
+      + '<button class="ct-btn ghost" id="ct-undo">↩︎ تراجع</button>'
+      + '<button class="ct-btn" id="ct-end" disabled>أنهِ الجولة ←</button>'
+      + '</div>'
+      + '<p class="ct-note">كل نقطةٍ تُضاف فورًا إلى رصيد المدينة. فكّر قبل أن تضغط: لا استرداد بعد بدء الجولة التالية.</p>'
+      + '</div>';
+
+    var bs = stage.querySelectorAll('[data-alloc]');
+    for (var i=0;i<bs.length;i++){
+      (function(b){
+        b.addEventListener('click', function(){
+          if (st.left <= 0) return;
+          var k = b.getAttribute('data-alloc');
+          st.alloc[k]++; st[k]++; st.left--;
+          renderAll();
+          allocView();
+        });
+      })(bs[i]);
+    }
+    var undo = $('ct-undo');
+    if (undo) undo.addEventListener('click', function(){
+      var keys = ['water','food','shade'], lastK = null;
+      for (var i=keys.length-1;i>=0;i--){ if (st.alloc[keys[i]] > 0 && !lastK) lastK = keys[i]; }
+      if (!lastK) return;
+      st.alloc[lastK]--; st[lastK]--; st.left++;
+      renderAll(); allocView();
+    });
+    var end = $('ct-end');
+    if (end){
+      end.disabled = st.left !== 0;
+      end.addEventListener('click', function(){ if (st.left === 0) roundEnd(); });
+    }
+  }
+
+  /* ══ 5. نهاية الجولة والحدث ══════════════════════════════════ */
+  function roundEnd(){
+    var ev = EVENTS[st.round];
+    if (!ev){ finish(); return; }
+
+    if (ev.type === 'choice'){
+      stage.innerHTML =
+        '<div class="ct-event"><div class="kick">' + esc(ev.kick) + '</div>'
+        + '<h3>' + esc(ev.title) + '</h3><p>' + esc(ev.text) + '</p>'
+        + ev.options.map(function(o,i){
+            return '<button type="button" class="ct-btn" data-opt="' + i + '" style="margin-top:9px">' + esc(o.t) + '</button>';
+          }).join('')
+        + '<p class="ct-note" style="margin-top:10px">كلُّ خيارٍ يخسر شيئًا — ولا خيارَ بلا ثمن.</p></div>';
+      var bs = stage.querySelectorAll('[data-opt]');
+      for (var i=0;i<bs.length;i++){
+        (function(b){
+          b.addEventListener('click', function(){
+            var o = ev.options[parseInt(b.getAttribute('data-opt'),10)];
+            applyEff(o.eff);
+            afterEvent(o.says);
+          });
+        })(bs[i]);
+      }
+      return;
+    }
+
+    applyEff(ev.eff);
+    stage.innerHTML =
+      '<div class="ct-event"><div class="kick">' + esc(ev.kick) + '</div>'
+      + '<h3>' + esc(ev.title) + '</h3><p>' + esc(ev.text) + '</p>'
+      + '<div style="font-size:12.5px;font-weight:900;color:#c0392b">' + effText(ev.eff) + '</div>'
+      + '<button class="ct-btn" id="ct-next">' + (st.round >= ROUNDS ? 'إلى النتيجة ←' : 'الجولة التالية ←') + '</button></div>';
+    renderAll();
+    $('ct-next').addEventListener('click', nextRound);
+  }
+
+  function afterEvent(says){
+    renderAll();
+    stage.innerHTML =
+      '<div class="ct-event"><div class="kick">ما حدث</div>'
+      + '<h3>' + esc(says) + '</h3>'
+      + '<div style="font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:6px">' + effText(lastEff) + '</div>'
+      + '<button class="ct-btn" id="ct-next">' + (st.round >= ROUNDS ? 'إلى النتيجة ←' : 'الجولة التالية ←') + '</button></div>';
+    $('ct-next').addEventListener('click', nextRound);
+  }
+
+  var lastEff = null;
+  function applyEff(eff){
+    lastEff = eff;
+    Object.keys(eff).forEach(function(k){
+      st[k] = Math.max(0, st[k] + eff[k]);
+    });
+  }
+  function effText(eff){
+    var parts = [];
+    NEEDS.forEach(function(nd){
+      if (typeof eff[nd.k] === 'number' && eff[nd.k] !== 0){
+        parts.push(nd.em + ' ' + nd.n + ': ' + (eff[nd.k] > 0 ? '+' : '') + eff[nd.k]);
+      }
+    });
+    return parts.join(' · ');
+  }
+  function nextRound(){
+    if (st.round >= ROUNDS){ finish(); return; }
+    st.round++;
+    st.left = PER_ROUND;
+    st.alloc = { water:0, food:0, shade:0 };
+    renderAll();
+    allocView();
+  }
+
+  /* ══ 6. النتيجة ══════════════════════════════════════════════ */
+  function pickEnding(){
+    var w = st.water, f = st.food, s = st.shade;
+    var min = Math.min(w, f, s);
+    if (w === f && f === s && w >= 8) return { key:'perfect', e: ENDINGS.perfect };
+    if (min >= 6) return { key:'strong', e: ENDINGS.strong };
+    if (w <= 3 && w <= f && w <= s) return { key:'water', e: ENDINGS.water };
+    if (f <= 3 && f <= w && f <= s) return { key:'food', e: ENDINGS.food };
+    if (s <= 3 && s <= w && s <= f) return { key:'shade', e: ENDINGS.shade };
+    if (min >= 4) return { key:'steady', e: ENDINGS.steady };
+    return { key:'learn', e: ENDINGS.learn };
+  }
+
+  function finish(){
+    var pick = pickEnding();
+    var key = pick.key, e = pick.e;
+    var isNew = !prog.endings[key];
+    prog.endings[key] = (prog.endings[key] || 0) + 1;
+    prog.plays = (prog.plays || 0) + 1;
+    if (isNew) prog.best = { water: st.water, food: st.food, shade: st.shade };
+    persist();
+    if (isNew) addStars(key === 'perfect' ? 5 : 3);
+
+    stage.innerHTML =
+      '<div class="ct-end"><div class="em">' + e.em + '</div>'
+      + '<div class="tag">' + (isNew ? '✨ نهاية جديدة' : 'نهاية مكرّرة — جرّب توزيعًا آخر') + '</div>'
+      + '<h2>' + esc(e.title) + '</h2>'
+      + '<p>' + esc(e.body) + '</p>'
+      + '<div class="ct-final">'
+      + '<div>💧 الماء<b>' + st.water + '</b></div>'
+      + '<div>🌾 الطعام<b>' + st.food + '</b></div>'
+      + '<div>🌳 الظل<b>' + st.shade + '</b></div>'
+      + '</div>'
+      + '<div class="moral">' + esc(e.moral) + '</div>'
+      + '<div class="ct-row" style="justify-content:center">'
+      + '<button class="ct-btn" id="ct-again">🔄 مدينة جديدة</button>'
+      + '<button class="ct-btn ghost" id="ct-map">📜 كل النهايات</button>'
+      + '</div></div>';
+    if (isNew){
+      try{
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (window.confetti && !reduce) window.confetti({ particleCount: key === 'perfect' ? 150 : 90, spread: 80, origin:{ y:.6 } });
+      }catch(err){}
+    }
+    $('ct-again').addEventListener('click', newGame);
+    $('ct-map').addEventListener('click', endingsView);
+  }
+
+  function endingsView(){
+    var keys = ['perfect','strong','steady','water','food','shade','learn'];
+    stage.innerHTML =
+      '<div class="ct-panel"><div class="ct-head"><h3>📜 النهايات السبع</h3>'
+      + '<span class="ct-left">' + Object.keys(prog.endings).length + ' / 7</span></div>'
+      + '<div style="display:grid;gap:8px">'
+      + keys.map(function(k){
+          var got = !!prog.endings[k];
+          return '<div style="display:flex;align-items:center;gap:10px;background:var(--sand);border:1.5px solid var(--border);border-radius:13px;padding:10px 12px;font-size:12.5px;font-weight:800;color:' + (got ? 'var(--ink)' : 'var(--muted)') + '">'
+            + '<span style="font-size:19px">' + (got ? ENDINGS[k].em : '؟') + '</span>'
+            + '<span>' + (got ? esc(ENDINGS[k].title) : 'لم تُكتشف بعد') + '</span>'
+            + (got ? '<span style="margin-right:auto;font-size:10px;color:var(--muted)">' + prog.endings[k] + '×</span>' : '')
+            + '</div>';
+        }).join('')
+      + '</div>'
+      + '<button class="ct-btn" id="ct-new" style="margin-top:12px">مدينة جديدة 🔄</button></div>';
+    $('ct-new').addEventListener('click', newGame);
+  }
+
+  /* ══ 7. الإقلاع ═══════════════════════════════════════════════ */
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  window._ctPure = {
+    ENDINGS: ENDINGS, EVENTS: EVENTS, PER_ROUND: PER_ROUND, ROUNDS: ROUNDS,
+    pickEnding: function(w,f,s){
+      var save = st; st = { water:w, food:f, shade:s };
+      var r = pickEnding(); st = save; return r.key;
+    },
+    simulate: function(allocs, choiceIndex){
+      /* محاكاة كاملة بلا DOM — تُستخدم في الاختبارات */
+      var s = { water:2, food:2, shade:2 };
+      for (var r=1;r<=ROUNDS;r++){
+        var a = allocs[r-1] || { water:0, food:0, shade:0 };
+        Object.keys(a).forEach(function(k){ s[k] += a[k]; });
+        var ev = EVENTS[r];
+        if (!ev) continue;
+        var eff = ev.type === 'choice' ? ev.options[choiceIndex == null ? 0 : choiceIndex].eff : ev.eff;
+        Object.keys(eff).forEach(function(k){ s[k] = Math.max(0, s[k] + eff[k]); });
+      }
+      var save = st; st = s;
+      var k = pickEnding().key; st = save;
+      return { key:k, water:s.water, food:s.food, shade:s.shade };
+    },
+    progress: function(){ return prog; }
+  };
+
+  function boot(){ newGame(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

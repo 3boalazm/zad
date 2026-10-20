@@ -203,19 +203,42 @@ function cycleTheme() {
 window.cycleTheme = cycleTheme;
 function toggleTheme() { cycleTheme(); }
 window.toggleTheme = toggleTheme;
+/* ══ طبقة كتابة موحّدة لأقسام الأطفال ══════════════════════════════════
+   صفحات الأطفال (المدرسه/الإبداع/الأبطال/المرح) كانت تكتب zad_v2 مباشرة
+   بعد JSON.parse. والكتابة المباشرة غير مرئية لـSTATE المقيم في الذاكرة،
+   فأول saveState() من أي نقرة في التطبيق (تبديل سمة مثلًا) يمحو تقدّم
+   الطفل كله: النور والأوسمة والميثاق والمفضّلة. هذه الدالة تُطبِّق الترقيع
+   على STATE ثم تحفظه، فتبقى النسختان متطابقتين. */
+function zadPatchState(partial) {
+  if (!partial || typeof partial !== 'object') return;
+  try {
+    Object.assign(STATE, partial);
+    saveState();
+  } catch (e) {}
+}
+window.zadPatchState = zadPatchState;
+
 function applyQuranFont(size) {
-  size = size || STATE.quranFontSize || 24;
+  /* P2-Q10: قيد واحد 16–36 في كل المسارات (كان mushaf-quran.html يقصّ عند 18
+     وmushaf.html عند 16 ⇒ تفضيل 16px يتحول إلى 18 عند الانتقال بين الصفحتين). */
+  size = Math.max(16, Math.min(36, parseInt(size, 10) || STATE.quranFontSize || 24));
   document.documentElement.style.setProperty('--qf-size', size + 'px');
   STATE.quranFontSize = size;
+  /* كانت الكتابة إلى zad_v2 وحدها، وmushaf-quran.html يقرأ zad_mfont وحده
+     ⇒ تغيير الحجم من هنا لا يظهر هناك أبدًا. الآن المفتاحان معًا. */
+  try { localStorage.setItem('zad_mfont', size); } catch (e) {}
   saveState();
   document.querySelectorAll('#font-slider, #m-font').forEach(sl => {
     sl.value = size;
   });
+  try { window.dispatchEvent(new CustomEvent('zad:quranfont', { detail: { size: size } })); } catch (e) {}
 }
 window.applyQuranFont = applyQuranFont;
 function startCountdown() {
-  /* Hijri-linked countdown — confirmed dates:
-     1 DH = May 18 | 9 DH (Arafah) = May 26 | 10 DH (Eid) = May 27 */
+  /* عدّاد مرتبط بالتقويم الهجري — يُقاد من window.getHijriDate (js/calendar.js)
+     وتُحسب مراسيه عند الحاجة، فلا يحمل أي تاريخ ميلادي مثبّت.
+     (كان مثبّتًا على 1447: 1 ذي الحجة = 18 مايو، عرفة = 26، العيد = 27 —
+     فصار بعد انقضائها يعرض تهنئة العيد باستمرار.) */
   /* FIX: Prevent multiple intervals if called twice */
   if (window._mainCountdownInterval) clearInterval(window._mainCountdownInterval);
   const daysEl  = document.getElementById('cd-days');
@@ -224,33 +247,48 @@ function startCountdown() {
   const secsEl  = document.getElementById('cd-secs');
   if (!daysEl) return;
 
-  const CD_DH1    = new Date(2026, 4, 18, 0, 0, 0);
-  const CD_ARAFAH = new Date(2026, 4, 26, 0, 0, 0);
-  const CD_EID    = new Date(2026, 4, 27, 0, 0, 0);
+  /* P0-7: المراسي كانت مثبّتة على ذي الحجة 1447 (18/26/27 مايو 2026).
+     اليوم 9 جمادى الأولى 1448، فـ`dhDay` المحسوب من `todayMid - dh1Mid` صار
+     156 → يسقط دائمًا في فرع «العيد» ويعرض «عيد الأضحى المبارك · تقبّل الله
+     منا ومنكم» في arafah.html باستمرار، بعد خمسة أشهر من انتهاء العيد.
+     صار اليوم يُقرأ من التقويم الهجري الفعلي (window.getHijriDate) والمراسي
+     تُحسب عند الحاجة بـfindHijriDateInGreg، فتتجدد تلقائيًا كل سنة هجرية
+     وتحترم إزاحة المستخدم اليدوية. */
   const DNAMES    = ['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن التروية','التاسع عرفة','العاشر'];
+  const anchor = function(hm, hd) {
+    const d = findHijriDateInGreg(hm, hd);
+    if (!d) return null;
+    const x = new Date(d); x.setHours(0, 0, 0, 0);
+    return x;
+  };
 
   const tick = function() {
     const now      = new Date();
-    const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const dh1Mid   = new Date(2026, 4, 18);
-    const dhDay    = Math.floor((todayMid - dh1Mid) / 86400000) + 1;
+    const h        = (typeof window.getHijriDate === 'function') ? window.getHijriDate(now) : null;
+    /* اليوم داخل ذي الحجة (1..30)، أو 0 إن كنا خارجه */
+    const dhDay    = (h && h.month === 12) ? h.day : 0;
 
     let target, eyebrow, heading;
-    if (dhDay < 1) {
-      target = CD_DH1; eyebrow = 'العد التنازلي'; heading = 'إلى عشر ذي الحجة 🌙';
-    } else if (dhDay <= 8) {
-      target = CD_ARAFAH;
+    if (dhDay >= 1 && dhDay <= 8) {
+      target = anchor(12, 9);
       eyebrow = 'اليوم ' + (DNAMES[dhDay] || dhDay) + ' من ذي الحجة';
       heading = dhDay === 8 ? 'يوم التروية 💧' : 'أيام العشر المباركة';
     } else if (dhDay === 9) {
-      target = CD_EID; eyebrow = 'اليوم التاسع — يوم عرفة'; heading = 'يوم عرفة المبارك ⭐';
-    } else {
+      target = anchor(12, 10); eyebrow = 'اليوم التاسع — يوم عرفة'; heading = 'يوم عرفة المبارك ⭐';
+    } else if (dhDay >= 10 && dhDay <= 13) {
+      /* العيد وأيام التشريق — تهنئة بلا عدّاد */
       ['cd-days','cd-hrs','cd-mins','cd-secs'].forEach(id => { const e=document.getElementById(id);if(e)e.textContent='🎉'; });
       const ey=document.getElementById('hero-eyebrow'), hd=document.getElementById('hero-heading');
       if (ey) ey.textContent = 'عيد الأضحى المبارك 🎉';
       if (hd) hd.textContent = 'تقبّل الله منا ومنكم';
       return;
+    } else {
+      /* خارج ذي الحجة، أو النصف الثاني منه → العدّ إلى العشر القادمة */
+      target = anchor(12, 1); eyebrow = 'العد التنازلي'; heading = 'إلى عشر ذي الحجة 🌙';
     }
+
+    /* إن غاب js/calendar.js فلا مرسى — نخرج بهدوء بدل عرض أرقام خاطئة */
+    if (!target) return;
 
     const diff = Math.max(0, target - now);
     const pad  = n => String(Math.max(0,n)).padStart(2,'0');
@@ -450,6 +488,12 @@ function initMushaf() {
     if (STATE.mushaf.juz < 30) {
       STATE.mushaf.juz++;
       updateMushafUI();
+      /* P1-Q3: mushaf.html أُعيد تصميمه فصار التقدّم ph-ring/ph-bar/ph-sub،
+         بينما updateMushafUI() هنا تكتب m-prog-bar/m-prog-txt المحذوفين — فكانت
+         الحلقة الكبيرة تتجمّد على 0% حتى إعادة تحميل الصفحة. نُنبِّه الصفحة
+         لتُحدِّث واجهتها بنفسها بدل تكرار منطقها هنا. */
+      if (typeof window.updateProgress === 'function') window.updateProgress();
+      if (typeof window.renderWird === 'function') window.renderWird();
       saveState();
       checkBadges();
       if (STATE.mushaf.juz === 30) showToast('🏆 ما شاء الله! أتممت الختمة كاملة!');
@@ -1217,6 +1261,82 @@ window.installPWA = function() {
     if (b) b.style.display = 'none';
   });
 };
+/* ── مسار تسليم واحد لكل إشعارات التطبيق ─────────────────────────────────────
+   P1-7: `new Notification()` لا تُعرض على Chrome/Android — مهجورة هناك منذ
+   سنوات، وهذا هو السبب الأول لشكوى «الإشعارات لا تصل» في تقييمات المتاجر.
+   المسار الصحيح هو ServiceWorkerRegistration.showNotification()، ونحتفظ
+   بـ`new Notification()` كاحتياطي لسطح المكتب فقط.
+   الأيقونة PNG لأن Android يتجاهل SVG في إشعارات النظام. */
+async function zadNotify(title, body, opts) {
+  const o = opts || {};
+  if (!('Notification' in window) || Notification.permission !== 'granted') return 'denied';
+
+  /* CalmUX: لا إشعارات «غير صلوية» بين 00:00 و05:00 — تُؤجَّل إلى الخامسة.
+     إشعارات الصلاة مستثناة لأن الفجر يقع داخل هذه النافذة وهو المقصود أصلًا.
+     (الحارس القديم في design-system.js كان يمنع **الجدولة** نفسها في هذه
+     الساعات، فمن يفعّل الإشعارات ليلًا لا يحصل على أي تذكير إطلاقًا.) */
+  const tag = String(o.tag || 'zad-reminder');
+  const isPrayer = tag.indexOf('zad-prayer') === 0 || tag === 'zad-jumuah';
+  if (!isPrayer && o._deferred !== true) {
+    const h = new Date().getHours();
+    if (h >= 0 && h < 5) {
+      const wake = new Date();
+      wake.setHours(5, 0, 0, 0);
+      const delay = wake.getTime() - Date.now();
+      if (delay > 0) {
+        setTimeout(() => { zadNotify(title, body, Object.assign({}, o, { _deferred: true })); }, delay);
+        return 'deferred';
+      }
+    }
+  }
+
+  const payload = {
+    body: body || '',
+    icon: './icons/icon.png',
+    badge: './icons/icon.png',
+    dir: 'rtl',
+    lang: 'ar',
+    tag: tag,
+    data: o.data || { url: o.url || 'index.html' },
+  };
+  if (o.vibrate) payload.vibrate = [250, 120, 250];
+  try {
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg && reg.showNotification) { await reg.showNotification(title, payload); return 'sw'; }
+    }
+  } catch (e) { /* نسقط للمسار الاحتياطي */ }
+  try { new Notification(title, payload); return 'legacy'; } catch (e) {}
+  return 'none';
+}
+window.zadNotify = zadNotify;
+
+/* يجد التاريخ الميلادي المقابل ليوم هجري (شهر/يوم) خلال 400 يوم قادمة.
+   يُخزَّن 6 ساعات حتى لا يُعاد البحث في كل جدولة. يعتمد window.getHijriDate
+   من js/calendar.js، فيحترم إزاحة المستخدم اليدوية تلقائيًا. */
+function findHijriDateInGreg(hm, hd) {
+  if (typeof window.getHijriDate !== 'function') return null;
+  const cacheKey = 'zad_hijri_anchor_' + hm + '_' + hd;
+  try {
+    const c = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+    if (c && c.greg && c.ts && (Date.now() - c.ts) < 6 * 3600 * 1000) return new Date(c.greg);
+  } catch (e) {}
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  for (let i = 0; i < 400; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    let h = null;
+    try { h = window.getHijriDate(d); } catch (e) { break; }
+    if (h && h.month === hm && h.day === hd) {
+      try { localStorage.setItem(cacheKey, JSON.stringify({ greg: d.getTime(), ts: Date.now() })); } catch (e) {}
+      return d;
+    }
+  }
+  return null;
+}
+window.findHijriDateInGreg = findHijriDateInGreg;
+
 async function requestNotifPermission() {
   if (!('Notification' in window)) {
     showToast('⚠️ المتصفح لا يدعم الإشعارات');
@@ -1236,11 +1356,9 @@ function scheduleReminders() {
   if (Notification.permission !== 'granted') return;
 
   function notify(title, body, delay) {
-    setTimeout(() => {
-      if (Notification.permission === 'granted') {
-        new Notification(title, { body, icon: './icons/icon-192.svg', dir:'rtl', lang:'ar', badge:'./icons/icon-192.svg' });
-      }
-    }, delay);
+    /* كان `new Notification(...)` مباشرة — لا يظهر على Android. صار عبر
+       المسار المشترك zadNotify الذي يسلّم من الـService Worker. */
+    setTimeout(() => { zadNotify(title, body, { url: 'index.html' }); }, delay);
   }
 
   /* Immediate confirmation */
@@ -1268,12 +1386,18 @@ function scheduleReminders() {
   })();
   notify('📖 الورد القرآني', 'هل أتممت وردك اليوم؟ لا تنم قبل أن تُكمله', wirdMs);
 
-  /* Arafah day special (9 Dhul Hijjah = May 26, 2026) */
-  const arafah = new Date(2026, 4, 26, 4, 0, 0);
-  const arafahMs = arafah - now;
-  if (arafahMs > 0 && arafahMs < 86400000 * 30) {
-    notify('⭐ يوم عرفة', 'اليوم يوم عرفة — أفضل أيام الدعاء، أكثر من لا إله إلا الله', arafahMs);
-    notify('⭐ يوم عرفة — آخر الساعة الذهبية', 'اغتنم ما قبل المغرب في الدعاء والذكر', arafahMs + 43200000);
+  /* يوم عرفة — كان مثبّتًا على new Date(2026, 4, 26, 4, 0, 0)، أي أنه مات بعد
+     26 مايو 2026 ولن يتكرر أبدًا (نفس فئة علة P0-2: سنة مثبّتة في الكود).
+     صار يُحسب من التقويم الهجري فيعمل كل سنة، ويحترم إزاحة المستخدم. */
+  const arafahDay = findHijriDateInGreg(12, 9);
+  if (arafahDay) {
+    const arafah = new Date(arafahDay);
+    arafah.setHours(4, 0, 0, 0);
+    const arafahMs = arafah - now;
+    if (arafahMs > 0 && arafahMs < 86400000 * 30) {
+      notify('⭐ يوم عرفة', 'اليوم يوم عرفة — أفضل أيام الدعاء، أكثر من لا إله إلا الله', arafahMs);
+      notify('⭐ يوم عرفة — آخر الساعة الذهبية', 'اغتنم ما قبل المغرب في الدعاء والذكر', arafahMs + 43200000);
+    }
   }
 }
 function initNotifBanner() {
@@ -2066,9 +2190,12 @@ function initTasbih() {
   renderActiveDhikr();
   const ring = document.getElementById('ts-ring');
   if (ring) {
-    ring.addEventListener('click', () => window.countTasbih());
+    /* P0-Q1: كان addEventListener (تراكمي) على عنصر لا يُدمَّر عند «إعادة الكل»
+       — فكل ضغطة تصفير كانت تُراكِم مستمعًا، وتصير النقرة الواحدة n+1 زيادة
+       (مُثبَت: 6 زيادات بعد 5 إعادات) وتُحفَظ في zad_v2. الخصيصة استبدالية. */
+    ring.onclick = () => window.countTasbih();
     ring.setAttribute('tabindex', '0');
-    ring.addEventListener('keydown', e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();window.countTasbih();} });
+    ring.onkeydown = e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();window.countTasbih();} };
   }
   const resetBtn = document.getElementById('ts-reset');
   if (resetBtn) resetBtn.onclick = resetCurrentDhikr;
@@ -2081,6 +2208,9 @@ function initTasbih() {
       const wrap = document.getElementById('tasbih-cards');
       if (wrap) { wrap.innerHTML = ''; initTasbih(); }
       renderActiveDhikr();
+      /* P2-Q12: كانت بلاطات الإحصاءات تُعاد رسمها فقط عند النقرة التالية
+         (عبر رقعة countTasbih في takbeer.html) ⇒ تبقى تعرض أرقام ما قبل التصفير. */
+      if (typeof window.updateAllStats === 'function') window.updateAllStats();
       showToast('🔄 تمت إعادة تعيين الأذكار');
     }
   };
@@ -2760,10 +2890,21 @@ function formatPrayerTime(time24) {
 window.formatPrayerTime = formatPrayerTime;
 
 /* Re-render all visible prayer time elements */
+/* P1-5أ: كتابة النص **فقط عند اختلافه**. كان applyClockFormat يكتب
+   textContent بلا شرط، وكتابة textContent تُنتج طفرة childList دائمًا (حتى لو
+   كان النص نفسه) — والمراقب في initClockFormat يرصد childList على .main ⇒
+   حلقة إعادة رسم ذاتية لا تنتهي كل 200ms على كل صفحة، تُعاد فيها كتابة كل
+   عناصر الوقت إلى ما لا نهاية. الشرط يُنهي الحلقة ويُبقي الرصد لما يُضاف
+   ديناميكيًا. */
+function _setTimeText(el, txt) {
+  if (txt == null) return;
+  if (el.textContent !== txt) el.textContent = txt;
+}
+
 function applyClockFormat() {
   /* Collect raw 24h times stored in data-time24 */
   document.querySelectorAll('[data-time24]').forEach(el => {
-    el.textContent = formatPrayerTime(el.getAttribute('data-time24'));
+    _setTimeText(el, formatPrayerTime(el.getAttribute('data-time24')));
   });
 
   /* Also update any .pp-time elements that have a time value */
@@ -2771,7 +2912,7 @@ function applyClockFormat() {
     const raw = el.getAttribute('data-time24') || el.textContent.trim();
     if (/^\d{1,2}:\d{2}/.test(raw)) {
       if (!el.getAttribute('data-time24')) el.setAttribute('data-time24', raw);
-      el.textContent = formatPrayerTime(raw);
+      _setTimeText(el, formatPrayerTime(raw));
     }
   });
 
@@ -2781,14 +2922,14 @@ function applyClockFormat() {
     const raw = npTime.getAttribute('data-time24') || npTime.textContent;
     if (raw && /^\d{1,2}:\d{2}/.test(raw)) {
       if (!npTime.getAttribute('data-time24')) npTime.setAttribute('data-time24', raw);
-      npTime.textContent = formatPrayerTime(raw);
+      _setTimeText(npTime, formatPrayerTime(raw));
     }
   }
 
   /* Update countdown time display labels */
   document.querySelectorAll('.hijri-time, .prayer-time-display').forEach(el => {
     const raw = el.getAttribute('data-time24');
-    if (raw) el.textContent = formatPrayerTime(raw);
+    if (raw) _setTimeText(el, formatPrayerTime(raw));
   });
 }
 window.applyClockFormat = applyClockFormat;

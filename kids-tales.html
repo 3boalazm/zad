@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="حكايات القرية — قصص يختار فيها الطفل بنفسه، وكل اختيار يزرع أثرًا في قرية لا تنسى.">
+<title>حكايات القرية · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+/* ══ الهوية ══ */
+.tv-hero{background:linear-gradient(135deg,#123f31 0%,#1a5d47 45%,#3a2a8a 105%);border-radius:24px;padding:26px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -12px rgba(14,59,46,.45)}
+.tv-hero::after{content:'🏮';position:absolute;top:10px;left:18px;font-size:62px;opacity:.14;line-height:1}
+.tv-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.tv-title{font-size:27px;font-weight:900;line-height:1.25;margin-bottom:8px}
+.tv-sub{font-size:13.5px;color:rgba(255,255,255,.88);line-height:1.95;max-width:600px}
+
+/* ══ القرية ══ */
+.tv-scene{position:relative;height:190px;border-radius:22px;overflow:hidden;margin-bottom:14px;background:linear-gradient(180deg,#0b2a45 0%,#164e63 45%,#1a5d47 100%);box-shadow:inset 0 -30px 50px -20px rgba(0,0,0,.5)}
+.tv-moon{position:absolute;top:16px;left:22px;font-size:26px;filter:drop-shadow(0 0 10px rgba(255,236,170,.8))}
+.tv-sky-star{position:absolute;font-size:9px;color:#ffe9a8;opacity:.9;animation:tvTwinkle 3.4s ease-in-out infinite}
+@keyframes tvTwinkle{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+.tv-hill{position:absolute;bottom:-40px;border-radius:50% 50% 0 0;background:#124434;width:150%;height:120px}
+.tv-hill.b{right:-30%;background:#0e3b2e;width:120%;height:150px;bottom:-60px}
+.tv-land{position:absolute;bottom:12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:30px;opacity:.22;filter:grayscale(1);transition:all .7s cubic-bezier(.34,1.56,.64,1);z-index:3}
+.tv-land i{font-size:9.5px;font-style:normal;font-weight:800;color:#fff;opacity:.7;letter-spacing:.3px}
+.tv-land.on{opacity:1;filter:none;transform:translateY(-4px) scale(1.08)}
+.tv-land.on span{filter:drop-shadow(0 0 10px rgba(255,224,138,.95)) drop-shadow(0 0 22px rgba(255,201,74,.55));animation:tvGlow 3s ease-in-out infinite}
+.tv-land.on i{opacity:1;color:#ffe9a8}
+@keyframes tvGlow{0%,100%{filter:drop-shadow(0 0 8px rgba(255,224,138,.7))}50%{filter:drop-shadow(0 0 20px rgba(255,201,74,.95))}}
+.tv-land[data-tale="beer"]{right:11%}
+.tv-land[data-tale="lamp"]{right:46%;bottom:64px}
+.tv-land[data-tale="seed"]{right:76%}
+.tv-scene-txt{position:absolute;top:12px;right:16px;font-size:11px;font-weight:800;color:rgba(255,255,255,.82);background:rgba(0,0,0,.22);padding:5px 11px;border-radius:999px;z-index:4}
+
+/* ══ لوحة القيم ══ */
+.tv-compass{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:14px 16px;margin-bottom:6px;box-shadow:var(--shadow-sm)}
+.tv-cmp{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--ink)}
+.tv-cmp .bar{flex:1;height:7px;background:var(--sand);border-radius:99px;overflow:hidden}
+.tv-cmp .bar i{display:block;height:100%;width:0;border-radius:99px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+.tv-cmp b{font-size:11px;color:var(--muted);min-width:16px;text-align:center}
+
+/* ══ بطاقات الحكايات ══ */
+.tv-tales{display:grid;gap:11px}
+.tv-tale{display:flex;align-items:center;gap:13px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:15px 16px;cursor:pointer;transition:all .22s;font-family:inherit;text-align:right;width:100%;color:var(--ink);box-shadow:var(--shadow-sm)}
+.tv-tale:hover{transform:translateY(-2px);border-color:var(--green-soft);box-shadow:var(--shadow)}
+.tv-tale:active{transform:scale(.99)}
+.tv-tale .ico{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.tv-tale .tt{flex:1;min-width:0}
+.tv-tale .tt b{display:block;font-size:15px;font-weight:900;margin-bottom:3px}
+.tv-tale .tt small{font-size:11.5px;color:var(--muted);line-height:1.7;display:block}
+.tv-tale .prog{font-size:10.5px;font-weight:900;background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:4px 9px;white-space:nowrap}
+.tv-tale .prog.done{background:var(--green-pale);border-color:var(--green-soft);color:var(--green-deep)}
+
+/* ══ المشهد/القارئ ══ */
+.tv-reader{display:none}
+.tv-reader.on{display:block;animation:tvIn .35s ease both}
+@keyframes tvIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tv-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tv-back{border:1.5px solid var(--border);background:var(--card);color:var(--ink);font-family:inherit;font-size:12.5px;font-weight:800;padding:8px 14px;border-radius:12px;cursor:pointer}
+.tv-dots{display:flex;gap:5px;margin-right:auto}
+.tv-dots span{width:7px;height:7px;border-radius:99px;background:var(--border)}
+.tv-dots span.on{background:var(--gold);width:20px}
+.tv-say{border:none;background:var(--green-pale);color:var(--green-deep);width:36px;height:36px;border-radius:11px;cursor:pointer;font-size:16px;flex-shrink:0}
+.tv-say.off{opacity:.4}
+.tv-scene-text{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:20px 20px 22px;font-size:16px;line-height:2.15;color:var(--ink);box-shadow:var(--shadow-sm);position:relative}
+.tv-scene-text::before{content:'❝';position:absolute;top:8px;left:14px;font-size:34px;color:var(--gold);opacity:.25;font-family:Georgia,serif}
+/* الكلمة تُضاء مع الصوت — دعم القراءة للأطفال الصغار */
+.tv-scene-text .w{border-radius:6px;padding:1px 2px;transition:background .12s,color .12s}
+.tv-scene-text .w.on{background:rgba(201,161,74,.42);color:#3a2e10;box-shadow:0 0 0 1px rgba(201,161,74,.5)}
+html[data-theme="dark"] .tv-scene-text .w.on,html[data-theme="oled"] .tv-scene-text .w.on{background:rgba(230,201,122,.3);color:#fff}
+.tv-choices{display:grid;gap:10px;margin-top:14px}
+.tv-choice{display:flex;align-items:flex-start;gap:11px;background:linear-gradient(135deg,var(--card),var(--sand));border:2px solid var(--border);border-radius:16px;padding:14px 15px;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;line-height:1.85;text-align:right;color:var(--ink);transition:all .2s;width:100%}
+.tv-choice:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 20px -8px rgba(201,161,74,.5)}
+.tv-choice:active{transform:scale(.99)}
+.tv-choice .n{width:24px;height:24px;border-radius:50%;background:var(--green-deep);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.tv-reply{display:none;margin-top:14px;border-right:4px solid var(--gold);background:rgba(201,161,74,.1);border-radius:0 14px 14px 0;padding:14px 16px;font-size:14px;line-height:2;color:var(--ink);animation:tvIn .3s ease both}
+.tv-reply.on{display:block}
+/* سؤال للوالد بعد كل اختيار — يحوّل الشاشة إلى حوار */
+.tv-ask{display:none;margin-top:10px;border:1.5px dashed rgba(201,161,74,.6);background:rgba(201,161,74,.08);border-radius:14px;padding:11px 14px;font-size:12.5px;font-weight:800;color:var(--ink);line-height:1.9}
+.tv-ask.on{display:flex;gap:9px;align-items:flex-start;animation:tvIn .3s ease both}
+.tv-ask .who{font-size:17px;line-height:1.35;flex-shrink:0}
+html[data-theme="dark"] .tv-ask,html[data-theme="oled"] .tv-ask{background:rgba(230,201,122,.1);border-color:rgba(230,201,122,.4)}
+.tv-next{margin-top:14px;width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:14.5px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6)}
+.tv-next:hover{filter:brightness(1.08)}
+
+/* ══ النهاية ══ */
+.tv-ending{display:none;text-align:center;background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:24px;padding:26px 22px;box-shadow:0 18px 50px -20px rgba(201,161,74,.6);position:relative;overflow:hidden}
+.tv-ending.on{display:block;animation:tvIn .45s ease both}
+.tv-ending .em{font-size:54px;line-height:1;margin-bottom:8px}
+.tv-ending .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--green-deep);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
+.tv-ending h2{font-size:23px;font-weight:900;color:var(--green-deep);margin:0 0 10px}
+html[data-theme="dark"] .tv-ending h2,html[data-theme="oled"] .tv-ending h2{color:var(--sys-green)}
+.tv-ending p{font-size:14.5px;line-height:2.1;color:var(--ink);margin:0 auto 14px;max-width:520px}
+.tv-moral{font-size:12.5px;font-weight:800;color:var(--gold-dark,#8a6a1f);background:rgba(201,161,74,.14);border-radius:13px;padding:11px 14px;max-width:520px;margin:0 auto 16px;line-height:1.9}
+.tv-ending .acts{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.tv-ending .acts button{border:1.5px solid var(--border);background:var(--card);color:var(--ink);font-family:inherit;font-size:12.5px;font-weight:800;padding:10px 16px;border-radius:12px;cursor:pointer}
+.tv-ending .acts button.primary{background:var(--green-deep);color:#fff;border-color:transparent}
+
+/* ══ الألبوم ══ */
+.tv-album{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.tv-slot{aspect-ratio:1;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--sand);border:1.5px dashed var(--border);color:var(--muted);font-weight:900}
+.tv-slot.got{background:linear-gradient(135deg,var(--gold),#e6c97a);border:1.5px solid #b98f2e;color:#3a2e10;box-shadow:0 6px 16px -6px rgba(201,161,74,.7);animation:tvPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes tvPop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ══ الطباعة: بطاقة الحكاية ══ */
+.tv-print{display:none}
+@media print{
+  body *{visibility:hidden!important}
+  .tv-print,.tv-print *{visibility:visible!important}
+  .tv-print{display:block!important;position:absolute;inset:0;padding:34px;text-align:center;font-family:'IBM Plex Sans Arabic',sans-serif}
+  .tv-print .pc{border:3px double #b98f2e;border-radius:20px;padding:30px}
+  .tv-print h1{font-size:26px;color:#0e3b2e;margin:8px 0}
+  .tv-print .who{font-size:14px;color:#555}
+  .tv-print .end{font-size:20px;font-weight:900;color:#8a6a1f;margin-top:16px}
+  .tv-print .txt{font-size:13.5px;line-height:2;color:#333;margin-top:12px}
+  .tv-print .q{font-size:11px;color:#777;margin-top:18px}
+}
+.tv-foot{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.9;margin:18px 0 6px}
+@media(max-width:420px){.tv-compass{grid-template-columns:1fr}.tv-album{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">حكايات القرية</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">حكايات <span>القرية</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="tv-hero">
+      <div class="tv-eyebrow">🏮 أنت الذي يختار</div>
+      <div class="tv-title">حكايات القرية</div>
+      <div class="tv-sub">ثلاثُ حكايات، وفي كلِّ حكايةٍ أربعةُ مفترقات. لا يوجد جوابٌ «صح» وجوابٌ «خطأ» — لكن لكلِّ اختيارٍ أثرٌ يبقى في القرية… وفي قلبك. <b style="color:#ffe9a8">اختر، ثم عُد لتكتشف من تكون.</b></div>
+    </div>
+
+    <!-- ══ القرية ══ -->
+    <div class="tv-scene" id="tv-scene" aria-label="قريتك">
+      <div class="tv-moon">🌙</div>
+      <div class="tv-scene-txt" id="tv-village-lbl">قريتك: هادئة… في انتظار أثرك</div>
+      <div id="tv-stars"></div>
+      <div class="tv-hill"></div><div class="tv-hill b"></div>
+      <div class="tv-land" data-tale="beer"><span>💧</span><i>البئر</i></div>
+      <div class="tv-land" data-tale="lamp"><span>🏮</span><i>المصباح</i></div>
+      <div class="tv-land" data-tale="seed"><span>🌳</span><i>الشجرة</i></div>
+    </div>
+    <div id="tv-memory" style="display:none;margin:-6px 0 14px;font-size:12px;font-weight:800;color:var(--gold-dark,#8a6a1f);background:rgba(201,161,74,.12);border:1px dashed rgba(201,161,74,.45);border-radius:12px;padding:9px 13px;line-height:1.8"></div>
+
+    <div class="tv-compass" id="tv-compass" aria-label="بوصلة القلب"></div>
+
+    <!-- ══ القائمة ══ -->
+    <div id="tv-list">
+      <div class="k-sec-title" style="display:flex;align-items:center;gap:10px;margin:20px 0 12px;font-size:17px;color:var(--green-deep);font-weight:800">📖 اختر حكايتك</div>
+      <div class="tv-tales" id="tv-tales"></div>
+
+      <div class="k-sec-title" style="display:flex;align-items:center;gap:10px;margin:22px 0 12px;font-size:17px;color:var(--green-deep);font-weight:800">🏅 ألبوم النهايات <span id="tv-album-count" style="font-size:11px;font-weight:800;background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:3px 9px;color:var(--muted)">0 / 15</span></div>
+      <div class="tv-album" id="tv-album"></div>
+      <div class="tv-foot">كلُّ نهايةٍ جديدةٍ تكشف وجهًا آخر منك — لا تُطارد النقاط، طارِد الحكاية. 🌙</div>
+    </div>
+
+    <!-- ══ القارئ ══ -->
+    <div class="tv-reader" id="tv-reader">
+      <div class="tv-bar">
+        <button class="tv-back" onclick="tvHome()">→ كل الحكايات</button>
+        <div class="tv-dots" id="tv-dots"></div>
+        <button class="tv-say" id="tv-say" onclick="tvSpeak()" aria-label="اقرأ لي" title="اقرأ لي">🔊</button>
+      </div>
+      <div class="tv-scene-text" id="tv-text"></div>
+      <div class="tv-choices" id="tv-choices"></div>
+      <div class="tv-reply" id="tv-reply" aria-live="polite"></div>
+      <div class="tv-ask" id="tv-ask" aria-live="polite"></div>
+      <button class="tv-next" id="tv-next" onclick="tvNext()" style="display:none">التالي ←</button>
+    </div>
+
+    <!-- ══ النهاية ══ -->
+    <div class="tv-ending" id="tv-ending">
+      <div class="em" id="tv-end-em">🌟</div>
+      <div class="tag" id="tv-end-tag">نهاية جديدة</div>
+      <h2 id="tv-end-title"></h2>
+      <p id="tv-end-body"></p>
+      <div class="tv-moral" id="tv-end-moral"></div>
+      <div class="acts">
+        <button class="primary" onclick="tvHome()">🏘️ عُد إلى القرية</button>
+        <button onclick="tvReplay()">🔄 أعِد الحكاية</button>
+        <button onclick="tvPrint()">🖨️ بطاقة الحكاية</button>
+        <button onclick="location.href='kids-gazette.html'">📰 اقرأ الخبر في الصحيفة</button>
+      </div>
+    </div>
+
+    <!-- بطاقة الطباعة -->
+    <div class="tv-print" id="tv-print">
+      <div class="pc">
+        <div style="font-size:34px">🏮</div>
+        <h1>بطاقة حكاية</h1>
+        <div class="who" id="pv-who">من مزرعة الخير 🌱</div>
+        <div class="end" id="pv-end">—</div>
+        <div class="txt" id="pv-body">—</div>
+        <div class="q">زاد · ركن الأطفال · حكايات القرية</div>
+      </div>
+    </div>
+
+    <div class="tv-foot" style="margin-bottom:26px">«خيرُ الناسِ أنفعُهم للناس» — اختر الخير، وستجد أثرَه في القرية.</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ══ 1. البيانات ══════════════════════════════════════════════ */
+  var TR = {
+    rahma:  { n:'الرحمة',  i:'💚', c:'#4dd866' },
+    shajaa: { n:'الشجاعة', i:'🦁', c:'#c9a14a' },
+    sidq:   { n:'الصدق',   i:'💎', c:'#5aabff' },
+    sabr:   { n:'الصبر',   i:'🌱', c:'#a78bfa' }
+  };
+
+  var TALES = [
+    {
+      id:'beer', title:'بئر القرية', ico:'💧', bg:'linear-gradient(135deg,#0e4a6b,#1a7fa8)',
+      sub:'جفّ البئر… وبقيت جرّةُ ماءٍ واحدة. ماذا ستفعل؟',
+      scenes:[
+        { t:'في قريةٍ صغيرةٍ عند سفح الجبل جفَّ البئر. فتحت أمُّك الصندوقَ الخشبيَّ فوجدت جرّةَ ماءٍ صغيرة… آخرَ ما تبقّى. وفي الطريق إلى البيت سمعت «زقزقةً» ضعيفة: عصفورٌ صغيرٌ فتح فمَه من العطش، وينظر إليك.',
+          c:[ {x:'تسقيه من جرّتك، ولو بقيتَ بلا ماء', tr:'rahma', q:'لو كان الماءُ يكفي واحدًا فقط… من تختار، ولماذا؟',
+               r:'سقيتَ العصفور. رفع رأسَه إليك وشكرك بزقزقةٍ صغيرة… وشعر قلبُك بالدفء قبل أن يجفّ حلقك.'},
+              {x:'تحفظ الماءَ لأهلِك، وتدعو الله أن يفرّج', tr:'sabr', q:'إيه أصعب حاجة بتستنّى فيها؟ وإيه اللي بيساعدك تصبر؟',
+               r:'حفظتَ الماءَ لأهلِك ودعوتَ الله. الدعاءُ رجاء، والرجاءُ نصفُ الصبر.'} ] },
+        { t:'في الليل سمعتَ صوتَ ماءٍ خلف البئر الجافّ. نزلتَ بالحبل، ووجدتَ في القاع نبعًا صغيرًا تسدُّه صخرةٌ كبيرة… والصخرةُ أثقلُ منك.',
+          c:[ {x:'تتشبّث بالصخرة وتدفعها بكل قوتك وحدك', tr:'shajaa', q:'احكيلي مرة خفت فيها وعملت الحاجة رغم الخوف.',
+               r:'دفعتَ ودفعت، حتى اهتزّت الصخرة… ثم انزلقت، وانسكبت أول قطرة. كنتَ خائفًا، وفعلتَها رغم الخوف.'},
+              {x:'تصعد وتقول لأبيك: «أنا خائف، تعالَ معي»', tr:'sidq', q:'مين الشخص اللي بتروح له لمّا تخاف؟ وليه هو بالتحديد؟',
+               r:'قلتَ الحقّ: أنا خائف. فابتسم أبوك ونزل معك. الاعترافُ بالخوف صدق، والصدقُ قوّة لا ضعف.'} ] },
+        { t:'خرج الماء! تجمّع أهلُ القرية حول البئر، والدلاءُ تتزاحم، والكبارُ والصغارُ يتدافعون… وأنت أولُ من نزل.',
+          c:[ {x:'تسقي كلَّ من حولك أولًا، ثم تشرب أنت آخرَ واحد', tr:'rahma', q:'لو عندك حاجة واحدة والناس محتاجينها… هتعمل إيه؟',
+               r:'مددتَ الكوبَ لكل يدٍ امتدّت، وبقيتَ عطشانًا حتى شرب الجميع. وحين شربتَ أخيرًا… كان الماءُ أحلى.'},
+              {x:'تصعد وتنادي أهلَ القرية كلَّهم: «تعالوا نسحب معًا!»', tr:'shajaa', q:'إيه الفرق بين اللي بيبدأ لوحده واللي بينادي الناس معاه؟',
+               r:'وقفتَ أمام الجميع وقلتَ: تعالوا. فجاءوا. المبادرةُ أمام الناس شجاعة، والقريةُ لا تُبنى وحدها.'} ] },
+        { t:'في الصباح، سأل أهلُ القرية: «من ينزل كلَّ يومٍ ليرعى البئر ويسقي من لا يستطيع النزول؟» ونظر الجميع إليك…',
+          c:[ {x:'تقول: «أنا سأنزل كلَّ صباح، مهما كان الجوّ»', tr:'sabr', q:'إيه الوعد اللي وعدت بيه نفسك مرة… ووفيت؟',
+               r:'لم تَعِد بالكثير، بل نفّذتَ القليل كلَّ يوم. وبعد شهرٍ صار البئرُ لا يجفّ.'},
+              {x:'تقول بصراحة: «لا أقدر وحدي — لنقسّمها بيننا»', tr:'sidq', q:'إمتى بتقول «مش قادر»؟ وهل ده ضعف ولا حكمة؟',
+               r:'قلتَ الحقيقةَ عن قدرتك، فقسّم أهلُ القرية المهمةَ بينهم. الصدقُ مع النفس يبني ما لا يبنيه التباهي.'} ] }
+      ],
+      endings:{
+        rahma:  { em:'💚', title:'بئر الرحمة', head:'سقايةُ عصفورٍ تُعيد الماءَ إلى القرية', body:'صببتَ الماءَ في أكواب الناس قبل كوبك، فامتلأ البئر… وامتلأت القلوب. صار أهلُ القرية يقولون: ماءُ بئرنا حلوٌ لأن صاحبه كان رحيمًا.', moral:'﴿وَأَحْسِن كَمَا أَحْسَنَ اللَّهُ إِلَيْكَ﴾ — القصص ٧٧' },
+        shajaa: { em:'🦁', title:'بئر الشجعان', head:'فتىً يدفع صخرةَ البئر… فيصل الماءُ إلى كل بيت', body:'خفتَ، ونزلتَ رغم الخوف، ووفيتَ بوعدك كلَّ صباح. صار الصغارُ في القرية يقولون: «إذا خفتُ، أتذكّر من نزل البئر».', moral:'﴿وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ﴾ — الطلاق ٣' },
+        sidq:   { em:'💎', title:'بئر الصادقين', head:'«أنا خائف» — كلمةُ صدقٍ تُنجي القرية من العطش', body:'قلتَ «أنا خائف» فلم يضحك أحد. وقلتَ الحقَّ حين تدافع الناس، فشرب الجميع بلا خصام. البئرُ التي بُنيت على الصدق لا يخيفها العطش.', moral:'﴿وَقُولُوا قَوْلًا سَدِيدًا﴾ — الأحزاب ٧٠' },
+        sabr:   { em:'🌱', title:'بئر الصابرين', head:'أسبوعان من الدعاء… ثم فتح الله البئر', body:'لم تتعجّل، ولم تيأس من بئرٍ جافّ. انتظرتَ ودعوتَ ونزلتَ في الوقت الصحيح. صار البئرُ رمزًا في القرية: «الصبرُ يفتح الماء».', moral:'﴿إِنَّ اللَّهَ مَعَ الصَّابِرِينَ﴾ — البقرة ١٥٣' },
+        balanced:{ em:'🌟', title:'بئر الخير', head:'قريةٌ بناها أربعةُ أبوابٍ من الخير', body:'رحيمٌ حين احتاج العصفور، شجاعٌ حين ثقلت الصخرة، صادقٌ حين خفت، صابرٌ حين تأخّر الماء. القلبُ الذي يجمع أوجهَ الخير كلها… بئرٌ لا يجفّ.', moral:'ثلاثةُ أبوابٍ للخير فتحتَها في حكايةٍ واحدة — هذا هو البطل الحقيقي.' }
+      }
+    },
+    {
+      id:'lamp', title:'المصباح الأخير', ico:'🏮', bg:'linear-gradient(135deg,#2a1a5e,#4a2a8a)',
+      sub:'انقطع النور في القرية، وبقيتَ أنت والمصباح الأخير.',
+      scenes:[
+        { t:'انقطع النورُ في القرية كلِّها ليلةً كاملة. جلس الجميع في الظلام، وأنت تحمل المصباحَ الأخير. فجأة… سمعتَ بكاءً صغيرًا يأتي من بعيد.',
+          c:[ {x:'تذهب نحوه فورًا، قبل أن تعرف حتى من هو', tr:'rahma', q:'إيه اللي بيخليك تساعد حد إنت أصلًا ما تعرفهوش؟',
+               r:'مشيتَ في الظلام نحو البكاء. لم تكن تعرف صاحبه، لكن قلبك عرف قبل عينيك.'},
+              {x:'تسكت وتستمع بهدوء لتعرف من أين يأتي بالضبط', tr:'sabr', q:'جرّب تسكت دقيقة كاملة وتسمع… إيه اللي سمعته؟',
+               r:'سكتتَ… وسمعتَ. أحيانًا الحلُّ لا يُسمَع إلا إذا سكتَ الضجيج.'} ] },
+        { t:'وجدتَ الصوتَ خلفَ بابٍ مغلق. البكاءُ يعلو، والبابُ ثقيل، وأهلُ البيت نائمون.',
+          c:[ {x:'تطرق وتنادي بأعلى صوتك: «افتحوا، في أحدٌ يبكي!»', tr:'shajaa', q:'لو حد احتاج مساعدة نص الليل… هتعمل إيه؟',
+               r:'طرقتَ وناديت، ولو أيقظتَ نصفَ الحارة. البابُ فُتح — وأنقذتَ طفلًا من الخوف.'},
+              {x:'تعود وتقول لأخيك الأكبر: «أنا خائف، تعالَ معي»', tr:'sidq', q:'مين اللي بتطلب منه يساعدك لمّا تحتاجه؟',
+               r:'لم تتصنّع الشجاعة. طلبتَ العونَ بصدق، فجاء أخوك، ودخلتما معًا. الشجاعةُ الحقيقية تعرف متى تطلب يدًا.'} ] },
+        { t:'في الغرفة طفلٌ صغيرٌ يبكي من الظلام، وأمه نائمةٌ متعبة. في يدك المصباحُ الأخير… وطفلٌ آخر في الشارع ينتظر ضوءًا.',
+          c:[ {x:'تعطي المصباحَ للطفل يحمله وينام على ضوئه', tr:'rahma', q:'إيه حاجة عزيزة عليك ممكن تدّيها لحد؟',
+               r:'وضعتَ المصباحَ في يده الصغيرة، فنام وابتسامتُه على وجهه. أعطيتَ ضوءَك، فعاد إليك مضاعفًا.'},
+              {x:'تتسلّق وتعلّق المصباحَ عاليًا ليضيءَ الشارع كلَّه', tr:'shajaa', q:'لو تقدر تعمل حاجة واحدة تنفع كل الناس… هتكون إيه؟',
+               r:'تسلّقتَ وأنت تخاف السقوط، وعلّقتَ المصباحَ عاليًا. أضاءَ الشارع، فخرج الناسُ من بيوتهم يبتسمون.'} ] },
+        { t:'في الصباح، عاد النور. لكن الطفلَ جاءك بالمصباح وقال: «خُذه… أنا خفت من الظلام، وأنت أنقذتني. علّمني كيف لا أخاف؟»',
+          c:[ {x:'تجلس معه وتقصّ عليه قصتك مع الخوف، وتطمئنه', tr:'sabr', q:'احكيله مرة خفت فيها إنت كمان — إيه اللي طمّنك؟',
+               r:'جلستَ معه، وحكيتَ. لم تقل له «لا تخف»، بل قلت: «أنا أيضًا خفت، وهذا ما فعلت». فابتسم.'},
+              {x:'تقول له الحقّ: «الظلام ليس عدوًّا، والخوف طبيعي — لكنّك لستَ وحدك أبدًا»', tr:'sidq', q:'هل الصدق ينفع دايمًا؟ وإمتى نختار كلامنا؟',
+               r:'قلتَ الحقيقة كاملة، بلا تهويلٍ ولا تجميل. فشعر الطفل بالاطمئنان… لأن الصدقَ يطمئن القلوب.'} ] }
+      ],
+      endings:{
+        rahma:  { em:'💚', title:'مصباح الرحمة', head:'المصباحُ الأخير يجد صاحبَه: طفلٌ ينام على الضوء', body:'لم تحتفظ بالضوء لنفسك. أعطيته لطفلٍ فنام، ولطفلٍ فابتسم، ولشارعٍ فزالت وحشته. القريةُ الآن تقول: «الضوءُ الذي يُعطى هو الضوءُ الذي يبقى».', moral:'﴿وَأَحْسِن كَمَا أَحْسَنَ اللَّهُ إِلَيْكَ﴾ — القصص ٧٧' },
+        shajaa: { em:'🦁', title:'مصباح الشجعان', head:'في الظلام: فتىً يطرق الأبواب ويُعلّق الضوء عاليًا', body:'مشيتَ في الظلام، وطرقتَ أبوابًا، وتسلّقتَ رغم الخوف. صار مصباحُ الشارع علامةً في القرية: «من أضاء لنا الطريق؟ ذاك الذي خاف ولم يتوقّف».', moral:'﴿وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ﴾ — الطلاق ٣' },
+        sidq:   { em:'💎', title:'مصباح الصادقين', head:'لم يَدّعِ الشجاعة… قال «أنا خائف» فأنقذ طفلًا', body:'قلتَ «أنا خائف» فلم تفقد شيئًا، بل ربحت أخًا. وقلتَ للطفل الحقيقةَ بلا تجميل. الضوءُ الذي يضيء بصدقٍ لا ينطفئ.', moral:'﴿وَقُولُوا قَوْلًا سَدِيدًا﴾ — الأحزاب ٧٠' },
+        sabr:   { em:'🌱', title:'مصباح الصابرين', head:'سكوتٌ في الظلام… ثم سمع الجميعُ صوتَ الطفل', body:'سكتتَ لتسمع، ولم تستعجل الجواب. ثم انتظرتَ مع الطفل حتى نام، ولم تضغط عليه. صبرُك كان أهدأ من أيِّ ضوء.', moral:'﴿إِنَّ اللَّهَ مَعَ الصَّابِرِينَ﴾ — البقرة ١٥٣' },
+        balanced:{ em:'🌟', title:'مصباح القرية', head:'ليلةٌ بلا نور… وفتىً بلا خوف', body:'سمعتَ، صدقتَ، طرقتَ، وأعطيتَ. أربعةُ أبوابٍ من الخير في ليلةٍ واحدة، فأصبح اسمُك حكايةً تُروى للأطفال قبل النوم.', moral:'ليست الشجاعةُ غيابَ الخوف، بل رحمةٌ تُحرّكك رغم الخوف.' }
+      }
+    },
+    {
+      id:'seed', title:'بذرة الجدّ', ico:'🌱', bg:'linear-gradient(135deg,#3d2a0e,#8a6a1f)',
+      sub:'بذرةٌ واحدةٌ من جدّك… هل ستنبت؟',
+      scenes:[
+        { t:'قبل أن يرحل جدُّك، وضع في يدك بذرةً صغيرةً وقال: «هذه آخرُ بذرةٍ من شجرتنا القديمة. ازرعها… واصبر». الأرضُ جافة، والبذرةُ واحدة.',
+          c:[ {x:'تسقيها بقطراتٍ صغيرةٍ كلَّ يوم، وتنتظر', tr:'sabr', q:'إيه الحاجة اللي بتحاول فيها ببطء ومش زهقت منها؟',
+               r:'ملعقةُ ماءٍ كلَّ صباح. لم يحدث شيءٌ لأيّام… لكنك لم تتوقّف.'},
+              {x:'تسأل كلَّ صديقٍ أن يجيء بقطرةٍ من بيته', tr:'rahma', q:'مين ممكن يساعدك في حاجة كبيرة؟ اكتب ٣ أسماء.',
+               r:'جاء الأولُ بقطرة، والثاني بقطرتين، والثالثُ بجرّة. صارت الأرضُ رطبةً بأيدي كثيرين.'} ] },
+        { t:'جاء طفلٌ من الحارة وعبث بالتراب، فكاد يقلب البذرة. رأيتَه… ويدك ترتجف.',
+          c:[ {x:'تقول له بصدق: «هذه بذرة جدّي، وتكسر قلبي إن ضاعت»', tr:'sidq', q:'إمتى قلت الحقيقة وكانت صعبة؟ وإيه اللي حصل بعدها؟',
+               r:'قلتَ الحقيقةَ بلا زعلٍ ولا صراخ. فنظر إليك الطفل، ووعد: «لن ألمسها بعد اليوم».'},
+              {x:'تحرس البذرةَ بنفسك الليلَ كلَّه حتى تطمئن', tr:'shajaa', q:'إيه الحاجة اللي عملتها ومحدش شافك؟',
+               r:'سهرتَ تحرس حفنةَ تراب. لا أحدُ رآك، ولا أحدُ شكرك… لكنك كنتَ هناك.'} ] },
+        { t:'مرّ أسبوع، ثم أسبوعان… ولا شيء. وفي الصباح الثالث وجدتَ ورقةً خضراءَ صغيرةً تشقّ الأرض.',
+          c:[ {x:'تحكيها لكلِّ من مرّ، وتريهم الورقةَ بفخر', tr:'sidq', q:'ليه بنفرح نحكي إنجازنا؟ وإمتى يبقى تفاخر؟',
+               r:'قلتَ الحقيقة: «نبتت! ولكنها صغيرة جدًا». لم تبالغ، ففرح الجميعُ فرحًا صادقًا معك.'},
+              {x:'تسكت وتنتظر، فالنبتةُ الصغيرةُ تحتاج هدوءًا لا ضجيجًا', tr:'sabr', q:'إيه اللي يحصل للنبتة لو سقيناها كل يوم زيادة؟',
+               r:'لم ترفع صوتك. سقيتَها في صمت، وتركتَها تكبر على مهلها. الصبرُ يرعى ما لا يراه الناس.'} ] },
+        { t:'كبرت النبتةُ حتى صارت شجرةً تمتدّ أغصانُها خارج الحائط. وفي ليلة عاصفة، سمعتَ غصنًا يئنّ فوق بيت الجار العجوز.',
+          c:[ {x:'تصعد وتشدّ الغصنَ بحبلٍ حتى لا ينكسر', tr:'shajaa', q:'إيه أخطر حاجة عملتها عشان تساعد حد؟',
+               r:'صعدتَ في العاصفة، وربطتَ الغصن. في الصباح وجدَ الجارُ شجرتَه سليمة، ولم يعرف من أنقذها.'},
+              {x:'تقطف من ثمرها وتعطيه لجارك العجوز قبل أن تجربها أنت', tr:'rahma', q:'لو عندك حاجة حلوة… بتديها لمين الأول؟',
+               r:'مددتَ الثمرةَ إلى يدٍ عجوز. أكلها، ثم قال: «طعمُها مثل طعم شجرة جدّك».'} ] }
+      ],
+      endings:{
+        rahma:  { em:'💚', title:'شجرة الرحمة', head:'قطراتٌ من كل بيت… شجرةُ الجدّ تظلّل القرية', body:'سقيتَها بقطراتٍ جمعتَها من الجميع، وأعطيتَ أولَ ثمرةٍ لجارك. الشجرةُ الآن ظلٌّ لكل من مرّ — لأن صاحبها تعلّم أن الثمرةَ تُعطى لا تُخبَّأ.', moral:'﴿وَأَحْسِن كَمَا أَحْسَنَ اللَّهُ إِلَيْكَ﴾ — القصص ٧٧' },
+        shajaa: { em:'🦁', title:'شجرة الشجعان', head:'حرَس حفنةَ ترابٍ في الليل… فأثمرت شجرة', body:'حرستَ حفنةَ ترابٍ في الليل وحدك، وصعدتَ في العاصفة لتشدّ غصنًا. لم يرَك أحد، وهذا بالضبط ما يجعلها شجاعة.', moral:'﴿وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ﴾ — الطلاق ٣' },
+        sidq:   { em:'💎', title:'شجرة الصادقين', head:'«هذه بذرة جدّي» — صدقُ طفلٍ يحمي شجرة', body:'لم تبالغ حين نبتت ورقةٌ صغيرة، ولم تدّعِ ما لم يحدث. الصدقُ في الحكاية الصغيرة يصنع ثقةً كبيرة.', moral:'﴿وَقُولُوا قَوْلًا سَدِيدًا﴾ — الأحزاب ٧٠' },
+        sabr:   { em:'🌱', title:'شجرة الصابرين', head:'ملعقةُ ماءٍ كل يوم… الشجرةُ التي لم تكن معجزة', body:'ملعقةُ ماءٍ كلَّ يوم، وأسبوعان بلا نتيجة، ولم تتوقّف. الشجرةُ لم تكن معجزة — كانت صبرًا طويلًا التقطه التراب.', moral:'﴿إِنَّ اللَّهَ مَعَ الصَّابِرِينَ﴾ — البقرة ١٥٣' },
+        balanced:{ em:'🌟', title:'شجرة الجدّ', head:'بذرةٌ واحدة… وقلبٌ يعرف أربعة طرق للحب', body:'صبرتَ، ورحمتَ، وصدقتَ، وشجعتَ. وحين سُئلت كيف نبتت، قلت: «في كل مرة أحببتُها بطريقة مختلفة». هكذا تنبت الأشجار… وهكذا ينبت الناس.', moral:'بذرةٌ واحدة، قلبٌ واحد، وأربعةُ أبوابٍ للخير.' }
+      }
+    }
+  ];
+
+  var S_KEY = 'zad_v2', KIDS_KEY = 'zad_kids_v2', NAME_KEY = 'zad_profile';
+
+  /* ══ 2. الحالة ════════════════════════════════════════════════ */
+  function readAll(){ try{ return JSON.parse(localStorage.getItem(S_KEY)||'{}')||{}; }catch(e){ return {}; } }
+  function saveAll(o){
+    try{
+      if (window.zadPatchState) { window.zadPatchState(o); return; }
+      localStorage.setItem(S_KEY, JSON.stringify(o));
+    }catch(e){}
+  }
+  function load(){
+    var s = readAll(), t = s.kidsTales || {};
+    return {
+      compass: t.compass || { rahma:0, shajaa:0, sidq:0, sabr:0 },
+      endings: t.endings || {},
+      landmarks: t.landmarks || {}
+    };
+  }
+  function persist(st){ var s = readAll(); s.kidsTales = st; saveAll(s); }
+
+  function addStars(n){
+    try{
+      var st = JSON.parse(localStorage.getItem(KIDS_KEY)||'{}')||{};
+      st.stars = (st.stars||0) + n;
+      localStorage.setItem(KIDS_KEY, JSON.stringify(st));
+    }catch(e){}
+  }
+  function kidName(){
+    try{ var p = JSON.parse(localStorage.getItem(NAME_KEY)||'{}'); return (p && (p.name||p.displayName)) || ''; }catch(e){ return ''; }
+  }
+
+  /* ══ 3. العرض ═════════════════════════════════════════════════ */
+  var $ = function(id){ return document.getElementById(id); };
+  var st = load();
+  var cur = null;     /* {tale, i, picks:[], locked:bool} */
+
+  function totalEndings(){
+    var n = 0;
+    TALES.forEach(function(t){ n += Object.keys(st.endings[t.id]||{}).length; });
+    return n;
+  }
+
+  function renderVillage(){
+    var on = 0;
+    ['beer','lamp','seed'].forEach(function(id){
+      var el = document.querySelector('.tv-land[data-tale="'+id+'"]');
+      if (!el) return;
+      var has = !!st.landmarks[id];
+      el.classList.toggle('on', has);
+      if (has) on++;
+    });
+    var mem = $('tv-memory');
+    if (mem){
+      var last = st.last, found = null;
+      if (last){
+        for (var i=0;i<TALES.length;i++){
+          if (TALES[i].id === last.tale) found = { t: TALES[i], e: TALES[i].endings[last.key] };
+        }
+      }
+      if (found && found.e){
+        mem.style.display = 'block';
+        mem.textContent = '🏮 القرية تتذكّر: «' + found.e.title + '» — من حكاية ' + found.t.title + '.';
+      } else {
+        mem.style.display = 'none';
+      }
+    }
+    var lbl = $('tv-village-lbl');
+    if (lbl) lbl.textContent = on === 0 ? 'قريتك: هادئة… في انتظار أثرك'
+      : on === 3 ? 'قريتك: مكتملة — بئرٌ ومصباحٌ وشجرة 🌟'
+      : 'قريتك تنمو: ' + on + ' من 3 آثار';
+
+    /* نجوم السماء = عدد النهايات المكتشفة */
+    var sky = $('tv-stars');
+    if (sky){
+      var n = Math.min(totalEndings(), 15);
+      if (sky.children.length !== n){
+        sky.innerHTML = '';
+        for (var i=0;i<n;i++){
+          var s = document.createElement('span');
+          s.className = 'tv-sky-star';
+          s.textContent = '✦';
+          s.style.top = (8 + (i*37)%58) + '%';
+          s.style.right = (6 + (i*53)%86) + '%';
+          s.style.animationDelay = (i%7)*0.4 + 's';
+          sky.appendChild(s);
+        }
+      }
+    }
+  }
+
+  function renderCompass(){
+    var box = $('tv-compass');
+    if (!box) return;
+    var max = 1;
+    Object.keys(TR).forEach(function(k){ max = Math.max(max, st.compass[k]||0); });
+    box.innerHTML = Object.keys(TR).map(function(k){
+      var v = st.compass[k]||0, w = Math.round(v/max*100);
+      return '<div class="tv-cmp"><span>'+TR[k].i+'</span><span style="min-width:52px">'+TR[k].n+'</span>'
+        +'<span class="bar"><i style="width:'+w+'%;background:'+TR[k].c+'"></i></span><b>'+v+'</b></div>';
+    }).join('');
+  }
+
+  function renderTales(){
+    var box = $('tv-tales');
+    if (!box) return;
+    box.innerHTML = '';
+    TALES.forEach(function(t){
+      var got = Object.keys(st.endings[t.id]||{}).length;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tv-tale';
+      b.innerHTML = '<span class="ico" style="background:'+t.bg+'">'+t.ico+'</span>'
+        + '<span class="tt"><b>'+t.title+'</b><small>'+t.sub+'</small></span>'
+        + '<span class="prog'+(got?' done':'')+'">'+got+' / 5</span>';
+      b.addEventListener('click', function(){ tvStart(t); });
+      box.appendChild(b);
+    });
+  }
+
+  function renderAlbum(){
+    var box = $('tv-album');
+    if (!box) return;
+    var html = '';
+    TALES.forEach(function(t){
+      Object.keys(t.endings).forEach(function(ek){
+        var got = !!(st.endings[t.id] && st.endings[t.id][ek]);
+        var e = t.endings[ek];
+        html += '<div class="tv-slot'+(got?' got':'')+'" title="'+(got? e.title : 'نهاية لم تُكتشف بعد')+'">'
+             + (got ? e.em : '؟') + '</div>';
+      });
+    });
+    box.innerHTML = html;
+    var c = $('tv-album-count');
+    if (c) c.textContent = totalEndings() + ' / 15';
+  }
+
+  function renderAll(){ renderVillage(); renderCompass(); renderTales(); renderAlbum(); }
+
+  /* ══ 4. القارئ ════════════════════════════════════════════════ */
+  function tvStart(tale){
+    cur = { tale: tale, i: 0, picks: [] };
+    $('tv-list').style.display = 'none';
+    $('tv-ending').classList.remove('on');
+    $('tv-reader').classList.add('on');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderScene();
+  }
+  function tvHome(){
+    cur = null;
+    stopSpeak();
+    $('tv-reader').classList.remove('on');
+    $('tv-ending').classList.remove('on');
+    $('tv-list').style.display = '';
+    renderAll();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function tvReplay(){ if (cur) tvStart(cur.tale); }
+
+  function esc(t){
+    return String(t).replace(/[&<>"]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+    });
+  }
+  /* نص المشهد ككلمات منفصلة، كي تُضاء الكلمة التي يقرأها الصوت الآن */
+  function renderText(txt){
+    var el = $('tv-text');
+    el.innerHTML = String(txt).split(/\s+/).map(function(w,i){
+      return '<span class="w" data-i="'+i+'">'+esc(w)+'</span>';
+    }).join(' ');
+  }
+  function wordAt(txt, charIndex){
+    if (charIndex <= 0) return 0;
+    return String(txt).slice(0, charIndex).split(/\s+/).length - 1;
+  }
+  function markWord(i){
+    var ws = $('tv-text').querySelectorAll('.w');
+    for (var k=0;k<ws.length;k++){ ws[k].classList.toggle('on', k === i); }
+  }
+  function clearMarks(){
+    var ws = $('tv-text').querySelectorAll('.w.on');
+    for (var k=0;k<ws.length;k++) ws[k].classList.remove('on');
+  }
+
+  function renderScene(){
+    if (!cur) return;
+    var t = cur.tale, sc = t.scenes[cur.i];
+
+    var dots = $('tv-dots');
+    dots.innerHTML = t.scenes.map(function(_, i){
+      return '<span class="'+(i<=cur.i?'on':'')+'"></span>';
+    }).join('');
+
+    renderText(sc.t);
+    $('tv-reply').classList.remove('on');
+    $('tv-ask').classList.remove('on');
+    $('tv-next').style.display = 'none';
+
+    var box = $('tv-choices');
+    box.innerHTML = '';
+    sc.c.forEach(function(ch, idx){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tv-choice';
+      b.innerHTML = '<span class="n">'+(idx+1)+'</span><span>'+ch.x+'</span>';
+      b.addEventListener('click', function(){ pick(ch); });
+      box.appendChild(b);
+    });
+
+    speak(sc.t, true);
+  }
+
+  function pick(ch){
+    if (!cur) return;
+    var btns = $('tv-choices').querySelectorAll('.tv-choice');
+    for (var i=0;i<btns.length;i++){ btns[i].disabled = true; btns[i].style.opacity = .55; }
+
+    cur.picks.push(ch.tr);
+    st.compass[ch.tr] = (st.compass[ch.tr]||0) + 1;
+    persist(st);
+
+    var rep = $('tv-reply');
+    rep.textContent = ch.r;
+    rep.classList.add('on');
+
+    /* «اسأل طفلك»: سطرٌ للوالد تحت كل اختيار */
+    var ask = $('tv-ask');
+    if (ask){
+      if (ch.q){
+        ask.innerHTML = '<span class="who">👨‍👩‍👧</span><span>' + esc(ch.q) + '</span>';
+        ask.classList.add('on');
+      } else { ask.classList.remove('on'); }
+    }
+    $('tv-next').style.display = 'block';
+    $('tv-next').textContent = (cur.i >= cur.tale.scenes.length - 1) ? 'اكتشف نهايتك ←' : 'التالي ←';
+    renderCompass();
+    speak(ch.r);
+    try{ if (navigator.vibrate) navigator.vibrate(14); }catch(e){}
+  }
+
+  function tvNext(){
+    if (!cur) return;
+    if (cur.i < cur.tale.scenes.length - 1){ cur.i++; renderScene(); return; }
+    finish();
+  }
+
+  /* ══ 5. حسابات النهاية ═══════════════════════════════════════ */
+  function dominantTrait(picks){
+    var c = { rahma:0, shajaa:0, sidq:0, sabr:0 };
+    picks.forEach(function(p){ c[p] = (c[p]||0) + 1; });
+    var max = 0, winners = [];
+    Object.keys(c).forEach(function(k){ if (c[k] > max){ max = c[k]; winners = [k]; } else if (c[k] === max && max > 0){ winners.push(k); } });
+    /* متوازن = أربع قيم مختلفة، أو تعادلٌ لا يحسمه الاختيار الأخير */
+    if (max <= 1) return 'balanced';
+    if (winners.length === 1) return winners[0];
+    var last = picks[picks.length-1];
+    return winners.indexOf(last) >= 0 ? last : 'balanced';
+  }
+
+  function finish(){
+    var t = cur.tale;
+    var key = dominantTrait(cur.picks);
+    var e = t.endings[key] || t.endings.balanced;
+
+    st.endings[t.id] = st.endings[t.id] || {};
+    var isNew = !st.endings[t.id][key];
+    /* نحفظ لقطةً كاملة من النهاية، لا «true» فقط: صحيفة القرية تحتاج
+       العنوان والمتن دون أن تكرّر بيانات kids-tales.html */
+    st.endings[t.id][key] = {
+      title: e.title, em: e.em, body: e.body, moral: e.moral,
+      head: e.head || e.title, d: new Date().toISOString().slice(0,10)
+    };
+    st.landmarks[t.id] = true;
+    st.last = { tale: t.id, key: key };   /* القرية تتذكّر آخر ما فعلتَه */
+    persist(st);
+
+    var gained = 0;
+    if (isNew){ gained = (key === 'balanced') ? 5 : 3; addStars(gained); }
+
+    $('tv-reader').classList.remove('on');
+    $('tv-ending').classList.add('on');
+    $('tv-end-em').textContent = e.em;
+    $('tv-end-tag').textContent = isNew ? '✨ نهاية جديدة' : 'نهاية مكرّرة — جرّب طريقًا آخر';
+    $('tv-end-title').textContent = e.title;
+    $('tv-end-body').textContent = e.body;
+    $('tv-end-moral').textContent = e.moral;
+
+    $('pv-who').textContent = (kidName() ? kidName() + ' · ' : '') + 'من حكايات القرية 🏮';
+    $('pv-end').textContent = e.title;
+    $('pv-body').textContent = e.body;
+
+    renderAll();
+    try{ if (window.confetti && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) window.confetti({ particleCount: isNew?110:55, spread:72, origin:{y:.6} }); }catch(err){}
+    speak(isNew ? ('نهاية جديدة! ' + e.title + '. ' + e.body) : e.body);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ══ 6. القراءة الصوتية ═════════════════════════════════════ */
+  var voiceOn = true, voicesReady = false;
+  function pickVoice(){
+    if (!('speechSynthesis' in window)) return null;
+    var vs = window.speechSynthesis.getVoices() || [];
+    for (var i=0;i<vs.length;i++){ if ((vs[i].lang||'').toLowerCase().indexOf('ar') === 0) return vs[i]; }
+    return vs[0] || null;
+  }
+  var spoken = '';   /* النص المعروض حاليًا، لربط مؤشر الصوت بالكلمة */
+  function speak(txt, withHighlight){
+    if (!('speechSynthesis' in window)) return;
+    if (!voiceOn || !txt) return;
+    try{
+      window.speechSynthesis.cancel();
+      var plain = String(txt).replace(/[﴿﴾«»]/g,'');
+      var u = new SpeechSynthesisUtterance(plain);
+      var v = pickVoice();
+      if (v){ u.voice = v; u.lang = v.lang; } else { u.lang = 'ar-SA'; }
+      u.rate = 0.92; u.pitch = 1.05;
+      if (withHighlight){
+        spoken = txt;
+        u.onboundary = function(e){
+          try{ if (typeof e.charIndex === 'number') markWord(wordAt(txt, e.charIndex)); }catch(err){}
+        };
+        u.onend = function(){ clearMarks(); };
+      }
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  function stopSpeak(){ try{ if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(e){} }
+  function tvSpeak(){
+    voiceOn = !voiceOn;
+    var b = $('tv-say');
+    if (b){ b.classList.toggle('off', !voiceOn); b.textContent = voiceOn ? '🔊' : '🔇'; }
+    if (voiceOn && cur) speak(cur.tale.scenes[cur.i].t, true); else stopSpeak();
+  }
+
+  function tvPrint(){ try{ window.print(); }catch(e){ if (window.showToast) window.showToast('تعذّرت الطباعة من هذا المتصفح'); } }
+
+  /* ══ 7. الإقلاع ═════════════════════════════════════════════ */
+  window.tvStart = tvStart; window.tvHome = tvHome; window.tvNext = tvNext;
+  window.tvReplay = tvReplay; window.tvSpeak = tvSpeak; window.tvPrint = tvPrint;
+  window._tvPure = { dominantTrait: dominantTrait, wordAt: wordAt, TR: TR, TALES: TALES, load: load };
+
+  function boot(){
+    if (!('speechSynthesis' in window)){ var b = $('tv-say'); if (b) b.style.display = 'none'; }
+    if ('speechSynthesis' in window){
+      try{ window.speechSynthesis.onvoiceschanged = function(){ voicesReady = true; }; }catch(e){}
+    }
+    renderAll();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="بستان الذكر — كل تسبيحة زهرة. عدّاد تسبيح للأطفال يُنبت بستانًا لا يذبل.">
+<title>بستان الذكر · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+/* ══ الهوية ══ */
+.gd-hero{background:linear-gradient(135deg,#123f31 0%,#1a5d47 50%,#7c9cf5 130%);border-radius:24px;padding:26px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -12px rgba(14,59,46,.45)}
+.gd-hero::after{content:'🌱';position:absolute;top:8px;left:18px;font-size:64px;opacity:.14;line-height:1}
+.gd-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.gd-title{font-size:27px;font-weight:900;line-height:1.25;margin-bottom:8px}
+.gd-sub{font-size:13.5px;color:rgba(255,255,255,.9);line-height:1.95;max-width:600px}
+
+/* ══ البستان ══ */
+.gd-scene{position:relative;height:330px;border-radius:24px;overflow:hidden;margin-bottom:14px;
+  background:linear-gradient(180deg,#bfe6ff 0%,#dff3ff 42%,#cdeccd 70%,#8fce8f 100%);
+  box-shadow:inset 0 -40px 60px -30px rgba(20,80,40,.55),0 14px 36px -18px rgba(20,80,40,.45);
+  transition:background .8s}
+.gd-sun{position:absolute;top:14px;right:20px;font-size:30px;filter:drop-shadow(0 0 12px rgba(255,214,102,.9))}
+.gd-cloud{position:absolute;font-size:26px;opacity:.85;animation:gdDrift 38s linear infinite}
+.gd-cloud.b{font-size:19px;top:44px;animation-duration:52s;animation-delay:-12s}
+@keyframes gdDrift{from{transform:translateX(-140%)}to{transform:translateX(140vw)}}
+.gd-ground{position:absolute;left:-10%;right:-10%;bottom:-24px;height:120px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,#7cc47c,#4e9a52)}
+.gd-ground.b{bottom:-46px;background:linear-gradient(180deg,#69b569,#3d8142);height:130px;left:-20%;right:-30%}
+.gd-scene-note{position:absolute;top:12px;left:14px;font-size:10.5px;font-weight:800;color:rgba(20,60,35,.7);background:rgba(255,255,255,.62);padding:5px 11px;border-radius:999px;z-index:6;backdrop-filter:blur(4px)}
+.gd-scene-note b{color:#1a5d47}
+
+/* ══ الزهرة (مرسومة بالكامل) ══ */
+.gd-plot{position:absolute;transform-origin:bottom center;transform:scale(var(--sc,1));transition:transform .3s;z-index:var(--z,2)}
+.gd-flower{position:relative;width:52px;height:96px;animation:gdGrow .9s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes gdGrow{from{transform:scale(.05) translateY(6px);opacity:0}to{transform:none;opacity:1}}
+.gd-stem{position:absolute;bottom:0;left:50%;width:3.5px;height:56px;margin-left:-1.75px;border-radius:3px;background:linear-gradient(180deg,#63b96b,#2f7a3c)}
+.gd-leaf{position:absolute;width:20px;height:11px;border-radius:0 100% 0 100%;background:#4ea154;bottom:22px;left:50%;transform-origin:0 50%}
+.gd-leaf.r{transform:rotate(-28deg) scaleX(-1);left:50%}
+.gd-leaf.l{transform:rotate(28deg) translateX(-20px)}
+.gd-bloom{position:absolute;bottom:50px;left:50%;width:0;height:0}
+.gd-petal{position:absolute;width:15px;height:22px;left:-7.5px;top:-26px;border-radius:50% 50% 46% 46%/62% 62% 38% 38%;
+  background:radial-gradient(circle at 50% 22%,#fff9,transparent 62%),var(--fc);transform-origin:50% 100%;
+  box-shadow:0 2px 5px rgba(0,0,0,.12);animation:gdBloom .7s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes gdBloom{from{transform:rotate(var(--r)) scale(.1)}to{transform:rotate(var(--r)) scale(1)}}
+.gd-core{position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff3c4,var(--cc,#f2b53f));box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.gd-glow{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;background:radial-gradient(circle,rgba(255,244,190,.85),transparent 68%);animation:gdPulse 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes gdPulse{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:.95;transform:scale(1.12)}}
+
+/* شجرة لا إله إلا الله */
+.gd-tree{position:relative;width:110px;height:150px;animation:gdGrow 1.1s cubic-bezier(.34,1.56,.64,1) both}
+.gd-trunk{position:absolute;bottom:0;left:50%;width:13px;height:62px;margin-left:-6.5px;border-radius:5px;background:linear-gradient(90deg,#6b4a2a,#8d6437,#5b3d21)}
+.gd-canopy{position:absolute;border-radius:50%;background:radial-gradient(circle at 36% 30%,#8fdc8a,#3f8f47 72%);box-shadow:inset -6px -8px 14px rgba(0,0,0,.14)}
+.gd-canopy.c1{width:74px;height:66px;left:18px;bottom:48px}
+.gd-canopy.c2{width:56px;height:52px;left:2px;bottom:36px}
+.gd-canopy.c3{width:56px;height:52px;left:52px;bottom:34px}
+.gd-fruit{position:absolute;width:7px;height:7px;border-radius:50%;background:#ffd166;box-shadow:0 0 6px rgba(255,209,102,.9)}
+
+/* فراشات */
+.gd-bf{position:absolute;font-size:15px;animation:gdFlit 12s ease-in-out infinite;z-index:7;pointer-events:none;opacity:.95}
+@keyframes gdFlit{0%{transform:translate(0,0) rotate(-6deg)}25%{transform:translate(26px,-18px) rotate(9deg)}50%{transform:translate(-14px,-32px) rotate(-8deg)}75%{transform:translate(-28px,-8px) rotate(6deg)}100%{transform:translate(0,0) rotate(-6deg)}}
+
+/* ══ لوحة العدّ ══ */
+.gd-panel{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.gd-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.gd-chips::-webkit-scrollbar{display:none}
+.gd-chip{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:12.5px;font-weight:800;padding:9px 14px;border-radius:999px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.gd-chip:hover{border-color:var(--green-soft)}
+.gd-chip.on{background:var(--green-deep);color:#fff;border-color:transparent;box-shadow:0 8px 20px -10px rgba(14,59,46,.8)}
+.gd-chip .dot{width:9px;height:9px;border-radius:50%}
+.gd-dhikr{text-align:center;margin:16px 0 4px;font-family:'Amiri',serif;font-size:25px;font-weight:700;color:var(--green-deep);line-height:1.6}
+html[data-theme="dark"] .gd-dhikr,html[data-theme="oled"] .gd-dhikr{color:var(--sys-green)}
+.gd-mean{text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:14px}
+
+.gd-tapwrap{position:relative;width:174px;height:174px;margin:0 auto 6px;display:grid;place-items:center}
+.gd-ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.gd-ring circle{fill:none;stroke-linecap:round}
+.gd-ring .bg{stroke:var(--sand);stroke-width:10}
+.gd-ring .fg{stroke:url(#gdGrad);stroke-width:10;transition:stroke-dashoffset .35s cubic-bezier(.34,1.56,.64,1)}
+.gd-tap{width:132px;height:132px;border-radius:50%;border:none;cursor:pointer;font-family:inherit;
+  background:radial-gradient(circle at 34% 28%,#3f9469,#1a5d47 78%);color:#fff;
+  box-shadow:0 16px 36px -12px rgba(14,59,46,.75),inset 0 -6px 14px rgba(0,0,0,.2),inset 0 6px 14px rgba(255,255,255,.18);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:transform .08s,box-shadow .2s}
+.gd-tap:active{transform:scale(.94);box-shadow:0 6px 16px -8px rgba(14,59,46,.7),inset 0 -4px 10px rgba(0,0,0,.25)}
+.gd-tap .n{font-size:36px;font-weight:900;line-height:1;font-family:'ThmanyahSans',sans-serif}
+.gd-tap .of{font-size:11px;opacity:.75;font-weight:700}
+.gd-tap .lbl{font-size:10.5px;opacity:.85;margin-top:3px;letter-spacing:.4px}
+.gd-ripple{position:absolute;border-radius:50%;border:2px solid rgba(77,216,102,.7);width:132px;height:132px;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);animation:gdRipple .6s ease-out forwards;pointer-events:none}
+@keyframes gdRipple{to{transform:translate(-50%,-50%) scale(1.5);opacity:0}}
+
+.gd-stats{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.gd-stat{background:var(--sand);border:1px solid var(--border);border-radius:13px;padding:9px 15px;text-align:center;min-width:96px}
+.gd-stat b{display:block;font-size:19px;font-weight:900;color:var(--green-deep);line-height:1.3}
+html[data-theme="dark"] .gd-stat b,html[data-theme="oled"] .gd-stat b{color:var(--sys-green)}
+.gd-stat small{font-size:10.5px;color:var(--muted);font-weight:700}
+
+.gd-tools{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.gd-tool{border:1.5px solid var(--border);background:var(--card);color:var(--ink);font-family:inherit;font-size:11.5px;font-weight:800;padding:8px 14px;border-radius:11px;cursor:pointer}
+.gd-tool.on{background:var(--green-pale);border-color:var(--green-soft);color:var(--green-deep)}
+
+/* ══ همسة ══ */
+.gd-whisper{display:none;margin:12px auto 0;max-width:520px;background:linear-gradient(135deg,rgba(201,161,74,.14),rgba(77,216,102,.1));border:1px dashed rgba(201,161,74,.5);border-radius:15px;padding:13px 16px;text-align:center;font-size:13px;font-weight:700;color:var(--ink);line-height:1.95}
+.gd-whisper.on{display:block;animation:gdIn .4s ease both}
+@keyframes gdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.gd-foot{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.9;margin:8px 0 26px}
+@media(max-width:420px){.gd-scene{height:280px}.gd-tapwrap{width:158px;height:158px}.gd-tap{width:118px;height:118px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important}}
+</style>
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="kids-tales.html"><span class="ico">🏮</span><span>حكايات القرية</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">بستان الذكر</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">بستان <span>الذكر</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="gd-hero">
+      <div class="gd-eyebrow">🌱 كلُّ تسبيحةٍ زهرة</div>
+      <div class="gd-title">بستان الذكر</div>
+      <div class="gd-sub">لا نقاطَ ولا أوسمة هنا. كلُّ ما تزرعه يبقى: زهرةٌ لكلِّ ذكرٍ تُتمّه، وشجرةٌ لـ«لا إله إلا الله». عُد بعد سنة… وستجد بستانك.</div>
+    </div>
+
+    <!-- ══ البستان ══ -->
+    <div class="gd-scene" id="gd-scene" aria-label="بستانك">
+      <div class="gd-sun">☀️</div>
+      <div class="gd-cloud" style="top:22px;right:-10px">☁️</div>
+      <div class="gd-cloud b" style="top:60px;right:30%">☁️</div>
+      <div class="gd-scene-note" id="gd-note">بستانك: <b>0</b> زهرة</div>
+      <div class="gd-ground b"></div>
+      <div class="gd-ground"></div>
+      <div id="gd-plants"></div>
+      <div id="gd-bflies"></div>
+    </div>
+
+    <!-- ══ العدّاد ══ -->
+    <div class="gd-panel">
+      <div class="gd-chips" id="gd-chips" role="tablist" aria-label="اختر الذكر"></div>
+      <div class="gd-dhikr" id="gd-dhikr">سبحان الله</div>
+      <div class="gd-mean" id="gd-mean">—</div>
+
+      <div class="gd-tapwrap">
+        <svg class="gd-ring" viewBox="0 0 120 120" aria-hidden="true">
+          <defs><linearGradient id="gdGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4dd866"/><stop offset="1" stop-color="#c9a14a"/></linearGradient></defs>
+          <circle class="bg" cx="60" cy="60" r="54"></circle>
+          <circle class="fg" id="gd-fg" cx="60" cy="60" r="54" stroke-dasharray="339.29" stroke-dashoffset="339.29"></circle>
+        </svg>
+        <button class="gd-tap" id="gd-tap" aria-label="سبّح">
+          <span class="n" id="gd-count">0</span>
+          <span class="of" id="gd-target">من 33</span>
+          <span class="lbl">اضغط للتسبيح</span>
+        </button>
+      </div>
+
+      <div class="gd-stats">
+        <div class="gd-stat"><b id="gd-today">0</b><small>أذكار اليوم</small></div>
+        <div class="gd-stat"><b id="gd-total">0</b><small>كلُّ أذكارك</small></div>
+        <div class="gd-stat"><b id="gd-days">0</b><small>أيامٌ في البستان</small></div>
+      </div>
+
+      <div class="gd-tools">
+        <button class="gd-tool on" id="gd-sound" onclick="gdToggleSound()">🔊 الصوت</button>
+        <a class="gd-tool" href="kids-tales.html" style="text-decoration:none">🏮 حكايات القرية</a>
+        <a class="gd-tool" href="kids-gazette.html" style="text-decoration:none">📰 صحيفة القرية</a>
+      </div>
+
+      <div class="gd-whisper" id="gd-whisper" aria-live="polite"></div>
+    </div>
+
+    <div class="gd-foot">«كلمتان خفيفتان على اللسان، ثقيلتان في الميزان، حبيبتان إلى الرحمن» — 🌿</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ══ 1. الأذكار ══════════════════════════════════════════════ */
+  var ADHKAR = [
+    { k:'subhan', t:'سبحان الله', mean:'تنزيهٌ لله عن كل نقص', n:33,
+      petal:'#7c9cf5', core:'#ffe082', leaf:'#4ea154', kind:'flower',
+      w:'«كلمتان خفيفتان على اللسان، ثقيلتان في الميزان» — سبحانه وبحمده.' },
+    { k:'hamd',   t:'الحمد لله',  mean:'شكرُ الله على كل نعمة', n:33,
+      petal:'#f28ba8', core:'#ffd166', leaf:'#4ea154', kind:'flower',
+      w:'«الحمد لله تملأ الميزان» — قلْها ولو على أصغر نعمة: نَفَسٌ وبلاغ.' },
+    { k:'akbar',  t:'الله أكبر',  mean:'الله أكبر من كل شيء', n:34,
+      petal:'#f2b53f', core:'#fff3c4', leaf:'#4ea154', kind:'flower',
+      w:'«الله أكبر» — أكبرُ من خوفك، وأكبرُ من حزنك، وأكبرُ من كل ما يقلقك.' },
+    { k:'tawhid', t:'لا إله إلا الله', mean:'لا معبودَ بحقٍّ إلا الله', n:100,
+      petal:'#9d7cf5', core:'#ffe082', leaf:'#3f8f47', kind:'tree',
+      w:'مئةُ مرة… وشجرةٌ تُظلّلك. «أفضلُ الذكر: لا إله إلا الله».' }
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var S_KEY = 'zad_v2';
+
+  /* ══ 2. الحالة ════════════════════════════════════════════════ */
+  function readAll(){ try{ return JSON.parse(localStorage.getItem(S_KEY)||'{}')||{}; }catch(e){ return {}; } }
+  function saveAll(o){
+    try{
+      if (window.zadPatchState){ window.zadPatchState(o); return; }
+      localStorage.setItem(S_KEY, JSON.stringify(o));
+    }catch(e){}
+  }
+  function todayKey(){
+    var d = new Date();
+    return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
+  }
+  function emptyState(){
+    return { day: todayKey(), today:{}, counts:{}, flowers:[], days:[] };
+  }
+  function load(){
+    var s = readAll(), g = s.kidsGarden;
+    if (!g || typeof g !== 'object') g = emptyState();
+    g.today = g.today || {};
+    g.counts = g.counts || {};
+    g.flowers = g.flowers || [];
+    g.days = g.days || [];
+    /* تصفير عدّاد اليوم عند تغيّر التاريخ — البستان نفسه لا يذبل */
+    if (g.day !== todayKey()){
+      g.day = todayKey();
+      g.today = {};
+    }
+    if (g.days.indexOf(g.day) === -1) g.days.push(g.day);
+    return g;
+  }
+  function persist(){
+    var s = readAll();
+    s.kidsGarden = g;
+    saveAll(s);
+  }
+
+  var g = load();
+  persist();            /* نُثبّت تطبيع الحالة (تاريخ اليوم وسجلّ الأيام) */
+  var cur = ADHKAR[0];
+
+  /* ══ 3. الرسم ═════════════════════════════════════════════════ */
+  function flowerHTML(d, seed){
+    var petals = '';
+    for (var i=0;i<8;i++){
+      var r = i*45;
+      petals += '<i class="gd-petal" style="--fc:'+d.petal+';--r:'+r+'deg;animation-delay:'+(i*26)+'ms"></i>';
+    }
+    return '<div class="gd-flower">'
+      + '<span class="gd-glow"></span>'
+      + '<span class="gd-stem"></span>'
+      + '<span class="gd-leaf l"></span><span class="gd-leaf r"></span>'
+      + '<span class="gd-bloom">'+petals+'<i class="gd-core" style="--cc:'+d.core+'"></i></span>'
+      + '</div>';
+  }
+  function treeHTML(d, seed){
+    var fruit = '';
+    for (var i=0;i<6;i++){
+      fruit += '<i class="gd-fruit" style="left:'+(14+((i*29)%74))+'px;bottom:'+(58+((i*17)%54))+'px"></i>';
+    }
+    return '<div class="gd-tree">'
+      + '<span class="gd-trunk"></span>'
+      + '<span class="gd-canopy c2"></span><span class="gd-canopy c3"></span><span class="gd-canopy c1"></span>'
+      + fruit + '</div>';
+  }
+
+  /* موضع حتميّ (بلا عشوائية متغيّرة) حتى يبقى البستان كما تركتَه */
+  function plotStyle(i, total){
+    var cols = 9;
+    var col = i % cols;
+    var row = Math.floor(i / cols) % 5;
+    var jitterX = ((i * 37) % 11) - 5;
+    var jitterY = ((i * 53) % 9) - 4;
+    var left = 4 + col * (92 / (cols - 1)) + jitterX;
+    var bottom = 6 + row * 13 + jitterY;
+    var scale = 1 - row * 0.11;
+    var z = 20 - row * 2;
+    return 'left:' + left.toFixed(2) + '%;bottom:' + bottom.toFixed(2) + '%;--sc:' + scale.toFixed(2) + ';--z:' + z + ';z-index:' + z;
+  }
+
+  function renderGarden(){
+    var box = $('gd-plants');
+    if (!box) return;
+    box.innerHTML = '';
+    var list = g.flowers.slice(0, 45);          /* 5 صفوف × 9 أعمدة */
+    list.forEach(function(f, i){
+      var d = null;
+      for (var k=0;k<ADHKAR.length;k++){ if (ADHKAR[k].k === f.k) d = ADHKAR[k]; }
+      if (!d) return;
+      var el = document.createElement('div');
+      el.className = 'gd-plot';
+      el.setAttribute('style', plotStyle(i, list.length));
+      el.innerHTML = (d.kind === 'tree') ? treeHTML(d, i) : flowerHTML(d, i);
+      el.title = d.t + ' — ' + f.d;
+      box.appendChild(el);
+    });
+
+    /* فراشات: واحدة لكل 3 نباتات، بحد أقصى 6 */
+    var bf = $('gd-bflies');
+    if (bf){
+      var n = Math.min(6, Math.floor(g.flowers.length / 3));
+      if (bf.children.length !== n){
+        bf.innerHTML = '';
+        for (var i=0;i<n;i++){
+          var s = document.createElement('span');
+          s.className = 'gd-bf';
+          s.textContent = '🦋';
+          s.style.left = (10 + (i*63) % 80) + '%';
+          s.style.top  = (18 + (i*41) % 55) + '%';
+          s.style.animationDelay = (i*1.7) + 's';
+          s.style.animationDuration = (9 + i) + 's';
+          bf.appendChild(s);
+        }
+      }
+    }
+
+    var note = $('gd-note');
+    if (note){
+      var flowers = g.flowers.filter(function(f){ return f.k !== 'tawhid'; }).length;
+      var trees = g.flowers.length - flowers;
+      note.innerHTML = 'بستانك: <b>' + flowers + '</b> زهرة' + (trees ? ' · <b>' + trees + '</b> شجرة' : '');
+    }
+  }
+
+  function renderChips(){
+    var box = $('gd-chips');
+    if (!box) return;
+    box.innerHTML = '';
+    ADHKAR.forEach(function(d){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'gd-chip' + (d.k === cur.k ? ' on' : '');
+      b.setAttribute('role','tab');
+      b.setAttribute('aria-selected', d.k === cur.k ? 'true' : 'false');
+      b.innerHTML = '<span class="dot" style="background:'+d.petal+'"></span>' + d.t;
+      b.addEventListener('click', function(){ selectDhikr(d); });
+      box.appendChild(b);
+    });
+  }
+
+  function renderCounter(){
+    var n = g.today[cur.k] || 0;
+    var p = Math.min(1, n / cur.n);
+    var C = 339.29;
+    var fg = $('gd-fg');
+    if (fg) fg.setAttribute('stroke-dashoffset', String(C * (1 - p)));
+    if ($('gd-count'))  $('gd-count').textContent  = n;
+    if ($('gd-target')) $('gd-target').textContent = 'من ' + cur.n;
+    if ($('gd-dhikr'))  $('gd-dhikr').textContent  = cur.t;
+    if ($('gd-mean'))   $('gd-mean').textContent   = cur.mean + ' · تُتمّها ' + cur.n + ' مرة';
+
+    var tk = 0;
+    Object.keys(g.today).forEach(function(k){ tk += g.today[k] || 0; });
+    var total = 0;
+    Object.keys(g.counts).forEach(function(k){ total += g.counts[k] || 0; });
+    if ($('gd-today')) $('gd-today').textContent = tk;
+    if ($('gd-total')) $('gd-total').textContent = total;
+    if ($('gd-days'))  $('gd-days').textContent  = g.days.length;
+  }
+
+  function renderAll(){ renderGarden(); renderChips(); renderCounter(); }
+
+  /* ══ 4. التسبيح ═══════════════════════════════════════════════ */
+  function selectDhikr(d){
+    cur = d;
+    hideWhisper();
+    renderAll();
+  }
+
+  function tap(){
+    g.today[cur.k] = (g.today[cur.k] || 0) + 1;
+    g.counts[cur.k] = (g.counts[cur.k] || 0) + 1;
+
+    var done = g.today[cur.k] >= cur.n;
+    if (done){
+      g.today[cur.k] = 0;
+      g.flowers.push({ k: cur.k, d: todayKey() });
+      persist();
+      renderAll();
+      celebrate();
+    } else {
+      persist();
+      renderCounter();
+      bump();
+    }
+    blip();
+    try{ if (navigator.vibrate) navigator.vibrate(done ? [18,40,18] : 8); }catch(e){}
+  }
+
+  function bump(){
+    var t = $('gd-tap');
+    if (!t) return;
+    t.style.transform = 'scale(1.06)';
+    setTimeout(function(){ t.style.transform = ''; }, 90);
+    var r = document.createElement('span');
+    r.className = 'gd-ripple';
+    var wrap = t.parentNode;
+    if (wrap){ wrap.appendChild(r); setTimeout(function(){ r.remove(); }, 620); }
+  }
+
+  function celebrate(){
+    showWhisper(cur.w);
+    try{
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (window.confetti && !reduce){
+        window.confetti({ particleCount: cur.kind === 'tree' ? 140 : 90, spread: 78, origin: { y: .62 },
+          colors: [cur.petal, cur.core, '#4ea154', '#ffffff'] });
+      }
+    }catch(e){}
+    /* نبضة على آخر زهرة */
+    var plots = $('gd-plants') ? $('gd-plants').children : [];
+    var last = plots[plots.length - 1];
+    if (last){
+      last.style.transform = last.style.transform + ' scale(1.14)';
+      setTimeout(function(){ last.setAttribute('style', plotStyle(plots.length - 1, plots.length)); }, 700);
+    }
+  }
+
+  function showWhisper(txt){
+    var w = $('gd-whisper');
+    if (!w) return;
+    w.textContent = txt;
+    w.classList.add('on');
+  }
+  function hideWhisper(){ var w = $('gd-whisper'); if (w) w.classList.remove('on'); }
+
+  /* ══ 5. الصوت ═════════════════════════════════════════════════ */
+  var soundOn = true, actx = null;
+  function blip(){
+    if (!soundOn) return;
+    try{
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!actx) actx = new AC();
+      if (actx.state === 'suspended') actx.resume();
+      var o = actx.createOscillator(), gn = actx.createGain();
+      o.type = 'sine';
+      o.frequency.value = 620 + Math.min(240, ((g.today[cur.k]||0) % 12) * 18);
+      gn.gain.setValueAtTime(0.0001, actx.currentTime);
+      gn.gain.exponentialRampToValueAtTime(0.06, actx.currentTime + 0.012);
+      gn.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.13);
+      o.connect(gn); gn.connect(actx.destination);
+      o.start(); o.stop(actx.currentTime + 0.14);
+    }catch(e){}
+  }
+  function gdToggleSound(){
+    soundOn = !soundOn;
+    var b = $('gd-sound');
+    if (b){ b.classList.toggle('on', soundOn); b.textContent = soundOn ? '🔊 الصوت' : '🔇 صامت'; }
+  }
+
+  /* ══ 6. الإقلاع ═══════════════════════════════════════════════ */
+  window.tapDhikr = tap;
+  window.gdToggleSound = gdToggleSound;
+  window.selectDhikr = selectDhikr;
+  window._gardenPure = {
+    ADHKAR: ADHKAR,
+    todayKey: todayKey,
+    countFlowers: function(){ return g.flowers.length; },
+    getState: function(){ return g; },
+    reset: function(){ g = emptyState(); persist(); renderAll(); }
+  };
+
+  function boot(){
+    renderAll();
+    var t = $('gd-tap');
+    if (t) t.addEventListener('click', tap);
+    /* لوحة المفاتيح: مسافة أو Enter للتسبيح */
+    document.addEventListener('keydown', function(e){
+      if ((e.key === ' ' || e.key === 'Enter') && document.activeElement === t){ e.preventDefault(); tap(); }
+    });
+    if (!('AudioContext' in window) && !('webkitAudioContext' in window)){
+      var b = $('gd-sound'); if (b) b.style.display = 'none';
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

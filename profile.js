@@ -21,12 +21,27 @@
     'zad_lat', 'zad_lng', 'zad_city',
     'zad_radio_favs', 'zad_ten_days_method', 'zad_sound_on',
     'zad_profile_skipped',
+    /* P1-Q6: مفاتيح كان التصدير/الاستعادة يُسقِطها — وهي كل تقدّم قسمَي
+       القرآن والذكر تقريبًا: العلامات المرجعية للمصحف، آخر موضع قراءة،
+       أحاديث النووية المقروءة، الأسماء المتدبَّرة والمفضّلة، والأوسمة
+       المكتسَبة، والورد المخصص وحجم خط المصحف وإعدادات الراديو. */
+    'zad_mushaf_bm', 'zad_mushaf_page', 'zad_mushaf_last_page',
+    'zad_mfont', 'zad_custom_from', 'zad_custom_to',
+    'zad_radio_bgplay', 'zad_radio_last',
+    'zad_badges_asma', 'asma_fav', 'asma_reflected', 'nw_read',
+    /* أوديت ركن الأطفال: كان تقدّم الطفل كله خارج النسخة الاحتياطية —
+       النجوم والأوسمة (zad_kids_v2)، وعدّاد التكبير في «غرس»
+       (ghars_takbeer)، وبيانات لوحة رمضان الجديدة (zad_ramadan). */
+    'zad_kids_v2', 'ghars_takbeer', 'zad_ramadan', 'zad_ghars_v1',
   ];
 
   const AVATARS = ['🌙','⭐','🌸','🌿','🕌','📿','🤲','🌺','🦋','🌕','🪷','🕋','📖','✨','🧒'];
   const PRAYER_METHODS = {
-    '4':'أم القرى — مكة', '5':'الهيئة المصرية', '2':'رابطة العالم الإسلامي',
-    '3':'كراتشي', '8':'الخليج', '9':'الكويت', '10':'قطر', '1':'كاليفورنيا',
+    /* P3-Q18b: كانت ثلاث تسميات مُدارة (نفس صنف P0-1 في prayers.html).
+       المرجع: js/calendar.js:183 المشتقّ من جدول aladhan الرسمي /v1/methods:
+       1 = كراتشي، 2 = ISNA (أمريكا الشمالية)، 3 = رابطة العالم الإسلامي. */
+    '4':'أم القرى — مكة', '5':'الهيئة المصرية', '2':'أمريكا الشمالية (ISNA)',
+    '3':'رابطة العالم الإسلامي (MWL)', '8':'الخليج', '9':'الكويت', '10':'قطر', '1':'كراتشي',
   };
 
   /* ── القراءة/الكتابة الموسّعة (دمج مع الموجود) ───────────────────────── */
@@ -110,8 +125,20 @@
 
   /* مسح كل بيانات التطبيق (مع تأكيد من الواجهة) */
   function resetAll() {
-    BACKUP_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
-    try { localStorage.removeItem('zad_prayer_today'); localStorage.removeItem('zad_ten_days_table'); } catch(e){}
+    /* P1-Q7: كان يمسح BACKUP_KEYS + مفتاحين فقط، فيبقى بعد «حذف كل بياناتي»
+       تقدّم القراءة والأوسمة وإعدادات الإشعارات والإزاحة الهجرية وجداول
+       الشهر — وهي بيانات دينية خاصة. الآن نُعِدّ كل مفاتيح التطبيق فعليًا. */
+    const targets = new Set(BACKUP_KEYS);
+    targets.add('zad_prayer_today');
+    targets.add('zad_ten_days_table');
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k) continue;
+      /* كل مفاتيح التطبيق تحمل البادئة zad_، عدا ثلاثة استثناءات مُسمّاة
+         صراحةً في BACKUP_KEYS (asma_fav / asma_reflected / nw_read). */
+      if (k.indexOf('zad_') === 0) targets.add(k);
+    }
+    targets.forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
   }
 
   /* ── واجهة عامة ──────────────────────────────────────────────────────── */

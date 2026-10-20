@@ -11,6 +11,7 @@
   <url><loc>https://zad.codeandcanvas.net/qibla.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://zad.codeandcanvas.net/hijri.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://zad.codeandcanvas.net/taqweem.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/ramadan.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://zad.codeandcanvas.net/barnamaj.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://zad.codeandcanvas.net/Quran-radio.HTML</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://zad.codeandcanvas.net/videos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
@@ -41,6 +42,12 @@
   <url><loc>https://zad.codeandcanvas.net/hawwa.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://zad.codeandcanvas.net/maktaba-nassiya.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-tales.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-garden.html</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-gazette.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-detectives.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-city.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://zad.codeandcanvas.net/kids-memory.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids-heroes.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids-fun.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://zad.codeandcanvas.net/kids-creativity.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>

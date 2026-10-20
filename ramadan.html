@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>رمضان — الإمساك والإفطار وجدول الثلاثين — زاد</title>
+<meta name="description" content="لوحة رمضان في زاد: موعد الإمساك والإفطار محسوبًا على جهازك، عدّاد تنازلي، جدول الثلاثين يومًا، متابعة الصيام، ووضع هادئ تلقائي بين الفجر والمغرب.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&display=swap"
+  media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&display=swap"></noscript>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light',fs=24;try{var p=JSON.parse(s);t=p.theme||'light';fs=p.quranFontSize||24}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){};document.documentElement.style.setProperty('--qf-size',fs+'px')})();</script>
+<style>
+  /* ═══ لوحة رمضان ═══════════════════════════════════════════ */
+  .rm-page{padding:16px;max-width:820px;margin:0 auto}
+  .rm-hero{
+    position:relative;overflow:hidden;border-radius:22px;padding:24px 22px;color:#fff;
+    background:radial-gradient(120% 130% at 85% 0%,#1f6d53 0%,var(--green-deep,#0e3b2e) 55%,#08281e 100%);
+    border:1px solid rgba(201,161,74,.35);box-shadow:0 16px 40px -18px rgba(14,59,46,.75);margin-bottom:16px
+  }
+  .rm-hero::after{content:'🌙';position:absolute;left:-6px;bottom:-26px;font-size:120px;opacity:.10;line-height:1;pointer-events:none}
+  .rm-hero-eyebrow{font-size:11px;letter-spacing:2px;font-weight:800;color:#e6c97a;opacity:.9}
+  .rm-hero-title{font-family:'Tajawal',sans-serif;font-size:31px;font-weight:900;margin:6px 0 8px;line-height:1.25}
+  .rm-hero-title b{color:#f0d98a}
+  .rm-hero-status{font-size:14px;font-weight:700;opacity:.95}
+  .rm-hero-date{font-size:12px;opacity:.7;margin-top:6px}
+
+  .rm-now{background:var(--card,#fff);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow-sm,0 2px 10px rgba(0,0,0,.04))}
+  .rm-now-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .rm-chip{font-size:11px;font-weight:800;padding:5px 11px;border-radius:99px;background:rgba(14,59,46,.08);color:var(--green-deep)}
+  .rm-chip.fasting{background:rgba(201,161,74,.16);color:var(--gold-dark,#8a6b1e)}
+  .rm-chip.ready{background:rgba(90,170,120,.14);color:var(--green-mid,#1a5d47)}
+  .rm-city{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+  .rm-clock{font-size:40px;font-weight:900;letter-spacing:-1px;color:var(--green-deep);line-height:1.05;font-feature-settings:"tnum";direction:ltr;text-align:center}
+  .rm-clock-lbl{text-align:center;font-size:12.5px;color:var(--muted);margin-top:4px}
+  .rm-bar{height:8px;border-radius:99px;background:var(--sand,#f2eee3);overflow:hidden;margin:14px 0 12px}
+  .rm-bar span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--gold,#c9a14a),var(--green-mid,#1a5d47));transition:width .6s ease}
+  .rm-times{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .rm-time{background:var(--sand,#f7f4ea);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center}
+  .rm-time-lbl{display:block;font-size:11.5px;color:var(--muted);margin-bottom:3px;font-weight:700}
+  .rm-time strong{font-size:22px;font-weight:900;color:var(--ink);font-feature-settings:"tnum";direction:ltr;display:block}
+  .rm-time.imsak strong{color:var(--gold-dark,#8a6b1e)}
+  .rm-time.iftar strong{color:var(--green-deep)}
+
+  .rm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .rm-toggle{display:flex;align-items:center;gap:10px;background:var(--card,#fff);border:1.5px solid var(--border);border-radius:14px;padding:12px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;transition:border-color .2s,background .2s}
+  .rm-toggle:hover{border-color:var(--gold)}
+  .rm-toggle input{width:18px;height:18px;accent-color:var(--green-deep);cursor:pointer;flex-shrink:0}
+  .rm-toggle.on{border-color:var(--green-mid);background:rgba(26,93,71,.06)}
+  .rm-note{font-size:11.5px;color:var(--muted);line-height:1.7;margin:0 2px 16px}
+
+  .rm-card{background:var(--card,#fff);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:16px;box-shadow:var(--shadow-sm,0 2px 10px rgba(0,0,0,.04))}
+  .rm-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .rm-card-head h2{font-size:16px;font-weight:800;color:var(--green-deep);margin:0}
+  .rm-card-head span{font-size:11px;color:var(--muted)}
+  .rm-table-wrap{overflow:auto;max-height:430px;border-radius:14px;border:1px solid var(--border)}
+  .rm-table{width:100%;border-collapse:collapse;font-size:13px}
+  .rm-table th{position:sticky;top:0;background:var(--sand,#f7f4ea);color:var(--green-deep);font-size:11.5px;font-weight:800;padding:9px 8px;text-align:center;border-bottom:1px solid var(--border);z-index:1}
+  .rm-table td{padding:8px;text-align:center;border-bottom:1px solid rgba(0,0,0,.05);color:var(--ink);font-feature-settings:"tnum"}
+  .rm-table tr:last-child td{border-bottom:none}
+  .rm-table tr.today{background:rgba(201,161,74,.12)}
+  .rm-table tr.today td{font-weight:800}
+  .rm-table td.d{font-weight:800;color:var(--green-deep)}
+  .rm-table td.t{direction:ltr}
+  .rm-table input[type=checkbox]{width:17px;height:17px;accent-color:var(--green-deep);cursor:pointer}
+  .rm-empty{padding:26px;text-align:center;color:var(--muted);font-size:13px}
+
+  @media(max-width:420px){
+    .rm-clock{font-size:33px}
+    .rm-actions{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){.rm-bar span{transition:none}}
+</style>
+<script src="js/font-scale.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="زاد">
+<meta property="og:title" content="زاد — لوحة رمضان">
+<meta property="og:description" content="الإمساك والإفطار وجدول الثلاثين يومًا — محسوبة على جهازك بلا شبكة.">
+<meta property="og:image" content="/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">لوحة <span>رمضان</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="rm-page">
+
+      <div class="rm-hero">
+        <div class="rm-hero-eyebrow">شهر الصيام والقرآن</div>
+        <h1 class="rm-hero-title">رمضان <b id="rm-year">—</b></h1>
+        <div class="rm-hero-status" id="rm-status">جارٍ حساب التقويم…</div>
+        <div class="rm-hero-date" id="rm-date">—</div>
+      </div>
+
+      <div class="rm-now" id="rm-now">
+        <div class="rm-now-top">
+          <span class="rm-chip" id="rm-phase">—</span>
+          <span class="rm-city" id="rm-city">📍 —</span>
+        </div>
+        <div class="rm-clock" id="rm-countdown">--:--:--</div>
+        <div class="rm-clock-lbl" id="rm-countdown-lbl">جارٍ حساب المواقيت…</div>
+        <div class="rm-bar" aria-hidden="true"><span id="rm-bar-fill"></span></div>
+        <div class="rm-times">
+          <div class="rm-time imsak"><span class="rm-time-lbl">الإمساك</span><strong id="rm-imsak">--:--</strong></div>
+          <div class="rm-time iftar"><span class="rm-time-lbl">الإفطار (المغرب)</span><strong id="rm-iftar">--:--</strong></div>
+        </div>
+      </div>
+
+      <div class="rm-actions">
+        <label class="rm-toggle" id="rm-fast-wrap"><input type="checkbox" id="rm-fast-today"><span>صمتُ اليوم 🌙</span></label>
+        <label class="rm-toggle" id="rm-quiet-wrap"><input type="checkbox" id="rm-quiet"><span>وضع هادئ تلقائيًا 🔕</span></label>
+      </div>
+      <p class="rm-note" id="rm-quiet-note">الوضع الهادئ يُسكت إشعارات التطبيق بين الإمساك والإفطار — لا يغيّر إعدادات الهاتف نفسها.</p>
+
+      <div class="rm-card">
+        <div class="rm-card-head">
+          <h2>جدول الثلاثين يومًا</h2>
+          <span id="rm-plan-city">—</span>
+        </div>
+        <div class="rm-table-wrap">
+          <table class="rm-table">
+            <thead>
+              <tr><th scope="col">اليوم</th><th scope="col">التاريخ</th><th scope="col">الإمساك</th><th scope="col">الإفطار</th><th scope="col">صيام</th></tr>
+            </thead>
+            <tbody id="rm-tbody">
+              <tr><td colspan="5" class="rm-empty">جارٍ حساب مواقيت الثلاثين يومًا…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rm-card">
+        <div class="rm-card-head"><h2>أوراد رمضان</h2><span>تُحفَظ على جهازك</span></div>
+        <div id="ramadan-module"></div>
+      </div>
+
+      <p class="rm-note" style="text-align:center;margin-bottom:24px">
+        المواقيت محسوبة على الجهاز بمحرك <b>adhan</b> وطريقة الحساب المحفوظة في الإعدادات.
+        الإمساك = الفجر ناقص المدة المختارة (١٠ دقائق افتراضيًا) احتياطًا.
+      </p>
+
+    </section>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/vendor/adhan.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   لوحة رمضان — الإمساك والإفطار + جدول الثلاثين + متابعة الصيام
+   ──────────────────────────────────────────────────────────────────────
+   كل الحساب محلي: adhan-js الموطَّن (js/vendor/adhan.min.js) خلف
+   calcPrayerTimes() في js/calendar.js — فلا شبكة ولا خادم ولا حساب.
+   التخزين: zad_ramadan = { fasts: {"YYYY-MM-DD":true}, imsakMin:10, quiet:true }
+   ══════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var KEY = 'zad_ramadan';
+  var DEFAULTS = { fasts: {}, imsakMin: 10, quiet: false };
+  var DAY = 86400000;
+
+  /* ── أدوات نقية (قابلة للاختبار بمعزل عن DOM) ─────────────────────── */
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function dayKey(d) {
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  /* "3:24:12" — لا أرقام هندية داخل العدّاد ليبقى مقروءًا في كل الخطوط */
+  function fmtRemain(ms) {
+    if (ms < 0) ms = 0;
+    var s = Math.floor(ms / 1000);
+    var h = Math.floor(s / 3600); s -= h * 3600;
+    var m = Math.floor(s / 60); s -= m * 60;
+    return h + ':' + pad2(m) + ':' + pad2(s);
+  }
+
+  /* فحص تواريخ بالشكل لا بـ instanceof: كائنات Date القادمة من محرّك adhan
+     (أو من سياق آخر) قد لا تطابق prototype نفسها، وinstanceof تفشل بصمت. */
+  function isDate(d) {
+    return !!d && typeof d.getTime === 'function' && !isNaN(d.getTime());
+  }
+
+  function fmtClock(d) {
+    if (!isDate(d)) return '--:--';
+    return pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  function imsakOf(fajr, mins) {
+    if (!isDate(fajr)) return null;
+    return new Date(fajr.getTime() - (mins || 10) * 60000);
+  }
+
+  /* before = قبل الإمساك · fasting = بين الإمساك والإفطار · after = بعد الإفطار */
+  function phaseAt(now, imsak, iftar) {
+    if (!imsak || !iftar) return 'unknown';
+    var t = now.getTime();
+    if (t < imsak.getTime()) return 'before';
+    if (t < iftar.getTime()) return 'fasting';
+    return 'after';
+  }
+
+  /* نسبة تقدّم اليوم بين الإمساك والإفطار (0..1) */
+  function dayProgress(now, imsak, iftar) {
+    if (!imsak || !iftar) return 0;
+    var span = iftar.getTime() - imsak.getTime();
+    if (span <= 0) return 0;
+    var r = (now.getTime() - imsak.getTime()) / span;
+    return Math.max(0, Math.min(1, r));
+  }
+
+  /* أول يوم من رمضان: إن كنا داخله نرجع للخلف، وإلا نبحث للأمام */
+  function ramadanStart(today, hijri, getHijri) {
+    var d = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    if (hijri && hijri.month === 9) {
+      d.setDate(d.getDate() - (hijri.day - 1));
+      return d;
+    }
+    for (var i = 0; i < 400; i++) {
+      var probe = new Date(d.getFullYear(), d.getMonth(), d.getDate() + i);
+      var h = getHijri(probe);
+      if (h && h.month === 9 && h.day === 1) return probe;
+    }
+    return null;
+  }
+
+  /* ── التخزين ───────────────────────────────────────────────────────── */
+  function load() {
+    var raw = {};
+    try { raw = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { raw = {}; }
+    return {
+      fasts: (raw.fasts && typeof raw.fasts === 'object') ? raw.fasts : {},
+      imsakMin: (raw.imsakMin >= 0 && raw.imsakMin <= 30) ? raw.imsakMin : DEFAULTS.imsakMin,
+      quiet: raw.quiet === true
+    };
+  }
+  function save(data) {
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  /* ── الموقع ────────────────────────────────────────────────────────── */
+  function getLoc() {
+    var lat = parseFloat(localStorage.getItem('zad_lat'));
+    var lng = parseFloat(localStorage.getItem('zad_lng'));
+    if (isFinite(lat) && isFinite(lng)) {
+      return { lat: lat, lng: lng, city: localStorage.getItem('zad_city') || 'موقعك' };
+    }
+    return { lat: 30.0444, lng: 31.2357, city: 'القاهرة (افتراضي)' };
+  }
+
+  /* ── الحالة ────────────────────────────────────────────────────────── */
+  var data = load();
+  var loc = getLoc();
+  var today = new Date();
+  var start = null;
+  var timer = null;
+
+  function hijri(d) {
+    try { return window.getHijriDate ? window.getHijriDate(d) : null; } catch (e) { return null; }
+  }
+
+  /* ── الواجهة ───────────────────────────────────────────────────────── */
+  function el(id) { return document.getElementById(id); }
+
+  function renderHero() {
+    var h = hijri(today);
+    var yearEl = el('rm-year');
+    if (start) {
+      var hStart = hijri(start);
+      if (yearEl) yearEl.textContent = (hStart && hStart.year ? hStart.year : '') + ' هـ';
+    } else if (yearEl) {
+      yearEl.textContent = h && h.year ? h.year + ' هـ' : '';
+    }
+
+    var status = el('rm-status');
+    var date = el('rm-date');
+    if (h) {
+      var months = ['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+      if (date) date.textContent = 'اليوم: ' + h.day + ' ' + (months[h.month - 1] || '') + ' ' + h.year + ' هـ';
+    }
+
+    if (!start) {
+      if (status) status.textContent = 'تعذّر تحديد أول رمضان — تحقّق من تاريخ الجهاز.';
+      return;
+    }
+    var days = Math.floor((new Date(today.getFullYear(), today.getMonth(), today.getDate()) - start) / DAY);
+    if (h && h.month === 9) {
+      var left = 30 - h.day;
+      status.textContent = 'اليوم ' + h.day + ' من رمضان — ' + (left > 0 ? 'باقٍ ' + left + ' يومًا' : 'ليلة العيد 🌙');
+    } else if (days < 0) {
+      status.textContent = 'يبدأ رمضان بعد ' + Math.abs(days) + ' يومًا — اللهم بلّغنا رمضان.';
+    } else {
+      status.textContent = 'انقضى رمضان — تقبّل الله صيامكم، ونراكم في القادم.';
+    }
+  }
+
+  function setPhaseChip(phase) {
+    var chip = el('rm-phase');
+    if (!chip) return;
+    chip.classList.remove('fasting', 'ready');
+    if (phase === 'fasting') { chip.textContent = '🌙 الآن صائم'; chip.classList.add('fasting'); }
+    else if (phase === 'before') { chip.textContent = '🍽️ قبل الإمساك'; chip.classList.add('ready'); }
+    else if (phase === 'after') { chip.textContent = '✅ أُفطر — تقبّل الله'; chip.classList.add('ready'); }
+    else { chip.textContent = '—'; }
+  }
+
+  /* ── اليوم الحالي ──────────────────────────────────────────────────── */
+  function renderToday(t, imsak, iftar) {
+    if (el('rm-imsak')) el('rm-imsak').textContent = fmtClock(imsak);
+    if (el('rm-iftar')) el('rm-iftar').textContent = fmtClock(iftar);
+    if (el('rm-city')) el('rm-city').textContent = '📍 ' + loc.city;
+
+    /* زرّ «صمتُ اليوم» يعكس المخزَّن لتاريخ اليوم فقط */
+    var k = dayKey(today);
+    var cb = el('rm-fast-today');
+    if (cb) {
+      cb.checked = !!data.fasts[k];
+      el('rm-fast-wrap')?.classList.toggle('on', cb.checked);
+    }
+    tick();
+  }
+
+  function tick() {
+    var now = new Date();
+    var t = window.__rmToday;
+    if (!t) return;
+    var phase = phaseAt(now, t.imsak, t.iftar);
+    setPhaseChip(phase);
+
+    var cd = el('rm-countdown');
+    var lbl = el('rm-countdown-lbl');
+    var fill = el('rm-bar-fill');
+    if (!cd) return;
+
+    if (phase === 'before') {
+      cd.textContent = fmtRemain(t.imsak - now);
+      if (lbl) lbl.textContent = 'يتبقّى على الإمساك';
+    } else if (phase === 'fasting') {
+      cd.textContent = fmtRemain(t.iftar - now);
+      if (lbl) lbl.textContent = 'يتبقّى على الإفطار';
+    } else if (phase === 'after') {
+      cd.textContent = '🌙';
+      if (lbl) lbl.textContent = 'أفطرتَ — تقبّل الله صيامك';
+    } else {
+      cd.textContent = '--:--:--';
+    }
+    if (fill) fill.style.width = Math.round(dayProgress(now, t.imsak, t.iftar) * 100) + '%';
+  }
+
+  /* ── جدول الثلاثين ─────────────────────────────────────────────────── */
+  async function buildTable() {
+    var tbody = el('rm-tbody');
+    if (!tbody) return;
+    if (!start || typeof window.calcPrayerTimes !== 'function') {
+      tbody.innerHTML = '<tr><td colspan="5" class="rm-empty">تعذّر حساب المواقيت — محرّك الحساب لم يُحمَّل.</td></tr>';
+      return;
+    }
+    var rows = [];
+    for (var i = 0; i < 30; i++) {
+      var d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      try {
+        var res = await window.calcPrayerTimes(loc.lat, loc.lng, d);
+        var imsak = imsakOf(res.fajr.time, data.imsakMin);
+        rows.push({ d: d, imsak: imsak, iftar: res.maghrib.time });
+      } catch (e) {
+        rows.push({ d: d, imsak: null, iftar: null });
+      }
+    }
+    renderTable(rows);
+  }
+
+  function renderTable(rows) {
+    var tbody = el('rm-tbody');
+    if (!tbody) return;
+    var kToday = dayKey(today);
+    tbody.innerHTML = rows.map(function (r, i) {
+      var k = dayKey(r.d);
+      var greg = r.d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
+      return '<tr class="' + (k === kToday ? 'today' : '') + '" data-day="' + k + '">' +
+        '<td class="d">' + (i + 1) + '</td>' +
+        '<td>' + greg + '</td>' +
+        '<td class="t">' + fmtClock(r.imsak) + '</td>' +
+        '<td class="t">' + fmtClock(r.iftar) + '</td>' +
+        '<td><input type="checkbox" data-fast="' + k + '"' + (data.fasts[k] ? ' checked' : '') +
+          ' aria-label="صيام اليوم ' + (i + 1) + '"></td>' +
+        '</tr>';
+    }).join('');
+
+    tbody.addEventListener('change', function (e) {
+      var cb = e.target.closest('input[data-fast]');
+      if (!cb) return;
+      var k = cb.getAttribute('data-fast');
+      if (cb.checked) data.fasts[k] = true; else delete data.fasts[k];
+      save(data);
+      if (k === dayKey(new Date())) syncTodayBox();
+    });
+  }
+
+  function syncTodayBox() {
+    var cb = el('rm-fast-today');
+    if (!cb) return;
+    cb.checked = !!data.fasts[dayKey(new Date())];
+    el('rm-fast-wrap')?.classList.toggle('on', cb.checked);
+  }
+
+  /* ── الأحداث ───────────────────────────────────────────────────────── */
+  function wire() {
+    var fast = el('rm-fast-today');
+    if (fast) fast.addEventListener('change', function () {
+      var k = dayKey(new Date());
+      if (fast.checked) data.fasts[k] = true; else delete data.fasts[k];
+      save(data);
+      el('rm-fast-wrap')?.classList.toggle('on', fast.checked);
+      var row = document.querySelector('tr[data-day="' + k + '"] input[data-fast]');
+      if (row) row.checked = fast.checked;
+    });
+
+    var quiet = el('rm-quiet');
+    if (quiet) {
+      quiet.checked = !!data.quiet;
+      el('rm-quiet-wrap')?.classList.toggle('on', data.quiet);
+      quiet.addEventListener('change', function () {
+        data.quiet = quiet.checked;
+        save(data);
+        el('rm-quiet-wrap')?.classList.toggle('on', quiet.checked);
+      });
+    }
+  }
+
+  /* ── التهيئة ───────────────────────────────────────────────────────── */
+  async function init() {
+    wire();
+    var h = hijri(today);
+    start = ramadanStart(today, h, hijri);
+
+    var times = null;
+    try {
+      if (typeof window.calcPrayerTimes === 'function' && start) {
+        times = await window.calcPrayerTimes(loc.lat, loc.lng, today);
+      }
+    } catch (e) { times = null; }
+
+    if (times) {
+      window.__rmToday = {
+        imsak: imsakOf(times.fajr.time, data.imsakMin),
+        iftar: times.maghrib.time
+      };
+      renderToday(today, window.__rmToday.imsak, window.__rmToday.iftar);
+    } else {
+      if (el('rm-countdown-lbl')) el('rm-countdown-lbl').textContent = 'تعذّر حساب مواقيت اليوم';
+    }
+
+    renderHero();
+    if (el('rm-plan-city')) el('rm-plan-city').textContent = '📍 ' + loc.city;
+
+    if (timer) clearInterval(timer);
+    timer = setInterval(tick, 1000);
+
+    await buildTable();
+
+    /* منتصف الليل: يوم جديد ⇒ أعد التهيئة */
+    setTimeout(function () {
+      var now = new Date();
+      if (dayKey(now) !== dayKey(today)) location.reload();
+    }, 60000);
+  }
+
+  /* واجهة عامة للتكامل مع إشعارات المواقيت (الوضع الهادئ) */
+  window.ZadRamadan = {
+    data: function () { return load(); },
+    quietNow: function () {
+      var d = load();
+      if (!d.quiet) return false;
+      var t = window.__rmToday;
+      if (!t) return false;
+      return phaseAt(new Date(), t.imsak, t.iftar) === 'fasting';
+    },
+    /* للاختبار */
+    _pure: {
+      pad2: pad2, dayKey: dayKey, fmtRemain: fmtRemain, fmtClock: fmtClock,
+      imsakOf: imsakOf, phaseAt: phaseAt, dayProgress: dayProgress, ramadanStart: ramadanStart
+    }
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>

@@ -40,8 +40,8 @@
         @font-face. حدّثت أسماء الخطوط في PRECACHE لنفس السبب.
    ════════════════════════════════════════════════════════════ */
 
-// Invalidate older cached bundles so returning PWAs receive the fixed mobile header.
-const CACHE_STATIC = 'zad-20261020-mobile-nav';
+// Invalidate older cached bundles so returning PWAs receive the expanded video library.
+const CACHE_STATIC = 'zad-20261020-kids-mind-r11';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -49,13 +49,22 @@ const PRECACHE = [
   './', './index.html', './404.html',
   './register.html', './sync.html',
   './js/api-client.min.js', './js/sync-manager.min.js',
-  './prayers.html', './adhkar.html', './mushaf.html', './takbeer.html',
+  './prayers.html', './ramadan.html', './adhkar.html', './mushaf.html', './takbeer.html',
   './hasn.html', './worship.html', './zahra.html', './settings.html', './hijri.html',
   './css/style.min.css', './css/premium-ui.min.css', './manifest.json',
   './fonts/thmanyahserifdisplay-Bold.woff2', './fonts/thmanyahserifdisplay-Regular.woff2',
   './icons/icon-192.svg', './icons/icon-512.svg',
   /* core JS */
+  './js/font-scale.js', /* R6: مقياس الخط الموحّد — تحمّله كل صفحة قبل أول رسم */
   './js/app.min.js', './js/adhkar-azkar.min.js', './js/ghars-stories.min.js', './js/diagnostics.min.js', './js/storage.min.js', './js/calendar.min.js',
+  /* P1-2: محرك المواقيت مُوطَّن محليًا بدل cdn.jsdelivr.net (المدرج في BYPASS
+     أدناه، فكان يرفض تخزينه ويموت الحساب أوفلاين). 15 KB فقط.
+     P1-7: وحدة إشعارات المواقيت.
+     P0-9: نموذج الانحراف المغناطيسي WMM-2025 (11 KB) — لازم يكون مخزَّنًا مسبقًا
+     مع qibla.html نفسها، وإلا فُتحت الصفحة من الكاش أوفلاين ومات التصحيح بالذات
+     في الوقت الذي يُستخدم فيه (بلا شبكة). */
+  './js/vendor/adhan.min.js', './js/prayer-notifications.min.js',
+  './js/vendor/geomag.min.js', './js/vendor/canvas-confetti.min.js',
   './menu.min.js', './command-palette.min.js', './js/ui/bottom-nav.min.js', './js/ui/progress-rollup.min.js',
   './js/design-system.min.js', './js/fixes-module.min.js',
   './js/utils/helpers.min.js', './js/core/state-manager.min.js', './js/core/router.min.js',
@@ -80,7 +89,9 @@ const PRECACHE = [
   './manasik.html', './js/hajj-module.min.js', './arafah.html', './js/audio-manager.min.js',
   './arafah-dua.html', './hikayat-hajj.html',
   './ai.html', './js/ai-guard.min.js', './js/advanced-ai-module.min.js', /* المساعد المحلي (أذكار/سيرة/فقه) يعمل أوفلاين؛ المحادثة فقط تحتاج نتاً وتُعرَض برسالة صريحة */
-  './kids.html', './kids-heroes.html', './kids-school.html',
+  './kids.html', './kids-tales.html', './kids-garden.html', './kids-gazette.html',
+  './kids-detectives.html', './kids-city.html', './kids-memory.html',
+  './kids-heroes.html', './kids-school.html',
   './kids-fun.html', './kids-creativity.html', './kids-parents.html',
 ];
 
@@ -161,6 +172,35 @@ function fetchWithTimeout(request, timeout) {
 /* ── استقبال أمر التفعيل الفوري من الصفحة ── */
 self.addEventListener('message', e => {
   if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
+/* ── P1-7: النقر على إشعار مواقيت الصلاة ─────────────────────────────────────
+   بدون هذا المعالج يفتح Chrome صفحة about:blank أو لا يفعل شيئًا، فيظن
+   المستخدم أن الإشعار معطّل. نفتح الصفحة المسجّلة في notification.data.url
+   (تضعها js/prayer-notifications.js) ونعيد استخدام تبويب مفتوح إن وُجد بدل
+   تكديس التبويبات عند كل أذان. */
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || 'prayers.html';
+  let targetUrl;
+  try { targetUrl = new URL(target, self.location.origin).href; }
+  catch (e) { targetUrl = self.location.origin + '/prayers.html'; }
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      /* 1) نفس الصفحة مفتوحة بالفعل → ركّز عليها */
+      for (const c of list) {
+        if (c.url === targetUrl && 'focus' in c) return c.focus();
+      }
+      /* 2) أي تبويب للتطبيق مفتوح → أعِد توجيهه بدل فتح تبويب جديد */
+      for (const c of list) {
+        if ('navigate' in c && 'focus' in c) return c.navigate(targetUrl).then(x => x.focus());
+      }
+      /* 3) لا شيء مفتوح → افتح نافذة */
+      if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
+      return undefined;
+    })
+  );
 });
 
 self.addEventListener('fetch', e => {

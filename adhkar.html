@@ -212,8 +212,6 @@ html[data-theme="oled"] .az-add-field input {
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light',fs=24;try{var p=JSON.parse(s);t=p.theme||'light';fs=p.quranFontSize||24}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){};document.documentElement.style.setProperty('--qf-size',fs+'px')})();</script>
 <style>
-  :root{--font-scale:1}
-  body{font-size:calc(1rem * var(--font-scale))}
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
@@ -222,7 +220,7 @@ html[data-theme="oled"] .az-add-field input {
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
 </style>
-<script>(function(){var saved=localStorage.getItem('zad_font_size');var map={small:0.875,medium:1,large:1.15};if(!saved||saved==='system'){var scale=1;try{var p=document.createElement('div');p.style.cssText='position:absolute;visibility:hidden;font-size:1rem;width:1rem;height:1rem';(document.head||document.documentElement).appendChild(p);var rem=parseFloat(getComputedStyle(p).width)||16;(document.head||document.documentElement).removeChild(p);scale=rem<=14?0.875:rem>=18?1.15:1;}catch(e){}document.documentElement.style.setProperty('--font-scale',scale);}else{document.documentElement.style.setProperty('--font-scale',map[saved]||1);}})();</script>
+<script src="js/font-scale.js"></script><script>(function(){})();</script>
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
@@ -511,11 +509,18 @@ html[data-theme="oled"] .az-card:hover {
    ════════════════════════════════════════════════════════════ */
 function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function getCount(sec, id){ return (window.STATE?.adhkar?.[sec]?.[id]) || 0; }
+/* P2-Q13: getCount كانت محروسة بالكامل (window.STATE?.adhkar) وsetCount تستخدم
+   STATE عارية، وsetCount تُنادى في أول سطر من tap() قبل تحديث الواجهة — فلو
+   تعذّرت طبقة الحالة ترمي قبل أي تحديث ويصير الزرّ ميتًا بصمت. الكتابة الآن
+   لا ترمي أبدًا، وتعيد false فقط ليعرف المنادي أن الحفظ لم يحدث. */
 function setCount(sec, id, val){
-  if(!STATE.adhkar) STATE.adhkar = {};
-  if(!STATE.adhkar[sec]) STATE.adhkar[sec] = {};
-  STATE.adhkar[sec][id] = val;
+  const st = window.STATE;
+  if(!st) return false;
+  if(!st.adhkar) st.adhkar = {};
+  if(!st.adhkar[sec]) st.adhkar[sec] = {};
+  st.adhkar[sec][id] = val;
   if(typeof saveState === 'function') saveState();
+  return true;
 }
 
 /* بناء كارت ذكر واحد داخل قسم */
@@ -582,9 +587,12 @@ window.toggleSec = function(key){
   body.style.display = willOpen ? 'block' : 'none';
   if(arr) arr.textContent = willOpen ? '▲' : '▾';
   if(willOpen){ acc?.classList.add('open'); acc?.scrollIntoView({behavior:'smooth',block:'start'}); }
-  if(!STATE.adhkar) STATE.adhkar = {};
-  STATE.adhkar._openSec = willOpen ? key : null;
-  if(typeof saveState==='function') saveState();
+  /* نفس حراسة P2-Q13 — لا STATE عارية في مسار الكتابة */
+  if(window.STATE){
+    if(!STATE.adhkar) STATE.adhkar = {};
+    STATE.adhkar._openSec = willOpen ? key : null;
+    if(typeof saveState==='function') saveState();
+  }
 };
 
 window.tap = function(sec, id, tgt){

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="صحيفة القرية — أرشيف أطفالك من حكاياتهم، بأسلوب صحيفة تُطبع وتُعلَّق.">
+<title>صحيفة القرية · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+.gp-hero{background:linear-gradient(135deg,#2a1a0e 0%,#6b4a1a 55%,#c9a14a 135%);border-radius:24px;padding:26px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -12px rgba(90,60,10,.45)}
+.gp-hero::after{content:'📰';position:absolute;top:10px;left:18px;font-size:62px;opacity:.16;line-height:1}
+.gp-eyebrow{font-size:11px;color:#ffe9a8;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.gp-title{font-size:27px;font-weight:900;margin-bottom:8px}
+.gp-sub{font-size:13.5px;color:rgba(255,255,255,.9);line-height:1.95;max-width:600px}
+
+/* ══ الورقة ══ */
+.gp-paper{background:#fffdf7;color:#1d1d1b;border-radius:6px;padding:22px 20px 26px;box-shadow:0 20px 50px -22px rgba(0,0,0,.4),0 0 0 1px rgba(0,0,0,.06);margin-bottom:14px;position:relative;overflow:hidden}
+html[data-theme="dark"] .gp-paper,html[data-theme="oled"] .gp-paper{background:#f7f3e8}
+.gp-paper::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.012) 0 1px,transparent 1px 3px);opacity:.7}
+
+.gp-mast{text-align:center;border-bottom:3px double #1d1d1b;padding-bottom:10px;margin-bottom:12px;position:relative}
+.gp-mast h1{font-family:'ThmanyahSans',serif;font-size:38px;line-height:1.1;margin:0 0 5px;letter-spacing:-.5px;color:#0e3b2e}
+.gp-mast .slogan{font-family:'Amiri',serif;font-size:13px;color:#6b5a2a;letter-spacing:.5px}
+.gp-dateline{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:9.5px;font-weight:800;color:#4a4a44;border-top:1px solid #1d1d1b;border-bottom:1px solid #1d1d1b;padding:5px 2px;margin-bottom:16px;letter-spacing:.3px}
+
+.gp-lead{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start;margin-bottom:14px}
+@media(max-width:560px){.gp-lead{grid-template-columns:1fr}}
+.gp-kicker{display:inline-block;background:#0e3b2e;color:#ffe9a8;font-size:8.5px;font-weight:900;letter-spacing:1.2px;padding:3px 8px;border-radius:2px;margin-bottom:7px}
+.gp-h{font-family:'ThmanyahSans',sans-serif;font-size:27px;line-height:1.25;margin:0 0 8px;color:#111}
+
+.gp-deck{font-family:'Amiri',serif;font-size:14.5px;line-height:1.95;color:#2b2b28;margin:0 0 10px}
+.gp-byline{font-size:9.5px;font-weight:800;color:#6b5a2a;letter-spacing:.4px;border-top:1px solid #d8d2c0;padding-top:7px;display:flex;justify-content:space-between;gap:8px}
+
+.gp-art{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:76px;
+  background:radial-gradient(circle at 40% 30%,#fff6d8,#e8dcb8 70%);border:1px solid #d8d2c0;position:relative;overflow:hidden}
+.gp-art::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(0,0,0,.02) 0 6px,transparent 6px 12px)}
+.gp-cap{font-size:9px;color:#6b5a2a;text-align:center;margin-top:5px;font-weight:700}
+
+.gp-quote{grid-column:1/-1;border-top:2px solid #0e3b2e;border-bottom:2px solid #0e3b2e;padding:10px 4px;margin:2px 0 14px;font-family:'Amiri',serif;font-size:15.5px;line-height:1.9;color:#0e3b2e;text-align:center}
+.gp-quote span{display:block;font-family:'IBM Plex Sans Arabic',sans-serif;font-size:8.5px;font-weight:800;color:#6b5a2a;letter-spacing:1px;margin-top:5px}
+
+.gp-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;border-top:1px solid #1d1d1b;padding-top:14px}
+@media(max-width:560px){.gp-cols{grid-template-columns:1fr}}
+.gp-col{min-width:0}
+.gp-rule{font-size:9.5px;font-weight:900;letter-spacing:1.4px;color:#0e3b2e;border-bottom:1px solid #0e3b2e;padding-bottom:4px;margin-bottom:9px}
+.gp-item{padding-bottom:9px;margin-bottom:9px;border-bottom:1px dotted #b9b2a0}
+.gp-item:last-child{border:0}
+.gp-item h3{font-family:'ThmanyahSans',sans-serif;font-size:13.5px;line-height:1.45;margin:0 0 3px;color:#111}
+.gp-item p{font-family:'Amiri',serif;font-size:11px;line-height:1.75;color:#3b3b36;margin:0}
+.gp-item .tag{font-size:8px;font-weight:900;color:#8a6a1f;letter-spacing:.6px}
+
+.gp-compass{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.gp-cmp{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;color:#2b2b28}
+.gp-cmp .bar{flex:1;height:6px;background:#e6e0cf;border-radius:99px;overflow:hidden}
+.gp-cmp .bar i{display:block;height:100%;background:#0e3b2e;border-radius:99px}
+.gp-cmp b{min-width:14px;text-align:center;font-size:10px;color:#6b5a2a}
+
+.gp-weather{border:1px solid #1d1d1b;padding:8px 10px;font-size:10px;line-height:1.8;color:#2b2b28;background:#fbf7ea}
+.gp-weather b{color:#0e3b2e}
+
+.gp-foot{border-top:3px double #1d1d1b;margin-top:16px;padding-top:8px;text-align:center;font-size:9px;color:#6b5a2a;letter-spacing:.6px;font-weight:700}
+
+/* ══ الحالة الفارغة ══ */
+.gp-empty{display:none;text-align:center;padding:34px 22px;background:var(--card);border:1.5px dashed var(--border);border-radius:20px}
+.gp-empty.on{display:block}
+.gp-empty .em{font-size:52px;margin-bottom:10px}
+.gp-empty h3{font-size:18px;font-weight:900;color:var(--ink);margin:0 0 8px}
+.gp-empty p{font-size:13px;color:var(--muted);line-height:1.9;max-width:420px;margin:0 auto 16px}
+.gp-btn{display:inline-block;text-decoration:none;background:var(--green-deep);color:#fff;font-family:inherit;font-size:13px;font-weight:900;padding:12px 22px;border-radius:12px;border:none;cursor:pointer}
+
+.gp-tools{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:0 0 24px}
+.gp-tools button,.gp-tools a{border:1.5px solid var(--border);background:var(--card);color:var(--ink);font-family:inherit;font-size:12px;font-weight:800;padding:10px 16px;border-radius:12px;cursor:pointer;text-decoration:none}
+.gp-tools .primary{background:var(--green-deep);color:#fff;border-color:transparent}
+.gp-hint{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.8;margin-bottom:26px}
+
+/* ══ الطباعة: ورقة A4 نظيفة ══ */
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff!important}
+  .sidebar,.sidebar-overlay,.topbar,.gp-hero,.gp-tools,.gp-hint,.gp-empty,.notif-wrap,.pwa-fab,#sidebar-install-btn,.reading-progress-bar{display:none!important}
+  .app,.main{margin:0!important;padding:0!important;display:block!important}
+  .gp-paper{box-shadow:none!important;border:0!important;border-radius:0!important;padding:0!important;margin:0!important;background:#fff!important}
+  .gp-paper::before{display:none!important}
+  html,body{font-size:11px}
+  .gp-mast h1{font-size:32px}
+  .gp-h{font-size:23px}
+}
+</style>
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="kids-tales.html"><span class="ico">🏮</span><span>حكايات القرية</span></a>
+      <a href="kids-garden.html"><span class="ico">🌱</span><span>بستان الذكر</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">صحيفة القرية</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">صحيفة <span>القرية</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="gp-hero">
+      <div class="gp-eyebrow">📰 تصدر من قلب الحكاية</div>
+      <div class="gp-title">صحيفة القرية</div>
+      <div class="gp-sub">كلُّ اختيارٍ اختارَه طفلك… يتحوّل هنا إلى خبر. عنوانٌ كبير، وقصةٌ، وبوصلةٌ تقول من يكون — ثم تُطبع وتُعلَّق على الثلاجة.</div>
+    </div>
+
+    <!-- ══ الحالة الفارغة ══ -->
+    <div class="gp-empty" id="gp-empty">
+      <div class="em">🗞️</div>
+      <h3>الصحيفة لم تصدر بعد</h3>
+      <p>لم يكمل طفلك حكايةً واحدة حتى الآن. اذهب إلى «حكايات القرية»، اختَر طريقًا، وعُد هنا… ستجد العدد الأول بانتظارك.</p>
+      <a class="gp-btn" href="kids-tales.html">🏮 ابدأ حكاية الآن</a>
+    </div>
+
+    <!-- ══ الورقة ══ -->
+    <div class="gp-paper" id="gp-paper" style="display:none">
+      <div class="gp-mast">
+        <h1>صحيفة القرية</h1>
+        <div class="slogan">«والقريةُ لا تنسى من زرع فيها خيرًا»</div>
+      </div>
+      <div class="gp-dateline">
+        <span id="gp-date">—</span>
+        <span id="gp-edition">العدد الأول</span>
+        <span id="gp-price">مجانًا · تصدر بحكاية</span>
+      </div>
+
+      <div class="gp-lead">
+        <div>
+          <div class="gp-kicker" id="gp-kicker">الخبر الأول</div>
+          <h2 class="gp-h" id="gp-head">—</h2>
+          <p class="gp-deck" id="gp-deck">—</p>
+          <div class="gp-byline"><span id="gp-by">بقلم: مراسل القرية</span><span id="gp-when">—</span></div>
+        </div>
+        <div>
+          <div class="gp-art" id="gp-art">🌟</div>
+          <div class="gp-cap" id="gp-cap">من قلب القرية</div>
+        </div>
+        <div class="gp-quote" id="gp-quote">—<span>الحكمة التي خرجت بها القرية</span></div>
+      </div>
+
+      <div class="gp-cols">
+        <div class="gp-col">
+          <div class="gp-rule">📌 سائرُ الأخبار</div>
+          <div id="gp-more"></div>
+        </div>
+        <div class="gp-col">
+          <div class="gp-rule">🧭 بوصلة القرية</div>
+          <div class="gp-compass" id="gp-compass"></div>
+          <div class="gp-weather" id="gp-weather">—</div>
+        </div>
+      </div>
+
+      <div class="gp-foot">زاد · ركنُ الأطفال · صحيفةٌ تصدر من حكايات طفلك — ولا تُرسَل إلى أي مكان 🌿</div>
+    </div>
+
+    <div class="gp-tools">
+      <button class="primary" onclick="gpPrint()">🖨️ اطبع العدد</button>
+      <a href="kids-tales.html">🏮 اذهب إلى الحكايات</a>
+      <a href="kids-garden.html">🌱 بستان الذكر</a>
+    </div>
+    <div class="gp-hint">تُولَّد الصحيفة من حكايات طفلك المحفوظة على جهازه — بلا خادم، وبلا مشاركة لأي بيانات.</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  var TALE_NAMES = { beer:'بئر القرية', lamp:'المصباح الأخير', seed:'بذرة الجدّ' };
+  var TRAITS = {
+    rahma:  { n:'الرحمة',  i:'💚' },
+    shajaa: { n:'الشجاعة', i:'🦁' },
+    sidq:   { n:'الصدق',   i:'💎' },
+    sabr:   { n:'الصبر',   i:'🌱' }
+  };
+
+  function esc(t){
+    return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+    });
+  }
+  function readAll(){ try{ return JSON.parse(localStorage.getItem('zad_v2')||'{}')||{}; }catch(e){ return {}; } }
+  function kidName(){
+    try{
+      var p = JSON.parse(localStorage.getItem('zad_profile')||'{}');
+      return (p && (p.name || p.displayName)) || '';
+    }catch(e){ return ''; }
+  }
+  /* الجمع العربي: نجمة / نجمتان / نجوم / نجمة */
+  function starsWording(n){
+    if (n === 1) return 'نجمةٌ واحدة';
+    if (n === 2) return 'نجمتان';
+    if (n >= 3 && n <= 10) return n + ' نجوم';
+    return n + ' نجمة';
+  }
+
+  function arDate(iso){
+    var d = iso ? new Date(iso + 'T12:00:00') : new Date();
+    try{ return d.toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'long', year:'numeric' }); }
+    catch(e){ return d.toLocaleDateString(); }
+  }
+
+  /* ══ جمع كل النهايات المكتشفة ═══════════════════════════════ */
+  function collect(){
+    var s = readAll(), t = s.kidsTales || {};
+    var ends = t.endings || {}, out = [];
+    Object.keys(ends).forEach(function(tid){
+      Object.keys(ends[tid] || {}).forEach(function(k){
+        var v = ends[tid][k];
+        if (!v) return;
+        if (v === true){                       /* بيانات قديمة: تُعرض بأقل تفاصيل */
+          out.push({ tale:tid, key:k, title:'نهايةٌ في القرية', head:'من حكايات القرية', body:'', moral:'', em:'🌟', d:'' });
+          return;
+        }
+        out.push({
+          tale: tid, key: k,
+          title: v.title || '', head: v.head || v.title || '',
+          body: v.body || '', moral: v.moral || '', em: v.em || '🌟', d: v.d || ''
+        });
+      });
+    });
+    /* الأحدث أولًا */
+    out.sort(function(a,b){ return String(b.d).localeCompare(String(a.d)); });
+    return { ends: out, compass: t.compass || {}, last: t.last || null, landmarks: t.landmarks || {} };
+  }
+
+  function render(){
+    var data = collect();
+    var list = data.ends;
+
+    if (!list.length){
+      var e = $('gp-empty'); if (e) e.classList.add('on');
+      var p = $('gp-paper'); if (p) p.style.display = 'none';
+      return;
+    }
+    var e2 = $('gp-empty'); if (e2) e2.classList.remove('on');
+    var paper = $('gp-paper'); if (paper) paper.style.display = '';
+
+    /* الخبر الأول: آخر ما فعله، وإلا الأحدث في القائمة */
+    var lead = list[0];
+    if (data.last){
+      for (var i=0;i<list.length;i++){
+        if (list[i].tale === data.last.tale && list[i].key === data.last.key){ lead = list[i]; break; }
+      }
+    }
+
+    var period = lead.d ? arDate(lead.d) : arDate();
+    if ($('gp-date'))    $('gp-date').textContent = period;
+    if ($('gp-edition')) $('gp-edition').textContent = 'العدد ' + list.length + ' — ' + (kidName() ? 'طفلُ القرية: ' + kidName() : 'صحيفةُ الصغار');
+    if ($('gp-kicker'))  $('gp-kicker').textContent = 'الخبر الأول · ' + (TALE_NAMES[lead.tale] || 'من القرية');
+    if ($('gp-head'))    $('gp-head').textContent = lead.head || lead.title;
+    if ($('gp-deck'))    $('gp-deck').textContent = lead.body || lead.title;
+    if ($('gp-by'))      $('gp-by').textContent = 'بقلم: ' + (kidName() || 'مراسل القرية') + ' — من حكاية ' + (TALE_NAMES[lead.tale] || '');
+    if ($('gp-when'))    $('gp-when').textContent = lead.d ? arDate(lead.d) : arDate();
+    if ($('gp-art'))     $('gp-art').textContent = lead.em || '🌟';
+    if ($('gp-cap'))     $('gp-cap').textContent = lead.title || '';
+    if ($('gp-quote')){
+      $('gp-quote').innerHTML = esc(lead.moral || lead.title) + '<span>الحكمة التي خرجت بها القرية</span>';
+    }
+
+    /* سائر الأخبار */
+    var more = $('gp-more');
+    if (more){
+      var rest = list.filter(function(x){ return !(x.tale === lead.tale && x.key === lead.key); }).slice(0, 6);
+      if (!rest.length){
+        more.innerHTML = '<div class="gp-item"><h3>القريةُ تنتظر حكايتك القادمة</h3><p>جرّب طريقًا آخر في أيِّ حكاية… ولكلِّ طريقٍ خبرٌ جديد على هذه الصفحة.</p></div>';
+      } else {
+        more.innerHTML = rest.map(function(x){
+          return '<div class="gp-item"><div class="tag">' + esc(TALE_NAMES[x.tale] || '') + ' · ' + esc(arDate(x.d)) + '</div>'
+            + '<h3>' + esc(x.head || x.title) + '</h3>'
+            + '<p>' + esc((x.body || x.title).slice(0, 150)) + (x.body && x.body.length > 150 ? '…' : '') + '</p></div>';
+        }).join('');
+      }
+    }
+
+    /* بوصلة القرية */
+    var comp = $('gp-compass');
+    if (comp){
+      var max = 1;
+      Object.keys(TRAITS).forEach(function(k){ max = Math.max(max, data.compass[k] || 0); });
+      comp.innerHTML = Object.keys(TRAITS).map(function(k){
+        var v = data.compass[k] || 0;
+        return '<div class="gp-cmp"><span>' + TRAITS[k].i + '</span><span style="min-width:42px">' + TRAITS[k].n + '</span>'
+          + '<span class="bar"><i style="width:' + Math.round(v / max * 100) + '%"></i></span><b>' + v + '</b></div>';
+      }).join('');
+    }
+
+    /* الطقس — تفصيلة صحفية */
+    var w = $('gp-weather');
+    if (w){
+      var traits = Object.keys(data.compass).filter(function(k){ return data.compass[k] > 0; });
+      var top = traits.sort(function(a,b){ return data.compass[b] - data.compass[a]; })[0];
+      var lands = Object.keys(data.landmarks || {}).length;
+      w.innerHTML = '<b>حالة القرية:</b> ' + (lands === 3 ? 'مكتملةُ المعالم — بئرٌ ومصباحٌ وشجرة 🌟' : lands === 0 ? 'هادئةٌ في انتظار أثرك' : lands + ' من 3 معالم تنوّرت')
+        + '<br><b>الطقس:</b> سماءٌ صافية، فيها ' + starsWording(list.length) + ' ✨'
+        + (top ? '<br><b>يقولون:</b> صاحبُنا يميل إلى ' + TRAITS[top].n + ' ' + TRAITS[top].i : '');
+    }
+  }
+
+  function gpPrint(){ try{ window.print(); }catch(e){ if (window.showToast) window.showToast('تعذّرت الطباعة من هذا المتصفح'); } }
+  window.gpPrint = gpPrint;
+  window._gpPure = { collect: collect, arDate: arDate, TALE_NAMES: TALE_NAMES };
+
+  function boot(){ render(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

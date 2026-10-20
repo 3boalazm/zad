@@ -234,8 +234,6 @@ html[data-theme="dark"] .quiz-score,html[data-theme="oled"] .quiz-score{color:va
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
 <style>
-  :root{--font-scale:1}
-  body{font-size:calc(1rem * var(--font-scale))}
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
@@ -244,7 +242,7 @@ html[data-theme="dark"] .quiz-score,html[data-theme="oled"] .quiz-score{color:va
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
 </style>
-<script>(function(){var saved=localStorage.getItem('zad_font_size');var map={small:0.875,medium:1,large:1.15};if(!saved||saved==='system'){var scale=1;try{var p=document.createElement('div');p.style.cssText='position:absolute;visibility:hidden;font-size:1rem;width:1rem;height:1rem';(document.head||document.documentElement).appendChild(p);var rem=parseFloat(getComputedStyle(p).width)||16;(document.head||document.documentElement).removeChild(p);scale=rem<=14?0.875:rem>=18?1.15:1;}catch(e){}document.documentElement.style.setProperty('--font-scale',scale);}else{document.documentElement.style.setProperty('--font-scale',map[saved]||1);}})();</script>
+<script src="js/font-scale.js"></script><script>(function(){})();</script>
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
@@ -348,6 +346,53 @@ function zadSafeParse(key, fallback) {
       </div>
     </div>
 
+    <!-- ══ حكايات القرية: قصص يختار فيها الطفل ═══════════════ -->
+    <a href="kids-tales.html" style="display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,#123f31,#3a2a8a);border-radius:18px;padding:16px 18px;text-decoration:none;color:#fff;margin:16px 0;box-shadow:0 14px 34px -14px rgba(58,42,138,.7);position:relative;overflow:hidden">
+      <span style="font-size:32px">🏮</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15.5px;font-weight:900;margin-bottom:3px;display:flex;align-items:center;gap:7px">حكايات القرية <span style="font-size:9.5px;font-weight:900;background:#ffe9a8;color:#3a2e10;border-radius:999px;padding:2px 7px">جديد</span></div>
+        <div style="font-size:11.5px;opacity:.85;line-height:1.8">أنت الذي يختار… وكلُّ اختيارٍ يزرع أثرًا في قريتك</div>
+      </div>
+      <span style="font-size:18px;opacity:.8">←</span>
+    </a>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 16px">
+      <a href="kids-garden.html" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#1a5d47,#3f8f47);border-radius:16px;padding:13px 14px;text-decoration:none;color:#fff;box-shadow:0 10px 26px -14px rgba(20,80,40,.8)">
+        <span style="font-size:24px">🌱</span>
+        <div style="min-width:0"><div style="font-size:13.5px;font-weight:900">بستان الذكر</div><div style="font-size:10.5px;opacity:.85;line-height:1.6;margin-top:2px">كلُّ تسبيحةٍ زهرة</div></div>
+      </a>
+      <a href="kids-gazette.html" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#6b4a1a,#c9a14a);border-radius:16px;padding:13px 14px;text-decoration:none;color:#fff;box-shadow:0 10px 26px -14px rgba(120,80,20,.8)">
+        <span style="font-size:24px">📰</span>
+        <div style="min-width:0"><div style="font-size:13.5px;font-weight:900">صحيفة القرية</div><div style="font-size:10.5px;opacity:.9;line-height:1.6;margin-top:2px">حكاياتك في خبر</div></div>
+      </a>
+    </div>
+
+    <!-- ══ ألعاب تشغيل الدماغ: قرارات الطفل تصنع المشهد ══════ -->
+    <div style="display:flex;align-items:center;gap:8px;margin:20px 0 10px">
+      <span style="font-size:19px">🧠</span>
+      <div style="font-size:14.5px;font-weight:900;color:var(--green-deep)">ألعاب تشغّل الدماغ</div>
+      <span style="flex:1;height:1px;background:var(--border)"></span>
+      <span style="font-size:10px;font-weight:800;color:var(--muted);background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:3px 9px">أنت تتحكّم</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 8px">
+      <a href="kids-detectives.html" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#22345a,#4a6ba8);border-radius:16px;padding:13px 14px;text-decoration:none;color:#fff;box-shadow:0 10px 26px -14px rgba(34,52,90,.85)">
+        <span style="font-size:24px">🔎</span>
+        <div style="min-width:0"><div style="font-size:13.5px;font-weight:900;display:flex;align-items:center;gap:5px">محقّق القرية <span style="font-size:8.5px;font-weight:900;background:#ffe9a8;color:#3a2e10;border-radius:999px;padding:1px 6px">جديد</span></div><div style="font-size:10.5px;opacity:.88;line-height:1.6;margin-top:2px">٣ زيارات… ودليل واحد</div></div>
+      </a>
+      <a href="kids-city.html" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#14525f,#2a8a9a);border-radius:16px;padding:13px 14px;text-decoration:none;color:#fff;box-shadow:0 10px 26px -14px rgba(20,82,95,.85)">
+        <span style="font-size:24px">🏙️</span>
+        <div style="min-width:0"><div style="font-size:13.5px;font-weight:900;display:flex;align-items:center;gap:5px">مدينة الميزان <span style="font-size:8.5px;font-weight:900;background:#ffe9a8;color:#3a2e10;border-radius:999px;padding:1px 6px">جديد</span></div><div style="font-size:10.5px;opacity:.88;line-height:1.6;margin-top:2px">٤ نقاط… ومدينة كاملة</div></div>
+      </a>
+    </div>
+    <a href="kids-memory.html" style="display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,#2e2154,#5a3f9a);border-radius:18px;padding:15px 17px;text-decoration:none;color:#fff;margin:0 0 16px;box-shadow:0 14px 34px -14px rgba(46,33,84,.8)">
+      <span style="font-size:30px">🏛️</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:900;margin-bottom:3px;display:flex;align-items:center;gap:7px">قصر الذاكرة <span style="font-size:9.5px;font-weight:900;background:#ffe9a8;color:#3a2e10;border-radius:999px;padding:2px 7px">جديد</span></div>
+        <div style="font-size:11.5px;opacity:.85;line-height:1.8">رتّب الأشياء في غرفك… ثم اختبر ذاكرتك — ٣ قصور و٣ مراحل</div>
+      </div>
+      <span style="font-size:18px;opacity:.8">←</span>
+    </a>
+
     <!-- ══ SECTION 2: Hero Challenge ═════════════════════════ -->
     <div class="challenge-hero">
       <div class="ch-title">🦁 تحدي بطل العشر</div>
@@ -368,7 +413,7 @@ function zadSafeParse(key, fallback) {
       <div class="stars-sub">اجمع نجوماً بإنجاز المهام والإجابة على الأسئلة</div>
       <div class="stars-display" id="stars-display"></div>
       <div class="stars-count" id="stars-count">0</div>
-      <div class="stars-total">/ 20 نجمة</div>
+      <div class="stars-total">/ 65 نجمة</div>
     </div>
 
     <!-- ══ SECTION 5: Dictionary ══════════════════════════════ -->
@@ -483,7 +528,25 @@ function zadSafeParse(key, fallback) {
 
 const KIDS_KEY = 'zad_kids_v2';
 let kState = zadSafeParse(KIDS_KEY, {tasks:{},stars:0,badges:[]});
-function saveKids(){ localStorage.setItem(KIDS_KEY, JSON.stringify(kState)); }
+function saveKids(){ try{ localStorage.setItem(KIDS_KEY, JSON.stringify(kState)); }catch(e){} }
+
+/* ══ تصفير المهام اليومية ══════════════════════════════════════
+   كانت المهام تُحفَظ بلا تاريخ إطلاقًا، فمن يُنجز الثمانية في يومه
+   الأول يظل يرى «8 من 8 مهام مكتملة» ووسام البطل للأبد — بينما العنوان
+   نفسه يقول «مهام يومية»، وصفحتا «مدرستي» و«نادي الإبداع» تُصفّران
+   مهامهما كل يوم. الآن للمهام مفتاح يوم، وتُصفَّر عند تغيّره. */
+function kidsDayKey(){
+  var d = new Date();
+  return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
+}
+function ensureKidsDay(){
+  if(kState.day === kidsDayKey()) return false;
+  kState.day = kidsDayKey();
+  kState.tasks = {};
+  kState.hero_badge = false;   /* بطل اليوم يُحرَز من جديد */
+  saveKids();
+  return true;
+}
 
 /* ══ 1. STORY ═══════════════════════════════════════════════ */
 const STORIES = [
@@ -586,12 +649,20 @@ function renderTasks() {
       </div>
       <div class="task-check">${done ? '✅' : ''}</div>`;
     div.onclick = () => toggleTask(t);
+    /* بطاقة قابلة للنقر يجب أن تكون قابلة للوصول من لوحة المفاتيح */
+    div.tabIndex = 0;
+    div.setAttribute('role', 'button');
+    div.setAttribute('aria-pressed', done ? 'true' : 'false');
+    div.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); toggleTask(t); }
+    });
     grid.appendChild(div);
   });
   updateChallenge();
 }
 
 function toggleTask(t) {
+  ensureKidsDay();
   if (!kState.tasks) kState.tasks = {};
   const wasDone = !!kState.tasks[t.id];
   kState.tasks[t.id] = !wasDone;
@@ -656,7 +727,10 @@ function renderBadges() {
 }
 
 /* ══ 4. STARS ═══════════════════════════════════════════════ */
-const MAX_STARS = 20;
+/* أقصى ما يمكن جمعه فعلًا: 8 مهام + 2 قصة + 5 بطل + 11 قاموس + 5 مسابقة = 31
+   + محقّق القرية 6 + مدينة الميزان 23 + قصر الذاكرة 5 = 65.
+   كان 20 فيتوقّف العدّاد بينما النجوم الداخلية تزيد. */
+const MAX_STARS = 65;
 function updateStars() {
   const disp = document.getElementById('stars-display');
   const cnt  = document.getElementById('stars-count');
@@ -728,7 +802,9 @@ function renderDict() {
     const div = document.createElement('div');
     div.className = 'dict-item';
     div.innerHTML = `
-      <div class="dict-header" onclick="toggleDict(${i})">
+      <div class="dict-header" role="button" tabindex="0" aria-expanded="false"
+           onclick="toggleDict(${i})"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDict(${i})}">
         <span class="dict-ico">${item.ico}</span>
         <div><div class="dict-word">${item.word}</div><div class="dict-hint">${item.hint}</div></div>
         <span class="dict-arrow">▼</span>
@@ -743,8 +819,15 @@ function renderDict() {
 function toggleDict(i) {
   const items = document.querySelectorAll('.dict-item');
   items.forEach((el, idx) => {
-    if (idx === i) el.classList.toggle('open');
-    else el.classList.remove('open');
+    if (idx === i) {
+      el.classList.toggle('open');
+      const h = el.querySelector('.dict-header');
+      if (h) h.setAttribute('aria-expanded', el.classList.contains('open') ? 'true' : 'false');
+    } else {
+      el.classList.remove('open');
+      const h = el.querySelector('.dict-header');
+      if (h) h.setAttribute('aria-expanded', 'false');
+    }
   });
   /* Give star on first open */
   if (!kState[`dict_${i}`]) {
@@ -851,6 +934,8 @@ function showBadgeToast(msg) {
 
 /* ══ CONFETTI ═══════════════════════════════════════════════ */
 function triggerKidConfetti() {
+  /* من يطلب تقليل الحركة في نظامه لا يريد 30 قطعة تتساقط */
+  try{ if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
   const colors = ['#c9a14a','#4dd866','#ffe54d','#ff6b85','#5aabff'];
   for (let i = 0; i < 30; i++) {
     const el = document.createElement('div');
@@ -866,6 +951,7 @@ function triggerKidConfetti() {
 document.addEventListener('DOMContentLoaded', () => {
   /* Fix sidebar */
   if (typeof initSidebar === 'function') initSidebar();
+  ensureKidsDay();
   renderStory();
   renderTasks();
   renderBadges();

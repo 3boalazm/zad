@@ -289,8 +289,6 @@ html[data-theme="dark"] .gh-quiz-opt:hover,html[data-theme="oled"] .gh-quiz-opt:
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
 <style>
-  :root{--font-scale:1}
-  body{font-size:calc(1rem * var(--font-scale))}
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
@@ -299,7 +297,7 @@ html[data-theme="dark"] .gh-quiz-opt:hover,html[data-theme="oled"] .gh-quiz-opt:
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
 </style>
-<script>(function(){var saved=localStorage.getItem('zad_font_size');var map={small:0.875,medium:1,large:1.15};if(!saved||saved==='system'){var scale=1;try{var p=document.createElement('div');p.style.cssText='position:absolute;visibility:hidden;font-size:1rem;width:1rem;height:1rem';(document.head||document.documentElement).appendChild(p);var rem=parseFloat(getComputedStyle(p).width)||16;(document.head||document.documentElement).removeChild(p);scale=rem<=14?0.875:rem>=18?1.15:1;}catch(e){}document.documentElement.style.setProperty('--font-scale',scale);}else{document.documentElement.style.setProperty('--font-scale',map[saved]||1);}})();</script>
+<script src="js/font-scale.js"></script><script>(function(){})();</script>
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
@@ -387,6 +385,38 @@ function zadSafeParse(key, fallback) {
     <span>👨‍👩‍👧</span>
     <div><b>لمسة للآباء والمعلمين:</b> اجعلوا لكل يوم قصة، وشاركوا أطفالكم الحوار والأنشطة. القصة تغرس القيمة بالحب لا بالتلقين. <span style="color:var(--gold-dark);font-weight:700;white-space:nowrap">دليل المربّي ←</span></div>
   </a>
+
+  <!-- ═══ لوحة أيام العشر ═══
+       هذه الحاويات كانت محذوفة من الصفحة بينما دوالّها الخمس ما زالت
+       تُنادى في التهيئة وتكتب في العدم: ٢٩٠ سطرًا لا تصل للمستخدم.
+       أُعيدت هنا فوق فهرس القصص، وبأنماط CSS الموجودة أصلًا في الصفحة. -->
+  <div id="gh-play">
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px">
+      <span style="background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:800;color:var(--ink)">⭐ <span id="g-stars">0</span> نجمة</span>
+      <span style="background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:800;color:var(--ink)">✅ أنجزت <span id="g-done-count">0</span> خطوة</span>
+    </div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🗓️ أيام العشر</h2>
+    <div class="days-grid" id="days-grid"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🕋 مناسك الحج خطوة بخطوة</h2>
+    <div id="hajj-steps-list"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🎨 أنشطة العيد</h2>
+    <div class="activity-grid" id="activities-grid"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🎵 أناشيد العيد</h2>
+    <div id="nasheed-list"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🧠 اختبر معرفتك</h2>
+    <div id="quiz-container"></div>
+
+    <div class="card" style="padding:18px;text-align:center;margin-top:14px">
+      <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:8px">💡 هل تعلم؟</div>
+      <div id="fact-text" style="font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.8;min-height:44px;transition:opacity .2s">الكعبة هي أول بيت بُني لعبادة الله في الأرض!</div>
+      <button type="button" onclick="nextFact()" style="margin-top:12px;padding:10px 22px;border-radius:12px;border:1.5px solid var(--border);background:var(--sand);font-family:inherit;font-size:13px;font-weight:800;color:var(--ink);cursor:pointer">معلومة أخرى ✨</button>
+    </div>
+  </div>
 
   <!-- الفهرس التفاعلي -->
   <div id="gh-index"></div>
@@ -662,6 +692,8 @@ function renderNasheeds(){
       <div style="font-size:14px;font-weight:800;margin-bottom:12px">🔊 عداد التكبير — كبّر معنا!</div>
       <div style="font-family:'Amiri',serif;font-size:18px;margin-bottom:14px;line-height:2">الله أكبر · الله أكبر · لا إله إلا الله<br>الله أكبر · الله أكبر · ولله الحمد</div>
       <div style="font-size:40px;font-weight:900;font-family:'ThmanyahSans',monospace;margin-bottom:10px" id="takbeer-count">0</div>
+      <div style="height:9px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden;margin:0 auto 8px;max-width:260px"><div id="takbeer-bar" style="height:100%;width:0;background:#fff;border-radius:99px;transition:width .3s"></div></div>
+      <div id="takbeer-pct" style="font-size:12px;font-weight:800;opacity:.9;margin-bottom:12px">0 / 100</div>
       <button onclick="addTakbeer()" style="padding:14px 32px;border-radius:12px;border:none;background:rgba(255,255,255,.25);color:#fff;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;width:100%" onmouseover="this.style.background='rgba(255,255,255,.35)'" onmouseout="this.style.background='rgba(255,255,255,.25)'">اضغط للتكبير 🔊</button>
     </div>`);
 }
@@ -776,10 +808,6 @@ function nextFact(){
 
 /* ─ Takbeer Counter in Days section ─────────────────────── */
 let takbeerCount = parseInt(localStorage.getItem('ghars_takbeer')||'0');
-function updateTakbeer(){
-  const el = document.getElementById('takbeer-count');
-  if (el) el.textContent = takbeerCount;
-}
 function addTakbeer(){
   takbeerCount++;
   localStorage.setItem('ghars_takbeer', takbeerCount);

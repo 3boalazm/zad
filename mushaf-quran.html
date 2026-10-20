@@ -173,8 +173,6 @@ html[data-theme="dark"] .last-page-indicator,html[data-theme="oled"] .last-page-
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light',fs=24;try{var p=JSON.parse(s);t=p.theme||'light';fs=p.quranFontSize||24;}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){};document.documentElement.style.setProperty('--qf-size',fs+'px')})();</script>
 <style>
-  :root{--font-scale:1}
-  body{font-size:calc(1rem * var(--font-scale))}
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
@@ -183,7 +181,7 @@ html[data-theme="dark"] .last-page-indicator,html[data-theme="oled"] .last-page-
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
 </style>
-<script>(function(){var saved=localStorage.getItem('zad_font_size');var map={small:0.875,medium:1,large:1.15};if(!saved||saved==='system'){var scale=1;try{var p=document.createElement('div');p.style.cssText='position:absolute;visibility:hidden;font-size:1rem;width:1rem;height:1rem';(document.head||document.documentElement).appendChild(p);var rem=parseFloat(getComputedStyle(p).width)||16;(document.head||document.documentElement).removeChild(p);scale=rem<=14?0.875:rem>=18?1.15:1;}catch(e){}document.documentElement.style.setProperty('--font-scale',scale);}else{document.documentElement.style.setProperty('--font-scale',map[saved]||1);}})();</script>
+<script src="js/font-scale.js"></script><script>(function(){})();</script>
   <!-- Open Graph / Social Media Thumbnail -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="زاد">
@@ -389,7 +387,11 @@ let _page=_urlPage||parseInt(localStorage.getItem(PAGE_KEY)||'1');
 let _pageEnd=_urlTo||0;
 let _bookmarks=zadSafeParse(BM_KEY,[]);
 let _pageCache=zadSafeParse(CACHE_KEY,{});
-let _fontSize=parseInt(localStorage.getItem('zad_mfont')||'24');
+/* P2-Q10: المصدر القانوني لحجم خط المصحف هو zad_v2.quranFontSize (وهو ما
+   تكتبه كل السكربتات المبكرة على --qf-size)، وzad_mfont مرآة قديمة. كانت
+   الصفحة تقرأ المرآة وحدها فتفوتها كل كتابة من mushaf.html/app.js. */
+let _fontSize=Math.max(16,Math.min(36,parseInt(getComputedStyle(document.documentElement).getPropertyValue('--qf-size'),10)||parseInt(localStorage.getItem('zad_mfont'),10)||24));
+document.documentElement.style.setProperty('--qf-size',_fontSize+'px');
 let _loading=false;
 let _lastSavedPage=parseInt(localStorage.getItem(LAST_PAGE_KEY)||'0'); /* ← آخر صفحة محفوظة */
 
@@ -514,7 +516,9 @@ function renderAyahs(p,ayahs){
       html+=`<div class="surah-title-box">سُورَةُ ${g.name}</div>`;
       if(g.bismillah)html+=`<div class="basmala-txt">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>`;
     }
-    html+=`<div class="quran-text" style="font-size:${_fontSize}px">`;
+    /* النمط inline كان يتغلّب على font-size:var(--qf-size) في CSS ⇒
+       المتغيّر ميت بالنسبة لنصّ الآيات. الآن القاعدة وحدها تحكم. */
+    html+=`<div class="quran-text">`;
     g.ayahs.forEach(a=>{html+=`${a.text} <span class="aya-num">${toArabicNum(a.numberInSurah)}</span> `;});
     html+=`</div>`;
   });
@@ -560,10 +564,20 @@ function goToSurah(v){if(v)loadPage(parseInt(v));}
 function goToJuz(v){if(!v)return;const i=parseInt(v)-1;if(JUZ_PAGES[i])loadPage(JUZ_PAGES[i]);}
 
 function changeFontSize(delta){
-  _fontSize=Math.max(18,Math.min(36,_fontSize+delta));
+  _fontSize=Math.max(16,Math.min(36,_fontSize+delta));
   localStorage.setItem('zad_mfont',_fontSize);
-  document.querySelectorAll('.quran-text').forEach(el=>el.style.fontSize=_fontSize+'px');
-  try{const s=JSON.parse(localStorage.getItem('zad_v2')||'{}');s.quranFontSize=_fontSize;localStorage.setItem('zad_v2',JSON.stringify(s));}catch(e){}
+  document.documentElement.style.setProperty('--qf-size',_fontSize+'px');
+  /* امسح أي حجم inline قديم (ماركب سابق) حتى تعمل قاعدة CSS */
+  document.querySelectorAll('.quran-text').forEach(el=>el.style.fontSize='');
+  document.querySelectorAll('#font-slider,#m-font').forEach(sl=>{sl.value=_fontSize;});
+  /* P2-Q14: لا كتابة مباشرة لـzad_v2 خارج طبقة الحالة — نمرّ بـapplyQuranFont
+     التي تكتب STATE الكامل + zad_mfont. (الكتابة المباشرة كانت غير مرئية
+     لـSTATE المقيم في الذاكرة، فأي saveState() لاحق يمحوها.) */
+  if(typeof window.applyQuranFont==='function'){
+    try{window.applyQuranFont(_fontSize);}catch(e){}
+  }else{
+    try{const s=JSON.parse(localStorage.getItem('zad_v2')||'{}');s.quranFontSize=_fontSize;localStorage.setItem('zad_v2',JSON.stringify(s));}catch(e){}
+  }
 }
 
 function toggleBm(){
