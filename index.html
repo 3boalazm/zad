@@ -270,16 +270,12 @@
   .zh-install small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
   .zh-install button{background:var(--green-deep);color:#fff;border:none;border-radius:11px;padding:8px 14px;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer}
 
-  /* ── الشبكة ───────────────────────────────────────────────── */
-  .zh-grid{display:grid;gap:14px;grid-template-columns:1fr}
+  /* ── الشبكة: عمودان مستقلّان فلا يفرض عمودٌ طويل فراغًا على الآخر ── */
+  .zh-grid{display:flex;flex-direction:column;gap:14px}
+  .zh-col{display:contents}          /* الموبايل: الترتيب الطبيعي للـDOM */
   @media(min-width:900px){
-    .zh-grid{
-      grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);
-      grid-template-areas:"now stats" "wird badges" "verse links";
-      align-items:start;
-    }
-    .zh-now{grid-area:now}.zh-stats-wrap{grid-area:stats}.zh-wird{grid-area:wird}
-    .zh-badges-wrap{grid-area:badges}.zh-verse-wrap{grid-area:verse}.zh-links-wrap{grid-area:links}
+    .zh-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:14px;align-items:start}
+    .zh-col{display:flex;flex-direction:column;gap:14px}
   }
   @media(max-width:560px){
     .zh-hero{padding:16px 14px 15px;border-radius:22px}
@@ -477,9 +473,10 @@
     <div id="daily-content-card" class="card" style="display:none;border-color:rgba(201,161,74,.25);background:linear-gradient(135deg,var(--card),var(--gold-pale));margin-bottom:14px"></div>
 
     <!-- ══════════════════════════════════════════════════════════
-         الشبكة: الآن · الورد · الأرقام · الأوسمة · الآية · الروابط
+         الشبكة: (يمين) الآن · الورد · الآية — (يسار) الأرقام · الأوسمة · الروابط
          ══════════════════════════════════════════════════════════ -->
     <div class="zh-grid">
+      <div class="zh-col">
 
       <!-- ٢ · الآن -->
       <section class="zh-card zh-now" id="zh-now" aria-label="الخطوة القادمة">
@@ -551,6 +548,20 @@
         </div>
       </section>
 
+      <!-- ٦ · الآية -->
+      <section class="zh-verse-wrap zh-card zh-verse" id="daily-verse-card" aria-label="آية اليوم">
+        <div class="zh-v-head">
+          <span class="zh-v-eye" id="dvc-eyebrow">☀️ آية الصباح</span>
+          <button id="dvc-share" class="zh-v-share" aria-label="مشاركة الآية">🖼️</button>
+        </div>
+        <div class="zh-v-text" id="dvc-text">…</div>
+        <div class="zh-v-src" id="dvc-src"></div>
+      </section>
+
+      </div>
+
+      <div class="zh-col">
+
       <!-- ٤ · الأرقام -->
       <section class="zh-stats-wrap zh-card" aria-label="أرقام اليوم">
         <div class="zh-card-h">
@@ -575,16 +586,6 @@
         <div class="zh-badges" id="mini-badges-container"></div>
       </section>
 
-      <!-- ٦ · الآية -->
-      <section class="zh-verse-wrap zh-card zh-verse" id="daily-verse-card" aria-label="آية اليوم">
-        <div class="zh-v-head">
-          <span class="zh-v-eye" id="dvc-eyebrow">☀️ آية الصباح</span>
-          <button id="dvc-share" class="zh-v-share" aria-label="مشاركة الآية">🖼️</button>
-        </div>
-        <div class="zh-v-text" id="dvc-text">…</div>
-        <div class="zh-v-src" id="dvc-src"></div>
-      </section>
-
       <!-- ٧ · روابط سريعة -->
       <section class="zh-links-wrap zh-card" aria-label="روابط سريعة">
         <div class="zh-card-h">
@@ -599,6 +600,7 @@
           <a class="zh-link" href="summary.html"><span class="zh-l-ico" style="background:rgba(60,160,140,.16)">📊</span><span><span class="zh-l-n">حصادي</span><span class="zh-l-s">ملخص العبادات</span></span></a>
         </div>
       </section>
+      </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════
