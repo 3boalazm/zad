@@ -40,8 +40,8 @@
         @font-face. حدّثت أسماء الخطوط في PRECACHE لنفس السبب.
    ════════════════════════════════════════════════════════════ */
 
-// Invalidate older cached bundles so returning PWAs receive the fixed mobile header.
-const CACHE_STATIC = 'zad-20261020-mobile-nav';
+// Invalidate older cached bundles so returning PWAs receive the expanded video library.
+const CACHE_STATIC = 'zad-20261020-video-library';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */

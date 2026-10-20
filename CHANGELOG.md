@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - 2026-10-20
 
 ### Added
+- **Video library expansion (`videos.html`)** — grew from 26 to 81 lecture/podcast cards:
+  - All 64 entries from the curated source list are now present: 14 «إيه المشكلة؟» episodes, 7 «عالمغرب» story episodes, 11 «وعي» companion-series episodes, and 23 lectures from Osman Al-Khamis, Saleh Al-Maghamsi, Ahmad Al-Sayyid, Muhammad Hassan, Ibrahim Muhammad, Abd Al-Rahman Dhaker Al-Hashimi and others.
+  - Two new filter categories with matching tabs: `sahaba` (🧭 سلسلة الصحابة) and `stories` (📖 قصص وعبر).
+  - Seven new entries in the speaker/presenter dropdown plus a «عالمغرب» program option; hero counters updated to 81 lectures / 25 scholars & presenters / 330+ knowledge points.
+  - New card variant for entries whose source is a YouTube **search** link or an external site (`site-waie.vercel.app`, `ahmadalsayed.net`, a channel handle): same card anatomy as the direct-video cards, with a branded placeholder thumbnail, a `🔍 بحث` / `🌐 الموقع` badge, and a footer action that opens the original source in a new tab. An explanatory note strip above the grid makes the distinction explicit.
+  - Resolved the direct YouTube id for «إيه المشكلة في اتباع الهوى؟» (`R2NoSY1pLzg`), so it plays in the built-in player like the other verified episodes.
+
+### Changed
+- `shareVid(id, title, url)` now accepts an explicit URL so search/site-backed cards share their real source instead of a `youtu.be/<key>` link.
+- `copyVidSummary()` reads `.vid-tile-title` (falling back to `.vid-title`) and prefers the card's `data-href`, fixing empty titles in copied summaries for the compact tile layout.
+
+### Fixed
+- Bumped the service-worker static cache to `zad-20261020-video-library` so installed PWAs drop the stale runtime-cached `videos.html` and receive the expanded library.
+
 - Comprehensive engineering documentation suite in `docs/`:
   - `docs/engineering-audit.md`: System map, component inventory, data flows, and verified defect log.
   - `docs/architecture.md`: Complete system architecture, domain models, and PWA offline state management.
