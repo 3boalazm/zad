@@ -144,7 +144,8 @@ const bypass = url => BYPASS.some(p => url.includes(p));
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_STATIC)
-      .then(c => c.addAll(PRECACHE))
+      /* addAll يرفض الكل لو سقط أصل واحد — والتالي يُخزّن ما نجح ويترك الباقي */
+      .then(c => Promise.allSettled(PRECACHE.map(u => c.add(u))))
       .catch(() => {})           /* لا تفشل التثبيت لو أصل واحد لم يُحمَّل */
       .then(() => self.skipWaiting())
   );

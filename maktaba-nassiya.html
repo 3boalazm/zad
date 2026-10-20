@@ -811,6 +811,10 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
   window.addEventListener('hashchange', route);
   route();
   if (Lib.probe) Lib.probe().then(refreshStatus);
+
+  /* تغيّر حالة الشبكة أثناء التصفّح: حدّث الشارة وأعد الفحص عند العودة */
+  window.addEventListener('online', function () { Lib.reset(); Lib.probe().then(refreshStatus); });
+  window.addEventListener('offline', function () { Lib.reset(); Lib.probe().then(refreshStatus); });
   }
 
   /* الملفات المحمّلة بـ defer تُنفَّذ قبل DOMContentLoaded */

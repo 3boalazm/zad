@@ -231,12 +231,19 @@ window.ZadLibrary = (function () {
    */
   function probe() {
     if (state.online !== null) return Promise.resolve(state.online);
+    /* المتصفح يعرف أنه أوفلاين: لا داعي لانتظار مهلة الشبكة */
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      state.online = false;
+      return Promise.resolve(false);
+    }
     var same = API_SAME + '/hadiths?category_id=1&page=1&per_page=1';
     var direct = API_DOOR + '/hadeeths/list/?language=ar&category_id=1&page=1&per_page=1';
     return getJSON(same).catch(function () { return getJSON(direct); })
       .then(function () { state.online = true; state.source = 'api'; return true; })
       .catch(function (err) { state.online = false; state.lastError = String(err && err.message || err); return false; });
   }
+
+  function reset() { state.online = null; state.lastError = ''; }
 
   /** نسخة مختصرة للتصدير/الاختبار */
   function apiInfo() {
@@ -247,6 +254,6 @@ window.ZadLibrary = (function () {
     roots: roots, subcategories: subcategories, categoryName: categoryName, counts: counts,
     list: list, one: one, search: search, seed: function () { return seedFor(); },
     lastRead: lastRead, markRead: markRead, bookmarks: bookmarks, isBookmarked: isBookmarked, toggleBookmark: toggleBookmark,
-    state: state, apiInfo: apiInfo, normalise: normalise, probe: probe
+    state: state, apiInfo: apiInfo, normalise: normalise, probe: probe, reset: reset
   };
 })();
