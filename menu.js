@@ -20,6 +20,7 @@
     { href: 'qibla.html',        icon: '🧭', label: 'اتجاه القبلة',    section: 'sec-prayer' },
     { href: 'hijri.html',        icon: '🗓️', label: 'التقويم الهجري',  section: 'sec-prayer' },
     { href: 'barnamaj.html',     icon: '📅', label: 'برنامج اليوم',     section: 'sec-prayer' },
+    { href: 'ramadan.html',      icon: '🌙', label: 'لوحة رمضان',      section: 'sec-prayer' },
 
     { sep: 'القرآن الكريم', id: 'sec-quran' },
     { href: 'mushaf.html',       icon: '📖', label: 'الورد اليومي',      section: 'sec-quran' },

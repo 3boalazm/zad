@@ -94,6 +94,11 @@
       data: { url: o.url || 'prayers.html', prayer: o.prayer || null },
     };
     if (o.vibrate) payload.vibrate = [250, 120, 250];
+    /* لوحة رمضان: الوضع الهادئ — يُسلَّم الإشعار **صامتًا** بين الإمساك
+       والإفطار بدل إسكاته بالكامل، فلا يضيع الوقت ويُحترَم الصائم. */
+    try {
+      if (window.ZadRamadan && window.ZadRamadan.quietNow && window.ZadRamadan.quietNow()) payload.silent = true;
+    } catch (e) {}
 
     /* 1) Service Worker — المسار الذي يعمل فعلًا على Android */
     try {

@@ -14,6 +14,7 @@
     {h:'qibla.html',i:'🧭',t:'اتجاه القبلة'},
     {h:'hijri.html',i:'🗓️',t:'التقويم الهجري'},
     {h:'barnamaj.html',i:'📅',t:'برنامج اليوم'},
+    {h:'ramadan.html',i:'🌙',t:'لوحة رمضان'},
     {h:'mushaf.html',i:'📖',t:'الورد القرآني'},
     {h:'mushaf-quran.html',i:'🕋',t:'المصحف الشريف'},
     {h:'Quran-radio.HTML',i:'📻',t:'إذاعات القرآن'},

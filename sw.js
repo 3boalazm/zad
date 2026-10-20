@@ -49,7 +49,7 @@ const PRECACHE = [
   './', './index.html', './404.html',
   './register.html', './sync.html',
   './js/api-client.min.js', './js/sync-manager.min.js',
-  './prayers.html', './adhkar.html', './mushaf.html', './takbeer.html',
+  './prayers.html', './ramadan.html', './adhkar.html', './mushaf.html', './takbeer.html',
   './hasn.html', './worship.html', './zahra.html', './settings.html', './hijri.html',
   './css/style.min.css', './css/premium-ui.min.css', './manifest.json',
   './fonts/thmanyahserifdisplay-Bold.woff2', './fonts/thmanyahserifdisplay-Regular.woff2',
