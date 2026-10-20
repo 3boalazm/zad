@@ -281,6 +281,7 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
         </select>
       </div>
     </div>
+    <div class="zk-note-sm" id="z-price-age" hidden></div>
     <div class="zk-note-sm">ℹ️ يُعتمد الأدنى من نصاب الذهب والفضة عند الجمهور؛ ونصاب الفضة غالبًا أقل قيمةً فيكون أرفق بالفقراء. النصاب شرطُ وجوبٍ لا يُخرَج منه شيء.</div>
 
     <!-- ══ 2. الأصول ══ -->
@@ -513,6 +514,7 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
 
   let st = null;          /* يُحمَّل في boot بعد توافر المحرّك */
   let saveTimer = null;
+  let priceTouched = false; /* هل عدّل السعر في هذه الجلسة؟ */
 
   function cur() { return ($('z-cur') && $('z-cur').value.trim()) || st.cur || 'ج.م'; }
   function rate() { return st.rate === E.CONST.RATE_SOLAR ? E.CONST.RATE_SOLAR : E.CONST.RATE_LUNAR; }
@@ -529,6 +531,7 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
     saveTimer = setTimeout(() => {
       st = E.save({
         cur: cur(), rate: rate(), basis: $('z-basis').value,
+        pricesAt: priceTouched ? Date.now() : (st && st.pricesAt) || 0,
         assets: readAssets(), hawlStart: $('z-hawl-start').value,
         fitrHeads: $('z-fitr-heads').value, fitrPrice: $('z-fitr-price').value,
         fitrKg: $('z-fitr-kg').value,
@@ -598,10 +601,24 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
     $('chip-pool').textContent = '🧮 الوعاء: ' + f(pool.net);
     $('chip-due').textContent = '💰 المستحق: ' + f(d.due);
 
+    renderPriceAge(c, nis);
     renderHawl(hawl, d, c);
     renderHistory(c);
     renderFitr(c);
     renderAnimal();
+  }
+
+  /* سعرٌ قديم = نصابٌ خاطئ: ننبّه بعد 30 يومًا من آخر تعديل */
+  function renderPriceAge(c, nis) {
+    const el = $('z-price-age');
+    if (!el) return;
+    const at = (st && st.pricesAt) || 0;
+    if (nis.value == null || !at) { el.hidden = true; return; }
+    const days = Math.floor((Date.now() - at) / 86400000);
+    if (days < 30) { el.hidden = true; return; }
+    el.hidden = false;
+    el.textContent = '⚠️ سعر الجرام المحفوظ مضى عليه ' + days + ' يومًا — حدّثه لأن النصاب يتحرّك مع السعر (المبلغ المحسوب الآن تقديري).';
+    el.style.color = 'var(--gold-dark, #a87a1e)';
   }
 
   /* ── الحول ─────────────────────────────────────────────────────────── */
@@ -690,8 +707,8 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
       const el = $(id);
       if (el) el.addEventListener('input', () => { render(); persist(); });
     });
-    $('z-gold-price').addEventListener('input', () => { render(); persist(); });
-    $('z-silver-price').addEventListener('input', () => { render(); persist(); });
+    $('z-gold-price').addEventListener('input', () => { priceTouched = true; render(); persist(); });
+    $('z-silver-price').addEventListener('input', () => { priceTouched = true; render(); persist(); });
     $('z-cur').addEventListener('input', () => { render(); persist(); });
     $('z-basis').addEventListener('change', () => { render(); persist(); });
 
