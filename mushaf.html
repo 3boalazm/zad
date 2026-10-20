@@ -362,6 +362,16 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
       </div>
     </div>
 
+    <!-- ══ جواهر القرآن (P2-Q9) ══════════════════════════════
+         renderGems() كانت تبني البطاقات ثم تعود فورًا لأن #gems-container
+         لم يكن موجودًا في الصفحة، بينما CSS (.gems-verse) وبيانات GEMS
+         وبطاقة الخطة كلها جاهزة. -->
+    <div class="section-title">💎 جواهر القرآن</div>
+    <p style="font-size:13px;color:var(--muted);margin:-8px 0 14px;line-height:1.6">
+      آيات مختارة للتدبّر — اضغط على أي بطاقة للانتقال إلى صفحتها في المصحف.
+    </p>
+    <div id="gems-container" style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:22px"></div>
+
     <!-- ══ Wird Card ══════════════════════════════════════════ -->
     <div class="section-title" id="wird-title-el">📿 ورد اليوم</div>
     <div class="wird-wrap">

@@ -467,6 +467,12 @@ function initMushaf() {
     if (STATE.mushaf.juz < 30) {
       STATE.mushaf.juz++;
       updateMushafUI();
+      /* P1-Q3: mushaf.html أُعيد تصميمه فصار التقدّم ph-ring/ph-bar/ph-sub،
+         بينما updateMushafUI() هنا تكتب m-prog-bar/m-prog-txt المحذوفين — فكانت
+         الحلقة الكبيرة تتجمّد على 0% حتى إعادة تحميل الصفحة. نُنبِّه الصفحة
+         لتُحدِّث واجهتها بنفسها بدل تكرار منطقها هنا. */
+      if (typeof window.updateProgress === 'function') window.updateProgress();
+      if (typeof window.renderWird === 'function') window.renderWird();
       saveState();
       checkBadges();
       if (STATE.mushaf.juz === 30) showToast('🏆 ما شاء الله! أتممت الختمة كاملة!');
@@ -2163,9 +2169,12 @@ function initTasbih() {
   renderActiveDhikr();
   const ring = document.getElementById('ts-ring');
   if (ring) {
-    ring.addEventListener('click', () => window.countTasbih());
+    /* P0-Q1: كان addEventListener (تراكمي) على عنصر لا يُدمَّر عند «إعادة الكل»
+       — فكل ضغطة تصفير كانت تُراكِم مستمعًا، وتصير النقرة الواحدة n+1 زيادة
+       (مُثبَت: 6 زيادات بعد 5 إعادات) وتُحفَظ في zad_v2. الخصيصة استبدالية. */
+    ring.onclick = () => window.countTasbih();
     ring.setAttribute('tabindex', '0');
-    ring.addEventListener('keydown', e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();window.countTasbih();} });
+    ring.onkeydown = e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();window.countTasbih();} };
   }
   const resetBtn = document.getElementById('ts-reset');
   if (resetBtn) resetBtn.onclick = resetCurrentDhikr;
