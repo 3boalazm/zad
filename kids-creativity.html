@@ -105,6 +105,7 @@ html[data-theme="dark"] .k-reward,html[data-theme="oled"] .k-reward{color:var(--
 .k-reward.show{display:block;animation:zadFadeUp .5s ease both}
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+  <script src="js/vendor/canvas-confetti.min.js" defer></script>
 <script src="js/font-scale.js"></script><script>(function(){})();</script>
 </head>
 <body>
@@ -190,7 +191,12 @@ html[data-theme="dark"] .k-reward,html[data-theme="oled"] .k-reward{color:var(--
   ];
   var qw=document.getElementById('k-quiz');
   if(qw){ qw.innerHTML=QS.map(function(o,i){return '<div class="k-q" data-i="'+i+'"><div class="qq"><span>'+o.q+'</span><span class="qi">▾</span></div><div class="qa">✅ '+o.a+'</div></div>';}).join('');
-    qw.querySelectorAll('.k-q').forEach(function(el){el.addEventListener('click',function(){el.classList.toggle('open');});}); }
+    qw.querySelectorAll('.k-q').forEach(function(el){
+      el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-expanded','false');
+      var tog=function(){var o=el.classList.toggle('open');el.setAttribute('aria-expanded',o?'true':'false');};
+      el.addEventListener('click',tog);
+      el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tog();}});
+    }); }
   /* روتين البطل */
   var TASKS=[
     {ic:'🌅',t:'أذكارُ الصباح',s:'مدرستي الجميلة'},
@@ -206,12 +212,13 @@ html[data-theme="dark"] .k-reward,html[data-theme="oled"] .k-reward{color:var(--
   function render(){
     var s=st(),done=s.kidsRoutine.done||{};
     var wrap=document.getElementById('k-routine');if(!wrap)return;
-    wrap.innerHTML=TASKS.map(function(o,i){var d=!!done[i];return '<div class="k-task '+(d?'done':'')+'" data-i="'+i+'"><span class="kb">✓</span><span style="font-size:18px">'+o.ic+'</span><div class="kt"><b>'+o.t+'</b><small>'+o.s+'</small></div></div>';}).join('');
+    wrap.innerHTML=TASKS.map(function(o,i){var d=!!done[i];return '<div class="k-task '+(d?'done':'')+'" data-i="'+i+'" role="button" tabindex="0" aria-pressed="'+(d?'true':'false')+'"><span class="kb">✓</span><span style="font-size:18px">'+o.ic+'</span><div class="kt"><b>'+o.t+'</b><small>'+o.s+'</small></div></div>';}).join('');
     wrap.querySelectorAll('.k-task').forEach(function(el){el.addEventListener('click',function(){
       var i=el.dataset.i,s=st();s.kidsRoutine.done=s.kidsRoutine.done||{};
       if(s.kidsRoutine.done[i])delete s.kidsRoutine.done[i];else s.kidsRoutine.done[i]=true;
       write(s);if(navigator.vibrate)navigator.vibrate(16);paint();
-    });});
+    });
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}});});
     paint();
   }
   function paint(){

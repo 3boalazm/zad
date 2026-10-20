@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // Invalidate older cached bundles so returning PWAs receive the expanded video library.
-const CACHE_STATIC = 'zad-20261020-prayer-audit-r7';
+const CACHE_STATIC = 'zad-20261020-kids-audit-r8';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -64,7 +64,7 @@ const PRECACHE = [
      مع qibla.html نفسها، وإلا فُتحت الصفحة من الكاش أوفلاين ومات التصحيح بالذات
      في الوقت الذي يُستخدم فيه (بلا شبكة). */
   './js/vendor/adhan.min.js', './js/prayer-notifications.min.js',
-  './js/vendor/geomag.min.js',
+  './js/vendor/geomag.min.js', './js/vendor/canvas-confetti.min.js',
   './menu.min.js', './command-palette.min.js', './js/ui/bottom-nav.min.js', './js/ui/progress-rollup.min.js',
   './js/design-system.min.js', './js/fixes-module.min.js',
   './js/utils/helpers.min.js', './js/core/state-manager.min.js', './js/core/router.min.js',

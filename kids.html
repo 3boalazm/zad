@@ -602,6 +602,13 @@ function renderTasks() {
       </div>
       <div class="task-check">${done ? '✅' : ''}</div>`;
     div.onclick = () => toggleTask(t);
+    /* بطاقة قابلة للنقر يجب أن تكون قابلة للوصول من لوحة المفاتيح */
+    div.tabIndex = 0;
+    div.setAttribute('role', 'button');
+    div.setAttribute('aria-pressed', done ? 'true' : 'false');
+    div.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); toggleTask(t); }
+    });
     grid.appendChild(div);
   });
   updateChallenge();
@@ -673,7 +680,9 @@ function renderBadges() {
 }
 
 /* ══ 4. STARS ═══════════════════════════════════════════════ */
-const MAX_STARS = 20;
+/* أقصى ما يمكن جمعه فعلًا: 8 مهام + 2 قصة + 5 بطل + 11 قاموس + 5 مسابقة = 31.
+   كان 20 فيتوقّف العدّاد بينما النجوم الداخلية تزيد. */
+const MAX_STARS = 31;
 function updateStars() {
   const disp = document.getElementById('stars-display');
   const cnt  = document.getElementById('stars-count');
@@ -745,7 +754,9 @@ function renderDict() {
     const div = document.createElement('div');
     div.className = 'dict-item';
     div.innerHTML = `
-      <div class="dict-header" onclick="toggleDict(${i})">
+      <div class="dict-header" role="button" tabindex="0" aria-expanded="false"
+           onclick="toggleDict(${i})"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDict(${i})}">
         <span class="dict-ico">${item.ico}</span>
         <div><div class="dict-word">${item.word}</div><div class="dict-hint">${item.hint}</div></div>
         <span class="dict-arrow">▼</span>
@@ -760,8 +771,15 @@ function renderDict() {
 function toggleDict(i) {
   const items = document.querySelectorAll('.dict-item');
   items.forEach((el, idx) => {
-    if (idx === i) el.classList.toggle('open');
-    else el.classList.remove('open');
+    if (idx === i) {
+      el.classList.toggle('open');
+      const h = el.querySelector('.dict-header');
+      if (h) h.setAttribute('aria-expanded', el.classList.contains('open') ? 'true' : 'false');
+    } else {
+      el.classList.remove('open');
+      const h = el.querySelector('.dict-header');
+      if (h) h.setAttribute('aria-expanded', 'false');
+    }
   });
   /* Give star on first open */
   if (!kState[`dict_${i}`]) {
@@ -868,6 +886,8 @@ function showBadgeToast(msg) {
 
 /* ══ CONFETTI ═══════════════════════════════════════════════ */
 function triggerKidConfetti() {
+  /* من يطلب تقليل الحركة في نظامه لا يريد 30 قطعة تتساقط */
+  try{ if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
   const colors = ['#c9a14a','#4dd866','#ffe54d','#ff6b85','#5aabff'];
   for (let i = 0; i < 30; i++) {
     const el = document.createElement('div');

@@ -386,6 +386,38 @@ function zadSafeParse(key, fallback) {
     <div><b>لمسة للآباء والمعلمين:</b> اجعلوا لكل يوم قصة، وشاركوا أطفالكم الحوار والأنشطة. القصة تغرس القيمة بالحب لا بالتلقين. <span style="color:var(--gold-dark);font-weight:700;white-space:nowrap">دليل المربّي ←</span></div>
   </a>
 
+  <!-- ═══ لوحة أيام العشر ═══
+       هذه الحاويات كانت محذوفة من الصفحة بينما دوالّها الخمس ما زالت
+       تُنادى في التهيئة وتكتب في العدم: ٢٩٠ سطرًا لا تصل للمستخدم.
+       أُعيدت هنا فوق فهرس القصص، وبأنماط CSS الموجودة أصلًا في الصفحة. -->
+  <div id="gh-play">
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px">
+      <span style="background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:800;color:var(--ink)">⭐ <span id="g-stars">0</span> نجمة</span>
+      <span style="background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:800;color:var(--ink)">✅ أنجزت <span id="g-done-count">0</span> خطوة</span>
+    </div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🗓️ أيام العشر</h2>
+    <div class="days-grid" id="days-grid"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🕋 مناسك الحج خطوة بخطوة</h2>
+    <div id="hajj-steps-list"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🎨 أنشطة العيد</h2>
+    <div class="activity-grid" id="activities-grid"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🎵 أناشيد العيد</h2>
+    <div id="nasheed-list"></div>
+
+    <h2 style="font-size:17px;font-weight:900;color:var(--ink);margin:20px 0 10px">🧠 اختبر معرفتك</h2>
+    <div id="quiz-container"></div>
+
+    <div class="card" style="padding:18px;text-align:center;margin-top:14px">
+      <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:8px">💡 هل تعلم؟</div>
+      <div id="fact-text" style="font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.8;min-height:44px;transition:opacity .2s">الكعبة هي أول بيت بُني لعبادة الله في الأرض!</div>
+      <button type="button" onclick="nextFact()" style="margin-top:12px;padding:10px 22px;border-radius:12px;border:1.5px solid var(--border);background:var(--sand);font-family:inherit;font-size:13px;font-weight:800;color:var(--ink);cursor:pointer">معلومة أخرى ✨</button>
+    </div>
+  </div>
+
   <!-- الفهرس التفاعلي -->
   <div id="gh-index"></div>
 
@@ -774,10 +806,6 @@ function nextFact(){
 
 /* ─ Takbeer Counter in Days section ─────────────────────── */
 let takbeerCount = parseInt(localStorage.getItem('ghars_takbeer')||'0');
-function updateTakbeer(){
-  const el = document.getElementById('takbeer-count');
-  if (el) el.textContent = takbeerCount;
-}
 function addTakbeer(){
   takbeerCount++;
   localStorage.setItem('ghars_takbeer', takbeerCount);

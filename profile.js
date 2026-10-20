@@ -32,7 +32,7 @@
     /* أوديت ركن الأطفال: كان تقدّم الطفل كله خارج النسخة الاحتياطية —
        النجوم والأوسمة (zad_kids_v2)، وعدّاد التكبير في «غرس»
        (ghars_takbeer)، وبيانات لوحة رمضان الجديدة (zad_ramadan). */
-    'zad_kids_v2', 'ghars_takbeer', 'zad_ramadan',
+    'zad_kids_v2', 'ghars_takbeer', 'zad_ramadan', 'zad_ghars_v1',
   ];
 
   const AVATARS = ['🌙','⭐','🌸','🌿','🕌','📿','🤲','🌺','🦋','🌕','🪷','🕋','📖','✨','🧒'];
