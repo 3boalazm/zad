@@ -331,6 +331,11 @@ html[data-theme="dark"] .qv-ar,html[data-theme="oled"] .qv-ar{color:var(--sys-ye
         <div class="qi-val" id="qi-bearing">---°</div>
         <div class="qi-lbl">زاوية القبلة</div>
       </div>
+      <div class="qi-box">
+        <div class="qi-ico">🧲</div>
+        <div class="qi-val" id="qi-decl">---</div>
+        <div class="qi-lbl">الانحراف المغناطيسي</div>
+      </div>
     </div>
 
     <div class="qibla-actions" id="q-actions">
@@ -406,6 +411,8 @@ html[data-theme="dark"] .qv-ar,html[data-theme="oled"] .qv-ar{color:var(--sys-ye
   <script src="js/ui/offline-ui.min.js" defer></script>
   <script src="js/ui/micro-interactions.min.js" defer></script>
   <script src="js/diagnostics.min.js" defer></script>
+  <!-- الانحراف المغناطيسي — نموذج WMM-2025 مُوطَّن (10 KB) ليعمل أوفلاين -->
+  <script src="js/vendor/geomag.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
 <script>
@@ -417,6 +424,9 @@ let currentHeading = 0;   /* الزاوية الحالية المفلترة */
 let lastRawHeading = null;/* آخر زاوية خام قادمة من الحساس */
 let Q_lat = null, Q_lng = null;
 let isIOS = false;
+/* الانحراف المغناطيسي بالدرجات (الشرق موجب) ومدى صلاحيته */
+let Q_declination = 0;
+let Q_declValid = false;
 
 /* الفلتر الرياضي: كلما قل الرقم زادت النعومة واختفت الرعشة (مثالي بين 0.05 و 0.15) */
 const FILTER_ALPHA = 0.08; 
@@ -521,10 +531,42 @@ function distToMecca(lat, lng) {
   return Math.round(6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
 }
 
+/* ══ 3ب. الانحراف المغناطيسي — WMM-2025 ═══════════════════════════════════
+   كل مصادر البوصلة في المتصفح تُرجع اتجاهًا **مغناطيسيًا**:
+     • iOS  — webkitCompassHeading مأخوذ من Core Motion magneticHeading
+     • أندرويد — deviceorientationabsolute مبني على حساس rotation-vector
+       ومرجعه الشمال المغناطيسي (مواصفة W3C تشبّهه بـxMagneticNorthZVertical)
+   بينما Q_angle محسوب من الشمال **الحقيقي** (الجغرافي). مقارنة الاثنين بلا
+   تصحيح تخلط إطارين مرجعيين. في القاهرة الفرق 4.77°، أي نحو 100 كم إزاحة
+   جانبية على خط مكة — أكبر من خطأ البوصلة نفسها.
+   النموذج مُوطَّن محليًا (js/vendor/geomag.min.js) فيعمل أوفلاين، ويرفض
+   الخروج عن نافذة صلاحيته (2024-11-13 → 2029-11-13) بدل الاستقراء بصمت. */
+function updateDeclination(lat, lng) {
+  Q_declination = 0;
+  Q_declValid = false;
+  try {
+    if (window.ZadMag && typeof ZadMag.field === 'function') {
+      const f = ZadMag.field(lat, lng, new Date());
+      if (f && f.valid && isFinite(f.decl)) { Q_declination = f.decl; Q_declValid = true; }
+    }
+  } catch (e) { /* غياب النموذج يعني تصحيحًا صفريًا، لا بوصلة معطّلة */ }
+
+  const el = document.getElementById('qi-decl');
+  if (el) {
+    el.textContent = Q_declValid
+      ? (Q_declination >= 0 ? '+' : '') + Q_declination.toFixed(1) + '°'
+      : '—';
+    el.title = Q_declValid
+      ? 'الفرق بين الشمال المغناطيسي والحقيقي في موقعك (WMM-2025) — مُطبَّق تلقائيًا'
+      : 'نموذج الانحراف غير متاح — الزاوية معروضة بلا تصحيح';
+  }
+  return Q_declination;
+}
+
 /* ══ 4. APPLY QIBLA DATA TO UI ══════════════════════════════ */
 function applyQibla(angle, lat, lng, accuracy) {
-  console.log('🎯 Applying Qibla angle:', angle);
   Q_angle = angle;
+  updateDeclination(lat, lng);
   const dist = distToMecca(lat, lng);
 
   document.getElementById('qi-dist').textContent = dist.toLocaleString('ar-EG');
@@ -550,21 +592,29 @@ function applyQibla(angle, lat, lng, accuracy) {
 
 /* ══ 5. COMPASS ENGINE (مع فلتر معالجة الرعشة واللاج) ═════════════ */
 function initCompass() {
-  console.log('🧭 Initializing compass...');
-  isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  console.log('📱 Is iOS:', isIOS);
+  /* iPadOS 13+ يطلب «موقع سطح المكتب» افتراضيًا فيُبلّغ عن UA ماكنتوش،
+     والفحص القديم /iPad|iPhone|iPod/ يفشل عليه → يُستمع إلى
+     deviceorientationabsolute الذي لا يُطلقه Safari أصلًا → بوصلة ميتة على
+     آيباد بلا أي رسالة خطأ. نُضيف كشف اللمس المتعدد على MacIntel. */
+  const uaIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const desktopIOS = (navigator.platform === 'MacIntel' || /Macintosh/.test(navigator.userAgent))
+                     && navigator.maxTouchPoints > 1;
+  isIOS = uaIOS || desktopIOS;
 
   if (isIOS) {
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      console.log('⚠️ iOS permission required');
-      document.getElementById('perm-overlay').style.display = 'flex';
+      const ov = document.getElementById('perm-overlay');
+      if (ov) ov.style.display = 'flex';
     } else {
-      console.log('✅ Adding iOS deviceorientation listener');
       window.addEventListener('deviceorientation', handleOrientation, { passive: true });
     }
   } else {
-    console.log('✅ Adding Android deviceorientationabsolute listener');
-    window.addEventListener('deviceorientationabsolute', handleOrientation, { passive: true });
+    /* deviceorientationabsolute إن وُجد، وإلا deviceorientation مع فحص
+       e.absolute داخل المعالج — بعض المتصفحات تُطلق الحدث العادي بقيم مطلقة */
+    window.addEventListener(
+      ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation',
+      handleOrientation, { passive: true }
+    );
   }
 }
 
@@ -585,16 +635,55 @@ function requestIOSPermission() {
     });
 }
 
+/* اتجاه البوصلة من alpha/beta/gamma مع تعويض الميل.
+   `360 - alpha` مضبوطة تمامًا عندما يكون الهاتف مستويًا أو مائلًا ميلًا
+   أماميًا خالصًا، لكنها تخطئ حتى 90° عند الميل الجانبي (gamma) وحتى 49° في
+   الوضع المركّب (قيس عدديًا: beta=60/gamma=45 → 49.1°) — وهو ما يحدث فعلًا
+   عند إمساك الهاتف بيد واحدة. الصيغة التالية مشتقة من مصفوفة الدوران الكاملة.
+
+   استثناء واحد: عند الاستواء التام (beta=gamma=0) ينحلّ المقام (Vx=Vy=0)
+   وتُرجع الصيغة قيمة بلا معنى، بينما `360 - alpha` صحيحة هناك بالضبط.
+   لذا نُرجع null عند الانحلال ويختار المستدعي الحالة الخاصة الصحيحة —
+   بلا عتبات اعتباطية. */
+function compassHeadingRaw(alpha, beta, gamma) {
+  const d2r = Math.PI / 180;
+  const x = (beta  || 0) * d2r;
+  const y = (gamma || 0) * d2r;
+  const z = (alpha || 0) * d2r;
+  const cY = Math.cos(y), cZ = Math.cos(z);
+  const sX = Math.sin(x), sY = Math.sin(y), sZ = Math.sin(z);
+  const Vx = -cZ * sY - sZ * sX * cY;
+  const Vy = -sZ * sY + cZ * sX * cY;
+  if (Math.abs(Vx) < 1e-9 && Math.abs(Vy) < 1e-9) return null;   /* حالة منحلّة */
+  let h = Math.atan(Vx / Vy);
+  if (Vy < 0) h += Math.PI;
+  else if (Vx < 0) h += 2 * Math.PI;
+  return h / d2r;
+}
+
+/* يختار بين الصيغة العامة وحالة الاستواء الخاصة */
+function magneticHeading(e) {
+  const h = compassHeadingRaw(e.alpha, e.beta, e.gamma);
+  return (h === null) ? norm(360 - (e.alpha || 0)) : h;
+}
+
+/* دوران الشاشة (وضع أفقي) يزيح الاتجاه بمقدار زاويته */
+function screenAngle() {
+  if (screen.orientation && typeof screen.orientation.angle === 'number') return screen.orientation.angle;
+  if (typeof window.orientation === 'number') return window.orientation;
+  return 0;
+}
+
 function handleOrientation(e) {
   let heading = null;
 
-  if (e.webkitCompassHeading !== undefined) {
-    heading = e.webkitCompassHeading; // لنظام iOS
+  if (e.webkitCompassHeading !== undefined && e.webkitCompassHeading !== null) {
+    heading = e.webkitCompassHeading;      /* iOS: اتجاه جاهز ومُعاوَض الميل */
   } else if (e.absolute === true && e.alpha !== null) {
-    heading = 360 - e.alpha; // لنظام أندرويد (Absolute)
+    heading = magneticHeading(e);          /* أندرويد (مطلَق) */
   } else if (e.alpha !== null) {
     /* P2-7: إطار نسبي لا مطلَق — الاتجاه تقريبي، ننبّه مرة واحدة بدل عرضه بثقة */
-    heading = 360 - e.alpha;
+    heading = magneticHeading(e);
     if (!window._qiblaRelWarned) {
       window._qiblaRelWarned = true;
       if (typeof showToast === 'function') showToast('🧭 البوصلة غير معايرة — حرّك الهاتف على شكل ٨ ثم أعد المحاولة');
@@ -603,6 +692,10 @@ function handleOrientation(e) {
 
   /* P2-8: كان console.log يُنفَّذ مع كل حدث بوصلة (عشرات المرات/ثانية) */
   if (heading === null) return;
+
+  /* تعويض دوران الشاشة، ثم تحويل المغناطيسي → حقيقي لمقارنته بـQ_angle */
+  heading = norm(heading - screenAngle());
+  if (Q_declValid) heading = norm(heading + Q_declination);
 
   // حل مشكلة القفز المفاجئ بين الزاويتين 0 و 360
   if (lastRawHeading === null) {

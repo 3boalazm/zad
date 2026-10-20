@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // Invalidate older cached bundles so returning PWAs receive the expanded video library.
-const CACHE_STATIC = 'zad-20261020-prayer-audit-r2';
+const CACHE_STATIC = 'zad-20261020-prayer-audit-r3';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -58,8 +58,12 @@ const PRECACHE = [
   './js/app.min.js', './js/adhkar-azkar.min.js', './js/ghars-stories.min.js', './js/diagnostics.min.js', './js/storage.min.js', './js/calendar.min.js',
   /* P1-2: محرك المواقيت مُوطَّن محليًا بدل cdn.jsdelivr.net (المدرج في BYPASS
      أدناه، فكان يرفض تخزينه ويموت الحساب أوفلاين). 15 KB فقط.
-     P1-7: وحدة إشعارات المواقيت. */
+     P1-7: وحدة إشعارات المواقيت.
+     P0-9: نموذج الانحراف المغناطيسي WMM-2025 (11 KB) — لازم يكون مخزَّنًا مسبقًا
+     مع qibla.html نفسها، وإلا فُتحت الصفحة من الكاش أوفلاين ومات التصحيح بالذات
+     في الوقت الذي يُستخدم فيه (بلا شبكة). */
   './js/vendor/adhan.min.js', './js/prayer-notifications.min.js',
+  './js/vendor/geomag.min.js',
   './menu.min.js', './command-palette.min.js', './js/ui/bottom-nav.min.js', './js/ui/progress-rollup.min.js',
   './js/design-system.min.js', './js/fixes-module.min.js',
   './js/utils/helpers.min.js', './js/core/state-manager.min.js', './js/core/router.min.js',
