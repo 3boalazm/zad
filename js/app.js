@@ -204,13 +204,19 @@ window.cycleTheme = cycleTheme;
 function toggleTheme() { cycleTheme(); }
 window.toggleTheme = toggleTheme;
 function applyQuranFont(size) {
-  size = size || STATE.quranFontSize || 24;
+  /* P2-Q10: قيد واحد 16–36 في كل المسارات (كان mushaf-quran.html يقصّ عند 18
+     وmushaf.html عند 16 ⇒ تفضيل 16px يتحول إلى 18 عند الانتقال بين الصفحتين). */
+  size = Math.max(16, Math.min(36, parseInt(size, 10) || STATE.quranFontSize || 24));
   document.documentElement.style.setProperty('--qf-size', size + 'px');
   STATE.quranFontSize = size;
+  /* كانت الكتابة إلى zad_v2 وحدها، وmushaf-quran.html يقرأ zad_mfont وحده
+     ⇒ تغيير الحجم من هنا لا يظهر هناك أبدًا. الآن المفتاحان معًا. */
+  try { localStorage.setItem('zad_mfont', size); } catch (e) {}
   saveState();
   document.querySelectorAll('#font-slider, #m-font').forEach(sl => {
     sl.value = size;
   });
+  try { window.dispatchEvent(new CustomEvent('zad:quranfont', { detail: { size: size } })); } catch (e) {}
 }
 window.applyQuranFont = applyQuranFont;
 function startCountdown() {
@@ -2187,6 +2193,9 @@ function initTasbih() {
       const wrap = document.getElementById('tasbih-cards');
       if (wrap) { wrap.innerHTML = ''; initTasbih(); }
       renderActiveDhikr();
+      /* P2-Q12: كانت بلاطات الإحصاءات تُعاد رسمها فقط عند النقرة التالية
+         (عبر رقعة countTasbih في takbeer.html) ⇒ تبقى تعرض أرقام ما قبل التصفير. */
+      if (typeof window.updateAllStats === 'function') window.updateAllStats();
       showToast('🔄 تمت إعادة تعيين الأذكار');
     }
   };

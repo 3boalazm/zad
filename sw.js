@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // Invalidate older cached bundles so returning PWAs receive the expanded video library.
-const CACHE_STATIC = 'zad-20261020-prayer-audit-r5';
+const CACHE_STATIC = 'zad-20261020-prayer-audit-r6';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -55,6 +55,7 @@ const PRECACHE = [
   './fonts/thmanyahserifdisplay-Bold.woff2', './fonts/thmanyahserifdisplay-Regular.woff2',
   './icons/icon-192.svg', './icons/icon-512.svg',
   /* core JS */
+  './js/font-scale.js', /* R6: مقياس الخط الموحّد — تحمّله كل صفحة قبل أول رسم */
   './js/app.min.js', './js/adhkar-azkar.min.js', './js/ghars-stories.min.js', './js/diagnostics.min.js', './js/storage.min.js', './js/calendar.min.js',
   /* P1-2: محرك المواقيت مُوطَّن محليًا بدل cdn.jsdelivr.net (المدرج في BYPASS
      أدناه، فكان يرفض تخزينه ويموت الحساب أوفلاين). 15 KB فقط.
