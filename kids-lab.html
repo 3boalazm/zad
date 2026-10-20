@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="التجربة: بذرة واحدة وخمسة أيام ومتغيّر واحد — فرضية، مشاهد، ودفتر مقارنة.">
+<title>التجربة · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+/* ══ هيكل مشترك ══ */
+.kx-hero{background:linear-gradient(135deg,#1a4a24 0%,#2f6b3a 55%,#9ac96a 140%);border-radius:24px;padding:24px 22px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -14px rgba(26,74,36,.5)}
+.kx-hero::after{content:'🔁';position:absolute;top:6px;left:16px;font-size:60px;opacity:.16;line-height:1}
+.kx-eyebrow{font-size:11px;color:#ffe9a8;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.kx-title{font-size:26px;font-weight:900;margin-bottom:8px}
+.kx-sub{font-size:13px;color:rgba(255,255,255,.92);line-height:1.95;max-width:620px}
+.kx-sub b{color:#ffe9a8}
+
+.kx-panel{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.kx-panel h3{margin:0 0 10px;font-size:15px;font-weight:900;color:var(--ink);display:flex;align-items:center;gap:7px}
+.kx-panel p{font-size:12.5px;line-height:1.95;color:var(--muted);margin:0 0 12px}
+.kx-panel p:last-child{margin-bottom:0}
+.kx-panel b{color:var(--ink)}
+
+.kx-btn{width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6);margin-top:12px;transition:transform .15s,opacity .15s}
+.kx-btn:hover:not(:disabled){transform:translateY(-1px)}
+.kx-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
+.kx-btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
+.kx-btn.gold{background:linear-gradient(135deg,#8a6a1f,#c9a14a);color:#fff}
+.kx-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.kx-row .kx-btn{width:auto;flex:1;min-width:118px;margin-top:0}
+
+.kx-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:900;background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:4px 11px;color:var(--muted)}
+.kx-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+
+.kx-fb{display:none;border-radius:13px;padding:11px 14px;font-size:12.5px;font-weight:800;line-height:1.85;text-align:center;margin-top:11px}
+.kx-fb.ok{display:block;background:var(--green-pale);color:var(--green-deep);border:1px solid var(--green-soft)}
+.kx-fb.no{display:block;background:rgba(192,57,43,.1);color:#c0392b;border:1px solid rgba(192,57,43,.3)}
+.kx-fb.warn{display:block;background:rgba(201,161,74,.14);color:#8a6a1f;border:1px solid rgba(201,161,74,.35)}
+
+.kx-end{text-align:center;background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:24px;padding:26px 22px;box-shadow:0 18px 50px -20px rgba(201,161,74,.6);animation:kxIn .4s ease both}
+@keyframes kxIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.kx-end .em{font-size:52px;line-height:1;margin-bottom:8px}
+.kx-end .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--green-deep);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
+.kx-end h2{font-size:22px;font-weight:900;color:var(--green-deep);margin:0 0 10px}
+html[data-theme="dark"] .kx-end h2,html[data-theme="oled"] .kx-end h2{color:var(--sys-green,var(--green-deep))}
+.kx-end p{font-size:14px;line-height:2.1;color:var(--ink);margin:0 auto 12px;max-width:560px}
+.kx-end .moral{font-size:12.5px;font-weight:800;color:#8a6a1f;background:rgba(201,161,74,.14);border-radius:13px;padding:11px 14px;max-width:560px;margin:0 auto 16px;line-height:1.9}
+html[data-theme="dark"] .kx-end .moral,html[data-theme="oled"] .kx-end .moral{color:#e6c97a}
+
+.kx-foot{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.9;margin:10px 0 26px}
+
+/* ══ رأس لكل صفحة ══ */
+
+.lb-plant{background:linear-gradient(180deg,#dcead6,#c4dcc0);border:2px solid #b0c9a8;border-radius:20px;padding:18px 14px 10px;text-align:center;position:relative;overflow:hidden;margin-bottom:12px;min-height:170px;display:flex;flex-direction:column;justify-content:flex-end}
+html[data-theme="dark"] .lb-plant,html[data-theme="oled"] .lb-plant{background:linear-gradient(180deg,#16241c,#101a14);border-color:#2a4032}
+.lb-plant .sky{position:absolute;top:10px;right:14px;font-size:26px;opacity:.85;line-height:1}
+.lb-plant .pot{font-size:20px;line-height:1;margin-top:-4px}
+.lb-plant .seed{font-size:56px;line-height:1;transition:transform .6s cubic-bezier(.34,1.4,.64,1),opacity .4s;transform-origin:bottom center}
+.lb-plant .cm{font-size:11.5px;font-weight:900;color:#2f5a2a;margin-top:6px}
+html[data-theme="dark"] .lb-plant .cm,html[data-theme="oled"] .lb-plant .cm{color:#8fc98a}
+.lb-days{display:flex;gap:4px;justify-content:center;margin-bottom:12px}
+.lb-days i{width:22px;height:6px;border-radius:99px;background:var(--border);transition:background .3s}
+.lb-days i.on{background:var(--gold)}
+.lb-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px}
+.lb-opt{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--border);border-radius:14px;padding:11px 12px;cursor:pointer;font-family:inherit;color:var(--ink);font-size:12.5px;font-weight:800;text-align:right;transition:all .18s}
+.lb-opt:hover{border-color:var(--gold)}
+.lb-opt.on{border-color:var(--green-deep);background:var(--green-pale)}
+.lb-opt .ic{font-size:20px}
+.lb-guess{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.lb-guess button{background:var(--sand);border:1.5px solid var(--border);border-radius:11px;padding:9px 6px;font-family:inherit;font-size:11px;font-weight:800;color:var(--ink);cursor:pointer;line-height:1.5}
+.lb-guess button.on{border-color:var(--gold);background:rgba(201,161,74,.18)}
+.lb-note{margin-top:12px;background:var(--sand);border:1px solid var(--border);border-radius:14px;padding:11px 13px}
+.lb-note h4{margin:0 0 8px;font-size:12px;font-weight:900;color:var(--ink)}
+.lb-trial{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;font-weight:800;color:var(--muted)}
+.lb-trial .lbl{width:88px;flex:none;color:var(--ink);font-size:11px}
+.lb-trial .bar{flex:1;height:9px;border-radius:99px;background:var(--border);overflow:hidden}
+.lb-trial .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green-mid),var(--green-deep))}
+.lb-trial .h{width:38px;text-align:left;color:var(--ink);font-size:11px}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>(function(){var t='light';try{var p=JSON.parse(localStorage.getItem('zad_v2')||'{}');t=p.theme||'light';if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on');}catch(e){}document.documentElement.setAttribute('data-theme',t);})();</script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&amp;&amp;applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&amp;&amp;applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&amp;&amp;applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA&amp;&amp;installPWA()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="kids-compass.html"><span class="ico">🧭</span><span>الطريق إلى البيت</span></a>
+      <a href="kids-hospitality.html"><span class="ico">🔤</span><span>ترتيب الضيافة</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">التجربة</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title"><span>التجربة</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="kx-hero">
+      <div class="kx-eyebrow">🔁 فرضية… ثم خمسة أيام</div>
+      <div class="kx-title">التجربة</div>
+      <div class="kx-sub">بذرةٌ واحدة، وخمسةُ أيام، ومتغيّرٌ <b>واحد</b> تغيّره كل مرة. توقّع، ثم شاهد، ثم قارن.</div>
+    </div>
+
+    <div id="lb-stage"></div>
+
+    <div class="kx-foot">قاعدة التجربة: غيّر شيئًا واحدًا فقط، وإلا لن تعرف ما الذي غيّر النتيجة.</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function readAll(){ try{ return JSON.parse(localStorage.getItem('zad_v2')||'{}')||{}; }catch(e){ return {}; } }
+  function saveAll(o){ try{ if (window.zadPatchState){ window.zadPatchState(o); return; } localStorage.setItem('zad_v2', JSON.stringify(o)); }catch(e){} }
+  function addStars(n){
+    try{
+      var st = JSON.parse(localStorage.getItem('zad_kids_v2')||'{}')||{};
+      st.stars = (st.stars||0) + n;
+      localStorage.setItem('zad_kids_v2', JSON.stringify(st));
+    }catch(e){}
+  }
+  function pop(em){
+    try{
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (window.confetti && !reduce) window.confetti({ particleCount: 130, spread: 76, origin:{ y:.62 } });
+    }catch(e){}
+  }
+  function stage(){ return document.getElementById('lb-stage'); }
+
+  /* ══ ١. التجارب ════════════════════════════════════════════════ */
+  var LIGHTS = [ {id:'sun', nm:'في الشمس', em:'☀️'}, {id:'shade', nm:'في الظل', em:'⛅'} ];
+  var WATERS = [ {id:'low', nm:'ماء قليل', em:'💧'}, {id:'mid', nm:'ماء متوسط', em:'💧💧'}, {id:'high', nm:'ماء كثير', em:'💧💧💧'} ];
+
+  var EXPS = [
+    { id:'bean', em:'🌱', title:'بذرة الفاصولياء', plant:'🌱', pot:'🪴',
+      q:'أين تنمو أسرع؟', intro:'بذرةٌ واحدة، خمسة أيام. اختر المكان والماء — ثم شاهد.',
+      reveal:'الفاصولياء تحبّ الشمس والماء المتوسّط: أربع ساعات شمس، وريّ كل يومين.',
+      table:{ 'sun+low':2, 'sun+mid':3, 'sun+high':1, 'shade+low':1, 'shade+mid':2, 'shade+high':0 } },
+    { id:'basil', em:'🌿', title:'نبتة الريحان', plant:'🌿', pot:'🪴',
+      q:'هل كل النباتات تحبّ الشمس؟', intro:'الريحان رقيق. جرّب أن تضعه في الشمس… ثم في الظل.',
+      reveal:'الريحان يحبّ الظلّ الخفيف: الشمس المباشرة تحرق ورقه، والماء الكثير يُغرِق جذوره.',
+      table:{ 'sun+low':1, 'sun+mid':1, 'sun+high':0, 'shade+low':2, 'shade+mid':3, 'shade+high':1 } },
+    { id:'cactus', em:'🌵', title:'الصبّار', plant:'🌵', pot:'🏜️',
+      q:'هل يُغرِقه الماء؟', intro:'الصبّار يبدو قاسيًا — لكن جرّب أن تسقيه كل يوم كما تسقي الفاصولياء.',
+      reveal:'الصبّار يجمع الماء في جسمه، فيكفيه القليل. الماء الكثير يُعفّن جذوره.',
+      table:{ 'sun+low':3, 'sun+mid':2, 'sun+high':1, 'shade+low':1, 'shade+mid':1, 'shade+high':0 } }
+  ];
+
+  /* ══ ٢. التخزين ════════════════════════════════════════════════ */
+  var prog = (function(){
+    var s = readAll(), p = s.kidsLab || {};
+    p.exp = p.exp || {};
+    p.trials = p.trials || {};
+    return p;
+  })();
+  function persist(){ var s = readAll(); s.kidsLab = prog; saveAll(s); }
+  function solvedCount(){
+    var n = 0;
+    for (var k in prog.exp){ if (prog.exp[k] && prog.exp[k].best) n++; }
+    return n;
+  }
+
+  /* ══ ٣. الحالة ═════════════════════════════════════════════════ */
+  var g = null;  /* { e, light, water, guess } */
+
+  function homeView(){
+    g = null;
+    var cards = EXPS.map(function(e, i){
+      var rec = prog.exp[e.id];
+      return '<button type="button" class="lr-check" data-exp="' + i + '" style="padding:15px 14px">'
+        + '<span class="ic" style="font-size:28px">' + e.em + '</span>'
+        + '<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:900">' + esc(e.title) + '</span>'
+        + '<span style="display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:3px">' + esc(e.q) + '</span></span>'
+        + (rec && rec.best ? '<span class="kx-pill" style="background:#ffe9a8;color:#3a2e10;border-color:#e6c97a">✅</span>' : '')
+        + '<span style="font-size:17px;opacity:.45">←</span></button>';
+    }).join('');
+    stage().innerHTML =
+      '<div class="kx-panel">'
+      + '<div class="kx-bar"><h3>🔁 المختبر</h3><span class="kx-pill">' + solvedCount() + ' / ' + EXPS.length + ' فهمتها</span></div>'
+      + '<p>بذرةٌ واحدة كل تجربة، <b>خمسة أيام</b>. غيّر شيئًا واحدًا فقط في المرة — هذا هو سرّ التجربة.</p>'
+      + cards + '</div>';
+    var bs = stage().querySelectorAll('[data-exp]');
+    for (var i=0;i<bs.length;i++){
+      (function(b){ b.addEventListener('click', function(){ openExp(parseInt(b.getAttribute('data-exp'),10)); }); })(bs[i]);
+    }
+  }
+
+  function openExp(i){
+    g = { e: EXPS[i], light: 'sun', water: 'mid', guess: 'more' };
+    setupView();
+  }
+
+  function setupView(){
+    var e = g.e;
+    stage().innerHTML =
+      '<div class="kx-panel">'
+      + '<div class="kx-bar"><h3>' + e.em + ' ' + esc(e.title) + '</h3><span class="kx-pill">٥ أيام</span></div>'
+      + '<p>' + esc(e.intro) + '</p>'
+      + '<div class="lb-plant"><div class="sky">☀️</div><div class="seed" id="lb-seed" style="transform:scale(.9)">' + e.plant + '</div><div class="pot">' + e.pot + '</div><div class="cm" id="lb-cm">لم تبدأ بعد</div></div>'
+      + '<div class="lb-days" id="lb-days">' + '      '.repeat(0) + '<i></i><i></i><i></i><i></i><i></i></div>'
+      + '<h3 style="font-size:13px;margin:6px 0 8px">📍 المكان</h3>'
+      + '<div class="lb-opts">' + LIGHTS.map(function(l){
+          return '<button type="button" class="lb-opt' + (g.light === l.id ? ' on' : '') + '" data-light="' + l.id + '"><span class="ic">' + l.em + '</span>' + esc(l.nm) + '</button>';
+        }).join('') + '</div>'
+      + '<h3 style="font-size:13px;margin:6px 0 8px">💧 الماء</h3>'
+      + '<div class="lb-opts" style="grid-template-columns:repeat(3,1fr)">' + WATERS.map(function(w){
+          return '<button type="button" class="lb-opt' + (g.water === w.id ? ' on' : '') + '" data-water="' + w.id + '" style="flex-direction:column;gap:3px;text-align:center;padding:9px 4px;font-size:10.5px"><span class="ic" style="font-size:16px">' + w.em + '</span>' + esc(w.nm) + '</button>';
+        }).join('') + '</div>'
+      + '<h3 style="font-size:13px;margin:14px 0 8px">🤔 توقّعك قبل التجربة</h3>'
+      + '<div class="lb-guess">'
+      + '<button type="button" data-guess="more"' + (g.guess==='more'?' class="on"':'') + '>ستكبر كثيرًا</button>'
+      + '<button type="button" data-guess="some"' + (g.guess==='some'?' class="on"':'') + '>ستكبر قليلًا</button>'
+      + '<button type="button" data-guess="none"' + (g.guess==='none'?' class="on"':'') + '>لن تنبت</button>'
+      + '</div>'
+      + '<button class="kx-btn gold" id="lb-run">🌱 ابدأ التجربة</button>'
+      + '<div class="kx-row"><button class="kx-btn ghost" id="lb-home">↩︎ المختبر</button></div>'
+      + notebookHtml(e)
+      + '</div>';
+
+    var lb = stage().querySelectorAll('[data-light]');
+    for (var i=0;i<lb.length;i++){ (function(b){ b.addEventListener('click', function(){ g.light = b.getAttribute('data-light'); setupView(); }); })(lb[i]); }
+    var wb = stage().querySelectorAll('[data-water]');
+    for (var j=0;j<wb.length;j++){ (function(b){ b.addEventListener('click', function(){ g.water = b.getAttribute('data-water'); setupView(); }); })(wb[j]); }
+    var gb = stage().querySelectorAll('[data-guess]');
+    for (var k=0;k<gb.length;k++){ (function(b){ b.addEventListener('click', function(){ g.guess = b.getAttribute('data-guess'); setupView(); }); })(gb[k]); }
+    $('lb-run').addEventListener('click', runExp);
+    $('lb-home').addEventListener('click', homeView);
+  }
+
+  function notebookHtml(e){
+    var rows = prog.trials[e.id] || [];
+    if (!rows.length) return '<div class="lb-note"><h4>📓 دفتر التجارب</h4><p style="font-size:11.5px;margin:0;color:var(--muted)">لا تجارب بعد. أول تجربة ستُسجَّل هنا— للمقارنة.</p></div>';
+    var html = '<div class="lb-note"><h4>📓 دفتر التجارب — قارن</h4>';
+    for (var i=rows.length-1;i>=0;i--){
+      var r = rows[i];
+      html += '<div class="lb-trial"><span class="lbl">' + lname(r.light) + ' · ' + wname(r.water) + '</span>'
+        + '<span class="bar"><i style="width:' + Math.round((r.h/15)*100) + '%"></i></span>'
+        + '<span class="h">' + r.h + ' سم</span></div>';
+    }
+    return html + '</div>';
+  }
+  function lname(id){ for (var i=0;i<LIGHTS.length;i++){ if (LIGHTS[i].id===id) return LIGHTS[i].nm; } return id; }
+  function wname(id){ for (var i=0;i<WATERS.length;i++){ if (WATERS[i].id===id) return WATERS[i].nm; } return id; }
+
+  function scoreOf(e, light, water){ return e.table[light + '+' + water]; }
+
+  function runExp(){
+    if (!g) return;
+    var e = g.e, light = g.light, water = g.water;
+    var per = scoreOf(e, light, water), final = per * 5;
+    var note = '';
+    var step = 0;
+    var seed = $('lb-seed'), cm = $('lb-cm');
+    var dots = stage().querySelectorAll('#lb-days i');
+    $('lb-run').disabled = true;
+
+    var timer = setInterval(function(){
+      step++;
+      var h = Math.round((final / 5) * step);
+      if (seed) seed.style.transform = 'scale(' + (0.9 + (h/15)*1.1).toFixed(3) + ')';
+      if (cm) cm.textContent = 'اليوم ' + step + ' · ' + h + ' سم';
+      if (dots[step-1]) dots[step-1].classList.add('on');
+      if (step >= 5){
+        clearInterval(timer);
+        finish(e, per, final, light, water);
+      }
+    }, 420);
+  }
+
+  function finish(e, per, final, light, water){
+    var tier = per === 3 ? 'best' : per === 2 ? 'near' : 'weak';
+    var prev = prog.exp[e.id] || {};
+    var first = tier === 'best' && !prev.best;
+    prog.exp[e.id] = { best: !!prev.best || tier === 'best', last: tier };
+    prog.trials[e.id] = (prog.trials[e.id] || []).slice(-7);
+    prog.trials[e.id].push({ light: light, water: water, h: final });
+    persist();
+    if (first) addStars(3);
+
+    var guessRight = (g.guess === 'more' && tier === 'best') || (g.guess === 'some' && tier === 'near') || (g.guess === 'none' && tier === 'weak');
+
+    var em = tier === 'best' ? '🌳' : tier === 'near' ? '🌿' : '🥀';
+    var tag = tier === 'best' ? 'أفضل نموّ' : tier === 'near' ? 'نموٌ متوسط' : 'لم ينجح';
+    var head = tier === 'best' ? 'فهمتَ ما تحبّه' : tier === 'near' ? 'قريب' : 'تجربةٌ نافعة أيضًا';
+    var body = tier === 'best'
+      ? 'أعطيتَ النبتة ما تحتاجه بالضبط: ' + e.reveal
+      : tier === 'near'
+        ? 'نمت، لكن ليس بأفضل حال. ' + e.reveal
+        : 'لم تنمُ هذه المرة — وهذا جزءٌ من التجربة، لا فشل. ' + e.reveal;
+
+    stage().innerHTML =
+      '<div class="kx-end"><div class="em">' + em + '</div>'
+      + '<div class="tag">' + tag + '</div><h2>' + esc(head) + '</h2>'
+      + '<p>' + esc(body) + '</p>'
+      + '<div class="moral">الطول بعد ٥ أيام: <b>' + final + ' سم</b> · المكان: ' + lname(light) + ' · ' + wname(water)
+      + (guessRight ? '<br>🎯 توقّعك كان صحيحًا!' : '<br>🤔 توقّعك كان مختلفًا — وهذا سببٌ لإعادة التجربة بمتغيّرٍ آخر.') + '</div>'
+      + '<div class="kx-row" style="justify-content:center">'
+      + '<button class="kx-btn" id="lb-again">🔁 جرّب إعدادًا آخر</button>'
+      + '<button class="kx-btn ghost" id="lb-home2">🔬 تجربة أخرى</button></div></div>';
+    if (tier === 'best') pop();
+    $('lb-again').addEventListener('click', function(){ g = { e: e, light: light, water: water, guess: 'more' }; setupView(); });
+    $('lb-home2').addEventListener('click', homeView);
+  }
+
+  /* ══ ٤. التصدير ══════════════════════════════════════════════ */
+  window._lbPure = {
+    EXPS: EXPS, LIGHTS: LIGHTS, WATERS: WATERS,
+    score: function(expId, light, water){
+      for (var i=0;i<EXPS.length;i++){
+        if (EXPS[i].id === expId) return EXPS[i].table[light + '+' + water];
+      }
+      return null;
+    },
+    run: function(expId, light, water){
+      var s = this.score(expId, light, water);
+      if (s == null) return null;
+      return { per: s, height: s * 5, tier: s === 3 ? 'best' : s === 2 ? 'near' : 'weak' };
+    },
+    progress: function(){ return prog; }
+  };
+
+  /* ══ الإقلاع ══════════════════════════════════════════════════ */
+  var __booted = false;
+  function boot(){ if (__booted) return; __booted = true; homeView(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
+</script>
+</body>
+</html>
