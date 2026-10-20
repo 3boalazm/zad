@@ -118,61 +118,141 @@ window.fetchAndCacheHijriDate = async function() {
 /* ═══════════════════════════════════════════════════════════════════════════
    3. مواقيت الصلاة — adhan-js
    ─────────────────────────────────────────────────────────────────────────
-   مكتبة adhan-js متخصصة وموثوقة — تدعم MWL / ISNA / UmmAlQura / Egypt / Karachi
-   نحمّلها بدلاً من حساب الغروب التقريبي في app.js
+   مكتبة adhan-js متخصصة وموثوقة (مُضمَّنة محليًا في js/vendor/adhan.min.js).
+   تحلّ محل حساب الغروب التقريبي في app.js، وتعمل أوفلاين بالكامل.
+   أسماء الطرق الفعلية في adhan 4.x هي: Egyptian / MuslimWorldLeague /
+   NorthAmerica / UmmAlQura / Karachi / Kuwait / Qatar / Dubai / Turkey /
+   Singapore / Tehran / MoonsightingCommittee / Other — راجع ADHAN_KEY.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* تحميل adhan-js من CDN */
+/* P1-2: adhan-js صار محليًا.
+   كان يُحمَّل من cdn.jsdelivr.net، وهو نطاق مدرج في قائمة BYPASS في sw.js
+   (سطر 99) — أي أن Service Worker يرفض تخزينه، فيموت المحرك الثاني أوفلاين
+   دائمًا في تطبيق يُعلن أنه Offline-First. النسخة المحلية (15 KB، MIT)
+   تُحمَّل أولًا وتُدخَل في PRECACHE، والـCDN احتياطي أخير فقط.
+   لاحظ أن المسار تغيّر في 4.4.6: لم يعد dist/adhan.min.js موجودًا. */
 (function loadAdhan() {
   if (window.adhan) return;
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/adhan@4.4.3/dist/adhan.min.js';
-  s.async = false;
-  document.head.appendChild(s);
+  const LOCAL = 'js/vendor/adhan.min.js';
+  const CDN   = 'https://cdn.jsdelivr.net/npm/adhan@4.4.6/lib/bundles/adhan.umd.min.js';
+  const add = (src, onerror) => {
+    const el = document.createElement('script');
+    el.src = src;
+    el.async = false;
+    if (onerror) el.onerror = onerror;
+    document.head.appendChild(el);
+    return el;
+  };
+  add(LOCAL, () => { add(CDN); });   /* إن غاب الملف المحلي نجرّب CDN بدل الفشل الصامت */
 })();
 
 /* طريقة الحساب — يختارها المستخدم من الإعدادات */
 const CALC_METHOD_KEY = 'zad_prayer_method';
 
 const CALC_METHODS = {
-  'Egypt':      { name: 'الهيئة المصرية للمساحة', key: 'Egypt'      },
-  'UmmAlQura':  { name: 'أم القرى (السعودية)',   key: 'UmmAlQura'  },
-  'MWL':        { name: 'رابطة العالم الإسلامي', key: 'MWL'        },
-  'ISNA':       { name: 'أمريكا الشمالية',        key: 'ISNA'       },
-  'Karachi':    { name: 'كراتشي',                 key: 'Karachi'    },
-  'Kuwait':     { name: 'الكويت',                 key: 'Kuwait'     },
-  'Qatar':      { name: 'قطر',                    key: 'Qatar'      },
+  'Egypt':        { name: 'الهيئة المصرية للمساحة',  key: 'Egypt'        },
+  'UmmAlQura':    { name: 'أم القرى (السعودية)',    key: 'UmmAlQura'    },
+  'MWL':          { name: 'رابطة العالم الإسلامي',  key: 'MWL'          },
+  'ISNA':         { name: 'أمريكا الشمالية',         key: 'ISNA'         },
+  'Karachi':      { name: 'كراتشي',                  key: 'Karachi'      },
+  'Kuwait':       { name: 'الكويت',                  key: 'Kuwait'       },
+  'Qatar':        { name: 'قطر',                     key: 'Qatar'        },
+  'Dubai':        { name: 'دبي',                     key: 'Dubai'        },
+  'Turkey':       { name: 'ديانت — تركيا',           key: 'Turkey'       },
+  'Singapore':    { name: 'سنغافورة',                key: 'Singapore'    },
+  'Tehran':       { name: 'طهران',                   key: 'Tehran'       },
+  'Moonsighting': { name: 'لجنة رؤية الهلال',         key: 'Moonsighting' },
 };
 
+/* P0-6: مفاتيح التطبيق → أسماء adhan.CalculationMethod الفعلية.
+   'Egypt' و'MWL' و'ISNA' غير موجودة في adhan إطلاقًا، فكان السطر
+   adhan.CalculationMethod[methodKey] ? ... : UmmAlQura() يسقط **صامتًا**
+   إلى أم القرى — أي أن المستخدم المصري الذي اختار «الهيئة المصرية» كان
+   يُحسب له بتوقيت مكة (العشاء يختلف 12 دقيقة، والفجر 7 عن MWL). */
+const ADHAN_KEY = {
+  Egypt: 'Egyptian', UmmAlQura: 'UmmAlQura', MWL: 'MuslimWorldLeague',
+  ISNA: 'NorthAmerica', Karachi: 'Karachi', Kuwait: 'Kuwait', Qatar: 'Qatar',
+  Dubai: 'Dubai', Turkey: 'Turkey', Singapore: 'Singapore', Tehran: 'Tehran',
+  Moonsighting: 'MoonsightingCommittee',
+};
+
+/* P1-5: جسر بين مُعرِّف aladhan الرقمي الذي تحفظه prayers.html في
+   zad_prayer_method_id واسم adhan الذي يستخدمه هذا الملف في
+   zad_prayer_method — حتى يتفق المحرّكان على طريقة واحدة بدل مفتاحين. */
+const ALADHAN_TO_ADHAN = {
+  1: 'Karachi', 2: 'ISNA', 3: 'MWL', 4: 'UmmAlQura', 5: 'Egypt', 7: 'Tehran',
+  9: 'Kuwait', 10: 'Qatar', 11: 'Singapore', 12: 'MWL', 13: 'Turkey',
+  15: 'Moonsighting', 16: 'Dubai',
+};
+/* الخريطة العكسية: أول تطابق يفوز. مهم لأن MWL يظهر مرتين (3 = رابطة العالم
+   الإسلامي و12 = فرنسا/UOIF التي تسقط عليها)؛ لو أخذنا آخر تطابق لحفظنا 12
+   فعرضت prayers.html «فرنسا» لمن اختار رابطة العالم الإسلامي. */
+const ADHAN_TO_ALADHAN = {};
+Object.entries(ALADHAN_TO_ADHAN).forEach(([id, k]) => {
+  if (!(k in ADHAN_TO_ALADHAN)) ADHAN_TO_ALADHAN[k] = Number(id);
+});
+const METHOD_ID_KEY = 'zad_prayer_method_id';
+
 function getPrayerMethod() {
-  return localStorage.getItem(CALC_METHOD_KEY) || 'Egypt';   /* P1-1: مطابق لافتراضي prayers.html */
+  /* الأولوية للمُعرِّف الرقمي المشترك مع prayers.html إن وُجد */
+  const id = parseInt(localStorage.getItem(METHOD_ID_KEY) || '', 10);
+  if (!isNaN(id) && ALADHAN_TO_ADHAN[id]) return ALADHAN_TO_ADHAN[id];
+  const stored = localStorage.getItem(CALC_METHOD_KEY);
+  return (stored && ADHAN_KEY[stored]) ? stored : 'Egypt';   /* P1-1: مطابق لافتراضي prayers.html */
 }
 function setPrayerMethod(method) {
   localStorage.setItem(CALC_METHOD_KEY, method);
+  const id = ADHAN_TO_ALADHAN[method];
+  if (id !== undefined) localStorage.setItem(METHOD_ID_KEY, String(id));   /* يُبقي prayers.html متفقًا */
+  return method;
+}
+
+/* المذهب — يؤثر في حساب العصر فقط (حنفي: الظل مثليّ بدل جمهوري) */
+const MADHAB_KEY = 'zad_prayer_madhab';
+function getMadhab() { return localStorage.getItem(MADHAB_KEY) === 'hanafi' ? 'hanafi' : 'shafi'; }
+function setMadhab(m) {
+  const v = (m === 'hanafi') ? 'hanafi' : 'shafi';
+  localStorage.setItem(MADHAB_KEY, v);
+  return v;
 }
 window.setPrayerMethod = setPrayerMethod;
 window.getPrayerMethod = getPrayerMethod;
 window.CALC_METHODS    = CALC_METHODS;
+window.ADHAN_KEY       = ADHAN_KEY;
+window.getMadhab       = getMadhab;
+window.setMadhab       = setMadhab;
 
 /* ── حساب المواقيت ───────────────────────────────────────────────────────── */
-async function calcPrayerTimes(lat, lng, date = new Date()) {
+async function calcPrayerTimes(lat, lng, date = new Date(), opts = {}) {
   await waitForAdhan();
 
-  const methodKey = getPrayerMethod();
-  const params = adhan.CalculationMethod[methodKey]
-    ? adhan.CalculationMethod[methodKey]()
-    : adhan.CalculationMethod.UmmAlQura();
+  const methodKey = opts.method || getPrayerMethod();
+  const adhanName = ADHAN_KEY[methodKey] || ADHAN_KEY.Egypt;
+  const factory   = adhan.CalculationMethod[adhanName] || adhan.CalculationMethod.Egyptian;
+  const params    = factory();
+
+  /* المذهب: حنفي = ظلّ مثليّ للعصر */
+  if (adhan.Madhab && (opts.madhab || getMadhab()) === 'hanafi') params.madhab = adhan.Madhab.Hanafi;
 
   const coords = new adhan.Coordinates(lat, lng);
-  const prayerDate = new adhan.DateComponents(date.getFullYear(), date.getMonth() + 1, date.getDate());
-  const times = new adhan.PrayerTimes(coords, prayerDate, params);
+  /* P0-6: adhan 4.x ألغى DateComponents تمامًا (كان في 3.x). السطر السابق
+     new adhan.DateComponents(y, m, d) كان يرمي
+     TypeError: adhan.DateComponents is not a constructor في **كل** استدعاء،
+     فيبتلعه catch ويُظهر رسالة خطأ — أي أن calcPrayerTimes و
+     fetchPrayerTimesIfPossible لم يعملا ولا مرة منذ الترقية إلى 4.x.
+     الصحيح في 4.x: تمرير كائن Date عادي. */
+  const times = new adhan.PrayerTimes(coords, date, params);
 
+  /* منطقة الموقع الزمنية لا منطقة الجهاز: adhan يُرجع لحظات زمنية مطلقة،
+     وبدون timeZone كانت مواقيت مدينة بعيدة (مكة مثلًا) تُعرض بتوقيت جهاز
+     المستخدم في القاهرة — فارق ساعة كاملة. */
+  const tz = opts.timezone || undefined;
   function fmt(t) {
     if (!t) return '--:--';
-    return t.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });   /* P3-3: h23 بدل hour12:false (تجنّب ٢٤:٠٠) */
+    return t.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: tz });   /* P3-3: h23 بدل hour12:false (تجنّب ٢٤:٠٠) */
   }
 
-  return {
+  const out = {
     fajr:    { time: times.fajr,    label: 'الفجر',   fmt: fmt(times.fajr)    },
     sunrise: { time: times.sunrise, label: 'الشروق',  fmt: fmt(times.sunrise) },
     dhuhr:   { time: times.dhuhr,   label: 'الظهر',   fmt: fmt(times.dhuhr)   },
@@ -181,6 +261,17 @@ async function calcPrayerTimes(lat, lng, date = new Date()) {
     isha:    { time: times.isha,    label: 'العشاء',  fmt: fmt(times.isha)    },
     method:  methodKey,
   };
+
+  /* P2-9: منتصف الليل وثلثه الأخير محسوبان على الجهاز بلا أي شبكة */
+  try {
+    if (adhan.SunnahTimes) {
+      const st = new adhan.SunnahTimes(times);
+      out.midnight  = { time: st.middleOfTheNight,    label: 'منتصف الليل',   fmt: fmt(st.middleOfTheNight) };
+      out.lastthird = { time: st.lastThirdOfTheNight, label: 'الثلث الأخير', fmt: fmt(st.lastThirdOfTheNight) };
+    }
+  } catch (e) { /* إضافة اختيارية — لا تُفشل النتيجة الأساسية */ }
+
+  return out;
 }
 
 function waitForAdhan(maxWait = 5000) {
@@ -225,7 +316,7 @@ async function renderPrayerTimesPage() {
         📍 طريقة الحساب: ${method}
         <button onclick="showMethodPicker()" class="btn btn-ghost" style="font-size:12px;padding:4px 10px">تغيير</button>
       </div>
-      ${Object.entries(times).filter(([k]) => k !== 'method').map(([key, p]) => `
+      ${Object.entries(times).filter(([, p]) => p && p.time instanceof Date).map(([key, p]) => `
         <div class="prayer-row ${key}">
           <span class="prayer-name">${p.label}</span>
           <span class="prayer-time" data-time24="${p.fmt}">${p.fmt}</span>
@@ -249,6 +340,7 @@ window.renderPrayerTimesPage = renderPrayerTimesPage;
 /* ── قائمة اختيار طريقة الحساب ──────────────────────────────────────────── */
 function showMethodPicker() {
   const current = getPrayerMethod();
+  const madhab  = getMadhab();
   const modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
   modal.innerHTML = `
@@ -262,6 +354,21 @@ function showMethodPicker() {
           <div style="font-size:14px;font-weight:${key===current?800:500}">${m.name} ${key===current?'✓':''}</div>
         </div>
       `).join('')}
+      <div style="margin-top:16px;padding-top:14px;border-top:1.5px solid var(--border)">
+        <h3 style="margin:0 0 10px;font-size:14px;color:var(--ink)">مذهب حساب العصر</h3>
+        <div style="display:flex;gap:8px">
+          ${[['shafi','الجمهور'],['hanafi','حنفي']].map(([k, label]) => `
+            <div data-madhab="${k}" onclick="setMadhab('${k}');this.parentElement.querySelectorAll('[data-madhab]').forEach(e=>{e.style.background='var(--sand)';e.style.borderColor='var(--border)';e.firstElementChild.style.fontWeight='500'});this.style.background='rgba(14,59,46,.1)';this.style.borderColor='var(--green-deep)';this.firstElementChild.style.fontWeight='800';if(typeof showToast==='function')showToast('✅ مذهب: ${label}')"
+              style="flex:1;padding:10px 12px;border-radius:12px;cursor:pointer;text-align:center;
+                     background:${k===madhab?'rgba(14,59,46,.1)':'var(--sand)'};
+                     border:${k===madhab?'2px solid var(--green-deep)':'1.5px solid var(--border)'}">
+              <b style="font-size:13px;font-weight:${k===madhab?800:500}">${label} ${k===madhab?'✓':''}</b>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);line-height:1.6">
+          الحنفي يؤخّر العصر حتى يصير الظل مثليّ القامة (نحو 45 دقيقة بعد الجمهور). لا يؤثر في بقية الصلوات.
+        </div>
+      </div>
       <button onclick="document.body.removeChild(this.closest('[style*=fixed]'))" 
         style="width:100%;padding:12px;border:none;background:none;color:var(--muted);font-family:inherit;cursor:pointer;margin-top:8px">
         إلغاء
