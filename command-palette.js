@@ -36,6 +36,7 @@
     {h:'playlist.html',i:'🎵',t:'قائمة التشغيل'},
     {h:'asma.html',i:'🌺',t:'أسماء الله الحسنى'},
     {h:'kids.html',i:'🌟',t:'ثُريّا — الأطفال'},
+    {h:'kids-tales.html',i:'🏮',t:'حكايات القرية'},
     {h:'ghars.html',i:'🌱',t:'غرس — قصص الأطفال'},
     {h:'kids-heroes.html',i:'🦁',t:'عرين الأبطال'},
     {h:'kids-school.html',i:'🏫',t:'مدرستي الجميلة'},

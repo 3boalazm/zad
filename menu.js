@@ -59,6 +59,7 @@
 
     { sep: 'ركن الأطفال 🌟', id: 'sec-kids' },
     { href: 'kids.html',             icon: '🌟', label: 'ثُريّا — الرئيسية',  section: 'sec-kids' },
+    { href: 'kids-tales.html',       icon: '🏮', label: 'حكايات القرية',    section: 'sec-kids' },
     { href: 'ghars.html',            icon: '🌱', label: 'غرس — قصص للأطفال', section: 'sec-kids' },
     { href: 'kids-heroes.html',      icon: '🦁', label: 'عرين الأبطال',      section: 'sec-kids' },
     { href: 'kids-school.html',      icon: '🏫', label: 'مدرستي الجميلة',    section: 'sec-kids' },
