@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="قصر الذاكرة — تختار قصرك، وتوزّع الأشياء في غرفه بنفسك، ثم تتحدّى ذاكرتك. طريقة الحفظ التي يستخدمها الأبطال.">
+<title>قصر الذاكرة · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+.mm-hero{background:linear-gradient(135deg,#241a4a 0%,#3a2a6b 50%,#c9a14a 140%);border-radius:24px;padding:26px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -12px rgba(36,26,74,.5)}
+.mm-hero::after{content:'🏛️';position:absolute;top:8px;left:18px;font-size:62px;opacity:.15;line-height:1}
+.mm-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.mm-title{font-size:27px;font-weight:900;margin-bottom:8px}
+.mm-sub{font-size:13.5px;color:rgba(255,255,255,.9);line-height:1.95;max-width:620px}
+
+.mm-panel{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.mm-panel h3{margin:0 0 10px;font-size:15px;font-weight:900;color:var(--ink)}
+.mm-panel p{font-size:12.5px;line-height:1.95;color:var(--muted);margin:0 0 12px}
+
+.mm-themes{display:grid;gap:10px}
+.mm-theme{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--card),var(--sand));border:2px solid var(--border);border-radius:18px;padding:14px 15px;cursor:pointer;font-family:inherit;color:var(--ink);text-align:right;transition:all .2s;width:100%}
+.mm-theme:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 26px -14px rgba(201,161,74,.7)}
+.mm-theme .ic{font-size:30px}
+.mm-theme b{font-size:14.5px;font-weight:900;display:block}
+.mm-theme small{font-size:11px;color:var(--muted);display:block;margin-top:2px;line-height:1.6}
+
+/* ══ الغرف ══ */
+.mm-rooms{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.mm-rooms{grid-template-columns:1fr}}
+.mm-room{border-radius:18px;padding:14px 14px 12px;color:#fff;position:relative;overflow:hidden;cursor:pointer;font-family:inherit;border:none;text-align:right;transition:all .2s;box-shadow:0 10px 26px -14px rgba(0,0,0,.5);min-height:104px}
+.mm-room:hover{transform:translateY(-2px) scale(1.01)}
+.mm-room:active{transform:scale(.98)}
+.mm-room .rn{font-size:13.5px;font-weight:900;display:block;position:relative;z-index:2}
+.mm-room .ic{position:absolute;top:8px;left:12px;font-size:30px;opacity:.55;z-index:1}
+.mm-room .bag{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:5px;margin-top:26px}
+.mm-room .bag span{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:9px;padding:3px 7px;font-size:12px;backdrop-filter:blur(3px);animation:mmPop .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes mmPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+
+.mm-item{text-align:center;padding:14px 0 6px}
+.mm-item .big{font-size:64px;line-height:1;display:block;animation:mmFloat 2.6s ease-in-out infinite}
+@keyframes mmFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.mm-item b{display:block;font-size:19px;font-weight:900;color:var(--ink);margin-top:8px}
+.mm-item small{display:block;font-size:11.5px;color:var(--muted);margin-top:4px}
+
+.mm-prog{display:flex;gap:5px;justify-content:center;margin:10px 0 4px}
+.mm-prog i{width:7px;height:7px;border-radius:99px;background:var(--border)}
+.mm-prog i.on{background:var(--gold);width:20px}
+
+.mm-fb{display:none;margin-top:11px;border-radius:13px;padding:11px 14px;font-size:12.5px;font-weight:800;line-height:1.85;text-align:center}
+.mm-fb.ok{display:block;background:var(--green-pale);color:var(--green-deep);border:1px solid var(--green-soft)}
+.mm-fb.no{display:block;background:rgba(192,57,43,.1);color:#c0392b;border:1px solid rgba(192,57,43,.3)}
+
+.mm-btn{width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6);margin-top:12px}
+.mm-btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
+.mm-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.mm-row .mm-btn{width:auto;flex:1;min-width:120px;margin-top:0}
+
+.mm-end{text-align:center;background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:24px;padding:26px 22px;box-shadow:0 18px 50px -20px rgba(201,161,74,.6);animation:mmIn .45s ease both}
+@keyframes mmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.mm-end .em{font-size:52px;line-height:1;margin-bottom:8px}
+.mm-end .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--green-deep);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
+.mm-end h2{font-size:22px;font-weight:900;color:var(--green-deep);margin:0 0 10px}
+html[data-theme="dark"] .mm-end h2,html[data-theme="oled"] .mm-end h2{color:var(--sys-green)}
+.mm-end p{font-size:14px;line-height:2.1;color:var(--ink);margin:0 auto 12px;max-width:540px}
+.mm-end .moral{font-size:12.5px;font-weight:800;color:var(--gold-dark,#8a6a1f);background:rgba(201,161,74,.14);border-radius:13px;padding:11px 14px;max-width:540px;margin:0 auto 16px;line-height:1.9}
+
+.mm-foot{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.9;margin:10px 0 26px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on');}catch(e){}})();</script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="kids-detectives.html"><span class="ico">🔎</span><span>محقّق القرية</span></a>
+      <a href="kids-city.html"><span class="ico">🏙️</span><span>مدينة الميزان</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">قصر الذاكرة</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">قصر <span>الذاكرة</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="mm-hero">
+      <div class="mm-eyebrow">🏛️ رتّب… ثم تذكّر</div>
+      <div class="mm-title">قصر الذاكرة</div>
+      <div class="mm-sub">اختر قصرك، وضع كلَّ شيءٍ في غرفةٍ <b style="color:#ffe9a8">أنت</b> تختارها. عقلك يتذكّر ما رتّبه هو… أكثر بكثير مما يُعطى له جاهزًا.</div>
+    </div>
+
+    <div id="mm-stage"></div>
+
+    <div class="mm-foot">طريقة «قصر الذاكرة» يستخدمها الحفّاظ منذ قرون — الآن جرّبها في بيتٍ تعرفه. 🌿</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* ══ 1. القصور ════════════════════════════════════════════════ */
+  var THEMES = [
+    { id:'home', name:'بيت الجدّ', ico:'🏡', desc:'غرفٌ تعرفها بعينك مغمضة',
+      rooms:[ {id:'salon', name:'الصالة', em:'🛋️', bg:'linear-gradient(135deg,#8a5a3a,#c98b5a)'},
+              {id:'kitchen', name:'المطبخ', em:'🍳', bg:'linear-gradient(135deg,#3a6b5a,#6aab8a)'},
+              {id:'yard', name:'الحوش', em:'🌿', bg:'linear-gradient(135deg,#2f6b3f,#7fbf6a)'},
+              {id:'roof', name:'السطح', em:'🌙', bg:'linear-gradient(135deg,#2a2a5a,#5a5a9a)'} ] },
+    { id:'souq', name:'سوق المدينة', ico:'🕌', desc:'أكشاكٌ وأصواتٌ وروائح',
+      rooms:[ {id:'bakery', name:'الفرّان', em:'🥖', bg:'linear-gradient(135deg,#6b3f16,#c98b3a)'},
+              {id:'spice', name:'العطّار', em:'🌶️', bg:'linear-gradient(135deg,#7a2a2a,#c95a5a)'},
+              {id:'fabric', name:'بائع القماش', em:'🧵', bg:'linear-gradient(135deg,#2a4a7a,#5a8ac9)'},
+              {id:'well', name:'البئر', em:'💧', bg:'linear-gradient(135deg,#1a4a6b,#3a8ab5)'} ] },
+    { id:'space', name:'محطة الفضاء', ico:'🚀', desc:'غرفٌ لا يعرفها أحد غيرك',
+      rooms:[ {id:'cockpit', name:'غرفة القيادة', em:'🛸', bg:'linear-gradient(135deg,#1a1a3a,#3a3a8a)'},
+              {id:'lab', name:'المختبر', em:'🧪', bg:'linear-gradient(135deg,#1a4a3a,#2a8a6a)'},
+              {id:'garden', name:'الحديقة', em:'🌱', bg:'linear-gradient(135deg,#2a4a1a,#5a9a3a)'},
+              {id:'window', name:'النافذة', em:'🌍', bg:'linear-gradient(135deg,#4a1a4a,#8a3a8a)'} ] }
+  ];
+
+  var ITEMS = [
+    {id:'apple',n:'تفاحة',em:'🍎'}, {id:'key',n:'مفتاح',em:'🔑'}, {id:'cup',n:'كوب',em:'🥤'},
+    {id:'star',n:'نجمة',em:'⭐'}, {id:'book',n:'كتاب',em:'📘'}, {id:'brush',n:'فرشاة',em:'🖌️'},
+    {id:'candle',n:'شمعة',em:'🕯️'}, {id:'ball',n:'كرة',em:'⚽'}, {id:'fish',n:'سمكة',em:'🐟'},
+    {id:'clock',n:'ساعة',em:'⏰'}, {id:'flower',n:'زهرة',em:'🌸'}, {id:'hat',n:'قبّعة',em:'🎩'}
+  ];
+
+  /* ثلاث مراحل: ٤ ثم ٦ ثم ٨ أشياء */
+  var LEVELS = [4, 6, 8];
+
+  /* ══ 2. التخزين ════════════════════════════════════════════════ */
+  function readAll(){ try{ return JSON.parse(localStorage.getItem('zad_v2')||'{}')||{}; }catch(e){ return {}; } }
+  function saveAll(o){ try{ if (window.zadPatchState){ window.zadPatchState(o); return; } localStorage.setItem('zad_v2', JSON.stringify(o)); }catch(e){} }
+  var prog = (function(){
+    var s = readAll(), m = s.kidsMemory || {};
+    m.best = m.best || {};
+    m.plays = m.plays || 0;
+    return m;
+  })();
+  function persist(){ var s = readAll(); s.kidsMemory = prog; saveAll(s); }
+  function addStars(n){
+    try{
+      var st = JSON.parse(localStorage.getItem('zad_kids_v2')||'{}')||{};
+      st.stars = (st.stars||0) + n;
+      localStorage.setItem('zad_kids_v2', JSON.stringify(st));
+    }catch(e){}
+  }
+
+  /* ══ 3. الحالة ════════════════════════════════════════════════ */
+  var g = null;   /* {theme, level, queue[], item, placed{}, order[], qIndex, right} */
+  var stage = $('mm-stage');
+
+  function themeView(){
+    g = null;
+    stage.innerHTML =
+      '<div class="mm-panel"><h3>🏛️ اختَر قصرك</h3>'
+      + '<p>القصرُ الذي تعرفه أفضل من غيره يُثبّت الذكريات أقوى. اختَر، وستتغيّر الغرفُ كلها.</p>'
+      + '<div class="mm-themes">' + THEMES.map(function(t,i){
+          var best = prog.best['1'] ? ' · أفضل نتيجة: ' + prog.best['1'] + '/4' : '';
+          return '<button type="button" class="mm-theme" data-palace="' + i + '">'
+            + '<span class="ic">' + t.ico + '</span>'
+            + '<span style="flex:1;min-width:0"><b>' + esc(t.name) + '</b><small>' + esc(t.desc) + ' — ' + t.rooms.length + ' غرف' + best + '</small></span>'
+            + '<span style="font-size:18px;opacity:.5">←</span></button>';
+        }).join('') + '</div>'
+      + '<p style="margin-top:12px;text-align:center">ثلاثُ مراحل: ٤ أشياء، ثم ٦، ثم ٨.</p></div>';
+    var bs = stage.querySelectorAll('[data-palace]');
+    for (var i=0;i<bs.length;i++){
+      (function(b){
+        b.addEventListener('click', function(){
+          var idx = parseInt(b.getAttribute('data-palace'), 10);
+          startRun(THEMES[idx]);
+        });
+      })(bs[i]);
+    }
+  }
+
+  function startRun(theme){
+    g = { theme: theme, level: 0, placed: {}, order: [], queue: [], item: null, qIndex: 0, right: 0, phase: 'place' };
+    buildLevel();
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function buildLevel(){
+    var n = LEVELS[g.level];
+    g.queue = shuffle(ITEMS).slice(0, n);
+    g.item = g.queue[0];
+    g.placed = {};
+    g.order = [];
+    g.qIndex = 0;
+    g.right = 0;
+    g.phase = 'place';
+    placeView();
+  }
+
+  /* ── 3.1 التوزيع ── */
+  function placeView(){
+    var t = g.theme;
+    var done = g.order.length, total = g.queue.length;
+    var cur = g.item;
+
+    var rooms = t.rooms.map(function(r, i){
+      var bagged = g.order.filter(function(x){ return g.placed[x.id] === r.id; });
+      return '<button type="button" class="mm-room" data-room="' + r.id + '" style="background:' + r.bg + '">'
+        + '<span class="ic">' + r.em + '</span>'
+        + '<span class="rn">' + esc(r.name) + '</span>'
+        + '<span class="bag">' + bagged.map(function(b){ return '<span>' + b.em + '</span>'; }).join('') + '</span>'
+        + '</button>';
+    }).join('');
+
+    var dots = g.queue.map(function(_, i){
+      return '<i class="' + (i < done ? 'on' : '') + '"></i>';
+    }).join('');
+
+    stage.innerHTML =
+      '<div class="mm-panel">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">'
+      + '<h3 style="margin:0">🏛️ ' + esc(t.name) + ' — المرحلة ' + (g.level+1) + '</h3>'
+      + '<span style="font-size:11.5px;font-weight:900;background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:4px 10px;color:var(--muted)">' + done + ' / ' + total + '</span></div>'
+      + (cur
+          ? '<div class="mm-item"><span class="big">' + cur.em + '</span><b>' + esc(cur.n) + '</b>'
+            + '<small>في أيِّ غرفةٍ تضعها؟ ضَعها في مكانٍ غريبٍ إن أردت — الغرابةُ تُثبّت.</small></div>'
+          : '')
+      + '<div class="mm-prog">' + dots + '</div>'
+      + '<div class="mm-rooms" id="mm-rooms">' + rooms + '</div>'
+      + '<p style="margin:12px 0 0;text-align:center">لا يوجد جوابٌ خطأ في هذه المرحلة — القرارُ لك، والذاكرةُ ستُطيعك.</p>'
+      + '</div>';
+
+    var bs = stage.querySelectorAll('[data-room]');
+    for (var i=0;i<bs.length;i++){
+      (function(b){
+        b.addEventListener('click', function(){ putIn(b.getAttribute('data-room')); });
+      })(bs[i]);
+    }
+  }
+
+  function putIn(roomId){
+    if (!g || g.phase !== 'place' || !g.item) return;
+    g.placed[g.item.id] = roomId;
+    g.order.push(g.item);
+
+    if (g.order.length >= g.queue.length){
+      g.phase = 'ready';
+      g.item = null;
+      readyView();
+      return;
+    }
+    g.item = g.queue[g.order.length];
+    placeView();
+  }
+
+  function readyView(){
+    stage.innerHTML =
+      '<div class="mm-panel" style="text-align:center">'
+      + '<div style="font-size:52px;margin-bottom:6px">🧠</div>'
+      + '<h3 style="text-align:center">انتهى الترتيب</h3>'
+      + '<p style="text-align:center">خذ نفسًا… ولا تنظر إلى الأعلى. سنسألك: هذا الشيء، في أيِّ غرفةٍ وضعتَه؟</p>'
+      + '<div style="font-size:12px;color:var(--muted);font-weight:800">' + g.order.map(function(x){ return x.em; }).join(' ') + '</div>'
+      + '<button class="mm-btn" id="mm-start">أنا جاهز ←</button>'
+      + '<div class="mm-row"><button class="mm-btn ghost" id="mm-retry">↩︎ أعد الترتيب من البداية</button></div>'
+      + '</div>';
+    $('mm-start').addEventListener('click', function(){ g.phase='recall'; g.qIndex=0; recallView(); });
+    $('mm-retry').addEventListener('click', buildLevel);
+  }
+
+  /* ── 3.2 الاسترجاع ── */
+  function recallView(){
+    var ask = g.order[g.qIndex];
+    var t = g.theme;
+    var rooms = t.rooms.map(function(r){
+      return '<button type="button" class="mm-room" data-room="' + r.id + '" style="background:' + r.bg + '">'
+        + '<span class="ic">' + r.em + '</span><span class="rn">' + esc(r.name) + '</span>'
+        + '<span class="bag"></span></button>';
+    }).join('');
+
+    stage.innerHTML =
+      '<div class="mm-panel">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">'
+      + '<h3 style="margin:0">🔎 تذكّر</h3>'
+      + '<span style="font-size:11.5px;font-weight:900;background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:4px 10px;color:var(--muted)">سؤال ' + (g.qIndex+1) + ' من ' + g.order.length + '</span></div>'
+      + '<div class="mm-item"><span class="big">' + ask.em + '</span><b>' + esc(ask.n) + '</b><small>في أيِّ غرفةٍ وضعتَه؟</small></div>'
+      + '<div class="mm-rooms" id="mm-rooms">' + rooms + '</div>'
+      + '<div class="mm-fb" id="mm-fb"></div>'
+      + '</div>';
+
+    var bs = stage.querySelectorAll('[data-room]');
+    for (var i=0;i<bs.length;i++){
+      (function(b){
+        b.addEventListener('click', function(){ answer(b.getAttribute('data-room')); });
+      })(bs[i]);
+    }
+  }
+
+  function answer(roomId){
+    if (!g || g.phase !== 'recall') return;
+    var ask = g.order[g.qIndex];
+    var correct = g.placed[ask.id];
+    var ok = roomId === correct;
+    if (ok) g.right++;
+
+    var roomName = '';
+    for (var i=0;i<g.theme.rooms.length;i++){ if (g.theme.rooms[i].id === correct) roomName = g.theme.rooms[i].name; }
+
+    var fb = $('mm-fb');
+    fb.className = 'mm-fb ' + (ok ? 'ok' : 'no');
+    fb.innerHTML = ok
+      ? '✅ صحيح! ' + ask.em + ' في ' + esc(roomName)
+      : '❌ لا — ' + ask.em + ' كانت في ' + esc(roomName) + '. جرّب أن تربطها بصورةٍ أغرب في المرة القادمة.';
+    g.phase = 'answered';
+
+    var bs = stage.querySelectorAll('[data-room]');
+    for (var k=0;k<bs.length;k++) bs[k].disabled = true;
+
+    var btn = document.createElement('button');
+    btn.className = 'mm-btn';
+    btn.textContent = (g.qIndex >= g.order.length - 1) ? 'إلى النتيجة ←' : 'السؤال التالي ←';
+    btn.addEventListener('click', function(){
+      g.qIndex++;
+      if (g.qIndex >= g.order.length){ g.phase = 'result'; levelResult(); }
+      else { g.phase = 'recall'; recallView(); }
+    });
+    fb.insertAdjacentElement('afterend', btn);
+  }
+
+  /* ── 3.3 نتيجة المرحلة ── */
+  function levelResult(){
+    var total = g.order.length;
+    var need = Math.ceil(total * 0.75);
+    var pass = g.right >= need;
+    var lvlKey = String(g.level + 1);
+    if (!prog.best[lvlKey] || g.right > prog.best[lvlKey]) prog.best[lvlKey] = g.right;
+    persist();
+
+    if (pass && g.level < LEVELS.length - 1){
+      stage.innerHTML =
+        '<div class="mm-end"><div class="em">🎉</div>'
+        + '<div class="tag">مرحلةٌ ناجحة</div>'
+        + '<h2>' + g.right + ' من ' + total + '</h2>'
+        + '<p>ذاكرتك تعمل! المرحلة التالية فيها <b>' + LEVELS[g.level+1] + '</b> أشياء — نفس الغرفِ الأربع، لكن أشياء أكثر. السرّ: اربط كل شيءٍ بصورةٍ مضحكة في الغرفة.</p>'
+        + '<button class="mm-btn" id="mm-next">المرحلة التالية ←</button></div>';
+      $('mm-next').addEventListener('click', function(){ g.level++; buildLevel(); });
+      return;
+    }
+
+    if (pass && g.level === LEVELS.length - 1){
+      var firstTime = !prog.done;
+      prog.done = true; prog.plays = (prog.plays||0)+1;
+      persist();
+      if (firstTime) addStars(5);
+      stage.innerHTML =
+        '<div class="mm-end"><div class="em">🏛️</div>'
+        + '<div class="tag">' + (firstTime ? '✨ شهادةُ قصر الذاكرة' : 'أعدتَ الإنجاز') + '</div>'
+        + '<h2>حافظُ القصر</h2>'
+        + '<p>ثمانيةُ أشياء في أربع غرف… وذاكرتك حفظتها كلها لأنها <b>رتّبتها بنفسها</b>. هذه ليست لعبة فقط: هذه طريقةُ الحفّاظ في حفظ القرآن والحديث — مكانٌ لكلِّ آية، وبيتٌ لكلِّ معنى.</p>'
+        + '<div class="moral">' + (firstTime ? '⭐ +٥ نجوم في ركن الأطفال' : 'لا نجوم هذه المرة — الإنجازُ يعيد نفسه.') + '</div>'
+        + '<div class="mm-row" style="justify-content:center">'
+        + '<button class="mm-btn" id="mm-again">🔄 قصرٌ آخر</button>'
+        + '</div></div>';
+      $('mm-again').addEventListener('click', themeView);
+      try{
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (window.confetti && !reduce) window.confetti({ particleCount: 150, spread: 80, origin:{ y:.6 } });
+      }catch(e){}
+      return;
+    }
+
+    stage.innerHTML =
+      '<div class="mm-end"><div class="em">🌱</div>'
+      + '<div class="tag">لم نصل بعد</div>'
+      + '<h2>' + g.right + ' من ' + total + '</h2>'
+      + '<p>تحتاج <b>' + need + '</b> على الأقل لتنتقل. لا بأس — الذاكرة عضلة، والتدريبُ هو الفكرة. جرّب أن تربط كل شيءٍ بصورةٍ غريبة أو مضحكة داخل الغرفة: الدماغُ لا ينسى الغريب.</p>'
+      + '<div class="mm-row" style="justify-content:center">'
+      + '<button class="mm-btn" id="mm-retry2">🔄 أعِد المرحلة</button>'
+      + '<button class="mm-btn ghost" id="mm-home2">🏛️ قصر آخر</button>'
+      + '</div></div>';
+    $('mm-retry2').addEventListener('click', buildLevel);
+    $('mm-home2').addEventListener('click', themeView);
+  }
+
+  /* ══ 4. الإقلاع ═══════════════════════════════════════════════ */
+  window._mmPure = {
+    THEMES: THEMES, ITEMS: ITEMS, LEVELS: LEVELS,
+    threshold: function(n){ return Math.ceil(n * 0.75); },
+    state: function(){ return g; },
+    progress: function(){ return prog; }
+  };
+  function boot(){ themeView(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

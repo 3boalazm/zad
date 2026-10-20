@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<meta name="description" content="محقّق القرية — لغزٌ يُحلّ بثلاث زيارات فقط. اختَر أين تبحث، واجمع الأدلة، واتّهم بدليل.">
+<title>محقّق القرية · زاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+.dt-hero{background:linear-gradient(135deg,#1b2a4a 0%,#2f4a6b 55%,#7a5c2e 135%);border-radius:24px;padding:26px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -12px rgba(20,30,50,.5)}
+.dt-hero::after{content:'🔎';position:absolute;top:8px;left:18px;font-size:62px;opacity:.15;line-height:1}
+.dt-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.dt-title{font-size:27px;font-weight:900;margin-bottom:8px}
+.dt-sub{font-size:13.5px;color:rgba(255,255,255,.9);line-height:1.95;max-width:620px}
+
+.dt-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.dt-pill{background:var(--card);border:1.5px solid var(--border);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
+.dt-pill b{color:var(--green-deep);font-size:14px}
+.dt-pill.warn{border-color:var(--gold);background:rgba(201,161,74,.12)}
+
+.dt-board{background:var(--card);border:1.5px dashed var(--border);border-radius:18px;padding:13px 14px;margin-bottom:14px}
+.dt-board h4{margin:0 0 9px;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.4px}
+.dt-chips{display:flex;flex-wrap:wrap;gap:7px;min-height:26px}
+.dt-clue{display:flex;align-items:center;gap:6px;background:var(--green-pale);border:1.5px solid var(--green-soft);color:var(--green-deep);border-radius:11px;padding:6px 11px;font-size:11.5px;font-weight:800;max-width:100%;line-height:1.6}
+.dt-empty{font-size:11.5px;color:var(--muted);font-style:italic}
+
+.dt-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:480px){.dt-grid{grid-template-columns:1fr}}
+.dt-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:15px;cursor:pointer;text-align:right;font-family:inherit;color:var(--ink);transition:all .2s;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;width:100%}
+.dt-card:hover:not(:disabled){transform:translateY(-2px);border-color:var(--gold);box-shadow:0 12px 28px -14px rgba(201,161,74,.6)}
+.dt-card:disabled{opacity:.5;cursor:default}
+.dt-card .ico{font-size:26px;display:block;margin-bottom:6px}
+.dt-card b{font-size:14px;font-weight:900;display:block;margin-bottom:3px}
+.dt-card small{font-size:11px;color:var(--muted);line-height:1.7;display:block}
+.dt-card .seen{position:absolute;top:9px;left:10px;font-size:10px;font-weight:900;background:var(--green-pale);color:var(--green-deep);border-radius:99px;padding:2px 8px}
+
+.dt-scene{background:linear-gradient(160deg,var(--card),var(--sand));border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;box-shadow:var(--shadow-sm);animation:dtIn .35s ease both}
+@keyframes dtIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.dt-art{height:132px;display:flex;align-items:center;justify-content:center;font-size:62px;position:relative;overflow:hidden}
+.dt-art::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.35),transparent 62%)}
+.dt-body{padding:18px 20px 22px}
+.dt-body p{font-size:15px;line-height:2.15;color:var(--ink);margin:0 0 14px}
+.dt-found{display:flex;gap:9px;align-items:flex-start;background:rgba(201,161,74,.13);border-right:4px solid var(--gold);border-radius:0 13px 13px 0;padding:11px 14px;font-size:12.5px;font-weight:800;line-height:1.9;color:var(--ink);margin-bottom:14px}
+
+.dt-btn{width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6)}
+.dt-btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
+.dt-btn:disabled{opacity:.55;cursor:default}
+.dt-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.dt-row .dt-btn{width:auto;flex:1;min-width:120px}
+
+.dt-sus{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:15px 14px;cursor:pointer;text-align:center;font-family:inherit;color:var(--ink);transition:all .2s;width:100%}
+.dt-sus:hover{border-color:var(--gold);transform:translateY(-2px)}
+.dt-sus .em{font-size:36px;display:block;margin-bottom:5px}
+.dt-sus b{font-size:14px;font-weight:900;display:block}
+.dt-sus small{font-size:10.5px;color:var(--muted);display:block;margin-top:3px;line-height:1.6}
+.dt-sus .say{font-size:11px;color:var(--green-deep);font-weight:800;margin-top:7px;line-height:1.7;border-top:1px dashed var(--border);padding-top:7px}
+
+.dt-proof{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.dt-proof button{border:2px solid var(--border);background:var(--card);color:var(--ink);font-family:inherit;font-size:11.5px;font-weight:800;padding:9px 12px;border-radius:12px;cursor:pointer;text-align:right;line-height:1.6;transition:all .15s}
+.dt-proof button.on{border-color:var(--green-deep);background:var(--green-pale);color:var(--green-deep);box-shadow:0 0 0 2px rgba(14,59,46,.12)}
+
+.dt-end{text-align:center;background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:24px;padding:26px 22px;box-shadow:0 18px 50px -20px rgba(201,161,74,.6);animation:dtIn .45s ease both}
+.dt-end .em{font-size:52px;line-height:1;margin-bottom:8px}
+.dt-end .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--green-deep);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
+.dt-end h2{font-size:22px;font-weight:900;color:var(--green-deep);margin:0 0 10px}
+html[data-theme="dark"] .dt-end h2,html[data-theme="oled"] .dt-end h2{color:var(--sys-green)}
+.dt-end p{font-size:14px;line-height:2.1;color:var(--ink);margin:0 auto 12px;max-width:540px}
+.dt-end .moral{font-size:12.5px;font-weight:800;color:var(--gold-dark,#8a6a1f);background:rgba(201,161,74,.14);border-radius:13px;padding:11px 14px;max-width:540px;margin:0 auto 16px;line-height:1.9}
+
+.dt-foot{text-align:center;font-size:11.5px;color:var(--muted);line-height:1.9;margin:10px 0 26px}
+.dt-hidden{display:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="kids.html"><span class="ico">🌟</span><span>ركن الأطفال</span></a>
+      <a href="kids-tales.html"><span class="ico">🏮</span><span>حكايات القرية</span></a>
+      <a href="kids-city.html"><span class="ico">🏙️</span><span>مدينة الميزان</span></a>
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">محقّق القرية</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">محقّق <span>القرية</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="dt-hero">
+      <div class="dt-eyebrow">🔎 استنتاج · أدلة · قرار</div>
+      <div class="dt-title">محقّق القرية</div>
+      <div class="dt-sub">لك <b style="color:#ffe9a8">ثلاث زيارات فقط</b> من ستة أماكن. كلُّ مكانٍ يخفي دليلًا قد يُدين… وقد <b style="color:#ffe9a8">يُبرئ</b>. اجمع ما يكفي، ثم اتّهم — واعرف أن الاتهام بالخطأ له ثمن.</div>
+    </div>
+
+    <!-- ══ شريط الحالة ══ -->
+    <div class="dt-bar" id="dt-bar">
+      <div class="dt-pill" id="dt-visits">🚶 الزيارات: <b>3</b></div>
+      <div class="dt-pill" id="dt-case">📁 —</div>
+      <div class="dt-pill" id="dt-solved">🏅 ملفاتٌ محلولة: <b>0</b></div>
+    </div>
+
+    <!-- ══ لوحة الأدلة ══ -->
+    <div class="dt-board" id="dt-board">
+      <h4>🗂️ لوحة الأدلة</h4>
+      <div class="dt-chips" id="dt-chips"><span class="dt-empty">لا أدلة بعد… اختَر مكانًا لتبدأ.</span></div>
+    </div>
+
+    <!-- ══ الحاوية ══ -->
+    <div id="dt-stage"></div>
+
+    <div class="dt-foot">«لا تحكم قبل أن تسمع، ولا تتّهم قبل أن ترى.» — محقّقو القرية 🌿</div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ══ 1. الملفّات ══════════════════════════════════════════════ */
+  var CASES = [
+    {
+      id:'bucket', title:'دلو البئر المفقود', ico:'🪣', bg:'linear-gradient(135deg,#1b2a4a,#3a6b8a)',
+      intro:'في قرية الوادي، اختفى دلوُ البئر بين المغرب والفجر. الحبلُ ما زال مبلولًا، وأهلُ القرية يتهامسون. عليك أن تعرف: هل سُرق الدلو… أم أن هناك حكايةً أخرى؟',
+      visits:3,
+      locations:[
+        { id:'well', ico:'🕳️', name:'البئر', bg:'linear-gradient(135deg,#12324a,#2b6b8a)',
+          scene:'وقفتَ عند البئر. الحبلُ ما زال مبلولًا، وعلى الطين أثرُ قدمٍ صغيرة، وحبلُ الدلو مقطوعٌ من طرفه — كأن أحدًا شدّه بقوة.',
+          clue:{ id:'foot', text:'أثرُ قدمٍ صغيرة عند البئر، والحبلُ مبلول' } },
+        { id:'bakery', ico:'🥖', name:'المخبز', bg:'linear-gradient(135deg,#6b3f16,#c98b3a)',
+          scene:'المخبزُ ساخنٌ رغم الفجر. قال الخبّاز وهو يمسح جبينه: «سعيد لم يغادر الطابون حتى الفجر. عجينُه كان على المائدة حين صاح الديك».',
+          clue:{ id:'bakery', text:'سعيد كان في المخبز حتى الفجر' } },
+        { id:'field', ico:'🐑', name:'المرعى', bg:'linear-gradient(135deg,#2f6b3f,#8ac96a)',
+          scene:'المرعى شبه فارغ. قالت الراعية: «خروفي الصغير ضاع ليلة أمس. بحثتُ عنه حتى الصباح، ووجدتُه عند البستان — عطشانَ جدًا».',
+          clue:{ id:'sheep', text:'خروف منى ضاع تلك الليلة ووُجد عطشان' } },
+        { id:'ragab', ico:'🏚️', name:'بيت عمّ رجب', bg:'linear-gradient(135deg,#3a3a4a,#7a6a5a)',
+          scene:'البيت هادئ. عمّ رجب كان نائمًا مبكرًا كما قال. أمام الباب دلوٌ مكسورٌ قديم، صدئٌ من سنين — وليس دلو البئر.',
+          clue:{ id:'old', text:'دلو عمّ رجب قديمٌ مكسور، وهو ينام مبكرًا' } },
+        { id:'garden', ico:'🌿', name:'بستان التين', bg:'linear-gradient(135deg,#2f5b3a,#8fbf6a)',
+          scene:'على سياج البستان خيطٌ من الصوف الأبيض، وعلى التراب أثرُ ماءٍ انسكب حديثًا — والترابُ ما زال رطبًا.',
+          clue:{ id:'wool', text:'صوفٌ أبيض على السياج، وأثرُ ماءٍ حديث' } },
+        { id:'market', ico:'🛒', name:'السوق', bg:'linear-gradient(135deg,#5a3a1a,#c9a14a)',
+          scene:'الباعةُ يفتحون أكشاكهم. سألتَ: هل باع أحدٌ دلوًا؟ ضحك العطّار: «دلوُ البئر كبيرٌ جدًا، لا يشتريه أحد… ولو بيع، لعرفتُ».',
+          clue:{ id:'market', text:'لم يُبَع دلوٌ في السوق' } }
+      ],
+      suspects:[
+        { id:'said', name:'سعيد', em:'🧑‍🍳', role:'ابن الخبّاز', says:'كنتُ أعجن طوال الليل' },
+        { id:'mona', name:'منى', em:'🧒', role:'راعية الغنم', says:'لم أذهب إلى البئر' },
+        { id:'ragab', name:'عمّ رجب', em:'👴', role:'حارس البستان', says:'نمتُ مبكرًا كعادتي' }
+      ],
+      truth:{
+        culprit:'mona',
+        support:['foot','wool','sheep'],
+        story:'منى لم تسرق شيئًا. خروفُها ضاع في العتمة، فحملت الدلوَ لتسقيه، ثم أعادته عند الفجر وهي ترتجف من الخوف. حين سألها أهلُ القرية بلطفٍ بدل الاتهام، بكت وقالت الحقيقة. فقال عمّ رجب: «لو قلتَ لنا لساعدناك». وصنعوا للخروف دلوًا صغيرًا خاصًا به.',
+        moral:'الحقيقة تُقال قبل أن تُكتشَف — والقرية التي تسأل بلطفٍ تسمع أكثر من التي تصرخ.'
+      }
+    },
+    {
+      id:'tree', title:'لغز الشجرة المكسورة', ico:'🌳', bg:'linear-gradient(135deg,#2f4a2a,#7a8f3a)',
+      intro:'في فجرٍ عاصف، وجد أهلُ القرية فرعَ شجرة التين مكسورًا. الجميع يتّهم أحدًا… وأنت الوحيد الذي لم يحكم بعد. عندك ثلاث زيارات لتكتشف من — أو ما — كسر الفرع.',
+      visits:3,
+      locations:[
+        { id:'tree', ico:'🌳', name:'الشجرة', bg:'linear-gradient(135deg,#2f4a2a,#7a9a4a)',
+          scene:'الفرعُ معلّقٌ من طرفه. تأمّلتَ الكسر: حوافُّه جافّةٌ متشقّقة، وليست طازجة. وتحت الشجرة ثمرةٌ ناضجة سقطت من نفس الفرع.',
+          clue:{ id:'dry', text:'الكسرُ جافٌّ قديم… لا يبدو من أمس' } },
+        { id:'wall', ico:'🧱', name:'الحائط', bg:'linear-gradient(135deg,#4a3a2a,#a08a6a)',
+          scene:'كرةٌ قديمة عالقةٌ بين حجرين، غبارُها سميك، وخطُّ العنكبوت يربطها بالحجر. لو كانت من أمس، لكان الغبار خفيفًا.',
+          clue:{ id:'ball', text:'كرةٌ قديمة عالقة في الحائط، مغطّاة بالغبار' } },
+        { id:'house', ico:'🏠', name:'البيت', bg:'linear-gradient(135deg,#3a2f4a,#8a7aa8)',
+          scene:'هدى نائمةٌ في فراشها. قالت أمها: «حرارتها عالية، لم تنهض منذ يومين. حتى الشجرة لم ترها هذه الليلة».',
+          clue:{ id:'sick', text:'هدى مريضة في الفراش منذ يومين' } },
+        { id:'trunk', ico:'🐈', name:'جذع الشجرة', bg:'linear-gradient(135deg,#3a2a1a,#8a6a4a)',
+          scene:'على الجذع خطوطٌ رفيعة صاعدة إلى الأعلى، وخطوطٌ أخرى نازلة. آثارُ مخالب واضحة، حديثةُ الحكّ.',
+          clue:{ id:'claw', text:'آثارُ مخالب على الجذع — أحدهم صعد' } },
+        { id:'salem', ico:'👴', name:'العمّ سالم', bg:'linear-gradient(135deg,#2a3a4a,#6a8a9a)',
+          scene:'قال العمّ سالم وهو يلفّ شاله: «سمعتُ طقطقةً قبل الفجر، والريحُ كانت شديدة حتى اهتزّت النافذة. قلتُ في نفسي: شيءٌ كبيرٌ سقط».',
+          clue:{ id:'wind', text:'العمّ سالم سمع طقطقةً في العاصفة قبل الفجر' } },
+        { id:'market', ico:'🛒', name:'السوق', bg:'linear-gradient(135deg,#5a3a1a,#c9a14a)',
+          scene:'قال أبوك: «ياسر كان معي في السوق حتى المساء يبيع الفاكهة. ولدٌ مجتهد — ما ترك الكشك ساعة».',
+          clue:{ id:'market2', text:'ياسر كان في السوق حتى المساء' } }
+      ],
+      suspects:[
+        { id:'yaser', name:'ياسر', em:'🧒', role:'يلعب الكرة', says:'لم ألمس الشجرة' },
+        { id:'huda', name:'هدى', em:'👧', role:'تتسلّق الشجرة', says:'لم أنهض من فراشي' },
+        { id:'wind', name:'الريح', em:'🌬️', role:'ليست من الناس', says:'…' }
+      ],
+      truth:{
+        culprit:'wind',
+        support:['dry','wind','claw'],
+        story:'لم يكسرها أحدٌ من القرية. الكسرُ كان قديمًا، والريحُ العاصفة أتمّت ما بدأه الزمن. القطةُ صعدت لتستدفئ في الصباح فتركت آثار مخالبها، والكرةُ كانت في الحائط من أسبوعين. اعتذر ياسر وهدى لبعضهما — وعلّقت القرية لوحةً صغيرة: «اسأل قبل أن تتّهم».',
+        moral:'ليس كلُّ ما انكسر كسره إنسان. وأسرعُ حكمٍ هو أكثرُ حكمٍ يُخطئ.'
+      }
+    }
+  ];
+
+  /* ══ 2. التخزين ════════════════════════════════════════════════ */
+  var $ = function(id){ return document.getElementById(id); };
+  function readAll(){ try{ return JSON.parse(localStorage.getItem('zad_v2')||'{}')||{}; }catch(e){ return {}; } }
+  function saveAll(o){ try{ if (window.zadPatchState){ window.zadPatchState(o); return; } localStorage.setItem('zad_v2', JSON.stringify(o)); }catch(e){} }
+  var prog = (function(){
+    var s = readAll(), d = s.kidsDetective || {};
+    d.solved = d.solved || {};
+    return d;
+  })();
+  function persist(){ var s = readAll(); s.kidsDetective = prog; saveAll(s); }
+  function addStars(n){
+    try{
+      var st = JSON.parse(localStorage.getItem('zad_kids_v2')||'{}')||{};
+      st.stars = (st.stars||0) + n;
+      localStorage.setItem('zad_kids_v2', JSON.stringify(st));
+    }catch(e){}
+  }
+  function solvedCount(){ return Object.keys(prog.solved).filter(function(k){ return prog.solved[k] && prog.solved[k].full; }).length; }
+
+  /* ══ 3. الجريان ═══════════════════════════════════════════════ */
+  var C = null;                                   /* الملف الحالي */
+  var run = null;                                 /* {left, visited, clues, suspect, proof} */
+  var stage = $('dt-stage');
+
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function syncBar(){
+    if ($('dt-visits')) $('dt-visits').innerHTML = '🚶 الزيارات: <b>' + (run ? run.left : (C ? C.visits : 3)) + '</b>';
+    if ($('dt-case'))    $('dt-case').textContent = C ? '📁 ' + C.title : '📁 اختر ملفًّا';
+    if ($('dt-solved'))  $('dt-solved').innerHTML = '🏅 ملفاتٌ محلولة: <b>' + solvedCount() + '</b>';
+    if ($('dt-visits'))  $('dt-visits').classList.toggle('warn', !!run && run.left <= 1);
+  }
+  function renderBoard(){
+    var box = $('dt-chips');
+    if (!box) return;
+    if (!run || !run.clues.length){
+      box.innerHTML = '<span class="dt-empty">لا أدلة بعد… اختَر مكانًا لتبدأ.</span>';
+      return;
+    }
+    box.innerHTML = run.clues.map(function(c){
+      return '<span class="dt-clue">🔍 ' + esc(c.text) + '</span>';
+    }).join('');
+  }
+
+  /* ── 3.1 الاختيار ── */
+  function home(){
+    C = null; run = null;
+    syncBar(); renderBoard();
+    $('dt-board').classList.add('dt-hidden');
+    stage.innerHTML =
+      '<div class="dt-grid">' + CASES.map(function(c){
+        var sp = prog.solved[c.id];
+        var badge = sp ? (sp.full ? '✅ حُلَّ بأدلة' : '🟡 حُلَّ') : 'ملفٌّ مفتوح';
+        return '<button type="button" class="dt-card" data-case="' + c.id + '">'
+          + '<span class="seen">' + badge + '</span>'
+          + '<span class="ico">' + c.ico + '</span>'
+          + '<b>' + esc(c.title) + '</b>'
+          + '<small>' + esc(c.intro.slice(0, 96)) + '…</small></button>';
+      }).join('') + '</div>'
+      + '<div class="dt-foot">كلُّ ملفٍّ: ٣ زيارات من ٦ أماكن · ٣ مشتبهين · حكمٌ واحد.</div>';
+    bindCaseButtons();
+  }
+  function bindCaseButtons(){
+    var btns = stage.querySelectorAll('[data-case]');
+    for (var i=0;i<btns.length;i++){
+      (function(b){
+        b.addEventListener('click', function(){
+          var id = b.getAttribute('data-case');
+          for (var k=0;k<CASES.length;k++){ if (CASES[k].id === id) startCase(CASES[k]); }
+        });
+      })(btns[i]);
+    }
+  }
+
+  function startCase(c){
+    C = c;
+    run = { left: c.visits, visited: [], clues: [], suspect: null, proof: [] };
+    syncBar(); renderBoard();
+    $('dt-board').classList.remove('dt-hidden');
+    stage.innerHTML =
+      '<div class="dt-scene"><div class="dt-art" style="background:' + c.bg + '">' + c.ico + '</div>'
+      + '<div class="dt-body"><h2 style="font-size:19px;font-weight:900;margin:0 0 10px;color:var(--ink)">' + esc(c.title) + '</h2>'
+      + '<p>' + esc(c.intro) + '</p>'
+      + '<div class="dt-found">🧠 عندك <b>' + c.visits + ' زيارات فقط</b> من ٦ أماكن. لا يمكنك رؤية كل شيء — اختَر ما يخصّ المشتبهين أكثر.</div>'
+      + '<button class="dt-btn" id="dt-go">ابدأ التحقيق ←</button></div></div>';
+    $('dt-go').addEventListener('click', mapView);
+  }
+
+  /* ── 3.2 الخريطة ── */
+  function mapView(){
+    syncBar();
+    if (run.left <= 0){ accuseView(); return; }
+    stage.innerHTML =
+      '<div style="font-size:13px;font-weight:900;color:var(--ink);margin:2px 0 10px">📍 أين تبحث؟ <span style="color:var(--muted);font-weight:700">(بقي ' + run.left + ')</span></div>'
+      + '<div class="dt-grid">' + C.locations.map(function(l){
+        var seen = run.visited.indexOf(l.id) >= 0;
+        return '<button type="button" class="dt-card" data-loc="' + l.id + '"' + (seen ? ' disabled' : '') + '>'
+          + (seen ? '<span class="seen">🔍 زُرتَه</span>' : '')
+          + '<span class="ico">' + l.ico + '</span><b>' + esc(l.name) + '</b>'
+          + '<small>' + (seen ? 'الدليل في اللوحة' : 'زيارة واحدة') + '</small></button>';
+      }).join('') + '</div>'
+      + '<div class="dt-row"><button class="dt-btn ghost" id="dt-stop">توقّف واتّهم الآن</button></div>';
+    var btns = stage.querySelectorAll('[data-loc]');
+    for (var i=0;i<btns.length;i++){
+      (function(b){
+        b.addEventListener('click', function(){
+          var id = b.getAttribute('data-loc');
+          for (var k=0;k<C.locations.length;k++){
+            if (C.locations[k].id === id) visit(C.locations[k]);
+          }
+        });
+      })(btns[i]);
+    }
+    $('dt-stop').addEventListener('click', accuseView);
+  }
+
+  function visit(loc){
+    run.left--;
+    run.visited.push(loc.id);
+    run.clues.push(loc.clue);
+    syncBar(); renderBoard();
+    stage.innerHTML =
+      '<div class="dt-scene"><div class="dt-art" style="background:' + loc.bg + '">' + loc.ico + '</div>'
+      + '<div class="dt-body">'
+      + '<h2 style="font-size:18px;font-weight:900;margin:0 0 10px;color:var(--ink)">' + esc(loc.name) + '</h2>'
+      + '<p>' + esc(loc.scene) + '</p>'
+      + '<div class="dt-found">🔍 <b>دليل جديد:</b> ' + esc(loc.clue.text) + '</div>'
+      + '<button class="dt-btn" id="dt-back">' + (run.left > 0 ? 'عُد إلى الخريطة (' + run.left + ' متبقية) ←' : 'انتهت الزيارات — إلى الاتهام ←') + '</button>'
+      + '</div></div>';
+    $('dt-back').addEventListener('click', function(){ run.left > 0 ? mapView() : accuseView(); });
+  }
+
+  /* ── 3.3 الاتهام ── */
+  function accuseView(){
+    syncBar();
+    stage.innerHTML =
+      '<div style="font-size:13px;font-weight:900;color:var(--ink);margin:2px 0 4px">⚖️ من تتّهم؟</div>'
+      + '<div style="font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:11px">الاتهامُ قرارٌ، لا تخمين. فكّر في الأدلة التي جمعتَها.</div>'
+      + '<div class="dt-grid">' + C.suspects.map(function(s){
+        return '<button type="button" class="dt-sus" data-sus="' + s.id + '">'
+          + '<span class="em">' + s.em + '</span><b>' + esc(s.name) + '</b>'
+          + '<small>' + esc(s.role) + '</small>'
+          + '<div class="say">«' + esc(s.says) + '»</div></button>';
+      }).join('') + '</div>'
+      + '<div class="dt-row"><button class="dt-btn ghost" id="dt-nosu">أريد زيارةً أخرى</button></div>';
+    var btns = stage.querySelectorAll('[data-sus]');
+    for (var i=0;i<btns.length;i++){
+      (function(b){
+        b.addEventListener('click', function(){
+          run.suspect = b.getAttribute('data-sus');
+          proofView();
+        });
+      })(btns[i]);
+    }
+    $('dt-nosu').addEventListener('click', function(){ run.left > 0 ? mapView() : verdict(); });
+  }
+
+  /* ── 3.4 الدليل الذي يدين ── */
+  function proofView(){
+    stage.innerHTML =
+      '<div style="font-size:13px;font-weight:900;color:var(--ink);margin:2px 0 4px">🧩 ما الدليل الذي يدعم اتّهامك؟</div>'
+      + '<div style="font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:6px">اختَر دليلًا واحدًا أو اثنين. بلا دليل… يبقى الاتهام ظنًّا.</div>'
+      + '<div class="dt-proof" id="dt-pf">' + (run.clues.length
+          ? run.clues.map(function(c,i){ return '<button type="button" data-i="' + i + '">' + esc(c.text) + '</button>'; }).join('')
+          : '<span class="dt-empty">لم تجمع أي دليل.</span>') + '</div>'
+      + '<button class="dt-btn" id="dt-verdict">أصدر الحكم ←</button>'
+      + '<div class="dt-row"><button class="dt-btn ghost" id="dt-back2">رجوع</button></div>';
+    var pf = $('dt-pf');
+    if (pf){
+      var bs = pf.querySelectorAll('button');
+      for (var i=0;i<bs.length;i++){
+        (function(b){
+          b.addEventListener('click', function(){
+            var idx = parseInt(b.getAttribute('data-i'), 10);
+            var id = run.clues[idx].id;
+            var at = run.proof.indexOf(id);
+            if (at >= 0){ run.proof.splice(at,1); b.classList.remove('on'); }
+            else if (run.proof.length < 2){ run.proof.push(id); b.classList.add('on'); }
+          });
+        })(bs[i]);
+      }
+    }
+    $('dt-verdict').addEventListener('click', verdict);
+    $('dt-back2').addEventListener('click', accuseView);
+  }
+
+  /* ── 3.5 الحكم ── */
+  function verdict(){
+    var t = C.truth;
+    var right = run.suspect === t.culprit;
+    var sup = run.proof.filter(function(id){ return t.support.indexOf(id) >= 0; });
+    var full = right && sup.length >= 1;
+
+    var key = C.id;
+    var prev = prog.solved[key] || null;
+    var isNew = !prev || (!prev.full && full);
+    if (full || !prev){
+      prog.solved[key] = { full: !!(prev && prev.full) || full, guess: !full };
+      persist();
+    }
+    if (full && (!prev || !prev.full)) addStars(3);
+    syncBar();
+
+    var tag, head, body;
+    if (full){
+      tag = '✅ حكمٌ بدليل';
+      head = 'أصبتَ — ومعك ما يُثبت';
+      body = t.story;
+    } else if (right){
+      tag = '🟡 أصبتَ بالسؤال… لا بالدليل';
+      head = 'الاتهام صحيح، لكن دليلك ضعيف';
+      body = 'الاسمُ كان صحيحًا، لكنك لم تُقدّم دليلًا يخصّه. في الحقيقة: ' + t.story;
+    } else {
+      tag = '❌ اتهامٌ في غير محلّه';
+      head = 'ظلمتَ بريئًا';
+      body = 'الحقيقةُ أن: ' + t.story;
+    }
+
+    stage.innerHTML =
+      '<div class="dt-end"><div class="em">' + (full ? '🕵️' : (right ? '🤔' : '💔')) + '</div>'
+      + '<div class="tag">' + tag + '</div>'
+      + '<h2>' + esc(head) + '</h2>'
+      + '<p>' + esc(body) + '</p>'
+      + '<div class="moral">' + esc(t.moral) + '</div>'
+      + (isNew && full ? '<div style="font-size:11.5px;font-weight:900;color:var(--green-deep);margin-bottom:12px">⭐ +٣ نجوم في ركن الأطفال — لأول حلٍّ بدليل</div>' : '')
+      + '<div class="dt-row" style="justify-content:center">'
+      + '<button class="dt-btn" id="dt-again">🔄 أعِد الملف</button>'
+      + '<button class="dt-btn ghost" id="dt-home">📁 كل الملفات</button>'
+      + '</div></div>';
+
+    if (full){
+      try{
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (window.confetti && !reduce) window.confetti({ particleCount: 100, spread: 75, origin:{ y:.6 } });
+      }catch(e){}
+    }
+    $('dt-again').addEventListener('click', function(){ startCase(C); });
+    $('dt-home').addEventListener('click', home);
+  }
+
+  /* ══ 4. الإقلاع ═══════════════════════════════════════════════ */
+  window.dtHome = home;
+  window._dtPure = {
+    CASES: CASES,
+    solve: function(caseId, suspectId, proofIds){
+      var c = null;
+      for (var i=0;i<CASES.length;i++){ if (CASES[i].id === caseId) c = CASES[i]; }
+      if (!c) return null;
+      var t = c.truth;
+      var right = suspectId === t.culprit;
+      var sup = (proofIds||[]).filter(function(id){ return t.support.indexOf(id) >= 0; });
+      return { right: right, support: sup.length, full: right && sup.length >= 1 };
+    },
+    progress: function(){ return prog; },
+    solvedCount: solvedCount
+  };
+
+  function boot(){ home(); syncBar(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>
