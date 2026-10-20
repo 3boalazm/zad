@@ -102,6 +102,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
 
 @media(max-width:768px){.vids-hero{padding:22px 18px}.vids-hero h1{font-size:22px}.vid-title{font-size:15px}}
 @media(max-width:480px){.vid-extra-actions{flex-direction:column}.vid-action-btn{min-width:100%}.vid-summary-section h4{font-size:12px}.vid-summary-section p,.vid-summary-section ul{font-size:12px}}
+  .vid-dur-badge{position:absolute;bottom:10px;right:10px;z-index:2;background:rgba(0,0,0,.78);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;direction:ltr;font-variant-numeric:tabular-nums}
+  .vid-filter-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 16px}
+  .vid-filter-label{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .vid-spk-select{padding:9px 12px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--ink);font-family:inherit;font-size:13px;min-width:220px;cursor:pointer}
+  .vid-empty{display:none;text-align:center;color:var(--muted);padding:28px 16px;font-size:14px}
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
 <style>
@@ -192,11 +197,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
 
     <div class="vids-hero">
       <div class="vids-hero-eyebrow">🎬 مكتبة المحتوى</div>
-      <h1>محاضرات في فضل عشر ذي الحجة</h1>
-      <p>مجموعة مختارة من أبرز المحاضرات والخطب للاستعداد الإيماني ومتابعة مواسم الخيرات</p>
+      <h1>محاضرات ومقاطع مختارة</h1>
+      <p>محاضرات عن عشر ذي الحجة، وحلقات عن التزكية والسيرة النبوية، وبودكاست حواري في قضايا الشباب والأسرة. صفِّ الفيديوهات حسب القسم أو المدة أو الشيخ والمقدم.</p>
       <div class="vids-count-row">
-        <div class="vids-count-item"><div class="vci-num">15</div><div class="vci-lbl">محاضرة</div></div>
-        <div class="vids-count-item"><div class="vci-num">9</div><div class="vci-lbl">علماء</div></div>
+        <div class="vids-count-item"><div class="vci-num">26</div><div class="vci-lbl">محاضرة</div></div>
+        <div class="vids-count-item"><div class="vci-num">16</div><div class="vci-lbl">علماء</div></div>
         <div class="vids-count-item"><div class="vci-num">100+</div><div class="vci-lbl">نقطة علمية</div></div>
       </div>
     </div>
@@ -205,22 +210,65 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
     <div class="filter-tabs" id="vid-filter-tabs">
       <button class="ftab active" data-cat="all" onclick="filterVideos('all')">الكل</button>
       <button class="ftab" data-cat="ashr" onclick="filterVideos('ashr')">🕋 عشر ذي الحجة</button>
+      <button class="ftab" data-cat="tazkiya" onclick="filterVideos('tazkiya')">💚 التزكية والإيمان</button>
+      <button class="ftab" data-cat="seerah" onclick="filterVideos('seerah')">📜 السيرة النبوية</button>
+      <button class="ftab" data-cat="podcast" onclick="filterVideos('podcast')">🎙️ بودكاست وحوارات</button>
       <button class="ftab" data-cat="ramadan" onclick="filterVideos('ramadan')">🌙 رمضان</button>
       <button class="ftab" data-cat="muharram" onclick="filterVideos('muharram')">📅 محرم وعاشوراء</button>
-      <button class="ftab" data-cat="seerah" onclick="filterVideos('seerah')">📜 السيرة النبوية</button>
       <button class="ftab" data-cat="fiqh" onclick="filterVideos('fiqh')">⚖️ الفقه والأحكام</button>
       <button class="ftab" data-cat="kids" onclick="filterVideos('kids')">🧒 للأطفال</button>
     </div>
+    <div class="vid-filter-row">
+      <span class="vid-filter-label" id="vid-dur-label">⏱️ المدة:</span>
+      <div class="filter-tabs" id="vid-dur-tabs" role="group" aria-labelledby="vid-dur-label" style="margin-bottom:0">
+        <button class="ftab active" data-dur="all" onclick="setVidDuration('all',this)">الكل</button>
+        <button class="ftab" data-dur="short" onclick="setVidDuration('short',this)">أقل من 30 دقيقة</button>
+        <button class="ftab" data-dur="medium" onclick="setVidDuration('medium',this)">من 30 إلى 60 دقيقة</button>
+        <button class="ftab" data-dur="long" onclick="setVidDuration('long',this)">من ساعة إلى ساعة ونصف</button>
+        <button class="ftab" data-dur="xlong" onclick="setVidDuration('xlong',this)">أكثر من ساعة ونصف</button>
+      </div>
+    </div>
+    <div class="vid-filter-row">
+      <label class="vid-filter-label" for="vid-spk-select">🎤 الشيخ أو المقدم:</label>
+      <select id="vid-spk-select" class="vid-spk-select" onchange="setVidSpeaker(this.value)">
+        <option value="all">الكل</option>
+        <optgroup label="البرامج">
+          <option value="برنامج إيه المشكلة؟">إيه المشكلة؟</option>
+          <option value="برنامج وعي">وعي</option>
+        </optgroup>
+        <optgroup label="المقدمون">
+          <option value="محمد الغليظ">محمد الغليظ</option>
+          <option value="أمير منير">أمير منير</option>
+          <option value="ياسر ممدوح">ياسر ممدوح</option>
+        </optgroup>
+        <optgroup label="الشيوخ والدعاة">
+          <option value="أمجد سمير">الشيخ أمجد سمير</option>
+          <option value="أحمد العربي">د. أحمد العربي</option>
+          <option value="سمير مصطفى">الشيخ سمير مصطفى</option>
+          <option value="حازم شومان">د. حازم شومان</option>
+          <option value="أحمد عبد المنعم">د. أحمد عبد المنعم</option>
+          <option value="نبيل العوضي">الشيخ نبيل العوضي</option>
+          <option value="إبراهيم بشندي">الشيخ إبراهيم بشندي</option>
+          <option value="عبد السلام الشويعر">الشيخ عبد السلام الشويعر</option>
+          <option value="كريم عبد الحليم">د. كريم عبد الحليم</option>
+          <option value="محمد سعد الشرقاوي">الشيخ محمد سعد الشرقاوي</option>
+          <option value="محمد ثروت">د. محمد ثروت</option>
+          <option value="عبد الرزاق البدر">الشيخ عبد الرزاق البدر</option>
+          <option value="راتب النابلسي">د. محمد راتب النابلسي</option>
+        </optgroup>
+      </select>
+    </div>
 
-    <div id="vids-container">
+<div id="vids-container">
 
       <!-- ═══════════════════════════════════
            1: الشيخ أمجد سمير
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="spiritual">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="long" data-spk="أمجد سمير" data-tag="spiritual">
         <div class="vid-thumb-wrap" onclick="openPlayer('57p126d5w9k','عشر ذي الحجة — الشيخ أمجد سمير')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/57p126d5w9k/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/57p126d5w9k/mqdefault.jpg'" alt="عشر ذي الحجة" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:03:51</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <span style="position:absolute;top:10px;left:10px;background:var(--gold);color:#3a2a08;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px">⭐ مميز</span>
           <div class="vid-number-badge">1</div>
@@ -258,7 +306,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            2: د. أحمد العربي
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="spiritual">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="" data-spk="أحمد العربي" data-tag="spiritual">
         <div class="vid-thumb-wrap" onclick="openPlayer('smro5XFkoj0','لا تدخل العشر قبل مشاهدة هذا المقطع — د. أحمد العربي')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/smro5XFkoj0/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/smro5XFkoj0/mqdefault.jpg'" alt="لا تدخل العشر" loading="lazy">
           <div class="vid-thumb-overlay"></div>
@@ -302,10 +350,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            3: الشيخ سمير مصطفى  ✅ BUG #1 FIXED — removed orphaned duplicate HTML
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="fiqh">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="medium" data-spk="سمير مصطفى" data-tag="fiqh">
         <div class="vid-thumb-wrap" onclick="openPlayer('OusUlCU5WBI','العَشر الأُوَل من ذي الحِجَّة — الشيخ سمير مصطفى')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/OusUlCU5WBI/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/OusUlCU5WBI/mqdefault.jpg'" alt="العشر الأول" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">53:28</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">3</div>
         </div>
@@ -345,10 +394,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            4: برنامج وعي (1)
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="fiqh">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="long" data-spk="برنامج وعي" data-tag="fiqh">
         <div class="vid-thumb-wrap" onclick="openPlayer('YgKfcLUbu60','وعي ١٥ | أوائل ذي الحجة | أفضل أيام الدهر')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/YgKfcLUbu60/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/YgKfcLUbu60/mqdefault.jpg'" alt="أوائل ذي الحجة" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:10:20</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">4</div>
         </div>
@@ -383,10 +433,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            5: برنامج وعي (2)
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="practical">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="xlong" data-spk="برنامج وعي" data-tag="practical">
         <div class="vid-thumb-wrap" onclick="openPlayer('ZSo0_0zxYHQ','وعي ٩٤ | السر وراء يوم عرفة وعلاقته بالدعاء')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/ZSo0_0zxYHQ/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/ZSo0_0zxYHQ/mqdefault.jpg'" alt="السر وراء يوم عرفة" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:36:56</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">5</div>
         </div>
@@ -422,10 +473,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            6: د. حازم شومان
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="spiritual">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="medium" data-spk="حازم شومان" data-tag="spiritual">
         <div class="vid-thumb-wrap" onclick="openPlayer('zetXiUuqkiY','عشر ذي الحجة موسم الخواص — د. حازم شومان')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/zetXiUuqkiY/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/zetXiUuqkiY/mqdefault.jpg'" alt="موسم الخواص" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">41:21</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <span style="position:absolute;top:10px;left:10px;background:var(--gold);color:#3a2a08;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px">⭐ مميز</span>
           <div class="vid-number-badge">6</div>
@@ -462,10 +514,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            7: د. أحمد عبد المنعم (1)
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="spiritual">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="long" data-spk="أحمد عبد المنعم" data-tag="spiritual">
         <div class="vid-thumb-wrap" onclick="openPlayer('BMMa16hvRU8','موسم العَشر والذكر: حِكَم وأسرار — د. أحمد عبد المنعم')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/BMMa16hvRU8/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/BMMa16hvRU8/mqdefault.jpg'" alt="موسم العَشر والذكر" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:09:14</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">7</div>
         </div>
@@ -500,7 +553,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            8: د. أحمد عبد المنعم (2)
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="practical">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="" data-spk="أحمد عبد المنعم" data-tag="practical">
         <div class="vid-thumb-wrap" onclick="openPlayer('Ul1FBSoszZk','لقاء العشر من ذي الحجة — د. أحمد عبد المنعم')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/Ul1FBSoszZk/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/Ul1FBSoszZk/mqdefault.jpg'" alt="لقاء العشر" loading="lazy">
           <div class="vid-thumb-overlay"></div>
@@ -538,10 +591,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            9: الشيخ نبيل • د. أحمد العربي
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="spiritual">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="xlong" data-spk="نبيل العوضي|أحمد العربي" data-tag="spiritual">
         <div class="vid-thumb-wrap" onclick="openPlayer('PYOw_Exj2Bk','لقاء عرفة — الشيخ نبيل العوضي والدكتور أحمد العربي')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/PYOw_Exj2Bk/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/PYOw_Exj2Bk/mqdefault.jpg'" alt="لقاء عرفة" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:34:47</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <span style="position:absolute;top:10px;left:10px;background:#ff9500;color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px">⭐ يوم عرفة</span>
           <div class="vid-number-badge">9</div>
@@ -579,10 +633,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            10: الشيخ إبراهيم بشندي
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-vid-cat="ashr" data-tag="fiqh">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="long" data-spk="إبراهيم بشندي" data-tag="fiqh">
         <div class="vid-thumb-wrap" onclick="openPlayer('WvlMcmE92Fw','العمل الصالح — العشر الأول من ذي الحجة')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/WvlMcmE92Fw/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/WvlMcmE92Fw/mqdefault.jpg'" alt="العمل الصالح" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:03:38</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">10</div>
         </div>
@@ -620,10 +675,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            11: الشيخ محمد الغليظ
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-tag="practical">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="short" data-spk="محمد الغليظ" data-tag="practical">
         <div class="vid-thumb-wrap" onclick="openPlayer('8O7V5aIib-k','عشر ذي الحجة أيام غير عادية — عالسكة')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/8O7V5aIib-k/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/8O7V5aIib-k/mqdefault.jpg'" alt="أيام غير عادية" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">25:19</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">11</div>
         </div>
@@ -664,7 +720,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            12: د. أحمد العربي (2)
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-tag="practical">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="" data-spk="أحمد العربي" data-tag="practical">
         <div class="vid-thumb-wrap" onclick="openPlayer('OiSc1bkJGkE','أفضل خطة لعبادة عشر ذي الحجة — د. أحمد العربي')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/OiSc1bkJGkE/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/OiSc1bkJGkE/mqdefault.jpg'" alt="أفضل خطة لعبادة العشر" loading="lazy">
           <div class="vid-thumb-overlay"></div>
@@ -702,10 +758,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            13: الشيخ عبد السلام الشويعر
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-tag="fiqh">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="short" data-spk="عبد السلام الشويعر" data-tag="fiqh">
         <div class="vid-thumb-wrap" onclick="openPlayer('S0zEqUKK9Xk','ثلاث مزايا عظيمة في عشر ذي الحجة — الشيخ عبد السلام الشويعر')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/S0zEqUKK9Xk/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/S0zEqUKK9Xk/mqdefault.jpg'" alt="ثلاث مزايا عظيمة" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">05:13</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">13</div>
         </div>
@@ -740,10 +797,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            14: د. كريم عبد الحليم
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-tag="spiritual">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="xlong" data-spk="كريم عبد الحليم" data-tag="spiritual">
         <div class="vid-thumb-wrap" onclick="openPlayer('nnE0NuHUNsc','استراحة مع د. كريم عبد الحليم - عشر ذي الحجة')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/nnE0NuHUNsc/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/nnE0NuHUNsc/mqdefault.jpg'" alt="استراحة عشر ذي الحجة" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:45:02</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">14</div>
         </div>
@@ -776,10 +834,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       </div>
 
       <!-- 15: ياسر ممدوح -->
-      <div class="vid-card" data-tag="fiqh">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="short" data-spk="ياسر ممدوح" data-tag="fiqh">
         <div class="vid-thumb-wrap" onclick="openPlayer('YnX0MUgr0QQ','٤٠ معلومة عن عشر ذي الحجة في ١٥٠ ثانية')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/YnX0MUgr0QQ/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/YnX0MUgr0QQ/mqdefault.jpg'" alt="٤٠ معلومة عن عشر ذي الحجة" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">02:38</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="vid-number-badge">15</div>
         </div>
@@ -823,10 +882,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            16: الشيخ محمد سعد الشرقاوي (فاهم 84)
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-tag="spiritual">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="xlong" data-spk="محمد سعد الشرقاوي" data-tag="spiritual">
         <div class="vid-thumb-wrap" onclick="openPlayer('Hqsv9UKWmIo','فاهم 84 — مشاهد عظمة الله عز وجل')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/Hqsv9UKWmIo/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/Hqsv9UKWmIo/mqdefault.jpg'" alt="مشاهد عظمة الله" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:48:38</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <span style="position:absolute;top:10px;left:10px;background:var(--sys-red,#e0432e);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px">🆕 جديد</span>
           <div class="vid-number-badge">16</div>
@@ -856,10 +916,11 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
       <!-- ═══════════════════════════════════
            17: د. محمد ثروت (أعظم أيام حياتك)
       ═══════════════════════════════════ -->
-      <div class="vid-card" data-tag="practical">
+      <div class="vid-card" data-vid-cat="ashr" data-dur="long" data-spk="محمد ثروت" data-tag="practical">
         <div class="vid-thumb-wrap" onclick="openPlayer('OU7VykVF1iw','أعظم أيام حياتك — عشر ذي الحجة')">
           <img class="vid-thumb" src="https://img.youtube.com/vi/OU7VykVF1iw/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/OU7VykVF1iw/mqdefault.jpg'" alt="أعظم أيام حياتك" loading="lazy">
           <div class="vid-thumb-overlay"></div>
+          <span class="vid-dur-badge">1:04:59</span>
           <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
           <span style="position:absolute;top:10px;left:10px;background:var(--sys-red,#e0432e);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px">🆕 جديد</span>
           <span style="position:absolute;top:10px;left:74px;background:var(--gold);color:#3a2a08;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px">🔥 مهم</span>
@@ -887,6 +948,355 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
         </div>
       </div>
 
+    
+      <!-- ═══════════════════════════════════
+           18: محمد الغليظ • أمير منير • ياسر ممدوح
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="tazkiya" data-dur="long" data-spk="محمد الغليظ|أمير منير|ياسر ممدوح|برنامج إيه المشكلة؟">
+        <div class="vid-thumb-wrap" onclick="openPlayer('Mhfp-_KDRbU','إيه المشكلة في الانضباط وضياع الوقت؟')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/Mhfp-_KDRbU/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/Mhfp-_KDRbU/mqdefault.jpg'" alt="إيه المشكلة في الانضباط وضياع الوقت؟" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">1:08:18</span>
+          <div class="vid-number-badge">18</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#1f7a5c,#0e3b2e)">🎙️</div><div class="vid-meta-text"><div class="speaker-name">محمد الغليظ • أمير منير • ياسر ممدوح</div><div class="vid-category">💚 التزكية والإيمان • 📋 الخطط العملية</div></div></div>
+          <h3 class="vid-title">إيه المشكلة في الانضباط وضياع الوقت؟</h3>
+          <div class="vid-desc">حلقة عن الالتزام الذاتي والفتور وتأجيل الطاعات، وكيف تتحول الرغبة في التغيير إلى خطوات يومية واضحة.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">⭐</span><div class="vid-point-text"><b>المعرفة لا تكفي</b>عارف بس مش قادر: لماذا نعرف الصواب ولا نفعله؟</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🎯</span><div class="vid-point-text"><b>اختر معاركك</b>ابدأ بعدد محدود من العادات بدل تشتيت الجهد</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🕌</span><div class="vid-point-text"><b>الصلاة نموذجًا</b>تجربة ياسر ممدوح مع الصلاة كمثال عملي</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🔁</span><div class="vid-point-text"><b>من الإجبار إلى الذاتية</b>الانتقال من الانضباط المفروض إلى الالتزام النابع من الداخل</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>تناقش الحلقة الانتقال من الانضباط المفروض من الخارج إلى الانضباط الذاتي، وتعالج فجوة «عارف بس مش قادر»، وتقترح أن يبدأ الإنسان بخطوات صغيرة قابلة للاستمرار.</p></div>
+            <div class="vid-summary-section" style="margin-top:12px"><h4>🗂️ محاور الحلقة</h4><ul><li>00:00 مقدمة</li><li>07:48 من انضباط الأطفال إلى الانضباط الذاتي</li><li>21:36 «عارف بس مش قادر»</li><li>33:51 تجربة ياسر ممدوح مع الصلاة</li><li>44:20 اختيار معارك الالتزام</li><li>52:20 أول ما أبدأ ألتزم به</li><li>1:04:02 هل ستظل تجبر نفسك دائمًا؟</li><li>1:06:44 خاتمة</li></ul></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('Mhfp-_KDRbU')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('Mhfp-_KDRbU')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('Mhfp-_KDRbU',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=Mhfp-_KDRbU" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('Mhfp-_KDRbU','إيه المشكلة في الانضباط وضياع الوقت؟')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           19: محمد الغليظ • أمير منير • ياسر ممدوح
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="podcast" data-dur="long" data-spk="محمد الغليظ|أمير منير|ياسر ممدوح|برنامج إيه المشكلة؟">
+        <div class="vid-thumb-wrap" onclick="openPlayer('ZAdZuaSlZeg','إيه المشكلة في الأحداث الجارية؟')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/ZAdZuaSlZeg/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/ZAdZuaSlZeg/mqdefault.jpg'" alt="إيه المشكلة في الأحداث الجارية؟" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">1:22:20</span>
+          <div class="vid-number-badge">19</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#5856d6,#3a3882)">🎙️</div><div class="vid-meta-text"><div class="speaker-name">محمد الغليظ • أمير منير • ياسر ممدوح</div><div class="vid-category">🎙️ بودكاست وحوارات • 🌍 قضايا الأمة</div></div></div>
+          <h3 class="vid-title">إيه المشكلة في الأحداث الجارية؟</h3>
+          <div class="vid-desc">مسؤولية المسلم تجاه قضايا أمته، وكيف يتعامل مع الأخبار، ويحوّل التعاطف إلى عمل نافع.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">🤝</span><div class="vid-point-text"><b>خطوات نحو النصرة</b>ما الذي يستطيعه كل إنسان لنصرة قضايا أمته؟</div></div>
+            <div class="vid-point"><span class="vid-point-ico">📖</span><div class="vid-point-text"><b>أحكام الدين في وقت القضية</b>كيف يُتعامل مع الحكم الشرعي في الأزمات</div></div>
+            <div class="vid-point"><span class="vid-point-ico">💡</span><div class="vid-point-text"><b>ارفع عنك الجهل</b>مقاومة الجهل والتضليل جزء من المعركة</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🧱</span><div class="vid-point-text"><b>أنت بطل بيتبني</b>الدور الفردي في الإصلاح وحجم الإنسان الحقيقي فيه</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>حلقة تناقش موقف المسلم في الأحداث الجارية: من الكلام عن أحكام الدين في وقت الأزمة، إلى حلول عملية للدعم، ومواجهة مسخ الهوية وتفرقة الشعوب، وانتهاءً بدور الفرد في الإصلاح.</p></div>
+            <div class="vid-summary-section" style="margin-top:12px"><h4>🗂️ محاور الحلقة</h4><ul><li>00:00 مقدمة</li><li>05:07 اللي قاطع واللي نسى واللي مجاش</li><li>15:53 خطوات نحو النصرة</li><li>31:13 الكلام عن أحكام الدين في وقت القضية</li><li>43:14 حلول عملية خارج الصندوق للدفاع عن القضية</li><li>46:29 دين الإنسانية</li><li>53:30 توجهات مسخ الهوية وتفرقة الشعوب</li><li>1:09:41 ارفع عنك الجهل</li><li>1:12:19 اكتشف دورك وحجمك الحقيقي</li><li>1:14:04 أنت بطل بيتبني</li></ul></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('ZAdZuaSlZeg')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('ZAdZuaSlZeg')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('ZAdZuaSlZeg',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=ZAdZuaSlZeg" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('ZAdZuaSlZeg','إيه المشكلة في الأحداث الجارية؟')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           20: محمد الغليظ • أمير منير • ياسر ممدوح
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="podcast" data-dur="long" data-spk="محمد الغليظ|أمير منير|ياسر ممدوح|برنامج إيه المشكلة؟">
+        <div class="vid-thumb-wrap" onclick="openPlayer('pH6PS7YXhmQ','إيه المشكلة في التفاهة؟ (الحلقة 2 — الموسم 4)')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/pH6PS7YXhmQ/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/pH6PS7YXhmQ/mqdefault.jpg'" alt="إيه المشكلة في التفاهة؟ (الحلقة 2 — الموسم 4)" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">1:29:51</span>
+          <div class="vid-number-badge">20</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#c9a14a,#8a6822)">🎙️</div><div class="vid-meta-text"><div class="speaker-name">محمد الغليظ • أمير منير • ياسر ممدوح</div><div class="vid-category">🎙️ بودكاست وحوارات • 🌍 الوعي الإعلامي</div></div></div>
+          <h3 class="vid-title">إيه المشكلة في التفاهة؟ (الحلقة 2 — الموسم 4)</h3>
+          <div class="vid-desc">مناقشة تأثير المحتوى التافه وثقافة الشهرة، والسعي وراء المشاهدات والمال على حساب القيمة.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">🎭</span><div class="vid-point-text"><b>أشباه المشاهير</b>ظاهرة الشهرة بلا قيمة وأثرها على الشباب</div></div>
+            <div class="vid-point"><span class="vid-point-ico">📏</span><div class="vid-point-text"><b>ما هي التفاهة؟</b>معناها وضوابطها</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🧭</span><div class="vid-point-text"><b>قدمت إيه لبكرة؟</b>سؤال الأثر والعائد من المحتوى</div></div>
+            <div class="vid-point"><span class="vid-point-ico">💰</span><div class="vid-point-text"><b>أقصر طريق للمال؟</b>لماذا تغري التفاهة الباحثين عن الربح السريع</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>تفكك الحلقة مفهوم التفاهة، وتفرّق بين الترفيه المباح والمحتوى الذي يفرغ الإنسان من القيمة، وتناقش اقتصاد الشهرة وأثره في الشباب. تُنشر الحلقة على قناة مودة ضمن الموسم الرابع من البرنامج.</p></div>
+            <div class="vid-summary-section" style="margin-top:12px"><h4>🗂️ محاور الحلقة</h4><ul><li>00:00 مقدمة</li><li>05:57 هو فيه أحلى من التفاهة؟</li><li>14:01 أشباه المشاهير</li><li>18:03 يعني إيه تفاهة؟ وما هي ضوابطها؟</li><li>45:38 قدمت إيه لبكرة؟ وإيه هو العائد؟</li><li>1:09:13 التفاهة أقصر طريق لكسب المال</li><li>1:18:43 تفاهة بميول إسلامية</li><li>1:25:28 الحق نفسك</li><li>1:27:37 الخاتمة: كفاية تفاهة</li></ul></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('pH6PS7YXhmQ')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('pH6PS7YXhmQ')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('pH6PS7YXhmQ',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=pH6PS7YXhmQ" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('pH6PS7YXhmQ','إيه المشكلة في التفاهة؟ (الحلقة 2 — الموسم 4)')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           21: محمد الغليظ • أمير منير • ياسر ممدوح
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="podcast" data-dur="xlong" data-spk="محمد الغليظ|أمير منير|ياسر ممدوح|برنامج إيه المشكلة؟">
+        <div class="vid-thumb-wrap" onclick="openPlayer('NPYl5t5L8Hs','إيه المشكلة في الكذب؟ (الحلقة 1 — الموسم 4)')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/NPYl5t5L8Hs/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/NPYl5t5L8Hs/mqdefault.jpg'" alt="إيه المشكلة في الكذب؟ (الحلقة 1 — الموسم 4)" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">1:33:20</span>
+          <div class="vid-number-badge">21</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#0e6e8c,#084a5e)">🎙️</div><div class="vid-meta-text"><div class="speaker-name">محمد الغليظ • أمير منير • ياسر ممدوح</div><div class="vid-category">🎙️ بودكاست وحوارات • ⚖️ الأخلاق والمعاملات</div></div></div>
+          <h3 class="vid-title">إيه المشكلة في الكذب؟ (الحلقة 1 — الموسم 4)</h3>
+          <div class="vid-desc">أثر الكذب على الفرد والأسرة والمجتمع، والكذب في المزاح، والفرق بين التعريض والكذب الصريح.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">🚫</span><div class="vid-point-text"><b>هل يصح للمسلم أن يكذب؟</b>خطورة الكذب في ميزان الشرع</div></div>
+            <div class="vid-point"><span class="vid-point-ico">👪</span><div class="vid-point-text"><b>يبدأ من التربية</b>كيف تتشكل عادة الكذب في الصغر</div></div>
+            <div class="vid-point"><span class="vid-point-ico">⚖️</span><div class="vid-point-text"><b>الكذب المباح</b>حالات الاستثناء وضوابطها</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🗣️</span><div class="vid-point-text"><b>التعريض بالكلام</b>الفرق بينه وبين الكذب الصريح</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>حلقة طويلة تناقش الكذب من زوايا الدين والتربية والعلاقات، وتضع ضوابط للاستثناءات المباحة، وتختم بخطوات لمقاومة الكذب.</p></div>
+            <div class="vid-summary-section" style="margin-top:12px"><h4>🗂️ محاور الحلقة</h4><ul><li>00:00 مقدمة</li><li>05:08 ليه المسلم مينفعش يكون كذاب؟</li><li>18:36 كلنا بنكذب</li><li>27:03 الكذب يوصل للكفر؟</li><li>33:24 الكذب يبدأ من التربية في الصغر</li><li>47:53 تأثير الكذب في العلاقات والمجتمعات</li><li>1:02:48 الكذب لستر المعصية وحالات الكذب المباح</li><li>1:14:24 الكذب والمجاز في الهزار</li><li>1:19:03 التعريض بالكلام</li><li>1:23:40 قاوم الكذب</li><li>1:27:01 رسالة أخيرة</li></ul></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('NPYl5t5L8Hs')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('NPYl5t5L8Hs')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('NPYl5t5L8Hs',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=NPYl5t5L8Hs" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('NPYl5t5L8Hs','إيه المشكلة في الكذب؟ (الحلقة 1 — الموسم 4)')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           22: محمد الغليظ • أمير منير • ياسر ممدوح
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="podcast" data-dur="xlong" data-spk="محمد الغليظ|أمير منير|ياسر ممدوح|برنامج إيه المشكلة؟">
+        <div class="vid-thumb-wrap" onclick="openPlayer('g4ReA5qegbM','إيه المشكلة في الغيرة؟')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/g4ReA5qegbM/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/g4ReA5qegbM/mqdefault.jpg'" alt="إيه المشكلة في الغيرة؟" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">1:33:07</span>
+          <div class="vid-number-badge">22</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#b5533c,#7a3224)">🎙️</div><div class="vid-meta-text"><div class="speaker-name">محمد الغليظ • أمير منير • ياسر ممدوح</div><div class="vid-category">🎙️ بودكاست وحوارات • 👥 الأسرة والعلاقات</div></div></div>
+          <h3 class="vid-title">إيه المشكلة في الغيرة؟</h3>
+          <div class="vid-desc">الفرق بين الغيرة المحمودة والمذمومة، وأثرها في العلاقات بين الأصدقاء والزملاء، ومعنى أن تكون الغيرة لله.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">🧠</span><div class="vid-point-text"><b>الغيرة غريزة</b>ميل طبيعي للتفوق والمكانة، وليست عيبًا في ذاتها</div></div>
+            <div class="vid-point"><span class="vid-point-ico">⚖️</span><div class="vid-point-text"><b>مذمومة أم محمودة؟</b>المذموم أن تتضايق من نعمة الله على غيرك</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🕊️</span><div class="vid-point-text"><b>النية تحدد الاتجاه</b>أن تكون المنافسة لله لا للنفس</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🛡️</span><div class="vid-point-text"><b>غيرة على الدين</b>حين تدفع إلى الأمر بالمعروف والدعوة</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>تناقش الحلقة الغيرة بين الزملاء والأصدقاء، وتفرّق بين ما هو طبيعي وما هو مذموم، وتربط الغيرة الصحيحة بالنية والإخلاص.</p></div>
+            <div class="vid-summary-section" style="margin-top:12px"><h4>🗂️ محاور الحلقة</h4><ul><li>الغيرة في العمل ومقارنة النفس بالآخرين</li><li>الفرق بين الشعور بالظلم والغيرة المذمومة</li><li>الغيرة غريزة، والمطلوب توجيهها إلى الخير</li><li>الغيرة على الدين وأثرها في الدعوة والأمر بالمعروف</li></ul></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('g4ReA5qegbM')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('g4ReA5qegbM')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('g4ReA5qegbM',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=g4ReA5qegbM" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('g4ReA5qegbM','إيه المشكلة في الغيرة؟')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           23: الشيخ سمير مصطفى
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="tazkiya" data-dur="short" data-spk="سمير مصطفى">
+        <div class="vid-thumb-wrap" onclick="openPlayer('wObZH-kzgMs','عِوَج المنهج!')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/wObZH-kzgMs/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/wObZH-kzgMs/mqdefault.jpg'" alt="عِوَج المنهج!" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">09:08</span>
+          <div class="vid-number-badge">23</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#2e7d5b,#174c37)">👳</div><div class="vid-meta-text"><div class="speaker-name">الشيخ سمير مصطفى</div><div class="vid-category">💚 التزكية والإيمان • 📚 المنهج والفكر</div></div></div>
+          <h3 class="vid-title">عِوَج المنهج!</h3>
+          <div class="vid-desc">محاضرة قصيرة عن انحراف الفهم والمنهج وأثره في التدين، من القناة الرسمية للشيخ.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">📌</span><div class="vid-point-text"><b>محور الحلقة</b>انحراف الفهم والمنهج وأثره في التدين</div></div>
+            <div class="vid-point"><span class="vid-point-ico">⏱️</span><div class="vid-point-text"><b>مشاهدة قصيرة</b>نحو 9 دقائق</div></div>
+            <div class="vid-point"><span class="vid-point-ico">📅</span><div class="vid-point-text"><b>تاريخ النشر</b>17 أبريل 2025 على القناة الرسمية</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>محاضرة قصيرة تتناول انحراف الفهم والمنهج وأثره في التدين، وتناسب من يريد التنبه إلى أسباب هذا الانحراف وطرق تصحيحه.</p></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('wObZH-kzgMs')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('wObZH-kzgMs')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('wObZH-kzgMs',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=wObZH-kzgMs" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('wObZH-kzgMs','عِوَج المنهج!')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           24: الشيخ عبد الرزاق البدر
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="tazkiya" data-dur="medium" data-spk="عبد الرزاق البدر">
+        <div class="vid-thumb-wrap" onclick="openPlayer('miEi9UMEXOY','من معالم التوحيد — الشيخ عبد الرزاق البدر')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/miEi9UMEXOY/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/miEi9UMEXOY/mqdefault.jpg'" alt="من معالم التوحيد — الشيخ عبد الرزاق البدر" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">36:50</span>
+          <div class="vid-number-badge">24</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#5856d6,#3a3882)">🎓</div><div class="vid-meta-text"><div class="speaker-name">الشيخ عبد الرزاق البدر</div><div class="vid-category">💚 التزكية والإيمان • 📖 العقيدة</div></div></div>
+          <h3 class="vid-title">من معالم التوحيد — الشيخ عبد الرزاق البدر</h3>
+          <div class="vid-desc">بث مباشر مع الشيخ عبد الرزاق البدر عن معالم التوحيد وأهميته في حياة المسلم، مع مشاركة الحضور بالأسئلة.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">📿</span><div class="vid-point-text"><b>جوهر العقيدة</b>معالم التوحيد وأثرها في حياة المسلم</div></div>
+            <div class="vid-point"><span class="vid-point-ico">❓</span><div class="vid-point-text"><b>أسئلة الحضور</b>تفاعل مباشر مع الشيخ أثناء البث</div></div>
+            <div class="vid-point"><span class="vid-point-ico">📺</span><div class="vid-point-text"><b>بث مباشر</b>الفيديو منشور على قناة خلف لخيرسلف</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>درس في العقيدة حول معالم التوحيد وأهميتها في حياة المسلم، يتضمن نقاشًا مباشرًا مع الحضور. تاريخ النشر 13 فبراير 2025.</p></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('miEi9UMEXOY')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('miEi9UMEXOY')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('miEi9UMEXOY',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=miEi9UMEXOY" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('miEi9UMEXOY','من معالم التوحيد — الشيخ عبد الرزاق البدر')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           25: الشيخ نبيل العوضي
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="seerah" data-dur="medium" data-spk="نبيل العوضي">
+        <div class="vid-thumb-wrap" onclick="openPlayer('7cJqyB7UCfc','ومضات الموسم الأول — نبيل العوضي')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/7cJqyB7UCfc/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/7cJqyB7UCfc/mqdefault.jpg'" alt="ومضات الموسم الأول — نبيل العوضي" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">45:34</span>
+          <div class="vid-number-badge">25</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#c9a14a,#8a6822)">🎤</div><div class="vid-meta-text"><div class="speaker-name">الشيخ نبيل العوضي</div><div class="vid-category">📜 السيرة النبوية</div></div></div>
+          <h3 class="vid-title">ومضات الموسم الأول — نبيل العوضي</h3>
+          <div class="vid-desc">حكاية من السيرة النبوية: أصحاب الفيل، ومولد النبي ﷺ، وطفولته عند حليمة السعدية.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">🐦</span><div class="vid-point-text"><b>أصحاب الفيل</b>حملة أبرهة وإهلاك جيشه بالطير الأبابيل</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🍼</span><div class="vid-point-text"><b>عند حليمة السعدية</b>طفولة النبي ﷺ ومرضعته</div></div>
+            <div class="vid-point"><span class="vid-point-ico">💗</span><div class="vid-point-text"><b>حادثة شق الصدر</b>كما تُروى في الحلقة</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🕊️</span><div class="vid-point-text"><b>فقد الأم</b>وفاة آمنة رضي الله عنها</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>سرد قصصي للسيرة النبوية يبدأ بأحوال العرب وعبادتهم للأصنام قبل الإسلام، ثم حادثة أصحاب الفيل، ثم ولادة النبي ﷺ وطفولته عند حليمة السعدية، ويتوقف عند وفاة أمه آمنة، مع التذكير بأن الله يهيّئ عباده ويربيهم.</p></div>
+            <div class="vid-summary-section" style="margin-top:12px"><h4>🗂️ محاور الحلقة</h4><ul><li>أحوال العرب وعبادة الأصنام قبل البعثة</li><li>حادثة أصحاب الفيل والطير الأبابيل</li><li>حليمة السعدية وحادثة شق الصدر</li><li>وفاة آمنة وأثرها في حياة النبي ﷺ</li></ul></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('7cJqyB7UCfc')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('7cJqyB7UCfc')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('7cJqyB7UCfc',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=7cJqyB7UCfc" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('7cJqyB7UCfc','ومضات الموسم الأول — نبيل العوضي')">📤</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           26: د. محمد راتب النابلسي
+      ═══════════════════════════════════ -->
+      <div class="vid-card" data-vid-cat="tazkiya" data-dur="medium" data-spk="راتب النابلسي">
+        <div class="vid-thumb-wrap" onclick="openPlayer('WISkaynfmW8','درس سيغير نظرتك للحياة: إذا أردت النجاح والتفوق طبّق طريقتي')">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/WISkaynfmW8/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/WISkaynfmW8/mqdefault.jpg'" alt="درس سيغير نظرتك للحياة: إذا أردت النجاح والتفوق طبّق طريقتي" loading="lazy">
+          <div class="vid-thumb-overlay"></div>
+          <div class="vid-play-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0e3b2e"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="vid-dur-badge">50:40</span>
+          <div class="vid-number-badge">26</div>
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta-row"><div class="speaker-avatar" style="background:linear-gradient(135deg,#1f6f5c,#0e3b2e)">📚</div><div class="vid-meta-text"><div class="speaker-name">د. محمد راتب النابلسي</div><div class="vid-category">💚 التزكية والإيمان • 📋 الخطط العملية</div></div></div>
+          <h3 class="vid-title">درس سيغير نظرتك للحياة: إذا أردت النجاح والتفوق طبّق طريقتي</h3>
+          <div class="vid-desc">درس عن قيمة الوقت وأسباب ضياعه: غياب الهدف الكبير والخطة، وسوء التنظيم، وتطفل الآخرين.</div>
+          <button class="vid-points-toggle" onclick="togglePoints(this)"><span>📌 النقاط الرئيسية</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points"><div class="vid-points-inner">
+            <div class="vid-point"><span class="vid-point-ico">🎯</span><div class="vid-point-text"><b>الهدف الكبير</b>بلا هدف وخطة يتبدد الوقت في الفراغ</div></div>
+            <div class="vid-point"><span class="vid-point-ico">🗂️</span><div class="vid-point-text"><b>سوء التنظيم</b>من يفعل كل شيء بنفسه يستهلك وقته في إنجاز قليل</div></div>
+            <div class="vid-point"><span class="vid-point-ico">⏳</span><div class="vid-point-text"><b>زكاة الوقت</b>إنفاق الوقت فيما أمر الله به يحفظ بقيته</div></div>
+            <div class="vid-point"><span class="vid-point-ico">📚</span><div class="vid-point-text"><b>العبرة بالإنجاز</b>علماء عاشوا أقل من 50 عامًا وتركوا أثرًا باقيًا</div></div>
+          </div></div>
+          <button class="vid-points-toggle" onclick="toggleFullSummary(this)" style="margin-top:8px;background:var(--gold-pale);border-color:var(--gold)"><span>📖 عرض الملخص الكامل</span><span class="toggle-ico">▼</span></button>
+          <div class="vid-points vid-full-summary"><div class="vid-points-inner">
+            <div class="vid-summary-section"><h4>🎯 الفكرة الأساسية</h4><p>يقرر الدرس أن الوقت هو رأس المال الحقيقي، ويرتب أسباب ضياعه: غياب الهدف، والكسل، وسوء التنظيم، وتطفل الآخرين، ثم يبيّن كيف يحفظ الله بقية وقت من ينفقه في الطاعة وطلب العلم.</p></div>
+            <div class="vid-summary-section" style="margin-top:12px"><h4>🗂️ محاور الحلقة</h4><ul><li>الهدف الكبير والخطة لتحقيقه</li><li>أسباب ضياع الوقت: الكسل وسوء التنظيم وتطفل الآخرين</li><li>زكاة الوقت بالعبادات والأعمال الصالحة</li><li>طول العمر بالإنجاز لا بعدد السنين</li><li>السؤال يوم القيامة عن العمر والشباب والعلم والمال</li></ul></div>
+          </div></div>
+          <div class="vid-extra-actions">
+            <button class="vid-action-btn" onclick="saveVidNote('WISkaynfmW8')">📝 ملاحظاتي</button>
+            <button class="vid-action-btn" onclick="copyVidSummary('WISkaynfmW8')">📋 نسخ</button>
+            <button class="vid-action-btn" onclick="addToFavorites('WISkaynfmW8',event)">❤️ مفضلة</button>
+          </div>
+        </div>
+        <div class="vid-footer">
+          <a class="vid-watch-btn" href="https://www.youtube.com/watch?v=WISkaynfmW8" target="_blank" rel="noopener">▶ مشاهدة على يوتيوب</a>
+          <button type="button" class="vid-share-btn" onclick="shareVid('WISkaynfmW8','درس سيغير نظرتك للحياة: إذا أردت النجاح والتفوق طبّق طريقتي')">📤</button>
+        </div>
+      </div>
+
+    <div id="vid-empty" class="vid-empty">لا توجد محاضرات تطابق الاختيار الحالي.</div>
     </div><!-- /vids-container -->
 
     <!-- ═══════════════════════════════════
@@ -1099,12 +1509,37 @@ function shareVid(id, title) {
   <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
 <script>
-function filterVideos(cat) {
-  document.querySelectorAll('.ftab').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
-  document.querySelectorAll('[data-vid-cat]').forEach(card => {
-    const c = card.dataset.vidCat || 'all';
-    card.style.display = (cat === 'all' || c === cat) ? '' : 'none';
+var VID_FILTER = { cat: 'all', dur: 'all', spk: 'all' };
+function applyVidFilters() {
+  var shown = 0;
+  document.querySelectorAll('#vids-container .vid-card').forEach(function (card) {
+    var okCat = VID_FILTER.cat === 'all' || card.dataset.vidCat === VID_FILTER.cat;
+    var okDur = VID_FILTER.dur === 'all' || card.dataset.dur === VID_FILTER.dur;
+    var okSpk = VID_FILTER.spk === 'all' || (card.dataset.spk || '').split('|').indexOf(VID_FILTER.spk) !== -1;
+    var ok = okCat && okDur && okSpk;
+    card.style.display = ok ? '' : 'none';
+    if (ok) shown++;
   });
+  var empty = document.getElementById('vid-empty');
+  if (empty) empty.style.display = shown ? 'none' : 'block';
+}
+function filterVideos(cat) {
+  VID_FILTER.cat = cat;
+  document.querySelectorAll('#vid-filter-tabs .ftab[data-cat]').forEach(function (b) {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  applyVidFilters();
+}
+function setVidDuration(dur, btn) {
+  VID_FILTER.dur = dur;
+  document.querySelectorAll('#vid-dur-tabs .ftab').forEach(function (b) {
+    b.classList.toggle('active', b === btn);
+  });
+  applyVidFilters();
+}
+function setVidSpeaker(val) {
+  VID_FILTER.spk = val || 'all';
+  applyVidFilters();
 }
 </script>
 </body>
