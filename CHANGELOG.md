@@ -6,6 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased] - 2026-10-21 — الوضع الخاص: مصدر واحد للحقيقة + أوديت الموقع
+
+> **الخلاصة:** «وضع خاص» كان مفتاحًا في صفحة واحدة (`zahra.html`) بيحفظ `excuseMode`
+> محدش بيقراه. التبديل كان بيقلب `worship` (يسجّل ٩ عبادات كـ«منفَّذة» وهي مش واجبة)
+> عشان يبان العدّاد كامل — يعني بيانات كاذبة وسجل ملوَّث. بقى فيه وحدة مشتركة
+> (`js/ui/special-mode.js`) كل الصفحات تقراها، والعبادات المعذورة **تُستبعَد من المقام**
+> بدل ما تُكتب كمنفَّذة — و`worship` ما بيتلمسش أصلًا.
+
+### Added
+- **`js/ui/special-mode.js` (+ `.min`)** — مصدر واحد للحقيقة:
+  `ZadSpecial.isOn() / isExcused(key) / required(list) / days() / set(on) / apply()`،
+  يوزّع حدث `zad:special` على `document`، ويحقن شريط تذكير صغير (قابل للإخفاء لهذه الجلسة)
+  في الصفحات: `index · barnamaj · hasad · hasad-month · summary · prayers · adhkar · ramadan · zahra · hawwa`.
+- **مفتاح `excuseSince`** — تاريخ بداية الوضع، ومنه «منذ كام يوم» في `zahra.html`.
+- **شارة «🌸 معذورة»** على ٩ خانات في جدول العبادات (`barnamaj.html`) + منع الضغط عليها
+  من تغيير السجل (تُظهر تنبيهًا: «لا تُكتب عليكِ ولا تُحسب لكِ»).
+- **بطاقة «وضعك الخاص مُفعَّل»** في بطاقة «الآن» بلوحة التحكم (`index.html`)، بعد بطاقة الصلاة القادمة.
+- **شريحة تذكير** أعلى `hawwa.html` + رابط متبادل بين زهرة وحواء.
+- **CSS مشترك**: `.check.is-excused`, `.excused-chip`، وأزرار/شارات وردية في `html[data-excuse="on"]`.
+
+### Changed
+- **`zahra.html`**: التبديل بقى يستخدم `ZadSpecial` (كان بيكتب `worship[k]` ويمسحه عند الإيقاف —
+  يعني تبديل OFF كان يمحو عبادات حقيقية مسجّلة في نفس اليوم). `SP` بقى lazy لأن السكربت
+  المضمَّن بيشتغل قبل الـ defer scripts. تنظيف مفكّرات الأيام (آخر ١٤ يوم).
+- **`hawwa.html`**: لقطة ثيم/وضع خاص في الـ`<head>` (كانت الصفحة فاضلة تقف على الفاتح دايمًا)،
+  `lang.min.js`، OG/Twitter، **حذف GSAP من CDN**، وتاريخ الوِرد بقى **محلي** بدل `toISOString()` UTC
+  (كان الوِرد بيتجدّد ٢–٣ صباحًا في مصر)، وكتابة مزدوجة عبر `zadPatchState`.
+- **كل عدّادات الموقع تحترم الوضع**: `js/app.js` (`updateProgress`, `statProg`, `ستات الصلاة`, `checkDailyComplete`, `recordDailyProgress` وهذا الأخير هو اللي بيكتب `history`)،
+  و`barnamaj · hasad · summary · hasad-month`. المقام بقى «العبادات المطلوبة فقط».
+- **GSAP + ScrollTrigger موطَّنين محليًا** (`js/vendor/gsap.min.js`, `ScrollTrigger.min.js`, 3.12.5)
+  بدل `cdnjs` في **٣٧ صفحة** — كانت كل الأنيميشن بتسقط أوفلاين. نفس الشيء لـ`canvas-confetti`
+  (١٠ صفحات كانت على jsdelivr رغم وجود نسخة محلية).
+- **`sw.js`**: كاش `zad-20261021-special-r19` + إضافة GSAP/ScrollTrigger/`special-mode`/`hawwa.html` للـprecache.
+
+### Fixed
+- **زر «شارك حصادك» في `hasad.html`** كان بينادي `shareAchievement()` — دالة غير موجودة → `ReferenceError`
+  وزر ميّت. بقى بينادي `shareHarvest()` (الموجودة، html2canvas) مع رسالة واضحة لو الصورة محتاجة إنترنت أول مرة.
+- `barnamaj.html` كان فيه `initChecklist()` ميّتة (تعرّفها `app.min.js` بعدها فتلغيها) — النسخة الفعّالة هي بتاعة `app.js` واتظبطت.
+
 ## [Unreleased] - 2026-10-21 — أكاديمية زاد الصغيرة (بدل الروابط الخارجية)
 
 > كان آخر «شاشة المرح» سِتّ بطاقات بتودّي الطفل برّه التطبيق (إسلام ويب · عصافير · كتاكيت · Alphazed · suprfamily). بقى بدالها **أكاديمية داخلية** كاملة: حروف وأرقام وأضداد وأوراق عمل — بلا إنترنت وبلا إعلانات.

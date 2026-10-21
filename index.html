@@ -691,6 +691,7 @@
 <script src="js/ui/offline-ui.min.js" defer></script>
 <script src="js/ui/micro-interactions.min.js" defer></script>
 <script src="js/diagnostics.min.js" defer></script>
+<script src="js/ui/special-mode.min.js" defer></script>
 <script src="js/app.min.js" defer></script>
 
 <!-- ══ سكربت الصفحة ══ -->
@@ -935,6 +936,12 @@ function zhNowCard() {
         href: 'prayers.html'
       };
     }
+  }
+
+  /* الوضع الخاص: بعد بطاقة الصلاة القادمة (لو فيه صلاة قريبة) وقبل باقي المقترحات */
+  if (!pick && window.ZadSpecial && window.ZadSpecial.isOn()) {
+    const spd = window.ZadSpecial.days();
+    pick = { ico:'🌸', t:'وضعك الخاص مُفعَّل', s:(spd>1?'اليوم '+spd+' — ':'')+'الصلاة والصيام معذورة، ووِردك باقٍ', href:'zahra.html' };
   }
 
   if (!pick && h >= 4 && h < 11 && !w.morning_dhikr) {
@@ -1365,8 +1372,8 @@ function getUserLocation() {
 </script>
 <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="js/vendor/gsap.min.js" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js" defer></script>
 <script src="js/vendor/canvas-confetti.min.js" defer></script>
 <script src="animations.min.js" defer></script>
 </body>

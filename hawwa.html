@@ -9,11 +9,23 @@
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
 <title>حواء — عبادتي في عذري · زاد</title>
 <meta name="description" content="حواء: دليلٌ عمليٌّ للعبادات التي لا تتوقّف في فترة العذر، مع وِردٍ يوميٍّ يبقيكِ موصولةً بالله.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="زاد">
+<meta property="og:title" content="حواء — عبادتي في عذري · زاد">
+<meta property="og:description" content="دليلٌ عمليٌّ للعبادات التي لا تتوقّف في فترة العذر: ٩ أبواب، وِرد يومي، ومبدأ «ما توقّف لا يُقضى».">
+<meta property="og:image" content="og-image.png">
+<meta property="og:url" content="https://zad.codeandcanvas.net/hawwa.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="حواء — عبادتي في عذري · زاد">
+<meta name="twitter:description" content="دليلٌ عمليٌّ للعبادات التي لا تتوقّف في فترة العذر.">
+<meta name="twitter:image" content="og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/style.min.css">
 <link rel="stylesheet" href="css/premium-ui.min.css">
+<!-- يمنع وميض الثيم/الوضع الوردي قبل أول رسم -->
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light',fs=24;try{var p=JSON.parse(s);t=p.theme||'light';fs=p.quranFontSize||24}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){};document.documentElement.style.setProperty('--qf-size',fs+'px')})();</script>
 <style>
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
@@ -108,6 +120,11 @@ html[data-theme="dark"] .hw-cross .cx-t,html[data-theme="oled"] .hw-cross .cx-t{
       <p class="hw-sub">عذرُكِ ليس انقطاعًا عن الله، بل بابٌ آخرُ للقرب. هنا دليلٌ عمليٌّ بما يمكنكِ فعلُه يوميًا لتبقَي موصولةً بربّكِ، ووِردٌ يوميٌّ يرافقكِ.</p>
     </header>
 
+    <div id="hw-special" style="display:none;align-items:center;gap:10px;background:linear-gradient(135deg,#fbeef4,#fdf5f9);border:1.5px solid #e89bbb;border-radius:14px;padding:12px 15px;margin-bottom:14px;font-size:12.5px;font-weight:700;color:#8e4d6f">
+      <span style="font-size:19px">🌸</span>
+      <span style="flex:1">الوضع الخاص مُفعّل — الصلاة والصيام معذورة في عدّادات زاد.</span>
+      <a href="zahra.html" style="color:#a84d77;font-weight:900;text-decoration:none;white-space:nowrap">إدارة ←</a>
+    </div>
     <div class="hw-diff">
       <span class="di">💡</span>
       <div><b>«زهرة» تطمئنُ قلبكِ، و«حواء» ترتّبُ عبادتكِ.</b> زهرة رفيقةٌ للمشاعر والطمأنينة، أمّا حواء فدليلٌ عمليٌّ يوميّ: ماذا تفعلين الآن خطوةً بخطوة. <a href="zahra.html">زيارة زهرة 🌸</a></div>
@@ -153,9 +170,17 @@ html[data-theme="dark"] .hw-cross .cx-t,html[data-theme="oled"] .hw-cross .cx-t{
 (function(){
   'use strict';
   var ZKEY='zad_v2';
-  function today(){return new Date().toISOString().split('T')[0];}
+  /* تاريخ محلي (كان toISOString = UTC ⇒ الوِرد يتجدّد ٢–٣ صباحًا في مصر) */
+  function today(){
+    var d=new Date();
+    return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+  }
   function read(){try{return JSON.parse(localStorage.getItem(ZKEY)||'{}')||{};}catch(e){return{};}}
-  function write(s){try{localStorage.setItem(ZKEY,JSON.stringify(s));}catch(e){}}
+  /* كتابة مزدوجة: مباشرة + zadPatchState حتى لا يمسحها حفظ app.js التالي */
+  function write(s){
+    try{ localStorage.setItem(ZKEY,JSON.stringify(s)); }catch(e){}
+    if(window.zadPatchState){ try{ window.zadPatchState({hawwa:s.hawwa}); }catch(e){} }
+  }
   var WARD=[
     {e:'📿',t:'سبّحتُ وذكرتُ الله'},
     {e:'🌟',t:'استغفرتُ'},
@@ -179,7 +204,13 @@ html[data-theme="dark"] .hw-cross .cx-t,html[data-theme="oled"] .hw-cross .cx-t{
     if(s.hawwa.done[i])delete s.hawwa.done[i];else s.hawwa.done[i]=1;
     write(s);if(navigator.vibrate)navigator.vibrate(15);render();
   });
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render);else render();
+  function specialChip(){
+    var el=document.getElementById('hw-special');
+    if(el && window.ZadSpecial && window.ZadSpecial.isOn()) el.style.display='flex';
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){render();specialChip();});
+  else { render(); specialChip(); }
+  document.addEventListener('zad:special',specialChip);
 })();
 </script>
   <script src="js/utils/helpers.min.js" defer></script>
@@ -193,9 +224,11 @@ html[data-theme="dark"] .hw-cross .cx-t,html[data-theme="oled"] .hw-cross .cx-t{
   <script src="js/design-system.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
+<script src="lang.min.js" defer></script>
+<script src="js/ui/special-mode.min.js" defer></script>
 <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="js/vendor/gsap.min.js" defer></script>
 <script src="animations.min.js" defer></script>
 </body>
 </html>

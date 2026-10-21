@@ -316,11 +316,29 @@ function startCountdown() {
   tick();
   window._mainCountdownInterval = setInterval(tick, 1000);
 }
+function markExcused(el) {
+  el.classList.add('is-excused');
+  el.setAttribute('aria-disabled', 'true');
+  el.title = 'معذورة اليوم — مستثناة من العدّاد';
+  if (!el.querySelector('.excused-chip')) {
+    const ch = document.createElement('span');
+    ch.className = 'excused-chip';
+    ch.textContent = '🌸 معذورة';
+    el.appendChild(ch);
+  }
+}
 function initChecklist() {
   document.querySelectorAll('.check[data-key]').forEach(el => {
     const k = el.dataset.key;
     if (STATE.worship[k]) el.classList.add('done');
+    /* الوضع الخاص: خانة معذورة — تُعلَّم ولا تُحسب، والضغط عليها لا يغيّر السجل */
+    if (window.ZadSpecial && window.ZadSpecial.isExcused(k)) markExcused(el);
     el.addEventListener('click', () => {
+      if (window.ZadSpecial && window.ZadSpecial.isExcused(k)) {
+        if (navigator.vibrate) navigator.vibrate(8);
+        showToast('🌸 معذورة اليوم — لا تُكتب عليكِ ولا تُحسب لكِ');
+        return;
+      }
       el.classList.toggle('done');
       STATE.worship[k] = el.classList.contains('done');
       if (navigator.vibrate) navigator.vibrate(30);
@@ -337,10 +355,9 @@ function initChecklist() {
 function updateProgress() {
   const bar = document.getElementById('prog-bar');
   const txt = document.getElementById('prog-txt');
-  const worshipKeys = ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam',
-                       'morning_dhikr','evening_dhikr','takbeer_100','tawbah'];
+  const worshipKeys = (window.ZadSpecial ? window.ZadSpecial.required(['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam', 'morning_dhikr','evening_dhikr','takbeer_100','tawbah']) : ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam', 'morning_dhikr','evening_dhikr','takbeer_100','tawbah']);
   const done = worshipKeys.filter(k => STATE.worship[k]).length;
-  const pct  = Math.round((done / worshipKeys.length) * 100);
+  const pct  = Math.round((done / (worshipKeys.length || 1)) * 100);
   if (bar) bar.style.width = pct + '%';
   if (txt) txt.textContent = done + ' من ' + worshipKeys.length + ' عبادة';
   const pctEl = document.getElementById('prog-pct');
@@ -372,15 +389,15 @@ function updateDashStats() {
   if (statTkbr)  statTkbr.textContent  = STATE.takbeer.total.toLocaleString('ar-EG');
   if (statJuz)   statJuz.textContent   = STATE.mushaf.juz;
   if (statProg)  {
-    const worshipKeys = ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam',
-                         'morning_dhikr','evening_dhikr','takbeer_100','tawbah'];
+    const worshipKeys = (window.ZadSpecial ? window.ZadSpecial.required(['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam', 'morning_dhikr','evening_dhikr','takbeer_100','tawbah']) : ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam', 'morning_dhikr','evening_dhikr','takbeer_100','tawbah']);
     const done = worshipKeys.filter(k => STATE.worship[k]).length;
-    const pct  = Math.round((done / worshipKeys.length) * 100);
+    const pct  = Math.round((done / (worshipKeys.length || 1)) * 100);
     statProg.textContent = pct + '%';
   }
-  const prayers = ['fajr','zuhr','asr','maghrib','isha'];
+  const allPrayers = ['fajr','zuhr','asr','maghrib','isha'];
+  const prayers = (window.ZadSpecial ? window.ZadSpecial.required(allPrayers) : allPrayers);
   const prayDone = prayers.filter(k => STATE.worship[k]).length;
-  if (statPray) statPray.textContent = prayDone + '/5';
+  if (statPray) statPray.textContent = prayers.length ? prayDone + '/' + prayers.length : '—';
 }
 const phrases = [
   { label:'التكبير الثنائي',  text:'اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ', target:100, source:'مأثور عن ابن مسعود' },
@@ -2045,9 +2062,9 @@ EXTRA_BADGES.forEach(b => {
 });
 function recordDailyProgress() {
   if (!STATE.history) STATE.history = {};
-  const worshipKeys = ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','morning_dhikr','evening_dhikr','takbeer_100','tawbah'];
+  const worshipKeys = (window.ZadSpecial ? window.ZadSpecial.required(['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','morning_dhikr','evening_dhikr','takbeer_100','tawbah']) : ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','morning_dhikr','evening_dhikr','takbeer_100','tawbah']);
   const done = worshipKeys.filter(k => STATE.worship[k]).length;
-  const pct  = Math.round((done / worshipKeys.length) * 100);
+  const pct  = Math.round((done / (worshipKeys.length || 1)) * 100);
   const { points } = calcZadPoints();
   STATE.history[todayStr()] = {
     pct,
@@ -2102,7 +2119,7 @@ function triggerConfetti() {
 }
 window.triggerConfetti = triggerConfetti;
 function checkDailyComplete() {
-  const keys = ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','morning_dhikr','evening_dhikr','takbeer_100','tawbah'];
+  const keys = (window.ZadSpecial ? window.ZadSpecial.required(['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','morning_dhikr','evening_dhikr','takbeer_100','tawbah']) : ['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','morning_dhikr','evening_dhikr','takbeer_100','tawbah']);
   if (keys.every(k => STATE.worship[k]) && !STATE._confettiFired) {
     STATE._confettiFired = true;
     saveState();

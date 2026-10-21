@@ -2171,3 +2171,23 @@ html[data-excuse="on"] .prog-bar span,
 html[data-excuse="on"] [id*="bar-fill"]{
   background:linear-gradient(90deg,#d4789f,#a84d77) !important;
 }
+
+/* ══════════════════════════════════════════════════════════
+   R19 — الوضع الخاص: وحدات مشتركة بين كل الصفحات
+   (شارة «معذورة» في جدول العبادات + لمسات وردية على العناصر الأساسية)
+   ══════════════════════════════════════════════════════════ */
+.check.is-excused{border-style:dashed;border-color:#f0c7d9;background:linear-gradient(135deg,#fff,#fdf5f9)}
+.check.is-excused:hover{transform:none;border-color:#e89bbb}
+.check.is-excused .box{background:#fbeef4;border-color:#e89bbb;color:#a84d77}
+.check.is-excused .label{color:#8e4d6f}
+.check .excused-chip{font-size:10.5px;font-weight:900;color:#a84d77;background:#fbeef4;border:1px solid #f0c7d9;border-radius:99px;padding:2px 8px;white-space:nowrap;flex-shrink:0}
+html[data-excuse="on"] .brand-mark{background:linear-gradient(135deg,#d4789f,#a84d77) !important}
+html[data-excuse="on"] .btn-primary,
+html[data-excuse="on"] .btn-gold{background:linear-gradient(135deg,#c77fa3,#a84d77) !important;border-color:#a84d77 !important;color:#fff !important}
+html[data-excuse="on"] .bottom-nav .bn-item.active{color:#a84d77}
+html[data-excuse="on"] .prog-bar-fill,
+html[data-excuse="on"] .progress-fill{background:linear-gradient(90deg,#d4789f,#a84d77) !important}
+html[data-excuse="on"] .fab-ai{box-shadow:0 12px 32px -10px rgba(168,77,119,.7) !important}
+html[data-excuse="on"] #zad-excuse-pill{animation:zhPillIn .35s ease both}
+@keyframes zhPillIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){html[data-excuse="on"] #zad-excuse-pill{animation:none}}

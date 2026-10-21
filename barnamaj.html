@@ -427,6 +427,16 @@ function initChecklist(){
     const key=el.dataset.key;
     const done=worship[key]||false;
     if(done) el.classList.add('done');  /* بدون أنيميشن عند التحميل */
+    if(window.ZadSpecial && window.ZadSpecial.isExcused(key)){
+      el.classList.add('is-excused');
+      el.title='معذورة اليوم — مستثناة من العدّاد';
+      if(!el.querySelector('.excused-chip')){
+        const ch=document.createElement('span');
+        ch.className='excused-chip';
+        ch.textContent='🌸 معذورة';
+        el.appendChild(ch);
+      }
+    }
     el.addEventListener('click',()=>{
       const now=!((getState().worship||{})[key]);
       const state=getState();
@@ -458,8 +468,12 @@ function updateRing(){
   const keys=['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam',
                'morning_dhikr','evening_dhikr','takbeer_100','tawbah',
                'salah_nabi','fasting','sadaqah','silah','sunnah_daily'];
-  const done=keys.filter(k=>worship[k]).length + (niyyaDone?1:0) + (tawbahDone?1:0);
-  const total=TOTAL_ITEMS;
+  /* الوضع الخاص: العبادات المعذورة تُستبعَد من المقام ولا تُحسب ناقصة */
+  const SP = window.ZadSpecial;
+  const required = SP ? SP.required(keys) : keys;
+  const excusedCount = keys.length - required.length;
+  const done=required.filter(k=>worship[k]).length + (niyyaDone?1:0) + (tawbahDone?1:0);
+  const total=Math.max(1, TOTAL_ITEMS - excusedCount);
   const pct=Math.min(100,Math.round(done/total*100));
 
   const bar=document.getElementById('prog-bar');
@@ -680,12 +694,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   <script src="js/ui/offline-ui.min.js" defer></script>
   <script src="js/ui/micro-interactions.min.js" defer></script>
   <script src="js/diagnostics.min.js" defer></script>
+  <script src="js/ui/special-mode.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
 <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
+<script src="js/vendor/gsap.min.js" defer></script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
 <script src="animations.min.js" defer></script>
 </body>
 </html>

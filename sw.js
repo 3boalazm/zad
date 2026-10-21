@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261021-academy-r18';
+const CACHE_STATIC = 'zad-20261021-special-r19';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -50,7 +50,7 @@ const PRECACHE = [
   './register.html', './sync.html',
   './js/api-client.min.js', './js/sync-manager.min.js',
   './prayers.html', './ramadan.html', './adhkar.html', './mushaf.html', './takbeer.html',
-  './hasn.html', './worship.html', './zahra.html', './settings.html', './hijri.html',
+  './hasn.html', './worship.html', './zahra.html', './hawwa.html', './settings.html', './hijri.html',
   './css/style.min.css', './css/premium-ui.min.css', './manifest.json',
   './fonts/thmanyahserifdisplay-Bold.woff2', './fonts/thmanyahserifdisplay-Regular.woff2',
   './icons/icon-192.svg', './icons/icon-512.svg',
@@ -65,6 +65,9 @@ const PRECACHE = [
      في الوقت الذي يُستخدم فيه (بلا شبكة). */
   './js/vendor/adhan.min.js', './js/prayer-notifications.min.js',
   './js/vendor/geomag.min.js', './js/vendor/canvas-confetti.min.js',
+  /* R19: GSAP موطَّن محليًا بدل cdnjs (كان 37 صفحة تعتمد على CDN خارجي
+     فيسقط كل الأنيميشن أوفلاين) + وحدة الوضع الخاص المشتركة. */
+  './js/vendor/gsap.min.js', './js/vendor/ScrollTrigger.min.js', './js/ui/special-mode.min.js',
   './menu.min.js', './command-palette.min.js', './js/ui/bottom-nav.min.js', './js/ui/progress-rollup.min.js',
   './js/design-system.min.js', './js/fixes-module.min.js',
   './js/utils/helpers.min.js', './js/core/state-manager.min.js', './js/core/router.min.js',

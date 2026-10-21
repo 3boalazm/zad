@@ -165,6 +165,7 @@ html[data-theme="dark"] .zh-cl-item.done .zh-cl-text,html[data-theme="oled"] .zh
       <p class="zh-hero-desc">
         فترةُ العذر ليست انقطاعاً عن الله، بل تخفيفٌ ورحمة. تركُكِ للصلاة امتثالاً لأمره هو <b>عبادةُ كفٍّ وتقرّبٍ بالترك</b> تُؤجَرين عليها، كما تُؤجَرين على الفعل. أنتِ في معيّة الله بطاعتكِ لرخصته. 🤍
       </p>
+      <a href="hawwa.html" style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;text-decoration:none;font-size:12px;font-weight:800;padding:8px 14px;border-radius:99px">🌙 دليل حواء العملي للعبادة في العذر ←</a>
     </div>
 
     <!-- ══ Toggle: وضع زهرة ══ -->
@@ -177,6 +178,7 @@ html[data-theme="dark"] .zh-cl-item.done .zh-cl-text,html[data-theme="oled"] .zh
         <label class="zh-switch"><input type="checkbox" id="zh-switch" aria-label="تفعيل وضع زهرة"><span class="zh-slider"></span></label>
       </div>
       <div class="zh-toggle-note" id="zh-toggle-note"></div>
+      <div id="zh-since" style="font-size:11px;font-weight:800;color:#a84d77;margin-top:8px"></div>
     </div>
 
     <!-- ══ المرتكزات الإيمانية الخمسة ══ -->
@@ -261,6 +263,7 @@ html[data-theme="dark"] .zh-cl-item.done .zh-cl-text,html[data-theme="oled"] .zh
   <script src="js/ui/micro-interactions.min.js" defer></script>
   <script src="js/diagnostics.min.js" defer></script>
   <script src="js/design-system.min.js" defer></script>
+  <script src="js/ui/special-mode.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
 
@@ -272,48 +275,46 @@ html[data-theme="dark"] .zh-cl-item.done .zh-cl-text,html[data-theme="oled"] .zh
    ════════════════════════════════════════════════════════════ */
 (function(){
   'use strict';
-  var ZKEY='zad_v2';
-  var EXEMPT=['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','fasting'];
+  /* lazy: السكربت ده بيشتغل قبل الـ defer scripts، فما يصحّش نلتقط ZadSpecial دلوقتي */
+  function SP(){ return window.ZadSpecial || null; }
 
-  function load(){ try{ return JSON.parse(localStorage.getItem(ZKEY)||'{}')||{}; }catch(e){ return {}; } }
-  function save(s){ try{ localStorage.setItem(ZKEY,JSON.stringify(s)); }catch(e){} if(window.STATE) window.STATE.excuseMode=s.excuseMode; }
-  function isOn(){ return !!load().excuseMode; }
-
-  function setMode(on){
-    var s=load();
-    s.excuseMode=on;
-    s.worship=s.worship||{};
-    s.excused=s.excused||{};
-    if(on){
-      EXEMPT.forEach(function(k){ if(!s.worship[k]){ s.worship[k]=true; s.excused[k]=true; } });
-    } else {
-      EXEMPT.forEach(function(k){ if(s.excused&&s.excused[k]){ s.worship[k]=false; delete s.excused[k]; } });
-    }
-    save(s);
-    applyVisual(on);
-  }
+  function isOn(){ var sp=SP(); return !!(sp && sp.isOn()); }
 
   function applyVisual(on){
     document.documentElement.setAttribute('data-excuse', on?'on':'off');
     var sw=document.getElementById('zh-switch'); if(sw) sw.checked=on;
     var note=document.getElementById('zh-toggle-note');
     if(note){
-      note.textContent = on
-        ? '🌸 وضع زهرة مُفعَّل — رُفعت عنكِ الصلاة والصيام من العدّادات، وأنتِ في معيّة الله. تصفَّحي بقيّة التطبيق وستجدينه بحُلّةٍ ورديّة لطيفة.'
-        : '';
+      if(on){
+        var d = SP() ? SP().days() : 0;
+        note.innerHTML = '🌸 <b>وضع زهرة مُفعَّل</b>' + (d>1 ? ' — اليوم <b>'+d+'</b> من الوضع.' : ' — بدأ اليوم.') +
+          ' الصلاة والصيام مستثناة من العدّادات، وسجلّك السابق لم يُمسّ. تصفَّحي بقيّة التطبيق وستجدينه بحُلّةٍ ورديّة لطيفة.' +
+          '<br><span style="opacity:.8;font-size:11.5px">يُوقف الوضع تلقائيًا؟ اضغطي المفتاح مرة أخرى — وسيعود كلُّ شيءٍ كما كان.</span>';
+      } else { note.innerHTML=''; }
       note.style.display = on ? 'block' : 'none';
     }
+    var since=document.getElementById('zh-since');
+    if(since) since.textContent = on && SP() && SP().days() ? 'منذ '+SP().days()+' يوم' : '';
+  }
+
+  function setMode(on){
+    if(SP()){ SP().set(on); }
+    else {
+      try{ var s=JSON.parse(localStorage.getItem('zad_v2')||'{}'); s.excuseMode=!!on; localStorage.setItem('zad_v2',JSON.stringify(s)); }catch(e){}
+    }
+    applyVisual(on);
+    if(navigator.vibrate) navigator.vibrate(12);
   }
 
   window.zhToggle=function(){ setMode(!isOn()); };
 
-  /* ربط زر التبديل */
   document.addEventListener('DOMContentLoaded', function(){
     var sw=document.getElementById('zh-switch');
     if(sw){ sw.checked=isOn(); sw.addEventListener('change', function(){ setMode(sw.checked); }); }
     applyVisual(isOn());
     renderChecklist();
   });
+  document.addEventListener('zad:special', function(e){ applyVisual(!!(e.detail&&e.detail.on)); });
 
   /* ── مفكرة يومي النوراني (checklist) ── */
   var CL_ITEMS=[
@@ -326,7 +327,21 @@ html[data-theme="dark"] .zh-cl-item.done .zh-cl-text,html[data-theme="oled"] .zh
   ];
   function clKey(){ var d=new Date(); return 'zad_zahra_cl_'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
   function clLoad(){ try{ return JSON.parse(localStorage.getItem(clKey())||'{}')||{}; }catch(e){ return {}; } }
-  function clSave(o){ try{ localStorage.setItem(clKey(), JSON.stringify(o)); }catch(e){} }
+  function clSave(o){
+    try{
+      localStorage.setItem(clKey(), JSON.stringify(o));
+      /* تنظيف: نحتفظ بآخر ١٤ مفكرة فقط */
+      var keys=[];
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(k && k.indexOf('zad_zahra_cl_')===0) keys.push(k);
+      }
+      if(keys.length>14){
+        keys.sort();
+        keys.slice(0, keys.length-14).forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+      }
+    }catch(e){}
+  }
 
   window.renderChecklist=function(){
     var wrap=document.getElementById('zh-checklist'); if(!wrap) return;
