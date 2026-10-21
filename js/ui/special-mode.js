@@ -88,6 +88,15 @@
 
     apply: function () {
       var on = S.isOn();
+      /* شفاء ذاتي: وضع مفعّل من نسخة قديمة بلا قائمة excused ⇒ استكملها */
+      if (on) {
+        var st = read();
+        if (!st.excused || !Object.keys(st.excused).length) {
+          var heal = {};
+          DEFAULT_KEYS.forEach(function (k) { heal[k] = 1; });
+          write({ excused: heal, excuseSince: st.excuseSince || localISO() });
+        }
+      }
       document.documentElement.setAttribute('data-excuse', on ? 'on' : 'off');
       if (document.body) document.body.classList.toggle('zad-excused', on);
       var sw = document.getElementById('zh-switch');
