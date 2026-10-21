@@ -778,8 +778,28 @@
   }
 
   window._zadSetLang = function(lang) {
+    /* اللغات المترجمة فعلاً (LANG_CYCLE في lang.js) — الباقي «قريباً» ولا نحفظه */
+    const SUPPORTED = ['ar', 'en', 'fr'];
+    if (SUPPORTED.indexOf(lang) === -1) {
+      if (typeof showToast === 'function') showToast('🌐 الترجمة إلى هذه اللغة قيد الإضافة قريباً');
+      return;
+    }
+    /* تطبيق اللغة أولاً — setLang مباشرة.
+       (كان toggleLang بيدور ar→en→fr بس، فالضغط على «العربية» كان بيودّي على الفرنسية)
+       وأيضًا lang.js بيحفظ data-ar على أي عنصر بيلمسه، فلو حدّثنا الزر قبل التطبيق
+       كان التطبيق يرجّعه «English» بدل «العربية». */
+    if (window.I18N && typeof window.I18N.setLang === 'function') {
+      window.I18N.setLang(lang);
+    } else if (typeof toggleLang === 'function') {
+      const currentLang = document.documentElement.lang || 'ar';
+      if (currentLang !== lang) toggleLang();
+    } else {
+      document.documentElement.lang = lang;
+      document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
+      try { localStorage.setItem('zad_lang', lang); } catch {}
+    }
+    /* تحديث زر العرض بعد التطبيق */
     const meta = ZAD_LANGS.find(l => l.code === lang) || ZAD_LANGS[0];
-    /* تحديث زر العرض */
     const trigger = document.querySelector('#zad-lang-trigger');
     if (trigger) {
       const f = trigger.querySelector('.zll-flag'), n = trigger.querySelector('.zll-name');
@@ -794,21 +814,6 @@
       if (on && !chk) { chk = document.createElement('span'); chk.className = 'zll-check'; chk.textContent = '✓'; o.appendChild(chk); }
       else if (!on && chk) chk.remove();
     });
-    /* تطبيق اللغة */
-    if (lang === 'ar' || lang === 'en') {
-      if (typeof toggleLang === 'function') {
-        const currentLang = document.documentElement.lang || 'ar';
-        if (currentLang !== lang) toggleLang();
-      } else {
-        document.documentElement.lang = lang;
-        document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
-        try { localStorage.setItem('zad_lang', lang); } catch {}
-      }
-    } else {
-      /* لغات أخرى — قيد الإضافة */
-      try { localStorage.setItem('zad_lang', lang); } catch {}
-      if (typeof showToast === 'function') showToast('🌐 الترجمة لهذه اللغة قيد الإضافة قريباً');
-    }
   };
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -1050,8 +1055,17 @@
       injectFlares(sidebar);
       restoreScroll(sidebar);
       requestAnimationFrame(() => revealActive(sidebar));
-      /* محوّل اللغة — يستبدل زر sidebar-lang-btn */
-      const langBtn = sidebar.querySelector('.sidebar-lang-btn');
+      /* محوّل اللغة — يستبدل زر sidebar-lang-btn، وينشئه لو الصفحة مفيهاش زر لغة */
+      let langBtn = sidebar.querySelector('.sidebar-lang-btn');
+      if (!langBtn && window.I18N && !document.getElementById('topbar-lang-btn')) {
+        langBtn = document.createElement('button');
+        langBtn.type = 'button';
+        langBtn.className = 'sidebar-lang-btn';
+        langBtn.setAttribute('aria-label', 'تغيير اللغة');
+        langBtn.textContent = '🌐';
+        if (navEl && navEl.parentNode) navEl.parentNode.insertBefore(langBtn, navEl);
+        else sidebar.appendChild(langBtn);
+      }
       if (langBtn) buildLangSwitcher(langBtn);
       /* أزرار التثبيت/المشاركة */
       buildInstallButtons(sidebar);

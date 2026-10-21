@@ -713,7 +713,8 @@ const I18N = {
     /* عناوين الأقسام */
     document.querySelectorAll('.section-title, .kids-title').forEach(el => { if (el.children.length === 0) swap(el); });
     /* الأزرار العامة */
-    document.querySelectorAll('button:not([data-i18n]):not(.hamburger):not(.notif-btn):not(.btn-theme)').forEach(swap);
+    /* استثناء أزرار محوّل اللغة: swap يكتب textContent فيمحو الأيقونة والاسم والعلامة ✓ */
+    document.querySelectorAll('button:not([data-i18n]):not(.hamburger):not(.notif-btn):not(.btn-theme):not(.zad-lang-trigger):not(.zad-lang-opt)').forEach(swap);
 
     /* 4) عنوان الصفحة (وسط الشريط العلوي) */
     const pageTitleEl = document.querySelector('.page-title');
