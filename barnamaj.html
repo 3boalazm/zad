@@ -320,7 +320,7 @@ html[data-theme="dark"] .occasion-banner .occ-row,html[data-theme="oled"] .occas
       الإكثار من الصلاة على النبي ﷺ.<br>
       تحرّي ساعة الإجابة في آخر ساعةٍ بعد العصر.
     </div>
-    <div class="bz-links"><a href="adhkar.html">أذكار ←</a><a href="duas.html">أدعية ←</a></div>
+    <div class="bz-links"><a href="adhkar.html">أذكار ←</a><a href="du'a.html">أدعية ←</a></div>
   </div>
 </div>
 
@@ -329,7 +329,7 @@ html[data-theme="dark"] .occasion-banner .occ-row,html[data-theme="oled"] .occas
   <div class="bz-section-title">⚡ روابط سريعة</div>
   <div class="bz-links" style="display:flex;gap:10px;flex-wrap:wrap">
     <a class="btn btn-primary" href="adhkar.html">📿 الأذكار</a>
-    <a class="btn btn-ghost" href="duas.html">🤲 الأدعية</a>
+    <a class="btn btn-ghost" href="du'a.html">🤲 الأدعية</a>
     <a class="btn btn-ghost" href="mushaf.html">📖 الورد اليومي</a>
     <a class="btn btn-ghost" href="takbeer.html">🕋 المسبحة</a>
   </div>
@@ -374,7 +374,12 @@ const W_KEY = 'zad_v2';
 function getState(){
   try{return JSON.parse(localStorage.getItem(W_KEY)||'{}');}catch(e){return {};}
 }
-function saveState(s){ localStorage.setItem(W_KEY, JSON.stringify(s)); }
+/* ⚠️ app.min.js يعرّف saveState() بلا وسيط ويحلّ محلّ هذه الدالة عند التحميل،
+   فكانت كل تعديلات الصفحة (الصيام · الختمة · السنن) تُمحى فورًا. اسم محلي. */
+function bzSave(s){
+  if (window.zadPatchState) { window.zadPatchState(s); return; }
+  try{ localStorage.setItem(W_KEY, JSON.stringify(s)); }catch(e){}
+}
 
 /* ── Countdown to Arafa (تمت إزالته من جدول العبادات اليومي) ─── */
 function startWorshipCountdown(){
@@ -401,83 +406,49 @@ function startWorshipCountdown(){
 
 /* ── Niyya + Tawbah toggles ─────────────────────────────── */
 let niyyaDone=false, tawbahDone=false;
-function toggleNiyya(){
-  niyyaDone=!niyyaDone;
+function paintNiyya(){
   const box=document.getElementById('niyya-box');
   const wrap=document.getElementById('niyya-check');
   if(box){box.textContent=niyyaDone?'✓':'';box.style.background=niyyaDone?'var(--green-deep)':'';box.style.color=niyyaDone?'#fff':'';}
   if(wrap){wrap.style.borderColor=niyyaDone?'var(--green-deep)':'var(--border)';wrap.style.background=niyyaDone?'rgba(14,59,46,.05)':'var(--sand)';}
-  updateRing();
 }
-function toggleTawbah(){
-  tawbahDone=!tawbahDone;
+function paintTawbah(){
   const box=document.getElementById('tawbah-box');
   const wrap=document.getElementById('tawbah-check');
   if(box){box.textContent=tawbahDone?'✓':'';box.style.background=tawbahDone?'var(--gold)':'';box.style.color=tawbahDone?'#fff':'';}
   if(wrap){wrap.style.borderColor=tawbahDone?'var(--gold)':'var(--border)';wrap.style.background=tawbahDone?'rgba(201,161,74,.05)':'var(--sand)';}
-  updateRing();
+  /* مزامنة مربّع الجدول اللي بنفس المفتاح */
+  const chk=document.querySelector('.check[data-key="tawbah"]');
+  if(chk) chk.classList.toggle('done', tawbahDone);
+}
+function toggleNiyya(){
+  niyyaDone=!niyyaDone;
+  const st=getState(); st.worship=st.worship||{}; st.worship.niyyah=niyyaDone; bzSave(st);
+  paintNiyya();
+  refreshProgress();
+}
+function toggleTawbah(){
+  tawbahDone=!tawbahDone;
+  const st=getState(); st.worship=st.worship||{}; st.worship.tawbah=tawbahDone; bzSave(st);
+  paintTawbah();
+  refreshProgress();
 }
 
-/* ── Checklist ──────────────────────────────────────────── */
-const TOTAL_ITEMS = 16;
-function initChecklist(){
-  const s = getState();
-  const worship = s.worship||{};
-  document.querySelectorAll('.check').forEach(el=>{
-    const key=el.dataset.key;
-    const done=worship[key]||false;
-    if(done) el.classList.add('done');  /* بدون أنيميشن عند التحميل */
-    el.addEventListener('click',()=>{
-      const now=!((getState().worship||{})[key]);
-      const state=getState();
-      if(!state.worship)state.worship={};
-      state.worship[key]=now;
-      saveState(state);
-      applyCheck(el,now);
-      updateRing();
-      if(now){
-        try{ if(navigator.vibrate) navigator.vibrate([15,30,15]); }catch(e){}
-        if(typeof confetti!=='undefined'){
-          confetti({particleCount:30,spread:60,origin:{y:.7},colors:['#0e3b2e','#c9a14a','#fff']});
-        }
-      }
-    });
-  });
-  updateRing();
-}
-
+/* ── Checklist ────────────────────────────────────────────
+   العدّاد والـring مرسومين مركزيًا من js/app.js (initChecklist/updateProgress)
+   — النسخة المحلية القديمة كانت بتتعمل overwrite فور تحميل app.min.js،
+   وكانت بتحسب ١٧ مفتاح على ١٦ عنصر + tawbah مرتين. */
 function applyCheck(el,done){
   /* إعادة تشغيل الأنيميشن عند الإتمام */
   if(done){ el.classList.remove('done'); void el.offsetWidth; el.classList.add('done'); }
   else { el.classList.remove('done'); }
 }
 
-function updateRing(){
-  const s=getState();
-  const worship=s.worship||{};
-  const keys=['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam',
-               'morning_dhikr','evening_dhikr','takbeer_100','tawbah',
-               'salah_nabi','fasting','sadaqah','silah','sunnah_daily'];
-  const done=keys.filter(k=>worship[k]).length + (niyyaDone?1:0) + (tawbahDone?1:0);
-  const total=TOTAL_ITEMS;
-  const pct=Math.min(100,Math.round(done/total*100));
-
-  const bar=document.getElementById('prog-bar');
-  const txt=document.getElementById('prog-txt');
-  const rpct=document.getElementById('ring-pct');
-  const circle=document.getElementById('ring-circle');
-  const statDone=document.getElementById('stat-done-count');
-
-  if(bar)bar.style.width=pct+'%';
-  if(txt)txt.textContent=done+' من '+total+' عبادة';
-  if(rpct)rpct.textContent=pct+'%';
-  if(circle){const offset=276.5-(276.5*pct/100);circle.style.strokeDashoffset=offset;}
-  if(statDone)statDone.textContent=done;
-
-  /* Streak */
-  const streak=s.streak||0;
-  const statStreak=document.getElementById('stat-streak');
-  if(statStreak)statStreak.textContent=streak;
+function refreshProgress(){
+  if (typeof updateProgress === 'function') updateProgress();   /* مصدر الحقيقة الوحيد */
+  const st = getState();
+  const el = document.getElementById('stat-streak');
+  if (el) el.textContent = st.streak || 0;
 }
 
 /* ── Fasting tracker ────────────────────────────────────── */
@@ -492,7 +463,7 @@ function initFasting(){
       if(!state.fastingDays)state.fastingDays={};
       state.fastingDays[d]=!state.fastingDays[d];
       el.classList.toggle('done');
-      saveState(state);
+      bzSave(state);
     });
   });
 }
@@ -530,7 +501,7 @@ function toggleKhatmaDay(d){
   const state=getState();
   if(!state.khatma)state.khatma={};
   state.khatma[d]=!state.khatma[d];
-  saveState(state);
+  bzSave(state);
   renderKhatma();
 }
 
@@ -570,7 +541,7 @@ function toggleSunnah(i){
   const state=getState();
   if(!state.sunnahDone)state.sunnahDone={};
   state.sunnahDone[i]=!state.sunnahDone[i];
-  saveState(state);
+  bzSave(state);
   renderSunnahs();
 }
 
@@ -616,13 +587,16 @@ function requestNotifPermission(){
 
 /* ── Init ───────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded',()=>{
+  const st0=getState();
+  niyyaDone=!!(st0.worship&&st0.worship.niyyah);
+  tawbahDone=!!(st0.worship&&st0.worship.tawbah);
+  paintNiyya(); paintTawbah();
   startWorshipCountdown();
-  initChecklist();
   initFasting();
   renderKhatma();
   renderSunnahs();
   renderForbidden();
-  updateRing();
+  refreshProgress();
 });
 </script>
 
@@ -680,12 +654,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   <script src="js/ui/offline-ui.min.js" defer></script>
   <script src="js/ui/micro-interactions.min.js" defer></script>
   <script src="js/diagnostics.min.js" defer></script>
+  <script src="js/ui/special-mode.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
 <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
+<script src="js/vendor/gsap.min.js" defer></script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
 <script src="animations.min.js" defer></script>
 </body>
 </html>

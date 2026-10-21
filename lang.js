@@ -709,11 +709,12 @@ const I18N = {
     if (bs) bs.textContent = isAr ? 'رفيق العبادة والخير' : (lang==='fr' ? 'Compagnon d’adoration' : 'Worship Companion');
 
     /* روابط القائمة + الفواصل */
-    document.querySelectorAll('.nav a span:last-child, .nav .nav-sep').forEach(swap);
+    document.querySelectorAll('.nav a span:last-child, .nav .nav-sep .sep-txt').forEach(swap);
     /* عناوين الأقسام */
     document.querySelectorAll('.section-title, .kids-title').forEach(el => { if (el.children.length === 0) swap(el); });
     /* الأزرار العامة */
-    document.querySelectorAll('button:not([data-i18n]):not(.hamburger):not(.notif-btn):not(.btn-theme)').forEach(swap);
+    /* استثناء أزرار محوّل اللغة: swap يكتب textContent فيمحو الأيقونة والاسم والعلامة ✓ */
+    document.querySelectorAll('button:not([data-i18n]):not(.hamburger):not(.notif-btn):not(.btn-theme):not(.zad-lang-trigger):not(.zad-lang-opt)').forEach(swap);
 
     /* 4) عنوان الصفحة (وسط الشريط العلوي) */
     const pageTitleEl = document.querySelector('.page-title');
@@ -766,6 +767,59 @@ document.addEventListener('DOMContentLoaded', () => I18N.init());
    UI_MAP — نصوص عامة (عربي → {إنجليزي، فرنسي})
    ════════════════════════════════════════════════════════════ */
 const UI_MAP = {
+
+  'القرآن الكريم': { en:'The Holy Quran', fr:'Le Saint Coran' },
+  'المواسم والمناسك': { en:'Seasons & Rites', fr:'Saisons et rites' },
+  'الزكاة والصدقة': { en:'Zakat & Charity', fr:'Zakat et aumône' },
+  'المكتبة والمعرفة': { en:'Library & Knowledge', fr:'Bibliothèque et savoir' },
+  'ركن الأطفال': { en:'Kids Corner', fr:'Espace enfants' },
+  'ألعاب القرية': { en:'Village Games', fr:'Jeux du village' },
+  'ورش وإبداع': { en:'Workshops & Creativity', fr:'Ateliers et créativité' },
+  'المتابعة والإحصاء': { en:'Tracking & Stats', fr:'Suivi et statistiques' },
+  'العائلة والتربية': { en:'Family & Parenting', fr:'Famille et éducation' },
+  'الذكر والدعاء': { en:'Dhikr and Dua', fr:'Dhikr et invocations' },
+  'وضع خاص': { en:'Special Care', fr:'Soin particulier' },
+  'برنامج اليوم': { en:'Daily Program', fr:'Programme du jour' },
+  'الورد اليومي': { en:'Daily Wird', fr:'Wird quotidien' },
+  'الأذكار': { en:'Dhikr', fr:'Invocations' },
+  'قيم الدعاء': { en:'Du\'a Values', fr:'Les valeurs de l\'invocation' },
+  'السنن المهجورة': { en:'Forgotten Sunnahs', fr:'Sunan oubliées' },
+  'الرقية الشرعية': { en:'Ruqyah Healing', fr:'Rouqya' },
+  'مناسك الحج': { en:'Hajj Rites', fr:'Rites du Hajj' },
+  'دعاء يوم عرفة': { en:'Arafah Supplication', fr:'Invocation d\'Arafah' },
+  'لوحة رمضان': { en:'Ramadan Board', fr:'Tableau de Ramadan' },
+  'حاسبة الزكاة': { en:'Zakat Calculator', fr:'Calculateur de Zakat' },
+  'أحكام الزكاة': { en:'Zakat Rules', fr:'Règles de la Zakat' },
+  'أنواع الزكاة وحسابها': { en:'Zakat Types and Calculation', fr:'Types de Zakat et calcul' },
+  'المكتبة الصوتية': { en:'Audio Library', fr:'Bibliothèque audio' },
+  'المكتبة المرئية': { en:'Video Library', fr:'Bibliothèque vidéo' },
+  'المكتبة النصية': { en:'Text Library', fr:'Bibliothèque de textes' },
+  'ثُريّا — الرئيسية': { en:'Thuraya — Home', fr:'Thuraya — Accueil' },
+  'حكايات القرية': { en:'Village Tales', fr:'Contes du village' },
+  'غرس — قصص للأطفال': { en:'Ghars — Kids Stories', fr:'Ghars — Histoires pour enfants' },
+  'صحيفة القرية': { en:'Village Gazette', fr:'Gazette du village' },
+  'حكاية حج': { en:'A Hajj Story', fr:'Une histoire de Hajj' },
+  'مدرستي الجميلة': { en:'My Lovely School', fr:'Ma belle école' },
+  'يومي': { en:'My Day', fr:'Ma journée' },
+  'محقّق القرية': { en:'Village Detective', fr:'Détective du village' },
+  'مدينة الميزان': { en:'City of Balance', fr:'La cité de la balance' },
+  'قصر الذاكرة': { en:'Memory Palace', fr:'Le palais de la mémoire' },
+  'من يكذب؟': { en:'Who Is Lying?', fr:'Qui ment ?' },
+  'عرين الأبطال': { en:'Heroes Den', fr:'L\'antre des héros' },
+  'شاشة المرح': { en:'Fun Screen', fr:'Écran de jeux' },
+  'بستان الذكر': { en:'Dhikr Garden', fr:'Le jardin du dhikr' },
+  'الوصفة': { en:'The Recipe', fr:'La recette' },
+  'الطريق إلى البيت': { en:'The Way Home', fr:'Le chemin de la maison' },
+  'التجربة': { en:'The Experiment', fr:'L\'expérience' },
+  'ترتيب الضيافة': { en:'Hospitality Order', fr:'Ordre de l\'hospitalité' },
+  'نادي الإبداع': { en:'Creativity Club', fr:'Club de créativité' },
+  'حصاد الشهر': { en:'Monthly Harvest', fr:'Bilan mensuel' },
+  'المجموعات والمنافسة': { en:'Groups and Competition', fr:'Groupes et compétition' },
+  'دليل المربي': { en:'Parent Guide', fr:'Guide des parents' },
+  'الخصوصية وكيف يعمل': { en:'Privacy and How It Works', fr:'Confidentialité et fonctionnement' },
+  'زهرة — رفيقةُ العذر': { en:'Zahra — Cycle Companion', fr:'Zahra — Compagne du cycle' },
+  'حواء — عبادتي في عذري': { en:'Hawwa — Worship During Excuse', fr:'Hawwa — Adoration en excuse' },
+  'عن المطوّر': { en:'About the Developer', fr:'À propos du développeur' },
   /* روابط القائمة */
   'لوحة التحكم':          { en:'Dashboard', fr:'Tableau de bord' },
   'مواقيت الصلاة':        { en:'Prayer Times', fr:'Heures de prière' },

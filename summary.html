@@ -251,6 +251,7 @@ html[data-theme="dark"] .share-harvest-btn,html[data-theme="oled"] .share-harves
   <script src="js/ui/offline-ui.min.js" defer></script>
   <script src="js/ui/micro-interactions.min.js" defer></script>
   <script src="js/diagnostics.min.js" defer></script>
+  <script src="js/ui/special-mode.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
 <script src="animations.min.js" defer></script>
@@ -308,7 +309,9 @@ function loadSummary() {
 
 function computeTodayPct(state) {
   const w = state.worship || {};
-  const keys = ['fajr','zuhr','asr','maghrib','isha','morning_dhikr','evening_dhikr','takbeer_100','qiyam'];
+  const all  = ['fajr','zuhr','asr','maghrib','isha','morning_dhikr','evening_dhikr','takbeer_100','qiyam'];
+  const keys = (window.ZadSpecial ? window.ZadSpecial.required(all) : all);
+  if (!keys.length) return 0;
   const done  = keys.filter(k => w[k]).length;
   return Math.round((done / keys.length) * 100);
 }

@@ -205,7 +205,7 @@ html[data-theme="dark"] .chart-fallback b,html[data-theme="oled"] .chart-fallbac
   <main class="main">
     <h1 class="sr-only">حصاد العبادات</h1>
 <div style="text-align:center;padding:16px">
-  <button class="btn btn-primary" onclick="shareAchievement('حصاد العبادات', 'تابعت عباداتي في زاد')">
+  <button class="btn btn-primary share-harvest-btn" onclick="shareHarvest()">
     📤 شارك حصادك
   </button>
 </div>
@@ -365,15 +365,16 @@ html[data-theme="dark"] .chart-fallback b,html[data-theme="oled"] .chart-fallbac
   <script src="js/ui/offline-ui.min.js" defer></script>
   <script src="js/ui/micro-interactions.min.js" defer></script>
   <script src="js/diagnostics.min.js" defer></script>
+  <script src="js/ui/special-mode.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" defer></script>
+<script src="js/vendor/html2canvas.min.js" defer></script>
+<script src="js/vendor/chart.umd.min.js" defer></script>
   <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
+<script src="js/vendor/gsap.min.js" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="js/vendor/canvas-confetti.min.js" defer></script>
 <script src="animations.min.js" defer></script>
 
 <script>
@@ -422,7 +423,9 @@ function getDhulHijjahDayFor(dateStr) {
 
 function computeTodayPct(state) {
   const w = state.worship || {};
-  const keys = ['fajr','zuhr','asr','maghrib','isha','morning_dhikr','evening_dhikr','takbeer_100','qiyam'];
+  const all  = ['fajr','zuhr','asr','maghrib','isha','morning_dhikr','evening_dhikr','takbeer_100','qiyam'];
+  const keys = (window.ZadSpecial ? window.ZadSpecial.required(all) : all);
+  if (!keys.length) return 0;
   const done = keys.filter(k => w[k]).length;
   return Math.round((done / keys.length) * 100);
 }
@@ -631,8 +634,9 @@ function renderBalanceChart(state) {
 
   /* احسب نسبة كل محور (0-100) من البيانات المتاحة محلياً */
   const w = state.worship || {};
-  const prayers = ['fajr','zuhr','asr','maghrib','isha'];
-  const prayerPct = Math.round(prayers.filter(p=>w[p]).length / prayers.length * 100);
+  const allPrayers = ['fajr','zuhr','asr','maghrib','isha'];
+  const prayers = (window.ZadSpecial ? window.ZadSpecial.required(allPrayers) : allPrayers);
+  const prayerPct = prayers.length ? Math.round(prayers.filter(p=>w[p]).length / prayers.length * 100) : 0;
 
   const mushaf = state.mushaf || {};
   const quranPct = Math.min(100, Math.round(((mushaf.pagesRead || mushaf.juzDone*20 || 0) / 20) * 100)) || (w.quran?60:0);
@@ -829,6 +833,11 @@ async function shareHarvest() {
   const origHTML = btn ? btn.innerHTML : '';
   if (btn) { btn.innerHTML = '⏳ جارٍ إنشاء الصورة...'; btn.disabled = true; }
 
+  if (typeof html2canvas !== 'function') {
+    if (btn) { btn.innerHTML = origHTML; btn.disabled = false; }
+    showToast('⚠️ إنشاء الصورة يحتاج اتصالاً بالإنترنت أول مرة');
+    return;
+  }
   try {
     await document.fonts.ready;
     const wrap = document.createElement('div');

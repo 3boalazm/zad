@@ -10,7 +10,8 @@
 (function loadDexie() {
   if (window.Dexie) return; /* already loaded */
   const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/dexie@3.2.7/dist/dexie.min.js';
+  /* Z19: موطَّن محليًا — كان jsdelivr يفشل أوفلاين فيموت طبقة IndexedDB */
+  s.src = 'js/vendor/dexie.min.js';
   s.async = false;
   document.head.appendChild(s);
 })();

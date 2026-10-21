@@ -135,7 +135,13 @@ html[data-theme="dark"] .hm-cross .cx-t,html[data-theme="oled"] .hm-cross .cx-t{
   var AR_MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
   /* مفاتيح اليوم الحالي (مطابقة لما يُسجَّل في app.js) */
   var TODAY_KEYS=['fajr','zuhr','asr','maghrib','isha','rawatib','duha','qiyam','morning_dhikr','evening_dhikr','takbeer_100','tawbah'];
-  function todayPct(s){var w=s.worship||{};var d=TODAY_KEYS.filter(function(k){return w[k];}).length;return Math.round(d/TODAY_KEYS.length*100);}
+  function todayPct(s){
+    var w=s.worship||{};
+    var keys=(window.ZadSpecial?window.ZadSpecial.required(TODAY_KEYS):TODAY_KEYS);
+    if(!keys.length) return 0;
+    var d=keys.filter(function(k){return w[k];}).length;
+    return Math.round(d/keys.length*100);
+  }
   function level(p){return p<=0?0:p<40?1:p<70?2:p<90?3:4;}
 
   function run(){
@@ -207,11 +213,12 @@ html[data-theme="dark"] .hm-cross .cx-t,html[data-theme="oled"] .hm-cross .cx-t{
   <script src="js/ui/micro-interactions.min.js" defer></script>
   <script src="js/diagnostics.min.js" defer></script>
   <script src="js/design-system.min.js" defer></script>
+  <script src="js/ui/special-mode.min.js" defer></script>
   <script src="js/app.min.js" defer></script>
   <script src="js/pwa-install-fab.min.js" defer></script>
 <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="js/vendor/gsap.min.js" defer></script>
 <script src="animations.min.js" defer></script>
 </body>
 </html>
