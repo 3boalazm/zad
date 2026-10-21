@@ -11,8 +11,19 @@
 (function () {
   'use strict';
 
-  /* ── بنية المنيو ─────────────────────────────────────────────────────── */
+  /* ── بنية المنيو (v4 — تقسيم مُعاد) ─────────────────────────────────────
+     13 مجموعة متوازنة (٤–٧ روابط للمجموعة) بدل ١١ مجموعة غير متوازنة
+     كانت أطولها «ركن الأطفال» بـ ١٩ رابطاً. الترتيب من الأهم إلى الأخفّ:
+       ١ الصلاة والتقويم   ٢ القرآن الكريم   ٣ الذكر والدعاء
+       ٤ المواسم والمناسك  ٥ الزكاة والصدقة   ٦ المكتبة والمعرفة
+       ٧ ركن الأطفال       ٨ ألعاب القرية     ٩ ورش وإبداع
+      ١٠ المتابعة والإحصاء ١١ العائلة والتربية ١٢ وضع خاص  ١٣ الإعدادات
+     العناوين بلا إيموجي (الإيموجي للروابط فقط) لاتساق بصري، وكل رابط
+     داخل مجموعته مرتّب من الأكثر استخداماً إلى الأقل.
+     ملاحظة: معرّفات الأقسام (sec-*) ثابتة عمداً — تعتمد عليها اختبارات
+     ومنطق localStorage، وأيّ معرّف جديد يُضاف إلى ALL_SECTIONS تحته. */
   const MENU = [
+    /* ٠ — نقطة البداية (خارج المجموعات) */
     { href: 'index.html',        icon: '🏠', label: 'لوحة التحكم', section: null },
 
     { sep: 'الصلاة والتقويم', id: 'sec-prayer' },
@@ -20,7 +31,6 @@
     { href: 'qibla.html',        icon: '🧭', label: 'اتجاه القبلة',    section: 'sec-prayer' },
     { href: 'hijri.html',        icon: '🗓️', label: 'التقويم الهجري',  section: 'sec-prayer' },
     { href: 'barnamaj.html',     icon: '📅', label: 'برنامج اليوم',     section: 'sec-prayer' },
-    { href: 'ramadan.html',      icon: '🌙', label: 'لوحة رمضان',      section: 'sec-prayer' },
 
     { sep: 'القرآن الكريم', id: 'sec-quran' },
     { href: 'mushaf.html',       icon: '📖', label: 'الورد اليومي',      section: 'sec-quran' },
@@ -30,62 +40,71 @@
 
     { sep: 'الذكر والدعاء', id: 'sec-dhikr' },
     { href: 'adhkar.html',       icon: '🤲', label: 'الأذكار',          section: 'sec-dhikr' },
-    { href: 'nawawi.html',       icon: '📜', label: 'الأربعون النووية', section: 'sec-dhikr' },
     { href: "du'a.html",         icon: '🌿', label: 'الأدعية',          section: 'sec-dhikr' },
     { href: 'dua-guide.html',    icon: '🙏', label: 'قيم الدعاء',       section: 'sec-dhikr' },
-    { href: 'ruqyah.html',       icon: '🛡️', label: 'الرقية الشرعية',  section: 'sec-dhikr' },
+    { href: 'nawawi.html',       icon: '📜', label: 'الأربعون النووية', section: 'sec-dhikr' },
     { href: 'sunan.html',        icon: '🌙', label: 'السنن المهجورة',  section: 'sec-dhikr' },
+    { href: 'ruqyah.html',       icon: '🛡️', label: 'الرقية الشرعية',  section: 'sec-dhikr' },
     { href: 'asma.html',         icon: '🌺', label: 'أسماء الله الحسنى',section: 'sec-dhikr' },
 
-    { sep: 'الحج والمناسك', id: 'sec-hajj' },
-    { href: 'fadael.html',       icon: '✨', label: 'فضائل العشر',     section: 'sec-hajj' },
+    { sep: 'المواسم والمناسك', id: 'sec-hajj' },
     { href: 'manasik.html',      icon: '🕋', label: 'مناسك الحج',       section: 'sec-hajj' },
     { href: 'arafah.html',       icon: '🌄', label: 'يوم عرفة',         section: 'sec-hajj' },
     { href: 'arafah-dua.html',   icon: '🤲', label: 'دعاء يوم عرفة',   section: 'sec-hajj' },
     { href: 'odhiya.html',       icon: '🐏', label: 'دليل الأضحية',     section: 'sec-hajj' },
-    { href: 'sadaqah.html',      icon: '💚', label: 'الصدقة والبر',     section: 'sec-hajj' },
-    { href: 'hasad.html',        icon: '📊', label: 'حصاد العبادات',     section: 'sec-hajj' },
-    { href: 'hikayat-hajj.html', icon: '🕋', label: 'حكاية حج (للأطفال)', section: 'sec-hajj' },
+    { href: 'fadael.html',       icon: '✨', label: 'فضائل العشر',     section: 'sec-hajj' },
+    { href: 'ramadan.html',      icon: '🌙', label: 'لوحة رمضان',      section: 'sec-hajj' },
 
-    { sep: 'الزكاة 💰', id: 'sec-tools' },
+    { sep: 'الزكاة والصدقة', id: 'sec-tools' },
+    { href: 'zakat.html',        icon: '🧮', label: 'حاسبة الزكاة',          section: 'sec-tools' },
     { href: 'zakat-ahkam.html',  icon: '📋', label: 'أحكام الزكاة',          section: 'sec-tools' },
     { href: 'zakat-anwa.html',   icon: '📊', label: 'أنواع الزكاة وحسابها',  section: 'sec-tools' },
-    { href: 'zakat.html',        icon: '🧮', label: 'حاسبة الزكاة',          section: 'sec-tools' },
+    { href: 'sadaqah.html',      icon: '💚', label: 'الصدقة والبر',     section: 'sec-tools' },
 
-    { sep: 'المكتبة الشاملة 📚', id: 'sec-learn' },
+    { sep: 'المكتبة والمعرفة', id: 'sec-learn' },
     { href: 'playlist.html',        icon: '🎵', label: 'المكتبة الصوتية', section: 'sec-learn' },
     { href: 'videos.html',          icon: '🎬', label: 'المكتبة المرئية', section: 'sec-learn' },
     { href: 'maktaba-nassiya.html', icon: '📖', label: 'المكتبة النصية',  section: 'sec-learn' },
 
-    { sep: 'ركن الأطفال 🌟', id: 'sec-kids' },
+    { sep: 'ركن الأطفال', id: 'sec-kids' },
     { href: 'kids.html',             icon: '🌟', label: 'ثُريّا — الرئيسية',  section: 'sec-kids' },
     { href: 'kids-tales.html',       icon: '🏮', label: 'حكايات القرية',    section: 'sec-kids' },
-    { href: 'kids-garden.html',      icon: '🌱', label: 'بستان الذكر',      section: 'sec-kids' },
-    { href: 'kids-gazette.html',     icon: '📰', label: 'صحيفة القرية',     section: 'sec-kids' },
-    { href: 'kids-detectives.html',  icon: '🔎', label: 'محقّق القرية',     section: 'sec-kids' },
-    { href: 'kids-city.html',        icon: '🏙️', label: 'مدينة الميزان',    section: 'sec-kids' },
-    { href: 'kids-memory.html',      icon: '🏛️', label: 'قصر الذاكرة',      section: 'sec-kids' },
-    { href: 'kids-liars.html',       icon: '⚖️', label: 'من يكذب؟',         section: 'sec-kids' },
-    { href: 'kids-recipe.html',      icon: '📐', label: 'الوصفة',           section: 'sec-kids' },
-    { href: 'kids-compass.html',     icon: '🧭', label: 'الطريق إلى البيت',  section: 'sec-kids' },
-    { href: 'kids-lab.html',         icon: '🔁', label: 'التجربة',          section: 'sec-kids' },
-    { href: 'kids-hospitality.html', icon: '🫖', label: 'ترتيب الضيافة',     section: 'sec-kids' },
-    { href: 'kids-day.html',         icon: '🕰️', label: 'يومي',             section: 'sec-kids' },
     { href: 'ghars.html',            icon: '🌱', label: 'غرس — قصص للأطفال', section: 'sec-kids' },
-    { href: 'kids-heroes.html',      icon: '🦁', label: 'عرين الأبطال',      section: 'sec-kids' },
+    { href: 'kids-gazette.html',     icon: '📰', label: 'صحيفة القرية',     section: 'sec-kids' },
+    { href: 'hikayat-hajj.html',     icon: '🕋', label: 'حكاية حج',          section: 'sec-kids' },
     { href: 'kids-school.html',      icon: '🏫', label: 'مدرستي الجميلة',    section: 'sec-kids' },
-    { href: 'kids-fun.html',         icon: '🎮', label: 'شاشة المرح',        section: 'sec-kids' },
-    { href: 'kids-creativity.html',  icon: '🎨', label: 'نادي الإبداع',      section: 'sec-kids' },
-    { href: 'kids-parents.html',     icon: '👨‍👧', label: 'دليل المربي',     section: 'sec-kids' },
+    { href: 'kids-day.html',         icon: '🕰️', label: 'يومي',             section: 'sec-kids' },
 
-    { sep: 'المتابعة', id: 'sec-track' },
-    { href: 'hasad-month.html',  icon: '🗓️', label: 'حصاد الشهر',       section: 'sec-track' },
-    { href: 'summary.html',      icon: '📈', label: 'إحصاء العبادات',     section: 'sec-track' },
+    { sep: 'ألعاب القرية', id: 'sec-kids-play' },
+    { href: 'kids-detectives.html',  icon: '🔎', label: 'محقّق القرية',   section: 'sec-kids-play' },
+    { href: 'kids-city.html',        icon: '🏙️', label: 'مدينة الميزان',  section: 'sec-kids-play' },
+    { href: 'kids-memory.html',      icon: '🏛️', label: 'قصر الذاكرة',    section: 'sec-kids-play' },
+    { href: 'kids-liars.html',       icon: '⚖️', label: 'من يكذب؟',       section: 'sec-kids-play' },
+    { href: 'kids-heroes.html',      icon: '🦁', label: 'عرين الأبطال',   section: 'sec-kids-play' },
+    { href: 'kids-fun.html',         icon: '🎮', label: 'شاشة المرح',      section: 'sec-kids-play' },
+
+    { sep: 'ورش وإبداع', id: 'sec-kids-lab' },
+    { href: 'kids-garden.html',      icon: '🌱', label: 'بستان الذكر',     section: 'sec-kids-lab' },
+    { href: 'kids-recipe.html',      icon: '📐', label: 'الوصفة',          section: 'sec-kids-lab' },
+    { href: 'kids-compass.html',     icon: '🧭', label: 'الطريق إلى البيت', section: 'sec-kids-lab' },
+    { href: 'kids-lab.html',         icon: '🔁', label: 'التجربة',          section: 'sec-kids-lab' },
+    { href: 'kids-hospitality.html', icon: '🫖', label: 'ترتيب الضيافة',    section: 'sec-kids-lab' },
+    { href: 'kids-creativity.html',  icon: '🎨', label: 'نادي الإبداع',     section: 'sec-kids-lab' },
+
+    { sep: 'المتابعة والإحصاء', id: 'sec-track' },
+    { href: 'hasad.html',        icon: '📊', label: 'حصاد العبادات',   section: 'sec-track' },
+    { href: 'hasad-month.html',  icon: '🗓️', label: 'حصاد الشهر',      section: 'sec-track' },
+    { href: 'summary.html',      icon: '📈', label: 'إحصاء العبادات',   section: 'sec-track' },
     { href: 'badges.html',       icon: '🏅', label: 'أوسمتي',           section: 'sec-track' },
 
-    { sep: 'التنافس العائلي 👨‍👩‍👧', id: 'sec-family' },
+    { sep: 'العائلة والتربية', id: 'sec-family' },
     { href: 'groups.html',         icon: '👨‍👩‍👧', label: 'المجموعات والمنافسة', section: 'sec-family' },
+    { href: 'kids-parents.html',   icon: '👨‍👧', label: 'دليل المربي',          section: 'sec-family' },
     { href: 'groups-privacy.html', icon: '🔒', label: 'الخصوصية وكيف يعمل',   section: 'sec-family' },
+
+    { sep: 'وضع خاص', id: 'sec-special' },
+    { href: 'zahra.html',        icon: '🌸', label: 'زهرة — رفيقةُ العذر',   section: 'sec-special' },
+    { href: 'hawwa.html',        icon: '🌙', label: 'حواء — عبادتي في عذري', section: 'sec-special' },
 
     { sep: 'الإعدادات', id: 'sec-settings' },
     { href: 'profile.html',      icon: '👤', label: 'حسابي',            section: 'sec-settings' },
@@ -93,26 +112,38 @@
     { href: 'report.html',       icon: '🚩', label: 'بلاغ مشكلة',       section: 'sec-settings' },
     { href: 'about.html',        icon: 'ℹ️', label: 'عن التطبيق',       section: 'sec-settings' },
     { href: 'developer.html',    icon: '🎨', label: 'عن المطوّر',       section: 'sec-settings' },
-
-    { sep: 'وضع خاص', id: 'sec-special' },
-    { href: 'zahra.html',        icon: '🌸', label: 'زهرة — رفيقةُ العذر',   section: 'sec-special' },
-    { href: 'hawwa.html',        icon: '🌙', label: 'حواء — عبادتي في عذري', section: 'sec-special' },
   ];
 
   /* ── مفاتيح التخزين ──────────────────────────────────────────────────── */
-  const STORE_OPEN    = 'zad_menu_open';    /* أقسام مفتوحة */
-  const STORE_SCROLL  = 'zad_menu_scroll';  /* موضع التمرير */
+  /* v2: تقسيم المنيو اتغيّر، فالحالة القديمة (زمن الـ11 قسم) ما بقتش مناسبة.
+     مفتاح جديد = أول زيارة بتقسيم الجديد تبدأ بالافتراضي الصحّ. */
+  const STORE_OPEN    = 'zad_menu_open_v2';   /* أقسام مفتوحة */
+  const STORE_SCROLL  = 'zad_menu_scroll';    /* موضع التمرير */
 
-  /* ── الأقسام المفتوحة افتراضياً ─────────────────────────────────────── */
-  /* sec-dhikr و sec-tools كانتا غائبتين: قسمُ الذكر والزكاة يبدآن مطويَّين في أول زيارة */
-  const ALL_SECTIONS = ['sec-prayer','sec-quran','sec-tools','sec-hajj','sec-dhikr','sec-learn','sec-kids','sec-track','sec-family','sec-settings','sec-special'];
+  /* ── كل الأقسام (بالترتيب الظاهر) ───────────────────────────────────── */
+  const ALL_SECTIONS = [
+    'sec-prayer','sec-quran','sec-dhikr','sec-hajj','sec-tools','sec-learn',
+    'sec-kids','sec-kids-play','sec-kids-lab','sec-track','sec-family',
+    'sec-special','sec-settings'
+  ];
+
+  /* الأقسام اللي بتفتح لوحدها في أول زيارة.
+     قبل كده كان كل الـ11 قسم مفتوحين → ٦٢ رابط في عمود واحد على أول فتحة.
+     دلوقتي: القسم النشط بس، وعلى لوحة التحكم الثلاثة الأساسية. */
+  function defaultOpenSections() {
+    const active = activeSectionId();
+    if (active) return [active];
+    return ['sec-prayer','sec-quran','sec-dhikr'];
+  }
   function getOpenSections() {
     try {
       const stored = localStorage.getItem(STORE_OPEN);
-      /* أول زيارة: كل الأقسام مفتوحة لإظهار كل الصفحات */
-      if (stored === null) return ALL_SECTIONS.slice();
-      return JSON.parse(stored || '[]');
-    } catch { return ALL_SECTIONS.slice(); }
+      if (stored === null) return defaultOpenSections();
+      const arr = JSON.parse(stored || '[]');
+      if (!Array.isArray(arr)) return defaultOpenSections();
+      /* تنظيف أي معرّفات قديمة/غريبة */
+      return arr.filter(id => ALL_SECTIONS.indexOf(id) !== -1);
+    } catch { return defaultOpenSections(); }
   }
   function setOpenSections(arr) {
     try { localStorage.setItem(STORE_OPEN, JSON.stringify(arr)); } catch {}
@@ -201,43 +232,65 @@
   .zad-install-row .zad-inst-btn.primary:hover{background:var(--green-mid)}
   html[data-theme="dark"] .zad-inst-btn.primary,html[data-theme="oled"] .zad-inst-btn.primary{background:var(--sys-green);color:#002208}
 
+  /* ═══ شريط أدوات المنيو: بحث + فتح/طي الكل ═══ */
+  /* sticky — لازم specificity أعلى من .sidebar > *:not(.zad-fx) في نفس الورقة */
+  .sidebar > .zad-nav-tools{position:sticky;top:0;z-index:6;margin:0 -18px;padding:8px 18px 10px;background:linear-gradient(180deg,#0e3b2e 76%,rgba(14,59,46,0))}
+  html[data-theme="dark"] .sidebar > .zad-nav-tools{background:linear-gradient(180deg,#0a1710 76%,rgba(10,23,16,0))}
+  html[data-theme="oled"] .sidebar > .zad-nav-tools{background:linear-gradient(180deg,#030303 76%,rgba(3,3,3,0))}
+  .zad-nav-search{display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:12px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);transition:border-color .2s,background .2s}
+  .zad-nav-search:focus-within{border-color:rgba(230,201,122,.55);background:rgba(255,255,255,.10)}
+  .zad-nav-search .zns-ico{font-size:13px;opacity:.75;flex-shrink:0}
+  .zad-nav-search .zns-input{flex:1;min-width:0;border:none;outline:none;background:transparent;color:#f4ecd6;font-family:inherit;font-size:13px;font-weight:600;padding:0}
+  .zad-nav-search .zns-input::placeholder{color:rgba(244,236,214,.45);font-weight:500}
+  .zad-nav-search .zns-input::-webkit-search-cancel-button{display:none}
+  .zad-nav-search .zns-clear{border:none;background:rgba(255,255,255,.12);color:#f4ecd6;width:19px;height:19px;border-radius:50%;font-size:10px;line-height:1;cursor:pointer;flex-shrink:0;padding:0}
+  .zad-nav-search .zns-clear:hover{background:rgba(255,255,255,.22)}
+  .zad-nav-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 2px 0}
+  .zad-nav-all{border:none;background:transparent;color:rgba(230,201,122,.9);font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;padding:3px 4px;border-radius:7px;transition:color .2s,background .2s}
+  .zad-nav-all:hover{color:#f6e0a6;background:rgba(230,201,122,.10)}
+  .zad-nav-all:focus-visible{outline:2px solid rgba(230,201,122,.5);outline-offset:1px}
+  .zad-nav-total{font-size:10.5px;font-weight:700;color:rgba(244,236,214,.42)}
+  .zad-nav-empty{margin:10px 4px;padding:12px;border-radius:11px;background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.15);color:rgba(244,236,214,.7);font-size:12.5px;font-weight:600;text-align:center}
+
   /* ═══ فواصل الأقسام (قابلة للطي) ═══ */
   .nav-sep{
-    font-size:13px;font-weight:800;letter-spacing:1px;color:#e6c97a;
-    padding:14px 12px 7px;position:relative;display:flex;align-items:center;
-    gap:8px;opacity:1;cursor:pointer;user-select:none;
-    transition:color .2s;
+    font-size:12.5px;font-weight:800;letter-spacing:.2px;color:#e6c97a;
+    padding:13px 8px 6px;position:relative;display:flex;align-items:center;
+    gap:7px;cursor:pointer;user-select:none;transition:color .2s;
+    border-top:1px solid rgba(230,201,122,.10);margin-top:3px;border-radius:8px;
   }
-  .nav-sep:hover{color:#f0d898}
-  html[data-theme="dark"] .nav-sep:hover,html[data-theme="oled"] .nav-sep:hover{color:#f0d898}
-  .nav-sep::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(230,201,122,.35),transparent)}
-  .nav-sep .sep-arrow{font-size:11px;transition:transform .25s;margin-right:2px;color:#e6c97a}
+  .nav-sep:first-of-type{border-top:none;margin-top:0;padding-top:4px}
+  .nav-sep:hover{color:#f6e0a6}
+  .nav-sep:focus-visible{outline:2px solid rgba(230,201,122,.5);outline-offset:-1px}
+  .nav-sep::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(230,201,122,.26),transparent)}
+  .nav-sep .sep-arrow{font-size:10px;transition:transform .25s;color:rgba(230,201,122,.75);width:11px;text-align:center;flex-shrink:0}
   .nav-sep.collapsed .sep-arrow{transform:rotate(-90deg)}
+  .nav-sep .sep-txt{white-space:nowrap}
+  .nav-sep .sep-count{font-size:10.5px;font-weight:800;letter-spacing:0;line-height:1;color:rgba(230,201,122,.7);background:rgba(230,201,122,.10);border:1px solid rgba(230,201,122,.18);border-radius:99px;padding:2px 7px;flex-shrink:0}
 
-  /* Desktop: فتح بـ hover + إشارة بصرية */
-  @media(hover:hover) and (pointer:fine) {
-    .nav-sep:hover + .nav-group.collapsed,
-    .nav-sep:hover + .nav-group.collapsed:hover {
-      max-height:1000px !important;
-      opacity:1 !important;
-      pointer-events:auto !important;
-    }
-    /* تأثير hover على الـ nav-sep */
-    .nav-sep:hover { opacity:1; }
-  }
+  /* مجموعة العناصر القابلة للطي
+     ملاحظة: مفيش سقف ارتفاع ثابت هنا. القصّ (max-height) بيتحسب
+     بالجافاسكربت من scrollHeight الحقيقي للمجموعة، وبعد نهاية الحركة
+     بيتحوّل لـ none — فالمجموعات الطويلة مش بتتقصّ زي الأول (1000px). */
+  .nav-group{overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,visibility .25s}
+  .nav-group.collapsed{max-height:0 !important;opacity:0;visibility:hidden;pointer-events:none}
 
-  /* مجموعة العناصر القابلة للطي */
-  .nav-group{overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .25s ease}
-  .nav-group.collapsed{max-height:0 !important;opacity:0;pointer-events:none}
+  /* نتائج البحث */
+  .nav a.zad-no-hit,.nav-sep.zad-no-hit,.nav-group.zad-no-hit{display:none !important}
 
   /* ═══ روابط المنيو ═══ */
+  /* كثافة أعلى: ٦٢ رابط في عمود واحد محتاجين صفوف أقصر
+     (كان 17px + padding 12px — بقى 15px + 9px) */
   .sidebar .nav a{
-    display:flex;align-items:center;gap:12px;padding:12px 14px;
-    border-radius:13px;color:#f4ecd6;text-decoration:none;
-    font-size:17px;font-weight:600;position:relative;overflow:hidden;
+    display:flex;align-items:center;gap:10px;padding:9px 11px;
+    border-radius:11px;color:#f4ecd6;text-decoration:none;
+    font-size:15px;font-weight:600;position:relative;overflow:hidden;
     transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .25s,color .2s,box-shadow .25s;
     animation:zadNavIn .45s cubic-bezier(.22,.68,0,1) backwards;
   }
+  /* احترام مقياس الخط في الإعدادات (كان بيتلغى بسبب الحجم الثابت فوق) */
+  html[data-fs="sm"] .sidebar .nav a{font-size:13.5px}
+  html[data-fs="lg"] .sidebar .nav a,html[data-font="lg"] .sidebar .nav a,html[data-font="xl"] .sidebar .nav a{font-size:16.5px}
   .sidebar .nav a::before{
     content:'';position:absolute;inset:0;border-radius:inherit;
     background:linear-gradient(90deg,transparent,rgba(201,161,74,.16),transparent);
@@ -246,7 +299,7 @@
   .sidebar .nav a:hover{background:rgba(255,255,255,.1);color:#ffffff;transform:translateX(-4px);box-shadow:0 4px 16px rgba(0,0,0,.18),0 0 0 1px rgba(201,161,74,.30)}
   .sidebar .nav a:hover::before{transform:translateX(-120%)}
   html[data-theme="dark"] .sidebar .nav a:hover,html[data-theme="oled"] .sidebar .nav a:hover{color:#ffffff}
-  .sidebar .nav a .ico{font-size:19px;width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border-radius:10px;transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .25s}
+  .sidebar .nav a .ico{font-size:16.5px;width:29px;height:29px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border-radius:9px;transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .25s}
   .sidebar .nav a:hover .ico{transform:scale(1.12) rotate(-4deg);background:rgba(201,161,74,.3)}
   .sidebar .nav a.active{background:linear-gradient(135deg,rgba(201,161,74,.28),rgba(42,122,95,.20));color:#ffffff;font-weight:800;box-shadow:0 6px 22px rgba(0,0,0,.2),0 0 0 1px rgba(201,161,74,.45),inset 0 0 24px rgba(201,161,74,.12)}
   html[data-theme="dark"] .sidebar .nav a.active,html[data-theme="oled"] .sidebar .nav a.active{color:#ffffff}
@@ -394,42 +447,99 @@
      بناء القائمة مع الأقسام القابلة للطي
      ════════════════════════════════════════════════════════════════════ */
   function buildNav(navEl) {
-    const cur       = currentFile();
+    const cur         = currentFile();
     const activeSecId = activeSectionId();
-    const openSecs  = getOpenSections();
+    const openSecs    = getOpenSections();
 
     /* تأكد إن القسم النشط مفتوح دايماً */
-    if (activeSecId && !openSecs.includes(activeSecId)) {
+    if (activeSecId && openSecs.indexOf(activeSecId) === -1) {
       openSecs.push(activeSecId);
-      /* القسم بتاع index مفتوح دايماً */
       setOpenSections(openSecs);
     }
+
+    /* عدد روابط كل مجموعة — بيتعرض في الفاصل كشارة صغيرة */
+    const counts = {};
+    MENU.forEach(it => { if (it.section) counts[it.section] = (counts[it.section] || 0) + 1; });
 
     /* بناء الـ HTML */
     let html = '';
     let currentGroupId = null;
-    let groupDelay = 0;
+    let rank = 0;
 
-    MENU.forEach((item, i) => {
+    MENU.forEach((item) => {
       if (item.sep) {
         /* أغلق الجروب السابق */
         if (currentGroupId) html += '</div>';
         currentGroupId = item.id;
-        const isOpen = openSecs.includes(item.id) || item.id === activeSecId;
-        html += `<div class="nav-sep ${isOpen ? '' : 'collapsed'}" data-sec="${item.id}" role="button" tabindex="0" aria-expanded="${isOpen}" aria-controls="grp-${item.id}" onclick="window._zadToggleSec('${item.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window._zadToggleSec('${item.id}')}">
-          <span class="sep-arrow">▾</span>${item.sep}
+        const isOpen = openSecs.indexOf(item.id) !== -1 || item.id === activeSecId;
+        const cls = isOpen ? 'nav-sep' : 'nav-sep collapsed';
+        const gcls = isOpen ? 'nav-group' : 'nav-group collapsed';
+        html += `<div class="${cls}" data-sec="${item.id}" role="button" tabindex="0" aria-expanded="${isOpen}" aria-controls="grp-${item.id}" onclick="window._zadToggleSec('${item.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window._zadToggleSec('${item.id}')}">
+          <span class="sep-arrow" aria-hidden="true">▾</span><span class="sep-txt">${item.sep}</span><span class="sep-count" aria-hidden="true">${counts[item.id] || 0}</span>
         </div>
-        <div class="nav-group ${isOpen ? '' : 'collapsed'}" id="grp-${item.id}" style="max-height:${isOpen ? '1000px' : '0'}">`;
+        <div class="${gcls}" id="grp-${item.id}" style="max-height:${isOpen ? 'none' : '0'}">`;
         return;
       }
       /* رابط عادي */
       const isActive = item.href.toLowerCase() === cur;
-      groupDelay += 22;
-      html += `<a href="${item.href}" class="${isActive ? 'active' : ''}" style="animation-delay:${groupDelay}ms">
-        <span class="ico">${item.icon}</span><span>${item.label}</span></a>`;
+      rank += 1;
+      const dash = item.section ? '' : ' data-dash="1"';
+      html += `<a href="${item.href}"${dash}${isActive ? ' aria-current="page"' : ''} class="${isActive ? 'active' : ''}" style="animation-delay:${Math.min(rank, 16) * 18}ms">
+        <span class="ico" aria-hidden="true">${item.icon}</span><span>${item.label}</span></a>`;
     });
     if (currentGroupId) html += '</div>';
     navEl.innerHTML = html;
+
+    /* الشارة/حالة الفتح الافتراضية */
+    syncToggleAllLabel();
+  }
+
+  /* ── فتح/غلق مجموعة بارتفاعها الحقيقي (مش 1000px ثابتة) ───────────── */
+  function openGroup(grp) {
+    if (!grp) return;
+    grp.classList.remove('collapsed');
+    /* scrollHeight الحقيقي؛ لو رجع 0 (متصفح مش بيعمل layout للمجموعة)
+       بنفتح بسقف كبير آمن بدل ما المجموعة تفضل مقفولة */
+    const h = grp.scrollHeight || grp.getBoundingClientRect().height;
+    grp.style.maxHeight = (h > 0 ? h : 2400) + 'px';
+    const done = () => {
+      grp.style.maxHeight = 'none';
+      grp.removeEventListener('transitionend', done);
+    };
+    grp.addEventListener('transitionend', done);
+    setTimeout(done, 400);   /* احتياط لو الحركة متعطّلة (reduced-motion) */
+  }
+  function closeGroup(grp) {
+    if (!grp) return;
+    if (!grp.style.maxHeight || grp.style.maxHeight === 'none') {
+      const h = grp.scrollHeight || grp.getBoundingClientRect().height;
+      grp.style.maxHeight = (h > 0 ? h : 2400) + 'px';
+      void grp.offsetHeight;   /* flush عشان الحركة تشتغل */
+    }
+    grp.classList.add('collapsed');
+    grp.style.maxHeight = '0px';
+  }
+
+  /* حفظ أي الأقسام مفتوحة */
+  function persistOpen() {
+    const open = [];
+    document.querySelectorAll('.nav-sep:not(.collapsed)').forEach(el => {
+      const s = el.getAttribute('data-sec');
+      if (s && !el.classList.contains('zad-no-hit')) open.push(s);
+    });
+    setOpenSections(open);
+    syncToggleAllLabel();
+  }
+
+  function syncToggleAllLabel() {
+    const btn = document.getElementById('zad-nav-all');
+    if (!btn) return;
+    const seps = [...document.querySelectorAll('.nav-sep:not(.zad-no-hit)')];
+    const allOpen = seps.length > 0 && seps.every(s => !s.classList.contains('collapsed'));
+    btn.textContent = allOpen ? 'طي الكل' : 'فتح الكل';
+    btn.setAttribute('aria-label', allOpen ? 'طي كل الأقسام' : 'فتح كل الأقسام');
+    const q = document.getElementById('zad-nav-q');
+    btn.hidden = !!(q && q.value.trim());
   }
 
   /* تبديل القسم مفتوح/مقفول */
@@ -440,23 +550,175 @@
     const isOpen = !sep.classList.contains('collapsed');
     if (isOpen) {
       sep.classList.add('collapsed');
-      grp.classList.add('collapsed');
-      grp.style.maxHeight = '0';
       sep.setAttribute('aria-expanded', 'false');
+      closeGroup(grp);
     } else {
       sep.classList.remove('collapsed');
-      grp.classList.remove('collapsed');
-      grp.style.maxHeight = '1000px';
       sep.setAttribute('aria-expanded', 'true');
+      openGroup(grp);
     }
-    /* حفظ الحالة */
-    const open = [];
-    document.querySelectorAll('.nav-sep:not(.collapsed)').forEach(el => {
-      const s = el.getAttribute('data-sec');
-      if (s) open.push(s);
-    });
-    setOpenSections(open);
+    persistOpen();
   };
+
+  /* فتح/طي الكل */
+  window._zadToggleAll = function() {
+    const seps = [...document.querySelectorAll('.nav-sep:not(.zad-no-hit)')];
+    const anyClosed = seps.some(s => s.classList.contains('collapsed'));
+    seps.forEach(sep => {
+      const grp = document.getElementById('grp-' + sep.dataset.sec);
+      if (!grp) return;
+      if (anyClosed) {
+        sep.classList.remove('collapsed');
+        sep.setAttribute('aria-expanded', 'true');
+        grp.classList.remove('collapsed');
+        grp.style.maxHeight = 'none';
+      } else {
+        sep.classList.add('collapsed');
+        sep.setAttribute('aria-expanded', 'false');
+        closeGroup(grp);
+      }
+    });
+    persistOpen();
+  };
+
+  /* ── البحث في القائمة (٦٢ رابط مش سهل تتلاقي بالعين) ──────────────── */
+  function filterMenu(rawQuery) {
+    const nav = document.querySelector('.sidebar .nav') || document.querySelector('.nav');
+    if (!nav) return;
+    const q     = (rawQuery || '').trim().toLowerCase();
+    const seps  = [...nav.querySelectorAll('.nav-sep')];
+    const empty = document.getElementById('zad-nav-empty');
+    const dash  = nav.querySelector('a[data-dash]');
+
+    if (!q) {
+      /* رجوع للحالة المحفوظة */
+      nav.querySelectorAll('.zad-no-hit').forEach(el => el.classList.remove('zad-no-hit'));
+      const openSecs = getOpenSections();
+      const active   = activeSectionId();
+      seps.forEach(sep => {
+        const id  = sep.dataset.sec;
+        const grp = document.getElementById('grp-' + id);
+        const isOpen = openSecs.indexOf(id) !== -1 || id === active;
+        sep.classList.toggle('collapsed', !isOpen);
+        sep.setAttribute('aria-expanded', String(isOpen));
+        if (!grp) return;
+        if (isOpen) { grp.classList.remove('collapsed'); grp.style.maxHeight = 'none'; }
+        else { grp.classList.add('collapsed'); grp.style.maxHeight = '0px'; }
+      });
+      if (empty) empty.hidden = true;
+      syncToggleAllLabel();
+      return;
+    }
+
+    let total = 0;
+    const match = (a) => (a.textContent + ' ' + (a.getAttribute('href') || '')).toLowerCase().includes(q);
+
+    if (dash) {
+      const hit = match(dash);
+      dash.classList.toggle('zad-no-hit', !hit);
+      if (hit) total += 1;
+    }
+
+    seps.forEach(sep => {
+      const grp = document.getElementById('grp-' + sep.dataset.sec);
+      if (!grp) return;
+      const links = [...grp.querySelectorAll('a')];
+      let hits = 0;
+      links.forEach(a => {
+        const hit = match(a);
+        a.classList.toggle('zad-no-hit', !hit);
+        if (hit) hits += 1;
+      });
+      const has = hits > 0;
+      total += hits;
+      sep.classList.toggle('zad-no-hit', !has);
+      grp.classList.toggle('zad-no-hit', !has);
+      if (has) {
+        sep.classList.remove('collapsed');
+        sep.setAttribute('aria-expanded', 'true');
+        grp.classList.remove('collapsed');
+        grp.style.maxHeight = 'none';
+      }
+    });
+
+    if (empty) empty.hidden = total > 0;
+    syncToggleAllLabel();
+  }
+
+  /* ── شريط الأدوات فوق القائمة ─────────────────────────────────────── */
+  function ensureNavTools(navEl) {
+    if (!navEl || !navEl.parentNode) return;
+    if (document.querySelector('.zad-nav-tools')) return;
+    const box = document.createElement('div');
+    box.className = 'zad-nav-tools';
+    box.innerHTML =
+      '<div class="zad-nav-search">' +
+        '<span class="zns-ico" aria-hidden="true">🔍</span>' +
+        '<input id="zad-nav-q" class="zns-input" type="text" autocomplete="off" spellcheck="false" placeholder="ابحث في القائمة…" aria-label="ابحث في القائمة">' +
+        '<button type="button" class="zns-clear" id="zad-nav-clear" aria-label="مسح البحث" hidden>✕</button>' +
+      '</div>' +
+      '<div class="zad-nav-actions">' +
+        '<button type="button" class="zad-nav-all" id="zad-nav-all" aria-label="فتح كل الأقسام">فتح الكل</button>' +
+        '<span class="zad-nav-total" id="zad-nav-total"></span>' +
+      '</div>' +
+      '<div class="zad-nav-empty" id="zad-nav-empty" hidden>لا توجد صفحة بهذا الاسم</div>';
+    navEl.parentNode.insertBefore(box, navEl);
+
+    const totalEl = box.querySelector('#zad-nav-total');
+    if (totalEl) totalEl.textContent = (MENU.filter(m => m.href && m.section).length) + ' صفحة';
+  }
+
+  function wireNavTools() {
+    const q     = document.getElementById('zad-nav-q');
+    const clear = document.getElementById('zad-nav-clear');
+    const all   = document.getElementById('zad-nav-all');
+    if (!q) return;
+
+    let timer = null;
+    q.addEventListener('input', () => {
+      if (clear) clear.hidden = !q.value;
+      clearTimeout(timer);
+      timer = setTimeout(() => filterMenu(q.value), 80);
+    });
+    q.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        q.value = '';
+        if (clear) clear.hidden = true;
+        filterMenu('');
+        q.blur();
+      } else if (e.key === 'Enter') {
+        const first = document.querySelector('.nav a:not(.zad-no-hit)');
+        if (first) first.click();
+      }
+    });
+    if (clear) clear.onclick = () => { q.value = ''; clear.hidden = true; filterMenu(''); q.focus(); };
+    if (all)   all.onclick   = () => window._zadToggleAll();
+
+    /* اختصار / لفتح البحث */
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+      const el = document.activeElement;
+      const tag = (el && el.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || (el && el.isContentEditable)) return;
+      e.preventDefault();
+      q.focus();
+      q.select();
+    });
+
+    syncToggleAllLabel();
+  }
+
+  /* ── إظهار الرابط النشط داخل مجال الرؤية ───────────────────────────── */
+  function revealActive(sidebar) {
+    if (!sidebar) return;
+    const active = sidebar.querySelector('.nav a.active');
+    if (!active) return;
+    const sb = sidebar.getBoundingClientRect();
+    const a  = active.getBoundingClientRect();
+    if (a.top < sb.top + 12 || a.bottom > sb.bottom - 12) {
+      sidebar.scrollTop += (a.top - sb.top) - Math.max(60, sb.height * 0.3);
+    }
+  }
 
   /* ══════════════════════════════════════════════════════════════════════
      محوّل اللغة الثلاثي
@@ -776,13 +1038,16 @@
     ensureSidebarShell(sidebar);
     const navEl   = document.querySelector('.sidebar .nav') || document.querySelector('.nav');
     if (navEl) {
+      ensureNavTools(navEl);
       buildNav(navEl);
+      wireNavTools();
       /* حفظ الـ scroll عند الضغط على أي رابط */
       navEl.addEventListener('click', () => saveScroll(navEl), true);
     }
     if (sidebar) {
       injectFlares(sidebar);
       restoreScroll(sidebar);
+      requestAnimationFrame(() => revealActive(sidebar));
       /* محوّل اللغة — يستبدل زر sidebar-lang-btn */
       const langBtn = sidebar.querySelector('.sidebar-lang-btn');
       if (langBtn) buildLangSwitcher(langBtn);
