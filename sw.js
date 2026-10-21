@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261020-home-r13';
+const CACHE_STATIC = 'zad-20261021-zakat-r15';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -84,9 +84,9 @@ const PRECACHE = [
   './qibla.html',                                   /* حساب اتجاه القبلة محلي بالكامل */
   './barnamaj.html',                                /* الوجهة الفعلية لاختصار "ورد اليوم" و redirect صفحة worship.html */
   './mushaf-quran.html', './js/quran-module.min.js',    /* قارئ المصحف: الصفحة نفسها + رسائل الخطأ المدمجة فيها أفضل من fallback الـ SW العام */
-  './zakat.html', './js/zakat-module.min.js', './zakat-ahkam.html', './zakat-anwa.html',
-  './odhiya.html',
-  './manasik.html', './js/hajj-module.min.js', './arafah.html', './js/audio-manager.min.js',
+  './zakat.html', './js/ui/zakat-engine.js', './zakat-ahkam.html', './zakat-anwa.html',
+  './odhiya.html', './js/ui/hajj-now.js',
+  './manasik.html', './arafah.html', './js/audio-manager.min.js', './hasad.html', './sadaqah.html',
   './arafah-dua.html', './hikayat-hajj.html',
   './ai.html', './js/ai-guard.min.js', './js/advanced-ai-module.min.js', /* المساعد المحلي (أذكار/سيرة/فقه) يعمل أوفلاين؛ المحادثة فقط تحتاج نتاً وتُعرَض برسالة صريحة */
   './kids.html', './kids-tales.html', './kids-garden.html', './kids-gazette.html',
@@ -95,6 +95,12 @@ const PRECACHE = [
   './kids-lab.html', './kids-hospitality.html', './kids-day.html',
   './kids-heroes.html', './kids-school.html',
   './kids-fun.html', './kids-creativity.html', './kids-parents.html',
+
+  /* ── R14: المكتبة النصية + محرّكات اليوم ──
+     صفحة المكتبة وبياناتها تُخزَّن مسبقًا، فيعمل البحث في ١٥٠ حديثًا بلا شبكة.
+     الجلب الحيّ لبقية الموسوعة يمرّ عبر /api/ وهو مستثنى من الكاش أصلًا. */
+  './maktaba-nassiya.html', './js/data/maktaba.js', './js/ui/library-data.js',
+  './js/data/verses.js', './js/data/videos.js', './js/ui/daily-verse.js', './js/ui/media-random.js',
 ];
 
 /* ── لا تُخزَّن أبداً ── */
@@ -138,7 +144,8 @@ const bypass = url => BYPASS.some(p => url.includes(p));
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_STATIC)
-      .then(c => c.addAll(PRECACHE))
+      /* addAll يرفض الكل لو سقط أصل واحد — والتالي يُخزّن ما نجح ويترك الباقي */
+      .then(c => Promise.allSettled(PRECACHE.map(u => c.add(u))))
       .catch(() => {})           /* لا تفشل التثبيت لو أصل واحد لم يُحمَّل */
       .then(() => self.skipWaiting())
   );

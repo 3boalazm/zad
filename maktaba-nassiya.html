@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
 <title>المكتبة النصية — زاد</title>
-<meta name="description" content="المكتبة النصية: كتب ومقالات ورسائل قصيرة — قيد التطوير.">
+<meta name="description" content="المكتبة النصية في زاد: ٧ أبواب و٤١ بابًا فرعيًا من الأحاديث النبوية المشروحة، تتجاوز ٤٢٧٠ حديثًا، مع بحث فوري ونسخة تعمل بلا إنترنت.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
@@ -19,35 +19,157 @@
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
 html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
 h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
-.lib-hero{background:linear-gradient(135deg,#0e3b2e 0%,#1a5d47 60%,#c9a14a 150%);border-radius:22px;padding:30px 26px;color:#fff;position:relative;overflow:hidden;margin-bottom:18px;box-shadow:0 16px 48px -12px rgba(14,59,46,.4)}
-.lib-hero::after{content:'📖';position:absolute;top:16px;left:24px;font-size:54px;opacity:.12;line-height:1}
-.lib-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:3px;font-weight:700;margin-bottom:8px}
-.lib-title{font-size:27px;font-weight:900;line-height:1.25;margin-bottom:8px;font-family:'ThmanyahSans',sans-serif}
-.lib-sub{font-size:13.5px;color:rgba(255,255,255,.85);line-height:1.85;max-width:560px}
-.soon{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--card);border:1.5px dashed var(--green-soft);border-radius:20px;padding:34px 22px;margin-bottom:18px;box-shadow:var(--shadow-sm)}
-.soon .soon-ico{font-size:54px;margin-bottom:10px;animation:soonPulse 2.4s ease-in-out infinite}
-@keyframes soonPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.08);opacity:1}}
-.soon .soon-badge{display:inline-block;background:linear-gradient(135deg,var(--gold),#e6c97a);color:#3a2e10;font-weight:800;font-size:12px;padding:5px 14px;border-radius:999px;margin-bottom:12px}
-.soon h2{font-size:19px;color:var(--green-deep);margin:0 0 8px}
-html[data-theme="dark"] .soon h2,html[data-theme="oled"] .soon h2{color:var(--sys-green)}
-.soon p{font-size:13.5px;color:var(--muted);line-height:1.9;max-width:440px;margin:0}
-.lib-sec-title{display:flex;align-items:center;gap:10px;margin:22px 0 12px;font-size:16px;color:var(--green-deep);font-weight:800;font-family:'ThmanyahSans',sans-serif}
-html[data-theme="dark"] .lib-sec-title,html[data-theme="oled"] .lib-sec-title{color:var(--sys-green)}
-.lib-sec-title::before{content:"";width:5px;height:18px;background:linear-gradient(180deg,var(--gold),var(--green-soft));border-radius:3px;flex-shrink:0}
-.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px}
-.plan-item{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:15px;box-shadow:var(--shadow-sm)}
-.plan-item .ico{font-size:26px;display:block;margin-bottom:8px}
-.plan-item h3{font-size:14px;font-weight:800;color:var(--green-deep);margin:0 0 4px}
-html[data-theme="dark"] .plan-item h3,html[data-theme="oled"] .plan-item h3{color:var(--sys-green)}
-.plan-item p{font-size:12.5px;color:var(--muted);line-height:1.7;margin:0}
-.lib-cross{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:520px){.lib-cross{grid-template-columns:1fr}}
-.lib-cross a{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:15px;text-decoration:none;box-shadow:var(--shadow-sm);transition:transform .18s,border-color .18s}
-.lib-cross a:hover{transform:translateY(-2px);border-color:var(--gold)}
-.lib-cross .cx-ico{font-size:26px;flex-shrink:0}
-.lib-cross .cx-t{font-size:14px;font-weight:800;color:var(--green-deep);margin-bottom:2px}
-html[data-theme="dark"] .lib-cross .cx-t,html[data-theme="oled"] .lib-cross .cx-t{color:var(--sys-green)}
-.lib-cross .cx-s{font-size:11.5px;color:var(--muted)}
+
+/* ══ غلاف المكتبة ══ */
+.mn-hero{background:linear-gradient(140deg,#0b3327 0%,#12503c 55%,#1b7150 100%);border-radius:24px;padding:28px 26px 24px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 18px 50px -16px rgba(14,59,46,.55)}
+.mn-hero::after{content:'📚';position:absolute;top:14px;left:18px;font-size:76px;opacity:.09;line-height:1;transform:rotate(-8deg)}
+.mn-hero::before{content:'';position:absolute;inset:auto -40px -80px auto;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(201,161,74,.35),transparent 70%)}
+.mn-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:3.5px;font-weight:700;margin-bottom:9px;position:relative}
+.mn-title{font-size:27px;font-weight:900;line-height:1.25;margin:0 0 9px;position:relative}
+.mn-sub{font-size:13.5px;color:rgba(255,255,255,.84);line-height:1.9;max-width:590px;margin:0;position:relative}
+.mn-stats{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px;position:relative}
+.mn-stat{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18);border-radius:13px;padding:8px 14px;min-width:78px;text-align:center;backdrop-filter:blur(4px)}
+.mn-stat b{display:block;font-size:19px;font-weight:900;font-family:'ThmanyahSans',monospace;color:#f2dc9a;line-height:1.2}
+.mn-stat span{font-size:10.5px;color:rgba(255,255,255,.72)}
+
+/* ══ شريط الحالة والبحث ══ */
+.mn-bar{display:flex;gap:10px;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:6px 8px 6px 14px;box-shadow:var(--shadow-sm);margin-bottom:12px}
+.mn-bar input{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;color:var(--ink);padding:11px 4px;outline:none;min-width:0}
+.mn-bar input::placeholder{color:var(--muted)}
+.mn-ico-btn{width:38px;height:38px;border-radius:11px;border:0;background:var(--sand);color:var(--ink);font-size:17px;cursor:pointer;flex-shrink:0;display:grid;place-items:center;transition:background .18s,transform .18s}
+.mn-ico-btn:hover{background:var(--green-soft);transform:translateY(-1px)}
+.mn-ico-btn:active{transform:scale(.95)}
+.mn-status{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted);margin:0 4px 16px}
+.mn-dot{width:7px;height:7px;border-radius:50%;background:var(--sys-green);box-shadow:0 0 0 3px rgba(52,199,89,.16);flex-shrink:0}
+.mn-dot.off{background:var(--gold);box-shadow:0 0 0 3px rgba(201,161,74,.18)}
+.mn-dot.wait{background:var(--muted);box-shadow:0 0 0 3px rgba(150,150,150,.14);animation:mnPulse 1.2s ease-in-out infinite}
+@keyframes mnPulse{50%{opacity:.35}}
+
+/* ══ استمرار القراءة + المحفوظات ══ */
+.mn-cont{display:flex;align-items:center;gap:13px;background:linear-gradient(100deg,var(--card),var(--sand));border:1.5px solid var(--green-soft);border-radius:16px;padding:13px 15px;margin-bottom:12px;cursor:pointer;text-decoration:none;color:inherit;box-shadow:var(--shadow-sm);transition:border-color .18s,transform .18s}
+.mn-cont:hover{border-color:var(--gold);transform:translateY(-2px)}
+.mn-cont .ci{font-size:24px;flex-shrink:0}
+.mn-cont .cb{min-width:0}
+.mn-cont .ct{font-size:11px;color:var(--muted);margin-bottom:2px}
+.mn-cont .cn{font-size:13.5px;font-weight:800;color:var(--green-deep);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+html[data-theme="dark"] .mn-cont .cn,html[data-theme="oled"] .mn-cont .cn{color:var(--sys-green)}
+.mn-cont .cg{margin-inline-start:auto;font-size:18px;color:var(--muted);flex-shrink:0}
+
+/* ══ الأبواب ══ */
+.mn-sec{display:flex;align-items:center;gap:10px;margin:20px 0 12px;font-size:16px;color:var(--green-deep);font-weight:800;font-family:'ThmanyahSans',sans-serif}
+html[data-theme="dark"] .mn-sec,html[data-theme="oled"] .mn-sec{color:var(--sys-green)}
+.mn-sec::before{content:"";width:5px;height:18px;background:linear-gradient(180deg,var(--gold),var(--green-soft));border-radius:3px;flex-shrink:0}
+.mn-sec small{margin-inline-start:auto;font-size:11.5px;font-weight:600;color:var(--muted);font-family:'IBM Plex Sans Arabic',sans-serif}
+
+.mn-roots{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px}
+.mn-root{position:relative;display:block;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:16px 16px 13px;text-decoration:none;color:inherit;box-shadow:var(--shadow-sm);transition:transform .2s,border-color .2s,box-shadow .2s;overflow:hidden}
+.mn-root:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 14px 34px -16px rgba(14,59,46,.4)}
+.mn-root::after{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--gold),var(--green-soft));opacity:.75}
+.mn-root-top{display:flex;align-items:flex-start;gap:11px;margin-bottom:9px}
+.mn-root-ico{font-size:26px;line-height:1;flex-shrink:0;filter:saturate(1.05)}
+.mn-root-name{font-size:15px;font-weight:800;color:var(--green-deep);line-height:1.4}
+html[data-theme="dark"] .mn-root-name,html[data-theme="oled"] .mn-root-name{color:var(--sys-green)}
+.mn-root-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.mn-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.mn-chip{font-size:10.5px;color:var(--muted);background:var(--sand);border:1px solid var(--border);border-radius:999px;padding:3px 9px;white-space:nowrap}
+.mn-chip.on{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+html[data-theme="dark"] .mn-chip.on,html[data-theme="oled"] .mn-chip.on{background:var(--sys-green);border-color:var(--sys-green);color:#001a08}
+
+/* ══ عرض القسم ══ */
+.mn-crumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:12px;flex-wrap:wrap}
+.mn-crumb a{color:var(--green-deep);text-decoration:none;font-weight:700}
+html[data-theme="dark"] .mn-crumb a,html[data-theme="oled"] .mn-crumb a{color:var(--sys-green)}
+.mn-crumb span.sep{opacity:.45}
+.mn-cat-head{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:17px 18px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.mn-cat-head h2{margin:0 0 6px;font-size:20px;color:var(--green-deep);line-height:1.35}
+html[data-theme="dark"] .mn-cat-head h2,html[data-theme="oled"] .mn-cat-head h2{color:var(--sys-green)}
+.mn-cat-head p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.8}
+.mn-prog{margin-top:13px}
+.mn-prog-bar{height:6px;border-radius:99px;background:var(--sand);overflow:hidden;border:1px solid var(--border)}
+.mn-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--green-soft));border-radius:99px;transition:width .5s cubic-bezier(.22,1,.36,1);width:0}
+.mn-prog-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:5px}
+
+/* ══ بطاقة الحديث ══ */
+.mn-list{display:flex;flex-direction:column;gap:11px}
+.mn-h{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:15px 16px;box-shadow:var(--shadow-sm);transition:border-color .18s,transform .18s;position:relative}
+.mn-h:hover{border-color:var(--gold)}
+.mn-h.is-read{border-inline-start:3px solid var(--sys-green)}
+.mn-h-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:8px}
+.mn-badge{font-size:10px;font-weight:800;border-radius:999px;padding:3px 9px;letter-spacing:.2px}
+.mn-badge.grade{background:rgba(52,199,89,.13);color:#1a7a4a;border:1px solid rgba(52,199,89,.28)}
+html[data-theme="dark"] .mn-badge.grade,html[data-theme="oled"] .mn-badge.grade{color:#5fd98a;background:rgba(52,199,89,.16)}
+.mn-badge.cat{background:var(--sand);color:var(--muted);border:1px solid var(--border)}
+.mn-badge.read{margin-inline-start:auto;background:transparent;color:var(--sys-green);border:1px solid rgba(52,199,89,.3)}
+.mn-h-title{font-size:15px;font-weight:800;color:var(--ink);line-height:1.55;margin:0 0 7px}
+.mn-h-text{font-family:'Amiri','Traditional Arabic',serif;font-size:16.5px;line-height:2;color:var(--ink);margin:0 0 10px;opacity:.94}
+.mn-h-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mn-h-attr{font-size:11.5px;color:var(--muted)}
+.mn-h-open{margin-inline-start:auto;font-size:12px;font-weight:800;color:var(--green-deep);background:transparent;border:0;cursor:pointer;font-family:inherit;padding:4px 0}
+html[data-theme="dark"] .mn-h-open,html[data-theme="oled"] .mn-h-open{color:var(--sys-green)}
+.mn-h-skel{height:13px;border-radius:6px;background:linear-gradient(90deg,var(--sand) 25%,var(--border) 37%,var(--sand) 63%);background-size:400% 100%;animation:mnShine 1.3s ease infinite;margin:6px 0}
+@keyframes mnShine{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* ══ المزيد / حالات فارغة ══ */
+.mn-more{display:block;width:100%;margin:14px 0;padding:13px;border-radius:14px;border:1.5px solid var(--border);background:var(--card);color:var(--green-deep);font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;transition:background .18s,border-color .18s}
+html[data-theme="dark"] .mn-more,html[data-theme="oled"] .mn-more{color:var(--sys-green)}
+.mn-more:hover{background:var(--sand);border-color:var(--gold)}
+.mn-more:disabled{opacity:.55;cursor:default}
+.mn-empty{text-align:center;padding:34px 20px;background:var(--card);border:1.5px dashed var(--border);border-radius:18px;color:var(--muted)}
+.mn-empty .ei{font-size:38px;display:block;margin-bottom:10px;opacity:.7}
+.mn-empty b{display:block;font-size:14px;color:var(--ink);margin-bottom:6px}
+.mn-empty p{font-size:12.5px;margin:0;line-height:1.8}
+
+/* ══ القارئ ══ */
+.mn-reader{position:fixed;inset:0;z-index:1200;display:none;background:rgba(8,26,20,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.mn-reader.on{display:block;animation:mnFade .22s ease}
+@keyframes mnFade{from{opacity:0}to{opacity:1}}
+.mn-sheet{position:absolute;inset:0;margin:auto;max-width:760px;background:var(--card);display:flex;flex-direction:column;box-shadow:0 0 80px rgba(0,0,0,.4);animation:mnUp .28s cubic-bezier(.22,1,.36,1)}
+@media(min-width:900px){.mn-sheet{inset:24px;border-radius:22px;overflow:hidden}}
+@keyframes mnUp{from{transform:translateY(26px);opacity:.4}to{transform:none;opacity:1}}
+.mn-sheet-head{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);background:var(--card);flex-shrink:0}
+.mn-sheet-head .ttl{font-size:12px;font-weight:700;color:var(--muted);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mn-sheet-body{flex:1;overflow-y:auto;padding:20px 22px 28px;-webkit-overflow-scrolling:touch}
+.mn-sheet-foot{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--border);background:var(--card);flex-shrink:0}
+.mn-foot-btn{flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:var(--sand);font-family:inherit;font-size:12.5px;font-weight:800;color:var(--ink);cursor:pointer;transition:background .18s,border-color .18s}
+.mn-foot-btn:hover:not(:disabled){background:var(--green-soft);border-color:var(--gold)}
+.mn-foot-btn:disabled{opacity:.4;cursor:default}
+.rd-cat{font-size:11px;color:var(--muted);letter-spacing:1px;font-weight:700;margin-bottom:8px}
+.rd-title{font-size:21px;font-weight:900;color:var(--green-deep);line-height:1.5;margin:0 0 14px}
+html[data-theme="dark"] .rd-title,html[data-theme="oled"] .rd-title{color:var(--sys-green)}
+.rd-text{font-family:'Amiri',serif;font-size:19px;line-height:2.15;color:var(--ink);margin:0 0 14px}
+.mn-sheet[data-fs="1"] .rd-text{font-size:21px}
+.mn-sheet[data-fs="2"] .rd-text{font-size:24px}
+.mn-sheet[data-fs="3"] .rd-text{font-size:27px}
+.rd-attr{font-size:12.5px;color:var(--muted);border-inline-start:3px solid var(--gold);padding-inline-start:10px;margin-bottom:20px}
+.rd-h{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--green-deep);margin:22px 0 9px}
+html[data-theme="dark"] .rd-h,html[data-theme="oled"] .rd-h{color:var(--sys-green)}
+.rd-h::before{content:'';width:3px;height:14px;background:var(--gold);border-radius:2px}
+.rd-p{font-size:14.5px;line-height:2;color:var(--ink);margin:0 0 10px;white-space:pre-line;opacity:.92}
+.rd-hints{margin:0;padding-inline-start:19px}
+.rd-hints li{font-size:13.5px;line-height:1.95;color:var(--ink);margin-bottom:7px;opacity:.9}
+.rd-ref{font-size:11.5px;line-height:1.9;color:var(--muted);white-space:pre-line;background:var(--sand);border:1px solid var(--border);border-radius:11px;padding:11px 13px}
+.rd-words{border-collapse:collapse;width:100%;font-size:12.5px}
+.rd-words th,.rd-words td{border:1px solid var(--border);padding:7px 9px;text-align:start;line-height:1.7}
+.rd-words th{background:var(--sand);font-weight:800;color:var(--green-deep);width:34%}
+html[data-theme="dark"] .rd-words th,html[data-theme="oled"] .rd-words th{color:var(--sys-green)}
+.rd-loading{display:flex;flex-direction:column;gap:10px;padding:8px 0}
+.rd-bar{height:14px;border-radius:7px;background:linear-gradient(90deg,var(--sand) 25%,var(--border) 37%,var(--sand) 63%);background-size:400% 100%;animation:mnShine 1.3s ease infinite}
+
+/* ══ تذييل المصدر ══ */
+.mn-src{background:var(--sand);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:11.5px;line-height:1.9;color:var(--muted);margin-top:22px}
+.mn-src b{color:var(--ink);font-weight:800}
+.mn-src a{color:var(--green-deep);font-weight:700;text-decoration:none}
+html[data-theme="dark"] .mn-src a,html[data-theme="oled"] .mn-src a{color:var(--sys-green)}
+.mn-cross{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px}
+@media(max-width:520px){.mn-cross{grid-template-columns:1fr}.mn-roots{grid-template-columns:1fr}}
+.mn-cross a{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:15px;padding:14px;text-decoration:none;color:inherit;box-shadow:var(--shadow-sm);transition:transform .18s,border-color .18s}
+.mn-cross a:hover{transform:translateY(-2px);border-color:var(--gold)}
+.mn-cross .xi{font-size:24px;flex-shrink:0}
+.mn-cross .xt{font-size:13.5px;font-weight:800;color:var(--green-deep);margin-bottom:2px}
+html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{color:var(--sys-green)}
+.mn-cross .xs{font-size:11px;color:var(--muted)}
+.mn-toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:#0e3b2e;color:#fff;font-size:12.5px;font-weight:700;padding:11px 20px;border-radius:99px;box-shadow:0 12px 30px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:all .28s;z-index:1400}
+.mn-toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 <script src="js/font-scale.js"></script>
 </head>
@@ -87,37 +209,37 @@ html[data-theme="dark"] .lib-cross .cx-t,html[data-theme="oled"] .lib-cross .cx-
       </div>
     </div>
 
-    <header class="lib-hero">
-      <div class="lib-eyebrow">المكتبة الشاملة</div>
-      <h1 class="lib-title">المكتبة النصية</h1>
-      <p class="lib-sub">كتبٌ ومقالاتٌ ورسائلُ مختارة — مكتبةٌ مقروءةٌ تكمّل المكتبتين الصوتية والمرئية. نعمل عليها الآن لتصلَك بأفضل صورة بإذن الله.</p>
-    </header>
-
-    <div class="soon">
-      <div class="soon-ico">🛠️</div>
-      <span class="soon-badge">قيد التطوير</span>
-      <h2>المحتوى قادمٌ قريبًا بإذن الله</h2>
-      <p>نجهّز الآن مجموعةً مختارةً من النصوص النافعة. تابعنا — وسيُضاف المحتوى تِباعًا.</p>
+    <div id="mn-view" aria-live="polite">
+      <!-- تُرسم الصفحة هنا -->
     </div>
-
-    <h2 class="lib-sec-title">📚 ماذا ستضمّ المكتبة النصية؟</h2>
-    <div class="plan-grid">
-      <div class="plan-item"><span class="ico">📖</span><h3>كتب ورسائل</h3><p>مختصراتٌ ورسائلُ نافعةٌ في العقيدة والعبادة والأخلاق.</p></div>
-      <div class="plan-item"><span class="ico">📝</span><h3>مقالات</h3><p>مقالاتٌ قصيرةٌ مرتبطةٌ بمواسم الخير والعبادات.</p></div>
-      <div class="plan-item"><span class="ico">📜</span><h3>أذكار وأدعية مكتوبة</h3><p>نصوصٌ مأثورةٌ سهلةُ القراءة والحفظ.</p></div>
-      <div class="plan-item"><span class="ico">🔖</span><h3>متابعة القراءة</h3><p>حفظ موضعك ومتابعةُ ما قرأته لاحقًا.</p></div>
-    </div>
-
-    <h2 class="lib-sec-title">↪️ تصفّح بقيّة المكتبة</h2>
-    <nav class="lib-cross" aria-label="المكتبة الشاملة">
-      <a href="playlist.html"><span class="cx-ico">🎵</span><span><span class="cx-t">المكتبة الصوتية</span><span class="cx-s">تلاوات ومقاطع صوتية مختارة</span></span></a>
-      <a href="videos.html"><span class="cx-ico">🎬</span><span><span class="cx-t">المكتبة المرئية</span><span class="cx-s">محاضرات ومقاطع مرئية</span></span></a>
-    </nav>
 
     <div style="height:40px"></div>
   </main>
 </div>
 
+<!-- ══ القارئ ══ -->
+<div class="mn-reader" id="mn-reader" role="dialog" aria-modal="true" aria-labelledby="mn-rd-title" aria-hidden="true">
+  <div class="mn-sheet" id="mn-sheet" data-fs="0">
+    <div class="mn-sheet-head">
+      <button class="mn-ico-btn" id="mn-close" aria-label="إغلاق القارئ">✕</button>
+      <div class="ttl" id="mn-rd-crumb">المكتبة النصية</div>
+      <button class="mn-ico-btn" id="mn-font-down" aria-label="تصغير الخط">A－</button>
+      <button class="mn-ico-btn" id="mn-font-up" aria-label="تكبير الخط">A＋</button>
+      <button class="mn-ico-btn" id="mn-bookmark" aria-label="حفظ الحديث">🔖</button>
+      <button class="mn-ico-btn" id="mn-share" aria-label="مشاركة الحديث">↗</button>
+    </div>
+    <div class="mn-sheet-body" id="mn-rd-body"></div>
+    <div class="mn-sheet-foot">
+      <button class="mn-foot-btn" id="mn-prev">→ السابق</button>
+      <button class="mn-foot-btn" id="mn-next">التالي ←</button>
+    </div>
+  </div>
+</div>
+
+<div class="mn-toast" id="mn-toast"></div>
+
+  <script src="js/data/maktaba.js" defer></script>
+  <script src="js/ui/library-data.js" defer></script>
   <script src="js/utils/helpers.min.js" defer></script>
   <script src="js/core/state-manager.min.js" defer></script>
   <script src="js/core/router.min.js" defer></script>
@@ -133,5 +255,575 @@ html[data-theme="dark"] .lib-cross .cx-t,html[data-theme="oled"] .lib-cross .cx-
 <script src="command-palette.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="animations.min.js" defer></script>
+
+<script>
+(function () {
+  'use strict';
+
+  function boot() {
+
+  var Lib = window.ZadLibrary;
+  var view = document.getElementById('mn-view');
+  var reader = document.getElementById('mn-reader');
+  var sheet = document.getElementById('mn-sheet');
+  var rdBody = document.getElementById('mn-rd-body');
+  var rdCrumb = document.getElementById('mn-rd-crumb');
+
+  var S = {
+    listHash: '#/',
+    cat: null,          /* { id, root, name, sub?, n } */
+    items: [],
+    page: 0,
+    hasMore: false,
+    loading: false,
+    total: null,
+    query: '',
+    readIds: loadReadIds(),
+    current: null,      /* الحديث المعروض في القارئ */
+    fs: 0
+  };
+
+  var ROOT_ICONS = { '1': '📖', '2': '📜', '3': '🕋', '4': '⚖️', '5': '🌿', '6': '📣', '7': '🧭' };
+
+  /* ── أدوات ─────────────────────────────────────────────────────────── */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function el(tag, cls, html) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+  function ar(n) {
+    if (n == null || isNaN(n)) return '٠';
+    return String(n).replace(/[0-9]/g, function (c) { return '٠١٢٣٤٥٦٧٨٩'[+c]; });
+  }
+  function toast(msg) {
+    var t = document.getElementById('mn-toast');
+    t.textContent = msg; t.classList.add('on');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove('on'); }, 2100);
+  }
+  function loadReadIds() {
+    try { return JSON.parse(localStorage.getItem('zad_lib_read_ids') || '[]'); } catch (e) { return []; }
+  }
+  function markReadId(id) {
+    id = String(id);
+    if (S.readIds.indexOf(id) === -1) {
+      S.readIds.push(id);
+      try { localStorage.setItem('zad_lib_read_ids', JSON.stringify(S.readIds.slice(-2000))); } catch (e) {}
+    }
+  }
+
+  /* ── بيانات مساعدة ──────────────────────────────────────────────────── */
+  function rootOf(id) {
+    var r = Lib.roots().filter(function (x) { return String(x.id) === String(id); })[0];
+    if (r) return r;
+    var hit = null;
+    Lib.roots().forEach(function (x) {
+      x.k.forEach(function (k) { if (String(k.id) === String(id)) hit = { k: k, root: x }; });
+    });
+    return hit ? hit : null;
+  }
+
+  function catInfo(id) {
+    var r = rootOf(id);
+    if (!r) return { id: String(id), name: 'قسم', n: 0, root: null, sub: null };
+    if (r.root) return { id: String(id), name: r.k.t, n: r.k.n, root: r.root, sub: r.k };
+    return { id: String(id), name: r.t, n: r.n, root: r, sub: null };
+  }
+
+  function statusInner() {
+    var st = Lib.state;
+    var cls = st.online === null ? 'wait' : (st.online ? '' : 'off');
+    var txt = st.online === null ? 'جارٍ الاتصال بالمصدر…'
+            : st.online ? 'متصل: محتوى موسوعة الأحاديث النبوية الحيّ'
+            : 'وضع أوفلاين: ' + ar((window.ZAD_MAKTABA.seed || []).length) + ' حديثًا محفوظة على جهازك';
+    return '<span class="mn-dot ' + cls + '"></span><span>' + txt + '</span>';
+  }
+  function statusDot() { return '<div class="mn-status" id="mn-status">' + statusInner() + '</div>'; }
+  function refreshStatus() {
+    var n = document.getElementById('mn-status');
+    if (n) n.innerHTML = statusInner();
+  }
+
+  /* ══ الصفحة الرئيسية ══ */
+  function renderHome() {
+    var c = Lib.counts();
+    var total = Lib.roots().reduce(function (s, r) { return s + (r.n || 0); }, 0);
+
+    var html = '' +
+      '<header class="mn-hero">' +
+        '<div class="mn-eyebrow">المكتبة الشاملة</div>' +
+        '<h1 class="mn-title">المكتبة النصية</h1>' +
+        '<p class="mn-sub">أحاديث النبي ﷺ مشروحةً ومُخرَّجة، مرتَّبة في سبعة أبواب، تُقرأ بلا إنترنت — وتُوسَّع من الموسوعة عند توفُّر الشبكة.</p>' +
+        '<div class="mn-stats">' +
+          '<div class="mn-stat"><b>' + ar(total) + '</b><span>حديثًا في الموسوعة</span></div>' +
+          '<div class="mn-stat"><b>٧</b><span>أبواب رئيسية</span></div>' +
+          '<div class="mn-stat"><b>' + ar(c.subcategories) + '</b><span>بابًا فرعيًا</span></div>' +
+          '<div class="mn-stat"><b>' + ar(c.seed) + '</b><span>يعمل بلا نت</span></div>' +
+        '</div>' +
+      '</header>';
+
+    html += '<div class="mn-bar">' +
+      '<input id="mn-q" type="search" inputmode="search" placeholder="ابحث في الأحاديث المحفوظة على جهازك…" aria-label="بحث في المكتبة">' +
+      '<button class="mn-ico-btn" id="mn-random" title="حديث عشوائي" aria-label="حديث عشوائي">🎲</button>' +
+      '<button class="mn-ico-btn" id="mn-saved-btn" title="المحفوظات" aria-label="المحفوظات">🔖</button>' +
+    '</div>';
+    html += statusDot();
+    html += '<div id="mn-body">' + homeBody() + '</div>';
+
+    view.innerHTML = html;
+    wireHome();
+  }
+
+  function homeBody() {
+    var c = Lib.counts();
+    var last = Lib.lastRead();
+    var saved = Lib.bookmarks();
+    var html = '';
+
+    if (last) {
+      html += '<a class="mn-cont" href="#/h/' + esc(last.id) + '" data-open="' + esc(last.id) + '">' +
+        '<span class="ci">📌</span><span class="cb"><span class="ct">متابعة القراءة</span>' +
+        '<span class="cn">' + esc(last.title || 'حديث') + '</span></span><span class="cg">‹</span></a>';
+    }
+    if (saved.length) {
+      html += '<div class="mn-cont" data-saved="1" role="button" tabindex="0">' +
+        '<span class="ci">🔖</span><span class="cb"><span class="ct">محفوظاتك</span>' +
+        '<span class="cn">' + ar(saved.length) + ' حديثًا محفوظًا</span></span><span class="cg">‹</span></div>';
+    }
+
+    html += '<div class="mn-sec">الأبواب السبعة<small>اضغط بابًا لتصفح أبوابه الفرعية</small></div>';
+    html += '<div class="mn-roots">';
+    Lib.roots().forEach(function (r) {
+      var offlineN = Lib.seed().filter(function (h) { return h.roots.indexOf(String(r.id)) !== -1; }).length;
+      html += '<a class="mn-root" href="#/c/' + esc(r.id) + '">' +
+        '<div class="mn-root-top"><span class="mn-root-ico">' + (ROOT_ICONS[String(r.id)] || '📘') + '</span>' +
+          '<span><span class="mn-root-name">' + esc(r.t) + '</span>' +
+          '<span class="mn-root-meta">' + ar(r.n) + ' حديثًا · ' + ar(r.k.length) + ' بابًا فرعيًا · ' + ar(offlineN) + ' أوفلاين</span></span>' +
+        '</div>' +
+        '<div class="mn-chips">' + r.k.slice(0, 3).map(function (k) { return '<span class="mn-chip">' + esc(k.t) + '</span>'; }).join('') +
+          (r.k.length > 3 ? '<span class="mn-chip">+' + ar(r.k.length - 3) + '</span>' : '') + '</div>' +
+      '</a>';
+    });
+    html += '</div>';
+
+    html += '<div class="mn-sec">تصفّح بقية المكتبة</div>' +
+      '<nav class="mn-cross" aria-label="المكتبة الشاملة">' +
+        '<a href="playlist.html"><span class="xi">🎵</span><span><span class="xt">المكتبة الصوتية</span><span class="xs">تلاوات ومقاطع صوتية مختارة</span></span></a>' +
+        '<a href="videos.html"><span class="xi">🎬</span><span><span class="xt">المكتبة المرئية</span><span class="xs">محاضرات ومقاطع مرئية</span></span></a>' +
+      '</nav>' +
+      '<div class="mn-src"><b>المصدر:</b> موسوعة الأحاديث النبوية المترجمة ' +
+        '<a href="https://hadeethenc.com" target="_blank" rel="noopener">HadeethEnc.com</a> — تُجلب الأحاديث من واجهتها العامة، ' +
+        'وتُحفظ نسخة من ' + ar(c.seed) + ' حديثًا داخل التطبيق لتعمل بلا إنترنت. ' +
+        'الفتوى الشرعية للعلماء، وهذا عَرضٌ للنصوص كما وردت في الموسوعة.</div>';
+    return html;
+  }
+
+  function wireHome() {
+    wireHomeBody();
+    var q = document.getElementById('mn-q');
+    if (q) {
+      var t = null;
+      q.addEventListener('input', function () {
+        S.query = q.value;
+        clearTimeout(t);
+        t = setTimeout(function () {
+          var body = document.getElementById('mn-body');
+          if (!body) return;
+          if (q.value.trim().length >= 2) {
+            body.innerHTML = searchBody(q.value);
+            wireCards();
+          } else {
+            body.innerHTML = homeBody();
+            wireHomeBody();
+          }
+        }, 160);
+      });
+      q.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { q.value = ''; S.query = ''; document.getElementById('mn-body').innerHTML = homeBody(); wireHomeBody(); }
+      });
+    }
+    var rnd = document.getElementById('mn-random');
+    if (rnd) rnd.addEventListener('click', function () {
+      var all = Lib.seed();
+      if (!all.length) return;
+      var h = all[Math.floor(Math.random() * all.length)];
+      location.hash = '#/h/' + h.id;
+    });
+    var sb = document.getElementById('mn-saved-btn');
+    if (sb) sb.addEventListener('click', function () { location.hash = '#/saved'; });
+  }
+
+  /* أعيد ربط عناصر الجسم بعد كل إعادة رسم للبحث */
+  function wireHomeBody() {
+    Array.prototype.forEach.call(view.querySelectorAll('[data-saved="1"]'), function (n) {
+      if (n._wired) return;
+      n._wired = true;
+      n.addEventListener('click', function () { location.hash = '#/saved'; });
+      n.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = '#/saved'; } });
+    });
+    wireCards();
+  }
+
+  /* ══ البحث ══ */
+  function searchBody(query) {
+    var q = String(query || '').trim();
+    if (!q) return homeBody();
+    var res = Lib.search(q, 40);
+    var html = '<a class="mn-crumb" href="#/" style="text-decoration:none"><span>🏠 المكتبة</span><span class="sep">/</span><span>بحث</span><span class="sep">/</span><span>' + esc(q) + '</span></a>';
+    html += '<div class="mn-cat-head"><h2>نتائج «' + esc(q) + '»</h2>' +
+      '<p>' + (res.length ? ar(res.length) + ' نتيجة في الأحاديث المحفوظة على جهازك' : 'لا نتائج في النسخة المحفوظة') + '</p></div>';
+
+    if (!res.length) {
+      html += '<div class="mn-empty"><span class="ei">🔍</span><b>لم نجد شيئًا هنا</b>' +
+        '<p>البحث الحالي يعمل داخل ' + ar(Lib.seed().length) + ' حديثًا محفوظة على جهازك. جرّب كلمةً أخرى مثل «الصلاة» أو «النية» أو «الصبر».</p></div>';
+    } else {
+      html += '<div class="mn-list">' + res.map(cardHTML).join('') + '</div>';
+    }
+    return html;
+  }
+
+  /* ══ صفحة القسم ══ */
+  function renderCategory(id) {
+    var info = catInfo(id);
+    S.cat = info;
+    S.items = []; S.page = 0; S.hasMore = true; S.total = null; S.loading = false;
+
+    var isRoot = !!info.root && String(info.root.id) === String(id);
+    var crumbRoot = info.root && !isRoot
+      ? '<a href="#/c/' + esc(info.root.id) + '">' + esc(info.root.t) + '</a><span class="sep">/</span>'
+      : '';
+    var html = '<div class="mn-crumb"><a href="#/">🏠 المكتبة</a><span class="sep">/</span>' +
+      crumbRoot + '<span>' + esc(info.name) + '</span></div>';
+
+    html += '<div class="mn-cat-head">' +
+      '<h2>' + (ROOT_ICONS[String(id)] || '📘') + ' ' + esc(info.name) + '</h2>' +
+      '<p id="mn-cat-desc">' + (info.n ? ar(info.n) + ' حديثًا في هذا القسم' : 'قسم من أبواب المكتبة') + '</p>' +
+      '<div class="mn-prog"><div class="mn-prog-bar"><div class="mn-prog-fill" id="mn-prog"></div></div>' +
+      '<div class="mn-prog-lbl"><span id="mn-prog-t">جارٍ التحميل…</span><span id="mn-prog-n"></span></div></div>' +
+    '</div>';
+
+    if (isRoot && info.root.k.length) {
+      var kids = '<div class="mn-chips" style="margin-bottom:14px">' +
+        '<a href="#/c/' + esc(id) + '" class="mn-chip on" style="text-decoration:none">كل الأبواب</a>';
+      info.root.k.forEach(function (k) {
+        kids += '<a href="#/c/' + esc(k.id) + '" class="mn-chip" style="text-decoration:none">' + esc(k.t) + ' <b style="opacity:.6;font-weight:600">' + ar(k.n) + '</b></a>';
+      });
+      kids += '</div>';
+      html += kids;
+    }
+
+    html += '<div class="mn-list" id="mn-list"></div>' +
+            '<button class="mn-more" id="mn-more" hidden>تحميل المزيد</button>';
+
+    view.innerHTML = html;
+
+    var more = document.getElementById('mn-more');
+    if (more) more.addEventListener('click', function () { loadPage(id, S.page + 1); });
+
+    updateProgress();
+    loadPage(id, 1);
+  }
+
+  function loadPage(id, page) {
+    if (S.loading) return;
+    S.loading = true;
+    var btn = document.getElementById('mn-more');
+    if (btn) { btn.hidden = false; btn.disabled = true; btn.textContent = 'جارٍ التحميل…'; }
+
+    Lib.list(id, page, 20).then(function (res) {
+      S.loading = false;
+      S.page = page;
+      S.hasMore = !!res.hasMore;
+      S.total = res.total || S.total;
+      S.items = page === 1 ? res.items.slice() : S.items.concat(res.items);
+
+      var list = document.getElementById('mn-list');
+      if (!list) return;
+      if (page === 1 && !res.items.length) {
+        var offlineEmpty = res.source === 'seed';
+        list.innerHTML = offlineEmpty
+          ? '<div class="mn-empty"><span class="ei">📡</span><b>هذا الباب غير محفوظ على جهازك</b>' +
+            '<p>النسخة المحفوظة تغطّي ١٥٠ حديثًا موزّعة على الأبواب السبعة — وهذا الباب الفرعي خارجها. ' +
+            'اتصل بالشبكة لتحميله من الموسوعة، أو ابحث في المحفوظ، أو جرّب زر 🎲 لاقتراح حديث.</p></div>'
+          : '<div class="mn-empty"><span class="ei">📭</span><b>لا توجد أحاديث في هذا القسم</b>' +
+            '<p>جرّب بابًا آخر من الأبواب السبعة، أو ابحث في الأحاديث المحفوظة على جهازك.</p></div>';
+      } else {
+        list.insertAdjacentHTML('beforeend', res.items.map(cardHTML).join(''));
+        wireCards();
+      }
+
+      var more = document.getElementById('mn-more');
+      if (more) {
+        more.hidden = !S.hasMore;
+        more.disabled = false;
+        more.textContent = 'تحميل المزيد (' + ar(S.items.length) + ' من ' + ar(S.total || S.items.length) + ')';
+      }
+      var desc = document.getElementById('mn-cat-desc');
+      if (desc && res.source === 'seed') {
+        desc.innerHTML = ar(S.items.length) + ' حديثًا محفوظًا على جهازك في هذا القسم — وستُستكمل بقية الموسوعة عند توفر الشبكة';
+      }
+      updateProgress();
+    }).catch(function () {
+      S.loading = false;
+      var more = document.getElementById('mn-more');
+      if (more) { more.disabled = false; more.textContent = 'إعادة المحاولة'; }
+    });
+  }
+
+  function cardHTML(h) {
+    var catName = h.categories && h.categories.length ? Lib.categoryName(h.categories[0]) : '';
+    var read = S.readIds.indexOf(String(h.id)) !== -1;
+    var hasText = !!h.text;
+    return '<article class="mn-h' + (read ? ' is-read' : '') + '" data-id="' + esc(h.id) + '">' +
+      '<div class="mn-h-top">' +
+        (h.grade ? '<span class="mn-badge grade">' + esc(h.grade) + '</span>' : '') +
+        (catName ? '<span class="mn-badge cat">' + esc(catName) + '</span>' : '') +
+        (read ? '<span class="mn-badge read">✓ قرأته</span>' : '') +
+      '</div>' +
+      '<h3 class="mn-h-title">' + esc(h.title || 'حديث') + '</h3>' +
+      (hasText
+        ? '<p class="mn-h-text">' + esc(shorten(h.text, 210)) + '</p>'
+        : '<div class="mn-h-skel" style="width:92%"></div><div class="mn-h-skel" style="width:74%"></div>') +
+      '<div class="mn-h-foot">' +
+        (h.attribution ? '<span class="mn-h-attr">' + esc(h.attribution) + '</span>' : '') +
+        '<button class="mn-h-open" data-open="' + esc(h.id) + '">اقرأ الحديث ‹</button>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function shorten(t, n) {
+    t = String(t || '');
+    return t.length > n ? t.slice(0, n).replace(/\s+\S*$/, '') + '…' : t;
+  }
+
+  function wireCards() {
+    Array.prototype.forEach.call(view.querySelectorAll('.mn-h-open, [data-open]'), function (b) {
+      if (b._wired) return;
+      b._wired = true;
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        var id = b.getAttribute('data-open');
+        if (id) location.hash = '#/h/' + id;
+      });
+    });
+  }
+
+  function updateProgress() {
+    var fill = document.getElementById('mn-prog');
+    var lbl = document.getElementById('mn-prog-t');
+    var num = document.getElementById('mn-prog-n');
+    if (!fill) return;
+    var read = S.items.filter(function (h) { return S.readIds.indexOf(String(h.id)) !== -1; }).length;
+    var total = S.total || S.items.length;
+    var pct = total ? Math.min(100, Math.round(read / total * 100)) : 0;
+    fill.style.width = pct + '%';
+    lbl.textContent = 'قرأت ' + ar(read) + ' من ' + ar(S.items.length) + ' في هذه الدفعة';
+    num.textContent = total ? ar(total) + ' حديثًا في القسم' : '';
+  }
+
+  /* ══ المحفوظات ══ */
+  function renderSaved() {
+    var list = Lib.bookmarks();
+    var html = '<div class="mn-crumb"><a href="#/">🏠 المكتبة</a><span class="sep">/</span><span>المحفوظات</span></div>';
+    html += '<div class="mn-cat-head"><h2>🔖 محفوظاتك</h2><p>' +
+      (list.length ? ar(list.length) + ' حديثًا حفظتها للرجوع إليها' : 'لم تحفظ حديثًا بعد') + '</p></div>';
+
+    if (!list.length) {
+      html += '<div class="mn-empty"><span class="ei">🔖</span><b>المحفوظات فارغة</b>' +
+        '<p>افتح أي حديث واضغط أيقونة الحفظ (🔖) في أعلى القارئ ليظهر هنا.</p></div>';
+    } else {
+      html += '<div class="mn-list">' + list.map(function (b) {
+        return '<article class="mn-h" data-id="' + esc(b.id) + '">' +
+          '<h3 class="mn-h-title">' + esc(b.title || 'حديث') + '</h3>' +
+          (b.text ? '<p class="mn-h-text">' + esc(shorten(b.text, 180)) + '</p>' : '') +
+          '<div class="mn-h-foot"><button class="mn-h-open" data-open="' + esc(b.id) + '">اقرأ الحديث ‹</button></div>' +
+        '</article>';
+      }).join('') + '</div>';
+    }
+    view.innerHTML = html;
+    wireCards();
+  }
+
+  /* ══ القارئ ══ */
+  var lastFocus = null;
+
+  function openReader(id) {
+    var h = S.items.filter(function (x) { return String(x.id) === String(id); })[0] ||
+            Lib.bookmarks().filter(function (x) { return String(x.id) === String(id); })[0];
+    if (h && String(h.id) === String(id)) {
+      paintReader(h);
+    } else {
+      rdBody.innerHTML = '<div class="rd-loading"><div class="rd-bar" style="width:60%"></div>' +
+        '<div class="rd-bar" style="width:95%"></div><div class="rd-bar" style="width:88%"></div>' +
+        '<div class="rd-bar" style="width:70%"></div></div>';
+    }
+    lastFocus = document.activeElement;
+    reader.classList.add('on');
+    reader.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('mn-close').focus();
+
+    var silent = !!(h && h.text);
+
+    Lib.one(id).then(function (full) {
+      if (!full) throw new Error('empty');
+      S.current = full;
+      paintReader(full);
+      markReadId(full.id);
+      Lib.markRead(full);
+      refreshReaderNav();
+      updateProgress();
+    }).catch(function () {
+      if (!(h && String(h.id) === String(id))) {
+        rdBody.innerHTML = '<div class="mn-empty"><span class="ei">📡</span><b>تعذّر تحميل الحديث</b>' +
+          '<p>هذا الحديث غير موجود في النسخة المحفوظة، ولم تصل الشبكة إلى الموسوعة. جرّب حديثًا من الأبواب المتاحة أوفلاين.</p></div>';
+      } else if (!silent) {
+        toast('تعذّر تحديث النص — تُعرض النسخة المحفوظة');
+      }
+    });
+  }
+
+  function paintReader(h) {
+    S.current = h;
+    var catName = h.categories && h.categories.length ? Lib.categoryName(h.categories[0]) : '';
+    rdCrumb.textContent = catName || 'المكتبة النصية';
+    var html = '';
+    html += '<div class="rd-cat">' + esc(catName || 'حديث') + (h.grade ? ' · ' + esc(h.grade) : '') + '</div>';
+    html += '<h2 class="rd-title" id="mn-rd-title">' + esc(h.title || 'حديث') + '</h2>';
+    html += '<p class="rd-text">' + esc(h.text || '') + '</p>';
+    if (h.attribution) html += '<div class="rd-attr">' + esc(h.attribution) + '</div>';
+
+    if (h.explanation) {
+      html += '<div class="rd-h">الشرح</div><p class="rd-p">' + esc(h.explanation) + '</p>';
+    }
+    if (h.hints && h.hints.length) {
+      html += '<div class="rd-h">من فوائد الحديث</div><ul class="rd-hints">' +
+        h.hints.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+    }
+    if (h.words && h.words.length) {
+      html += '<div class="rd-h">معاني الكلمات</div><table class="rd-words"><tbody>' +
+        h.words.map(function (w) {
+          var k = w.word || w.term || w[0] || '';
+          var v = w.meaning || w[1] || '';
+          return '<tr><th>' + esc(k) + '</th><td>' + esc(v) + '</td></tr>';
+        }).join('') + '</tbody></table>';
+    }
+    if (h.reference) html += '<div class="rd-h">التخريج</div><div class="rd-ref">' + esc(h.reference) + '</div>';
+
+    html += '<div class="mn-src" style="margin-top:24px">النص من موسوعة الأحاديث النبوية المترجمة ' +
+      '<a href="https://hadeethenc.com" target="_blank" rel="noopener">HadeethEnc.com</a>.</div>';
+
+    rdBody.innerHTML = html;
+    rdBody.scrollTop = 0;
+    var bm = document.getElementById('mn-bookmark');
+    bm.textContent = Lib.isBookmarked(h.id) ? '🔖' : '📑';
+    bm.setAttribute('aria-pressed', Lib.isBookmarked(h.id) ? 'true' : 'false');
+  }
+
+  function refreshReaderNav() {
+    var prev = document.getElementById('mn-prev');
+    var next = document.getElementById('mn-next');
+    var idx = S.items.findIndex(function (x) { return String(x.id) === String(S.current && S.current.id); });
+    prev.disabled = idx <= 0;
+    next.disabled = idx === -1 || idx >= S.items.length - 1;
+    prev.textContent = '→ السابق';
+    next.textContent = 'التالي ←';
+  }
+
+  function closeReader() {
+    reader.classList.remove('on');
+    reader.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+  }
+
+  /* ══ الموجّه ══ */
+  function route() {
+    var hash = location.hash || '#/';
+    var m;
+    if ((m = hash.match(/^#\/h\/(\d+)/))) {
+      openReader(m[1]);
+      return;
+    }
+    closeReader();
+    S.listHash = hash;
+
+    if ((m = hash.match(/^#\/c\/(\d+)/))) return renderCategory(m[1]);
+    if (hash === '#/saved' || hash === '#/bookmarks') return renderSaved();
+    return renderHome();
+  }
+
+  /* ══ ربط عناصر القارئ ══ */
+  /* الإغلاق يُعيد المسار السابق بلا إضافة مدخل جديد للتاريخ،
+     فلا يخرج الزر «رجوع» بالمستخدم من الموقع في الروابط المباشرة. */
+  function closeTo() {
+    var back = (S.listHash && S.listHash !== location.hash) ? S.listHash : '#/';
+    try { history.replaceState(null, '', back); } catch (e) { location.hash = back; return; }
+    route();
+  }
+  document.getElementById('mn-close').addEventListener('click', closeTo);
+  document.getElementById('mn-prev').addEventListener('click', function () {
+    var idx = S.items.findIndex(function (x) { return String(x.id) === String(S.current && S.current.id); });
+    if (idx > 0) location.hash = '#/h/' + S.items[idx - 1].id;
+  });
+  document.getElementById('mn-next').addEventListener('click', function () {
+    var idx = S.items.findIndex(function (x) { return String(x.id) === String(S.current && S.current.id); });
+    if (idx !== -1 && idx < S.items.length - 1) location.hash = '#/h/' + S.items[idx + 1].id;
+  });
+  document.getElementById('mn-bookmark').addEventListener('click', function () {
+    if (!S.current) return;
+    var added = Lib.toggleBookmark(S.current);
+    toast(added ? 'حُفظ الحديث في المحفوظات' : 'أُزيل من المحفوظات');
+    var bm = document.getElementById('mn-bookmark');
+    bm.textContent = added ? '🔖' : '📑';
+    bm.setAttribute('aria-pressed', added ? 'true' : 'false');
+  });
+  document.getElementById('mn-share').addEventListener('click', function () {
+    if (!S.current) return;
+    var h = S.current;
+    var text = (h.text || '') + '\n\n' + (h.attribution ? h.attribution + '\n' : '') + '— من المكتبة النصية في «زاد»';
+    if (navigator.share) {
+      navigator.share({ title: h.title || 'حديث', text: text, url: location.href }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + '\n' + location.href).then(function () { toast('نُسخ الحديث'); },
+        function () { toast('تعذّر النسخ'); });
+    } else {
+      toast('المشاركة غير متاحة في هذا المتصفح');
+    }
+  });
+  document.getElementById('mn-font-up').addEventListener('click', function () {
+    S.fs = Math.min(3, S.fs + 1); sheet.setAttribute('data-fs', String(S.fs));
+  });
+  document.getElementById('mn-font-down').addEventListener('click', function () {
+    S.fs = Math.max(0, S.fs - 1); sheet.setAttribute('data-fs', String(S.fs));
+  });
+  reader.addEventListener('click', function (e) { if (e.target === reader) closeTo(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && reader.classList.contains('on')) closeTo();
+  });
+
+  window.addEventListener('hashchange', route);
+  route();
+  if (Lib.probe) Lib.probe().then(refreshStatus);
+
+  /* تغيّر حالة الشبكة أثناء التصفّح: حدّث الشارة وأعد الفحص عند العودة */
+  window.addEventListener('online', function () { Lib.reset(); Lib.probe().then(refreshStatus); });
+  window.addEventListener('offline', function () { Lib.reset(); Lib.probe().then(refreshStatus); });
+  }
+
+  /* الملفات المحمّلة بـ defer تُنفَّذ قبل DOMContentLoaded */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
 </body>
 </html>

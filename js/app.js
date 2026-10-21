@@ -202,6 +202,11 @@ function cycleTheme() {
 }
 window.cycleTheme = cycleTheme;
 function toggleTheme() { cycleTheme(); }
+
+/* بديلٌ آمن تستدعيه الصفحات بـsafeToggleTheme?.() — غيابه كان يُطلق ReferenceError
+   على 7 صفحات (عرفة، دعاء عرفة، الأدعية، دليل الدعاء، الهجري، المواقيت، الملف). */
+function safeToggleTheme() { if (typeof toggleTheme === 'function') toggleTheme(); }
+window.safeToggleTheme = safeToggleTheme;
 window.toggleTheme = toggleTheme;
 /* ══ طبقة كتابة موحّدة لأقسام الأطفال ══════════════════════════════════
    صفحات الأطفال (المدرسه/الإبداع/الأبطال/المرح) كانت تكتب zad_v2 مباشرة

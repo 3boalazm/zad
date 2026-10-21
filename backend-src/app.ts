@@ -7,7 +7,7 @@
  *   2. cookieParser   — parse HttpOnly session cookies
  *   3. json body      — parse request bodies
  *   4. requestLogger  — structured JSON logs
- *   5. routes         — /health, /api/v1/auth, /api/v1/worship, /api/v1/sync, /api/v1 index
+ *   5. routes         — /health, /api/v1/auth, /api/v1/worship, /api/v1/sync, /api/v1/library, /api/v1 index
  *   6. notFound       — 404 handler
  *   7. errorHandler   — global error handler (4-arg, last)
  *
@@ -25,6 +25,7 @@ import { healthRouter } from './health/health.router.js';
 import { authRouter } from './auth/auth.router.js';
 import { worshipRouter } from './worship/worship.router.js';
 import { syncRouter } from './sync/sync.router.js';
+import { libraryRouter } from './library/library.router.js';
 
 export function createApp(): Application {
   const app = express();
@@ -49,6 +50,7 @@ export function createApp(): Application {
   app.use(`${config.apiPrefix}/auth`,    authRouter);
   app.use(`${config.apiPrefix}/worship`, worshipRouter);
   app.use(`${config.apiPrefix}/sync`,    syncRouter);
+  app.use(`${config.apiPrefix}/library`, libraryRouter);
 
   app.get(config.apiPrefix, (_req, res) => {
     res.json({
@@ -65,6 +67,9 @@ export function createApp(): Application {
         'GET  /api/v1/worship/logs',
         'POST /api/v1/sync/push',
         'POST /api/v1/sync/pull',
+        'GET  /api/v1/library/categories',
+        'GET  /api/v1/library/hadiths',
+        'GET  /api/v1/library/hadiths/:id',
       ],
     });
   });

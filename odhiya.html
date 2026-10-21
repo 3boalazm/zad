@@ -30,6 +30,20 @@
   .fs-btn[data-size="small"]  span:first-child{font-size:14px;display:block;margin-bottom:4px}
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
+
+.od-plan-top{margin-bottom:12px}
+.od-plan-lbl{font-size:12px;font-weight:800;color:var(--green-deep);margin-bottom:6px}
+html[data-theme="dark"] .od-plan-lbl,html[data-theme="oled"] .od-plan-lbl{color:var(--sys-green)}
+.od-plan-track{height:7px;border-radius:99px;background:var(--sand);overflow:hidden}
+.od-plan-track span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--green-soft),var(--gold));transition:width .4s}
+.od-steps{display:flex;flex-direction:column;gap:8px}
+.od-step{display:flex;align-items:flex-start;gap:12px;padding:11px 13px;border:1.5px solid var(--border);border-radius:13px;background:var(--card);cursor:pointer;transition:all .2s}
+.od-step:hover{border-color:var(--gold)}
+.od-step.done{background:rgba(42,122,95,.07);border-color:rgba(42,122,95,.4)}
+.od-step-n{width:26px;height:26px;border-radius:50%;background:var(--sand);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.od-step.done .od-step-n{background:var(--green-deep);color:#fff}
+.od-step-b b{display:block;font-size:13.5px;color:var(--ink);font-weight:800}
+.od-step-b span{display:block;font-size:11.5px;color:var(--muted);line-height:1.7;margin-top:2px}
 </style>
 <script src="js/font-scale.js"></script><script>(function(){})();</script>
   <!-- Open Graph / Social Media Thumbnail -->
@@ -169,6 +183,17 @@
       <div class="od-result warn" id="od-result">اختر نوع الأضحية وأدخِل الأسعار لتقدير نصيبك.</div>
     </div>
 
+    <!-- خطة الأضحية -->
+    <h2 class="section-title">🧭 خطة أضحيتك</h2>
+    <div class="card">
+      <div class="od-plan-top">
+        <div class="od-plan-lbl" id="od-plan-lbl">0 من 5 محطات</div>
+        <div class="od-plan-track"><span id="od-plan-bar"></span></div>
+      </div>
+      <div class="od-steps" id="od-plan-track"></div>
+      <div class="od-note" style="margin-top:10px">تُحفظ خطواتك على جهازك — تعود إليها في أي وقت دون إنترنت.</div>
+    </div>
+
     <!-- تذكير يوم النحر -->
     <h2 class="section-title">🔔 تذكير يوم النحر</h2>
     <div class="card" id="od-nahr" style="border-color:rgba(201,161,74,.3)">
@@ -234,7 +259,8 @@
   <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
-    <script src="js/utils/helpers.min.js" defer></script>
+    <script src="js/ui/hajj-now.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
   <script src="js/core/state-manager.min.js" defer></script>
   <script src="js/core/router.min.js" defer></script>
   <script src="js/ui/design-tokens.min.js" defer></script>
@@ -297,16 +323,87 @@
   if(state.price)elPrice.value=state.price; if(state.budget)elBudget.value=state.budget; if(state.shares)elShares.value=state.shares;
   calc();
 
-  /* عدّاد يوم النحر (العاشر = 2026-05-27) */
+  /* عدّاد يوم النحر — يُحسب من التقويم الهجري لا من تاريخٍ مثبّت.
+     كان مثبّتًا على 2026-05-27 فيبقى «حلّ يوم النحر» للأبد بعد ذلك التاريخ. */
   (function(){
-    var NAHR=new Date(2026,4,27,6,0,0), el=document.getElementById('od-nahr-countdown'); if(!el)return;
+    /* ZadHajj يُحمَّل بـdefer → لا يكون جاهزًا أثناء التحليل */
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', startNahr); return; }
+    startNahr();
+    function startNahr(){
+    var el = document.getElementById('od-nahr-countdown');
+    if (!el) return;
+    var H = window.ZadHajj;
+    if (!H || typeof H.nextNahr !== 'function') { el.textContent = '📅 حدّد يوم النحر من تقويمك المحلي'; return; }
+
     function tick(){
-      var diff=NAHR-new Date();
-      if(diff<=0){el.textContent='🕋 حلّ يومُ النحر — تقبّل الله أضحيتك!';return;}
-      var d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000);
-      el.textContent='⏳ يتبقّى على يوم النحر: '+d+' يوم و'+h+' ساعة';
+      var now = new Date();
+      var phase = H.phase ? H.phase() : null;
+      var nahr = H.nextNahr();
+      var today = (H.dhulDay && H.dhulDay()) || null;
+
+      if (today && today >= 10 && today <= 13) {
+        el.textContent = today === 10
+          ? '🕋 حلّ يومُ النحر — تقبّل الله أضحيتك! ويمتدّ وقت الذبح إلى غروب ١٣ ذي الحجة.'
+          : '🪨 أيام التشريق — يبقى وقت الأضحية حتى غروب ١٣ ذي الحجة.';
+        return;
+      }
+      if (!nahr) { el.textContent = '📅 تعذّر حساب يوم النحر — راجع تقويمك المحلي'; return; }
+      var diff = nahr - now;
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor((diff % 86400000) / 3600000);
+      var nahrHijri = H.hijriOf ? H.hijriOf(nahr) : null;
+      var yr = nahrHijri ? ' · ' + nahrHijri.y + ' هـ' : '';
+      el.textContent = d > 0
+        ? '⏳ يتبقّى على يوم النحر ' + d + ' يومًا و' + h + ' ساعة' + yr
+        : '⏳ يتبقّى على يوم النحر ' + h + ' ساعة' + yr;
     }
-    tick(); setInterval(tick,60000);
+    tick(); setInterval(tick, 60000);
+    }
+  })();
+
+  /* ══ خطة الأضحية: خمسُ محطاتٍ تُعلَّم وتُحفظ (zad_v2.odhiya.plan) ══ */
+  (function(){
+    var wrap = document.getElementById('od-plan-track');
+    if (!wrap) return;
+    var STEPS = [
+      { id:'niya',    t:'النيّة',        d:'من أول ذي الحجة: انوِ الأضحية وامتنع عن الشعر والأظافر.' },
+      { id:'buy',     t:'الاختيار والشراء', d:'سليمةٌ من العيوب الأربعة، بلغت السنّ الشرعي.' },
+      { id:'day',     t:'ضبط الموعد',    d:'بعد صلاة العيد يوم النحر، إلى غروب ١٣ ذي الحجة.' },
+      { id:'slaughter', t:'الذبح',       d:'بِسْمِ اللهِ واللهُ أكبر — وتُستحبّ الإحسان في الذبح.' },
+      { id:'dist',    t:'التوزيع',       d:'ثلاثة أقسام: لأهل البيت، وللجيران، وللفقراء.' }
+    ];
+    var st = read().odhiyaPlan || {};
+    wrap.innerHTML = STEPS.map(function(sp, i){
+      var on = !!st[sp.id];
+      return '<div class="od-step' + (on ? ' done' : '') + '" data-step="' + sp.id + '" role="button" tabindex="0">' +
+        '<div class="od-step-n">' + (on ? '✓' : (i + 1)) + '</div>' +
+        '<div class="od-step-b"><b>' + sp.t + '</b><span>' + sp.d + '</span></div>' +
+      '</div>';
+    }).join('');
+
+    function progress(){
+      var done = STEPS.filter(function(x){ return st[x.id]; }).length;
+      var bar = document.getElementById('od-plan-bar');
+      var lbl = document.getElementById('od-plan-lbl');
+      if (bar) bar.style.width = Math.round(done / STEPS.length * 100) + '%';
+      if (lbl) lbl.textContent = done === STEPS.length
+        ? '🎉 أتممتَ خطتك — تقبّل الله أضحيتك'
+        : done + ' من ' + STEPS.length + ' محطات';
+    }
+    wrap.querySelectorAll('.od-step').forEach(function(el){
+      function toggle(){
+        var k = el.dataset.step;
+        st[k] = !st[k];
+        el.classList.toggle('done', !!st[k]);
+        el.querySelector('.od-step-n').textContent = st[k] ? '✓' : (STEPS.findIndex(function(x){ return x.id === k; }) + 1);
+        var all = read(); all.odhiyaPlan = st; write(all);
+        progress();
+        if (st[k] && navigator.vibrate) navigator.vibrate(20);
+      }
+      el.addEventListener('click', toggle);
+      el.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); } });
+    });
+    progress();
   })();
 })();
 </script>

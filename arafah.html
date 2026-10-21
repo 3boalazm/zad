@@ -229,7 +229,7 @@
         <div class="cd-box"><div class="cd-num" id="af-ss">--</div><div class="cd-lbl">ثانية</div></div>
         <div style="display:flex;flex-direction:column;justify-content:center">
           <div style="font-size:11px;opacity:.7;margin-bottom:2px">حتى ساعة الإجابة</div>
-          <div style="font-size:12px;opacity:.85">🌇 المغرب (تقريبي)</div>
+          <div style="font-size:12px;opacity:.85" id="af-maghrib-note">🌇 المغرب (تقديري ١٨:٤٥ — يُضبط بموقعك)</div>
         </div>
       </div>
     </div>
@@ -426,7 +426,8 @@
   <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
-    <script src="js/utils/helpers.min.js" defer></script>
+    <script src="js/ui/hajj-now.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
   <script src="js/core/state-manager.min.js" defer></script>
   <script src="js/core/router.min.js" defer></script>
   <script src="js/ui/design-tokens.min.js" defer></script>
@@ -447,14 +448,43 @@
 const ARAFAH_ANCHOR    = new Date(2026, 4, 26); /* 9 ذو الحجة 1447 */
 const HIJRI_YEAR_DAYS  = 354;
 function _computeNextArafah() {
+  /* المسار الدقيق: تقويم أم القرى عبر Intl (js/ui/hajj-now.js) */
+  if (window.ZadHajj && typeof window.ZadHajj.nextArafah === 'function') {
+    const d = window.ZadHajj.nextArafah();
+    if (d) return d;
+  }
+  /* احتياط: خطوة 354 يومًا — تتأخر يومًا كل ~30 سنة، فلا نعتمدها إلا عند غياب Intl */
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const d = new Date(ARAFAH_ANCHOR); d.setHours(0, 0, 0, 0);
-  /* تقديم بسنة هجرية كاملة حتى نصل لأقرب عرفة لم تمضِ بعد */
   while (d < today) d.setDate(d.getDate() + HIJRI_YEAR_DAYS);
   return d;
 }
-const ARAFAH_DAY     = _computeNextArafah();
-const ARAFAH_MAGHRIB = new Date(ARAFAH_DAY.getFullYear(), ARAFAH_DAY.getMonth(), ARAFAH_DAY.getDate(), 18, 45, 0);
+let ARAFAH_DAY = _computeNextArafah();
+
+/* مغرب عرفة: تقديريّ 18:45 ثم يُصحَّح من مواقيت الصلاة إن توفّر الموقع.
+   (كان مثبّتًا 18:45 لكل العالم — فيخطئ بساعةٍ أو أكثر خارج مصر.) */
+let ARAFAH_MAGHRIB = new Date(ARAFAH_DAY.getFullYear(), ARAFAH_DAY.getMonth(), ARAFAH_DAY.getDate(), 18, 45, 0);
+let ARAFAH_MAGHRIB_EST = true;
+
+async function refineArafahMaghrib() {
+  try {
+    if (typeof window.calcPrayerTimes !== 'function') return;
+    let lat = null, lng = null;
+    try {
+      const st = JSON.parse(localStorage.getItem('zad_v2') || '{}') || {};
+      lat = st.lastLat; lng = st.lastLng;
+    } catch (e) {}
+    if (lat == null || lng == null) return;
+    const t = await window.calcPrayerTimes(lat, lng, ARAFAH_DAY);
+    const m = t && t.maghrib && t.maghrib.time;
+    if (m instanceof Date && !isNaN(m)) {
+      ARAFAH_MAGHRIB = m;
+      ARAFAH_MAGHRIB_EST = false;
+      const note = document.getElementById('af-maghrib-note');
+      if (note) note.textContent = '🌇 المغرب محسوبٌ لموقعك في ' + (t.method || '') ;
+    }
+  } catch (e) { /* يبقى التقدير */ }
+}
 
 
 /* ════ Timeline Data ════════════════════════════════════════ */
@@ -833,6 +863,17 @@ function switchArafahTab(tab) {
   try { localStorage.setItem('zad_arafah_tab', tab); } catch {}
 }
 
+function _arafahHijriYear() {
+  try {
+    if (window.ZadHajj && window.ZadHajj.hijriOf) {
+      const h = window.ZadHajj.hijriOf(ARAFAH_DAY);
+      if (h && h.y) return h.y;
+    }
+    const f = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { year: 'numeric' });
+    return parseInt(f.format(ARAFAH_DAY), 10);
+  } catch (e) { return ARAFAH_DAY.getFullYear() - 579; }
+}
+
 /* ════ Smart countdown ════ */
 function initSmartCountdown() {
   const now = new Date();
@@ -859,7 +900,7 @@ function initSmartCountdown() {
     }
     if (lbl) {
       const days = Math.floor((ARAFAH_DAY - now) / 86400000);
-      lbl.textContent = days === 0 ? 'غداً يوم عرفة ⏳' : 'تبقّى ' + days + ' ' + (days===1?'يوم':'يومًا') + ' على عرفة العام القادم (' + (ARAFAH_DAY.getFullYear()-579) + 'هـ تقريبًا) 🌄';
+      lbl.textContent = days === 0 ? 'غداً يوم عرفة ⏳' : 'تبقّى ' + days + ' ' + (days===1?'يوم':'يومًا') + ' على عرفة العام القادم (' + _arafahHijriYear() + 'هـ) 🌄';
     }
   } else {
     const daysWrap    = document.getElementById('ar-cd-days');
@@ -877,11 +918,23 @@ function initArafahMaghribTimer() {
   const sEl = document.getElementById('af-ss');
   if (!hEl) return;
   const pad = n => String(n).padStart(2,'0');
+  let ended = false;
   function tick() {
-    const diff = Math.max(0, ARAFAH_MAGHRIB - new Date());
-    if (hEl) hEl.textContent = pad(Math.floor(diff / 3600000));
-    if (mEl) mEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
-    if (sEl) sEl.textContent = pad(Math.floor((diff % 60000) / 1000));
+    const left = ARAFAH_MAGHRIB - new Date();
+    if (left <= 0) {
+      if (!ended) {
+        ended = true;
+        if (hEl) hEl.textContent = '٠'; if (mEl) mEl.textContent = '٠'; if (sEl) sEl.textContent = '٠';
+        const wrap = document.getElementById('ar-cd-maghrib');
+        const lbl2 = document.getElementById('ar-phase-lbl');
+        if (lbl2) lbl2.textContent = '🌇 انقضى وقتُ عرفة لهذا العام — تقبّل الله من الحجيج';
+        if (wrap) wrap.classList.add('ended');
+      }
+      return;
+    }
+    if (hEl) hEl.textContent = pad(Math.floor(left / 3600000));
+    if (mEl) mEl.textContent = pad(Math.floor((left % 3600000) / 60000));
+    if (sEl) sEl.textContent = pad(Math.floor((left % 60000) / 1000));
   }
   tick(); setInterval(tick, 1000);
 }
@@ -919,6 +972,11 @@ function initBonusChecklist() {
 
 /* ════ DOMContentLoaded ════ */
 document.addEventListener('DOMContentLoaded', () => {
+  /* أعِد حساب التاريخ الآن وقد صار ZadHajj (defer) متاحًا */
+  ARAFAH_DAY = _computeNextArafah();
+  if (ARAFAH_MAGHRIB_EST) {
+    ARAFAH_MAGHRIB = new Date(ARAFAH_DAY.getFullYear(), ARAFAH_DAY.getMonth(), ARAFAH_DAY.getDate(), 18, 45, 0);
+  }
   loadArState();
   /* restore saved tab */
   const savedTab = (() => { try { return localStorage.getItem('zad_arafah_tab') || 'nonpilgrim'; } catch { return 'nonpilgrim'; } })();
@@ -930,6 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initSmartCountdown();
   initBonusChecklist();
+  refineArafahMaghrib();
 });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>

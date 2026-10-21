@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0e3b2e">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
-<title>حاسبة الزكاة والأضحية — زاد</title>
+<title>الزكاة — نصاب وحول وحاسبة | زاد</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
@@ -100,6 +100,91 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
 .closing-banner{background:linear-gradient(135deg,var(--green-deep),var(--green-mid));border-radius:18px;padding:24px;text-align:center;color:#fff;margin-top:16px;position:relative;overflow:hidden}
 .closing-txt{font-family:'Amiri',serif;font-size:17px;line-height:2;color:rgba(255,255,255,.95)}
 .closing-src{font-size:12px;color:rgba(255,255,255,.6);margin-top:6px}
+
+/* ══ إضافات الجولة ٩: النصاب والحول والسجل والفطر والأنعام ══ */
+.zk-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.zk-chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;color:#fff;backdrop-filter:blur(4px)}
+.zk-pricecard{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.zk-pricecard{grid-template-columns:1fr}}
+.zk-price{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow-sm)}
+.zk-price label{display:block;font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.zk-price-in{display:flex;align-items:center;gap:8px}
+.zk-inp.wide{width:100%;max-width:none;text-align:center}
+.zk-price-in .u{font-size:12px;color:var(--muted);font-weight:700;flex-shrink:0}
+.zk-nisab-line{font-size:11.5px;color:var(--muted);margin-top:8px}
+.zk-nisab-line b{color:var(--green-deep);font-weight:800}
+html[data-theme="dark"] .zk-nisab-line b,html[data-theme="oled"] .zk-nisab-line b{color:var(--sys-green)}
+.zk-nisabbox{display:flex;flex-wrap:wrap;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(14,59,46,.06),rgba(201,161,74,.10));border:1.5px dashed rgba(201,161,74,.45);border-radius:16px;padding:14px 18px;margin-top:12px}
+.zk-nisabbox-main{display:flex;flex-direction:column;gap:2px;flex:1;min-width:150px}
+.zk-nisabbox-lbl{font-size:11.5px;color:var(--muted);font-weight:700}
+.zk-nisabbox-val{font-size:24px;font-weight:900;color:var(--green-deep);font-family:'ThmanyahSans',monospace;line-height:1.2}
+html[data-theme="dark"] .zk-nisabbox-val,html[data-theme="oled"] .zk-nisabbox-val{color:var(--sys-green)}
+.zk-nisabbox-val small{font-size:12px;color:var(--muted);font-weight:600}
+.zk-nisabbox-badge{font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;background:var(--sand);color:var(--muted);align-self:flex-start}
+.zk-nisabbox-badge.ok{background:rgba(42,122,95,.14);color:var(--green-deep)}
+.zk-nisabbox-badge.wait{background:rgba(201,161,74,.16);color:var(--gold-dark)}
+html[data-theme="dark"] .zk-nisabbox-badge.ok,html[data-theme="oled"] .zk-nisabbox-badge.ok{color:var(--sys-green)}
+.zk-basis{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-weight:700}
+.zk-basis select{font-family:inherit;font-size:12.5px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--ink);font-weight:700}
+.zk-note-sm{font-size:11.5px;color:var(--muted);line-height:1.8;margin-top:8px;padding-inline-start:2px}
+.zk-row.sub{padding-top:0;border-bottom:1px solid var(--border)}
+.zk-row.sub .zk-ico{visibility:hidden}
+.zk-row.sub .zk-sub-amt{font-size:12px}
+.zk-track{height:8px;border-radius:99px;background:var(--sand-2,var(--sand));overflow:hidden;margin:4px 0 6px}
+.zk-track-fill{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--green-soft));transition:width .45s cubic-bezier(.2,.7,.2,1)}
+.zk-track-fill.full{background:linear-gradient(90deg,var(--green-soft),var(--sys-green,#2eb84d))}
+.zk-track-lbl{font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:12px}
+.zk-due.pending{background:linear-gradient(135deg,#7a5a12,#a87a1e)}
+.zk-btn.sm{flex:none;min-width:0;padding:9px 16px;font-size:12px}
+.zk-hawl{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow-sm);transition:border-color .3s,box-shadow .3s}
+.zk-hawl.due{border-color:rgba(42,122,95,.55);box-shadow:0 10px 28px -14px rgba(42,122,95,.55)}
+.zk-hawl-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
+.zk-hawl-t{font-size:14px;font-weight:800;color:var(--ink)}
+.zk-hawl-h{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.6}
+.zk-hawl-head input{font-family:inherit;font-size:13px;padding:10px 12px;border-radius:11px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-weight:700}
+.zk-hawl-body{display:flex;align-items:center;gap:16px;margin-top:16px;flex-wrap:wrap}
+.zk-hawl-days{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:112px;padding:12px 8px;border-radius:14px;background:var(--sand)}
+.zk-hawl-days b{font-size:34px;font-weight:900;color:var(--green-deep);font-family:'ThmanyahSans',monospace;line-height:1}
+html[data-theme="dark"] .zk-hawl-days b,html[data-theme="oled"] .zk-hawl-days b{color:var(--sys-green)}
+.zk-hawl-days span{font-size:10.5px;color:var(--muted);font-weight:700;margin-top:4px;text-align:center}
+.zk-hawl-meta{flex:1;min-width:190px}
+.zk-hawl-meta>div{font-size:12.5px;color:var(--ink);font-weight:700}
+.zk-hawl-sub{font-size:11.5px!important;color:var(--muted)!important;font-weight:600!important;margin-top:4px;line-height:1.7}
+.zk-hawl-bar{height:6px;border-radius:99px;background:var(--sand-2,var(--sand));overflow:hidden;margin-top:10px}
+.zk-hawl-bar span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--green-soft),var(--gold));transition:width .5s}
+.zk-hawl-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.zk-hawl .zk-btn[disabled]{opacity:.5;pointer-events:none}
+.zk-history{display:flex;flex-direction:column;gap:8px}
+.zk-hist-empty{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px dashed var(--border);border-radius:16px;padding:18px 20px;font-size:12px;color:var(--muted);line-height:1.8}
+.zk-hist-empty span{font-size:26px;opacity:.8}
+.zk-hist-empty b{color:var(--ink);font-size:13px}
+.zk-hist-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:13px;padding:11px 14px;flex-wrap:wrap}
+.zk-hist-date{font-size:11.5px;color:var(--muted);font-weight:700;min-width:96px}
+.zk-hist-date span{display:inline-block;margin-inline-start:6px;background:var(--sand);border-radius:6px;padding:1px 6px;font-size:10px}
+.zk-hist-amt{font-size:15px;font-weight:900;color:var(--green-deep);font-family:'ThmanyahSans',monospace}
+html[data-theme="dark"] .zk-hist-amt,html[data-theme="oled"] .zk-hist-amt{color:var(--sys-green)}
+.zk-hist-amt small{font-size:10px;color:var(--muted);font-weight:600}
+.zk-hist-pool{font-size:11px;color:var(--muted);margin-inline-start:auto}
+.zk-fitr,.zk-animal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm)}
+@media(max-width:640px){.zk-fitr{grid-template-columns:1fr 1fr}.zk-animal{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.zk-fitr,.zk-animal{grid-template-columns:1fr}}
+.zk-fitr-in label,.zk-animal-in label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.zk-fitr-out{display:flex;flex-direction:column;justify-content:center;background:var(--green-deep);border-radius:13px;padding:12px 14px;color:#fff}
+.zk-fitr-out .k{font-size:10.5px;opacity:.8}
+.zk-fitr-out .v{font-size:20px;font-weight:900;font-family:'ThmanyahSans',monospace;margin:2px 0}
+.zk-fitr-out .s{font-size:10px;opacity:.75}
+.zk-animal{grid-template-columns:1fr 1fr 1.4fr;margin-top:12px}
+.zk-animal-out{display:flex;flex-direction:column;justify-content:center;background:var(--sand);border-radius:13px;padding:12px 14px;font-size:12.5px;color:var(--muted);line-height:1.7}
+.zk-animal-out.has{background:rgba(42,122,95,.1);color:var(--green-deep)}
+.zk-animal-out.none{background:var(--sand);color:var(--muted)}
+.zk-animal-out b{font-size:14px;font-weight:800;color:inherit}
+.zk-animal-out span{font-size:11px;opacity:.8}
+.zk-tablewrap{overflow-x:auto;border:1.5px solid var(--border);border-radius:16px;background:var(--card)}
+.zk-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:420px}
+.zk-table th{background:var(--sand);color:var(--ink);font-weight:800;font-size:11.5px;text-align:start;padding:10px 14px}
+.zk-table td{padding:11px 14px;border-top:1px solid var(--border);color:var(--ink)}
+.zk-table td:nth-child(3){color:var(--green-deep);font-weight:700}
+html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-table td:nth-child(3){color:var(--sys-green)}
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
 <script src="js/font-scale.js"></script>
@@ -127,7 +212,7 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
   </aside>
 
   <main class="main">
-    <h1 class="sr-only">حاسبة الزكاة</h1>
+    <h1 class="sr-only">حاسبة الزكاة والنصاب والحول</h1>
 
     <div class="topbar">
       <div class="tb-left">
@@ -145,113 +230,229 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
 
     <div class="zk-hero">
       <div class="zk-eyebrow">💰 العبادة المالية</div>
-      <div class="zk-title">حاسبة الزكاة والأضحية</div>
-      <div class="zk-sub">احسب زكاة مالك في ثوانٍ — ذهبٌ وفضةٌ ونقدٌ وأسهمٌ وصناديق — مع التحقق من بلوغ النِّصاب آلياً. تعمل بالكامل بدون إنترنت بآخر أسعارٍ تحفظها بنفسك.</div>
-    </div>
-
-    <section class="card" style="margin-bottom:16px"><h2 class="section-title">🧮 حاسبة الزكاة (خطوة بخطوة)</h2><div id="zakat-wizard"></div></section>
-    <section class="card" style="margin-bottom:16px"><div id="zakat-history"></div></section>
-
-    <div class="zk-offline">📴 تعمل أوفلاين: أدخِل سعر جرام الذهب/الفضة بعملتك مرّةً، وتُحفظ لك — والحساب فوري دون شبكة.</div>
-
-    <!-- Controls: rate + currency -->
-    <div class="zk-sec-title">⚙️ إعدادات الحساب</div>
-    <div class="zk-controls">
-      <div class="zk-rate-grp" id="rate-grp">
-        <button data-rate="2.5"   class="active">سنة هجرية · 2.5%</button>
-        <button data-rate="2.577">سنة ميلادية · 2.577%</button>
+      <div class="zk-title">زكاةٌ محسوبة… وحولٌ لا يغيب</div>
+      <div class="zk-sub">سعرُ الذهب والفضة عندك، والوعاءُ يُجمع أمامك، والنصابُ يُختار تلقائيًا (الأدنى أرفق بالفقراء)، ثم تاريخُ الحول يُحفظ ويُذكِّرك. أرقامُك على جهازك وحده — بلا شبكة وبلا حساب.</div>
+      <div class="zk-chips" id="zk-chips">
+        <span class="zk-chip" id="chip-nisab">📏 النصاب: —</span>
+        <span class="zk-chip" id="chip-pool">🧮 الوعاء: —</span>
+        <span class="zk-chip" id="chip-due">💰 المستحق: —</span>
       </div>
-      <div class="zk-cur-wrap">العملة: <input id="zk-cur" type="text" maxlength="6" placeholder="ج.م" value="ج.م" aria-label="رمز العملة"></div>
     </div>
 
-    <!-- Assets -->
-    <div class="zk-sec-title">📥 الأصول الزكوية</div>
+    <div class="zk-offline">📴 تعمل أوفلاين بالكامل: أدخِل سعر الجرام مرّةً — يُحفظ ويُعاد استخدامه، والحساب فوري دون شبكة.</div>
+
+    <!-- ══ 1. الأسعار والنصاب ══ -->
+    <h2 class="zk-sec-title">📏 أسعار اليوم والنصاب</h2>
+    <div class="zk-pricecard">
+      <div class="zk-price">
+        <label for="z-gold-price">🥇 سعر جرام الذهب (عيار 24)</label>
+        <div class="zk-price-in"><input class="zk-inp wide" id="z-gold-price" type="number" inputmode="decimal" min="0" placeholder="0" aria-label="سعر جرام الذهب"><span class="u" id="z-cur-g">ج.م</span></div>
+        <div class="zk-nisab-line">نصاب الذهب (85 جم) = <b id="z-nisab-gold">—</b></div>
+      </div>
+      <div class="zk-price">
+        <label for="z-silver-price">🥈 سعر جرام الفضة</label>
+        <div class="zk-price-in"><input class="zk-inp wide" id="z-silver-price" type="number" inputmode="decimal" min="0" placeholder="0" aria-label="سعر جرام الفضة"><span class="u" id="z-cur-s">ج.م</span></div>
+        <div class="zk-nisab-line">نصاب الفضة (595 جم) = <b id="z-nisab-silver">—</b></div>
+      </div>
+    </div>
+
+    <div class="zk-controls">
+      <div class="zk-rate-grp" id="z-rate-grp" role="group" aria-label="معدل الزكاة">
+        <button type="button" data-rate="2.5" class="active">سنة هجرية · 2.5%</button>
+        <button type="button" data-rate="2.577">سنة ميلادية · 2.577%</button>
+      </div>
+      <label class="zk-cur-wrap" for="z-cur">العملة:
+        <input id="z-cur" type="text" maxlength="6" value="ج.م" aria-label="رمز العملة">
+      </label>
+    </div>
+
+    <div class="zk-nisabbox">
+      <div class="zk-nisabbox-main">
+        <span class="zk-nisabbox-lbl">النصاب المعتمد</span>
+        <span class="zk-nisabbox-val"><b id="z-nisab">—</b> <small id="z-nisab-cur"></small></span>
+        <span class="zk-nisabbox-badge" id="z-nisab-badge">أدخِل سعر الجرام</span>
+      </div>
+      <div class="zk-basis">
+        <label for="z-basis">أيّهما؟</label>
+        <select id="z-basis" aria-label="اختيار أساس النصاب">
+          <option value="lower">الأدنى (الأرفق بالفقراء)</option>
+          <option value="gold">نصاب الذهب</option>
+          <option value="silver">نصاب الفضة</option>
+        </select>
+      </div>
+    </div>
+    <div class="zk-note-sm" id="z-price-age" hidden></div>
+    <div class="zk-note-sm">ℹ️ يُعتمد الأدنى من نصاب الذهب والفضة عند الجمهور؛ ونصاب الفضة غالبًا أقل قيمةً فيكون أرفق بالفقراء. النصاب شرطُ وجوبٍ لا يُخرَج منه شيء.</div>
+
+    <!-- ══ 2. الأصول ══ -->
+    <h2 class="zk-sec-title">📥 أصولك</h2>
     <div class="zk-card" id="assets-card">
       <div class="zk-row">
         <span class="zk-ico">🥇</span>
-        <div class="zk-meta"><div class="zk-name">الذهب</div><div class="zk-hint">الوزن (جرام) × سعر الجرام</div></div>
-        <div class="zk-inputs">
-          <input class="zk-inp" type="number" inputmode="decimal" id="gold-g" placeholder="جرام" aria-label="وزن الذهب بالجرام" min="0">
-          <span class="zk-times">×</span>
-          <input class="zk-inp" type="number" inputmode="decimal" id="gold-p" placeholder="سعر/جم" aria-label="سعر جرام الذهب" min="0">
-        </div>
+        <div class="zk-meta"><div class="zk-name">الذهب</div><div class="zk-hint">الوزن بالجرام × سعر الجرام أعلاه</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-gold-g" placeholder="جرام" min="0" aria-label="وزن الذهب"></div>
       </div>
-      <div class="zk-row"><span class="zk-ico"></span><div class="zk-meta"></div><div class="zk-sub-amt" id="gold-amt">0</div></div>
+      <div class="zk-row sub"><span class="zk-ico"></span><div class="zk-meta"></div><div class="zk-sub-amt" id="z-gold-val">= 0</div></div>
 
       <div class="zk-row">
         <span class="zk-ico">🥈</span>
-        <div class="zk-meta"><div class="zk-name">الفضة</div><div class="zk-hint">الوزن (جرام) × سعر الجرام</div></div>
-        <div class="zk-inputs">
-          <input class="zk-inp" type="number" inputmode="decimal" id="silver-g" placeholder="جرام" aria-label="وزن الفضة بالجرام" min="0">
-          <span class="zk-times">×</span>
-          <input class="zk-inp" type="number" inputmode="decimal" id="silver-p" placeholder="سعر/جم" aria-label="سعر جرام الفضة" min="0">
-        </div>
+        <div class="zk-meta"><div class="zk-name">الفضة</div><div class="zk-hint">الوزن بالجرام × سعر الجرام أعلاه</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-silver-g" placeholder="جرام" min="0" aria-label="وزن الفضة"></div>
       </div>
-      <div class="zk-row"><span class="zk-ico"></span><div class="zk-meta"></div><div class="zk-sub-amt" id="silver-amt">0</div></div>
+      <div class="zk-row sub"><span class="zk-ico"></span><div class="zk-meta"></div><div class="zk-sub-amt" id="z-silver-val">= 0</div></div>
 
       <div class="zk-row">
         <span class="zk-ico">💵</span>
-        <div class="zk-meta"><div class="zk-name">النقد والأرصدة</div><div class="zk-hint">كاش + حسابات بنكية</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="cash" placeholder="القيمة" aria-label="قيمة النقد والأرصدة" min="0"></div>
+        <div class="zk-meta"><div class="zk-name">النقد والأرصدة</div><div class="zk-hint">كاش + حسابات بنكية + ودائع</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-cash" placeholder="القيمة" min="0" aria-label="النقد"></div>
       </div>
       <div class="zk-row">
         <span class="zk-ico">📈</span>
-        <div class="zk-meta"><div class="zk-name">الأسهم</div><div class="zk-hint">القيمة السوقية الحالية</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="stocks" placeholder="القيمة" aria-label="قيمة الأسهم" min="0"></div>
+        <div class="zk-meta"><div class="zk-name">الأسهم</div><div class="zk-hint">القيمة السوقية الآن</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-stocks" placeholder="القيمة" min="0" aria-label="الأسهم"></div>
       </div>
       <div class="zk-row">
         <span class="zk-ico">🏦</span>
         <div class="zk-meta"><div class="zk-name">الصناديق الاستثمارية</div><div class="zk-hint">قيمة الوحدات الحالية</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="funds" placeholder="القيمة" aria-label="قيمة الصناديق الاستثمارية" min="0"></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-funds" placeholder="القيمة" min="0" aria-label="الصناديق"></div>
       </div>
       <div class="zk-row">
         <span class="zk-ico">🛍️</span>
-        <div class="zk-meta"><div class="zk-name">عروض التجارة</div><div class="zk-hint">بضائع بنيّة البيع</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="trade" placeholder="القيمة" aria-label="قيمة عروض التجارة" min="0"></div>
+        <div class="zk-meta"><div class="zk-name">عروض التجارة</div><div class="zk-hint">بضاعةٌ بنيّة البيع بسعر السوق</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-trade" placeholder="القيمة" min="0" aria-label="عروض التجارة"></div>
       </div>
-    </div>
-
-    <!-- Liabilities -->
-    <div class="zk-sec-title">📤 الخصوم (تُطرح)</div>
-    <div class="zk-card">
       <div class="zk-row liab">
         <span class="zk-ico">➖</span>
-        <div class="zk-meta"><div class="zk-name">الديون المستحقة الآن</div><div class="zk-hint">ديونٌ حالّة عليك</div></div>
-        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="debts" placeholder="القيمة" aria-label="قيمة الديون المستحقة الآن" min="0"></div>
+        <div class="zk-meta"><div class="zk-name">ديونٌ حالّة عليك</div><div class="zk-hint">تُطرح من الوعاء قبل الحساب</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-debts" placeholder="القيمة" min="0" aria-label="الديون"></div>
       </div>
     </div>
 
-    <!-- Result -->
+    <!-- ══ 3. النتيجة ══ -->
     <div class="zk-result">
       <div class="zk-result-grid">
-        <div class="zk-stat"><div class="l">إجمالي الوعاء الزكوي</div><div class="v"><span id="r-pool">0</span> <small id="r-cur1">ج.م</small></div></div>
-        <div class="zk-stat"><div class="l">النصاب المعتمد (الأدنى)</div><div class="v"><span id="r-nisab">—</span> <small id="r-cur2">ج.م</small></div></div>
+        <div class="zk-stat"><div class="l">إجمالي الوعاء الزكوي</div><div class="v"><span id="z-pool">0</span> <small id="z-pool-cur">ج.م</small></div></div>
+        <div class="zk-stat"><div class="l">النصاب المعتمد</div><div class="v"><span id="z-nisab-out">—</span> <small id="z-nisab-out-cur">ج.م</small></div></div>
       </div>
-      <div class="zk-due" id="due-box">
-        <div class="l" id="due-label">زكاتك المستحقة</div>
-        <div class="v"><span id="r-zakat">0</span> <small id="r-cur3" style="font-size:15px"></small></div>
-      </div>
-      <div class="zk-nisab-note" id="nisab-note">
-        <span>ℹ️</span>
-        <div><b>النصاب:</b> 85 جرام ذهب أو 595 جرام فضة. يُعتمد الأدنى منهما احتياطاً للفقير. تجب الزكاة فقط إذا بلغ مالُك النصاب وحال عليه الحول.</div>
+      <div class="zk-track" aria-hidden="true"><span class="zk-track-fill" id="z-track-fill"></span></div>
+      <div class="zk-track-lbl" id="z-track-lbl">أدخِل قيم أموالك ليبدأ الحساب</div>
+      <div class="zk-due" id="z-due-box">
+        <div class="l" id="z-due-label">زكاتك المستحقة</div>
+        <div class="v"><span id="z-due">0</span> <small id="z-due-cur" style="font-size:15px"></small></div>
       </div>
       <div class="zk-actions">
-        <button class="zk-btn primary" id="save-btn">💾 حفظ الحساب</button>
-        <button class="zk-btn" id="reset-btn">↺ تفريغ الحقول</button>
+        <button class="zk-btn primary" id="z-save">💾 حفظ في السجل</button>
+        <button class="zk-btn" id="z-copy">📋 نسخ الملخّص</button>
+        <button class="zk-btn" id="z-reset">↺ تفريغ</button>
       </div>
     </div>
 
-    <!-- Udhiya -->
-    <div class="zk-sec-title">🐏 ركن الأضحية</div>
+    <!-- ══ 4. الحول ══ -->
+    <h2 class="zk-sec-title">🗓️ الحول — سنةٌ هجرية على النصاب</h2>
+    <div class="zk-hawl" id="z-hawl-box">
+      <div class="zk-hawl-head">
+        <div>
+          <div class="zk-hawl-t">متى بلغ مالُك النصاب؟</div>
+          <div class="zk-hawl-h">سجِّل التاريخ، ونحسب لك تمام الحول بالهجري — ثم نذكّرك.</div>
+        </div>
+        <input type="date" id="z-hawl-start" aria-label="تاريخ بلوغ النصاب">
+      </div>
+      <div class="zk-hawl-body" id="z-hawl-body">
+        <div class="zk-hawl-days"><b id="z-hawl-days">—</b><span id="z-hawl-days-lbl">يومًا متبقّيًا</span></div>
+        <div class="zk-hawl-meta">
+          <div>ينتهي الحول: <b id="z-hawl-end">—</b></div>
+          <div class="zk-hawl-sub" id="z-hawl-sub">اختر تاريخ البداية لعرض موعد الزكاة</div>
+          <div class="zk-hawl-bar"><span id="z-hawl-bar-fill"></span></div>
+        </div>
+      </div>
+      <div class="zk-hawl-actions">
+        <button class="zk-btn primary sm" id="z-hawl-ics">📅 أضِف تذكيرًا للتقويم</button>
+        <button class="zk-btn sm" id="z-hawl-clear">مسح التاريخ</button>
+      </div>
+      <div class="zk-note-sm" style="margin-top:10px">📖 لا تجب الزكاة حتى يحول الحول على النصاب. الحساب هنا بالسنة الهجرية (354/355 يومًا) بتقويم أم القرى، وقد يختلف يومًا واحدًا بحسب رؤية الهلال.</div>
+    </div>
+
+    <!-- ══ 5. السجل ══ -->
+    <h2 class="zk-sec-title">🗂️ سجل حساباتك</h2>
+    <div class="zk-history" id="z-history"></div>
+
+    <!-- ══ 6. زكاة الفطر ══ -->
+    <h2 class="zk-sec-title">🌙 زكاة الفطر</h2>
+    <div class="zk-fitr">
+      <div class="zk-fitr-in">
+        <label for="z-fitr-heads">عدد أفراد الأسرة</label>
+        <input class="zk-inp wide" id="z-fitr-heads" type="number" inputmode="numeric" min="0" placeholder="0">
+      </div>
+      <div class="zk-fitr-in">
+        <label for="z-fitr-price">سعر كيلو الطعام</label>
+        <input class="zk-inp wide" id="z-fitr-price" type="number" inputmode="decimal" min="0" placeholder="0">
+      </div>
+      <div class="zk-fitr-in">
+        <label for="z-fitr-kg">الصاع (كجم)</label>
+        <input class="zk-inp wide" id="z-fitr-kg" type="number" inputmode="decimal" min="0" step="0.1" value="2.5">
+      </div>
+      <div class="zk-fitr-out">
+        <div class="k">المجموع</div>
+        <div class="v"><b id="z-fitr-out">—</b></div>
+        <div class="s" id="z-fitr-kg-out"></div>
+      </div>
+    </div>
+    <div class="zk-note-sm">صاعٌ من غالب قوت البلد عن كل فرد (نحو 2.5 كجم تقديرًا)، تُخرَج قبل صلاة العيد. القيمة بالمال جائزة عند الحنفية وجمهورٍ من المعاصرين.</div>
+
+    <!-- ══ 7. الأنصبة والأنعام ══ -->
+    <h2 class="zk-sec-title">🐐 جدول الأنصبة</h2>
+    <div class="zk-tablewrap">
+      <table class="zk-table">
+        <thead><tr><th>المال</th><th>النصاب</th><th>المقدار</th></tr></thead>
+        <tbody>
+          <tr><td>الذهب</td><td>85 جم خالص (عيار 24)</td><td>2.5%</td></tr>
+          <tr><td>الفضة</td><td>595 جم</td><td>2.5%</td></tr>
+          <tr><td>النقود والأسهم والتجارة</td><td>ما يعادل 85 جم ذهب أو 595 جم فضة</td><td>2.5%</td></tr>
+          <tr><td>الزروع والثمار</td><td>653 كجم (5 أوسق)</td><td>10% بلا كلفة سقي · 5% بكلفة</td></tr>
+          <tr><td>الأنعام</td><td>40 شاة · 30 بقرة · 5 إبل</td><td>حسب الجدول أدناه</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="zk-animal">
+      <div class="zk-animal-in">
+        <label for="z-an-kind">النوع</label>
+        <select id="z-an-kind" class="zk-inp wide">
+          <option value="sheep">غنم</option>
+          <option value="cow">بقر</option>
+          <option value="camel">إبل</option>
+        </select>
+      </div>
+      <div class="zk-animal-in">
+        <label for="z-an-count">العدد</label>
+        <input class="zk-inp wide" id="z-an-count" type="number" inputmode="numeric" min="0" placeholder="0">
+      </div>
+      <div class="zk-animal-out" id="z-an-out">أدخِل العدد لمعرفة الواجب</div>
+    </div>
+
+    <div class="zk-note-sm">🧷 عيارات الذهب: 24 = 100% · 22 = 91.7% · 21 = 87.5% · 18 = 75% — اقسم الوزن على نسبة الخلوص ثم قارنه بـ85 جم. والذهب المستعمل (الحُليّ) فيه خلافٌ مشهور بين العلماء يُراجَع فيه.</div>
+
+    <!-- ══ 8. روابط ══ -->
+    <h2 class="zk-sec-title">↪️ أكمل الطريق</h2>
     <div class="zk-udhiya">
-      <a class="zk-ud-link" href="odhiya.html">
-        <span class="i">📖</span>
-        <div class="t"><b>دليل أحكام الأضحية</b><small>الشروط، السن، التوزيع، وما يُجتنب في العشر</small></div>
+      <a class="zk-ud-link" href="zakat-ahkam.html">
+        <span class="i">📋</span>
+        <div class="t"><b>أحكام الزكاة</b><small>الشروط والمصارف الثمانية ووقت الإخراج</small></div>
+        <span class="arr">←</span>
+      </a>
+      <a class="zk-ud-link" href="zakat-anwa.html">
+        <span class="i">📊</span>
+        <div class="t"><b>أنواع الزكاة وحسابها</b><small>الزروع والشركات والأسهم والعملات</small></div>
         <span class="arr">←</span>
       </a>
       <a class="zk-ud-link" href="sadaqah.html">
         <span class="i">💚</span>
-        <div class="t"><b>صدقة العشر</b><small>وجِّه أضحيتك وصدقتك حيث تنفع</small></div>
+        <div class="t"><b>الصدقة والبر</b><small>ما بعد الفريضة — أبوابٌ للتطوّع</small></div>
+        <span class="arr">←</span>
+      </a>
+      <a class="zk-ud-link" href="odhiya.html">
+        <span class="i">🐏</span>
+        <div class="t"><b>دليل الأضحية</b><small>الشروط والسن والتوزيع</small></div>
         <span class="arr">←</span>
       </a>
     </div>
@@ -264,98 +465,389 @@ html[data-theme="dark"] .zk-ud-link .t b,html[data-theme="oled"] .zk-ud-link .t 
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════════
-   حاسبة الزكاة — أوفلاين بالكامل، تُخزَّن في zad_v2.zakat
-   • النِّصاب: 85جم ذهب / 595جم فضة (يُعتمد الأدنى)
-   • المعدّل: 2.5% هجري / 2.577% ميلادي
-   • لا تتعامل مع أي عملات رقمية.
-   ══════════════════════════════════════════════════════════ */
-const ZKEY='zad_v2';
-const NISAB_GOLD_G=85, NISAB_SILVER_G=595;
-const FIELDS=['gold-g','gold-p','silver-g','silver-p','cash','stocks','funds','trade','debts'];
-let RATE=2.5, CUR='ج.م';
+/* ══════════════════════════════════════════════════════════════════════════
+   صفحة الزكاة — واجهةٌ واحدة فوق محرّكٍ واحد (js/ui/zakat-engine.js)
+   لا حساب يدوي هنا: كل الأرقام من ZadZakat، والصفحة عرضٌ وحفظٌ فقط.
+   تُخزَّن في zad_zakat_v3 (وتُرحَّل من zad_v2.zakat عند أول زيارة).
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
 
-function readZ(){ try{ const s=JSON.parse(localStorage.getItem(ZKEY)||'{}'); return (s&&s.zakat)?s.zakat:{}; }catch(e){ return {}; } }
-function writeZ(z){ let s={}; try{ s=JSON.parse(localStorage.getItem(ZKEY)||'{}')||{}; }catch(e){ s={}; } s.zakat=z; try{ localStorage.setItem(ZKEY,JSON.stringify(s)); }catch(e){} if(window.STATE) window.STATE.zakat=z; }
+  /* المحرّك يُحمَّل بـdefer، أي بعد هذا السكربت — فنؤجّل التشغيل لـDOMContentLoaded */
+  let E = null;
 
-function num(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)||v<0?0:v; }
-function fmt(n){ return (Math.round(n*100)/100).toLocaleString('ar-EG',{maximumFractionDigits:2}); }
+  const MONTHS = ['محرم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 'جمادى الأولى', 'جمادى الآخرة',
+    'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'];
 
-function recompute(){
-  const goldG=num('gold-g'), goldP=num('gold-p'), silverG=num('silver-g'), silverP=num('silver-p');
-  const goldVal=goldG*goldP, silverVal=silverG*silverP;
-  document.getElementById('gold-amt').textContent='= '+fmt(goldVal)+' '+CUR;
-  document.getElementById('silver-amt').textContent='= '+fmt(silverVal)+' '+CUR;
+  /* حقول الأصول وحدها — الأسعار لها حقول مستقلة أعلى الصفحة */
+  const FIELDS = [
+    ['z-gold-g', 'goldG'], ['z-silver-g', 'silverG'],
+    ['z-cash', 'cash'], ['z-stocks', 'stocks'], ['z-funds', 'funds'],
+    ['z-trade', 'trade'], ['z-debts', 'debts'],
+  ];
+  const PRICES = [['z-gold-price', 'goldP'], ['z-silver-price', 'silverP']];
+  const $ = id => document.getElementById(id);
 
-  const cash=num('cash'), stocks=num('stocks'), funds=num('funds'), trade=num('trade'), debts=num('debts');
-  const pool=Math.max(0, goldVal+silverVal+cash+stocks+funds+trade-debts);
+  /* أرقام عربية-هندية يعرّفها المستخدم بلوحة مفاتيح عربية */
+  function latin(v) {
+    return String(v == null ? '' : v)
+      .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+      .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0))
+      .replace(/[٬،]/g, '').replace(/,/g, '');
+  }
+  function num(el) {
+    if (!el) return 0;
+    const v = parseFloat(latin(el.value));
+    return isFinite(v) && v > 0 ? v : 0;
+  }
+  function toast(msg) {
+    try { if (typeof window.showToast === 'function') { window.showToast(msg); return; } } catch (e) {}
+    let t = $('zk-toast');
+    if (!t) {
+      t = document.createElement('div'); t.id = 'zk-toast';
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green-deep,#0e3b2e);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:opacity .3s';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg; t.style.opacity = '1';
+    clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; }, 2200);
+  }
 
-  /* النصاب: قيمة 85جم ذهب وقيمة 595جم فضة — يُعتمد الأدنى المتوفّر سعره */
-  const nisabGold   = goldP>0   ? NISAB_GOLD_G*goldP     : null;
-  const nisabSilver = silverP>0 ? NISAB_SILVER_G*silverP : null;
-  let nisab=null;
-  if(nisabGold!=null && nisabSilver!=null) nisab=Math.min(nisabGold,nisabSilver);
-  else nisab = nisabGold!=null ? nisabGold : nisabSilver;
+  let st = null;          /* يُحمَّل في boot بعد توافر المحرّك */
+  let saveTimer = null;
+  let priceTouched = false; /* هل عدّل السعر في هذه الجلسة؟ */
 
-  const meets = nisab!=null && pool>=nisab;
-  const zakat = meets ? pool*(RATE/100) : 0;
+  function cur() { return ($('z-cur') && $('z-cur').value.trim()) || st.cur || 'ج.م'; }
+  function rate() { return st.rate === E.CONST.RATE_SOLAR ? E.CONST.RATE_SOLAR : E.CONST.RATE_LUNAR; }
 
-  document.getElementById('r-pool').textContent=fmt(pool);
-  document.getElementById('r-nisab').textContent = nisab!=null ? fmt(nisab) : 'أدخِل سعر الذهب/الفضة';
-  document.getElementById('r-zakat').textContent=fmt(zakat);
-  [['r-cur1',CUR],['r-cur2',CUR],['r-cur3',CUR]].forEach(([id,v])=>document.getElementById(id).textContent=v);
+  function readAssets() {
+    const a = {};
+    FIELDS.forEach(([id, key]) => { a[key] = num($(id)); });
+    PRICES.forEach(([id, key]) => { a[key] = num($(id)); });
+    return a;
+  }
 
-  const dueBox=document.getElementById('due-box'), dueLbl=document.getElementById('due-label');
-  if(nisab==null){ dueBox.classList.add('zk-belowNisab'); dueLbl.textContent='أدخِل سعر الجرام لتحديد النصاب'; }
-  else if(!meets){ dueBox.classList.add('zk-belowNisab'); dueLbl.textContent='مالُك دون النصاب — لا زكاة'; }
-  else { dueBox.classList.remove('zk-belowNisab'); dueLbl.textContent='زكاتك المستحقة ('+RATE+'%)'; }
-}
+  function persist() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      st = E.save({
+        cur: cur(), rate: rate(), basis: $('z-basis').value,
+        pricesAt: priceTouched ? Date.now() : (st && st.pricesAt) || 0,
+        assets: readAssets(), hawlStart: $('z-hawl-start').value,
+        fitrHeads: $('z-fitr-heads').value, fitrPrice: $('z-fitr-price').value,
+        fitrKg: $('z-fitr-kg').value,
+      });
+    }, 220);
+  }
 
-function persist(){
-  const z={ rate:RATE, cur:CUR };
-  FIELDS.forEach(id=>z[id]=document.getElementById(id).value);
-  writeZ(z);
-}
+  /* ── الحالة الراهنة ─────────────────────────────────────────────────── */
+  function compute() {
+    const a = readAssets();
+    const pool = E.pool(a);
+    const nis = E.nisab({ goldPrice: a.goldP, silverPrice: a.silverP, basis: $('z-basis').value });
+    const d = E.due({ pool: pool.net, nisab: nis.value, rate: rate(), hawlPassed: true });
+    const hawl = E.hawl($('z-hawl-start').value, new Date());
+    return { a, pool, nis, d, hawl, c: cur() };
+  }
 
-function restore(){
-  const z=readZ();
-  if(z.cur){ CUR=z.cur; document.getElementById('zk-cur').value=CUR; }
-  if(z.rate){ RATE=parseFloat(z.rate)||2.5; document.querySelectorAll('#rate-grp button').forEach(b=>b.classList.toggle('active', parseFloat(b.dataset.rate)===RATE)); }
-  FIELDS.forEach(id=>{ if(z[id]!=null) document.getElementById(id).value=z[id]; });
-}
+  function render() {
+    const { a, pool, nis, d, hawl, c } = compute();
+    const f = v => E.fmt(v, c);
 
-function toast(msg){
-  try{ if(typeof window.showToast==='function'){ window.showToast(msg); return; } }catch(e){}
-  let t=document.getElementById('zk-toast');
-  if(!t){ t=document.createElement('div'); t.id='zk-toast'; t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-deep);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transition:all .3s'; document.body.appendChild(t); }
-  t.textContent=msg; requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
-  clearTimeout(t._h); t._h=setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; },2000);
-}
+    /* أسعار النصاب */
+    $('z-nisab-gold').textContent = nis.gold != null ? f(nis.gold) : '—';
+    $('z-nisab-silver').textContent = nis.silver != null ? f(nis.silver) : '—';
+    $('z-cur-g').textContent = c; $('z-cur-s').textContent = c;
 
-document.addEventListener('DOMContentLoaded',()=>{
-  restore(); recompute();
-  FIELDS.forEach(id=>document.getElementById(id).addEventListener('input',()=>{ recompute(); persist(); }));
-  document.getElementById('zk-cur').addEventListener('input',e=>{ CUR=(e.target.value||'').trim()||'ج.م'; recompute(); persist(); });
-  document.querySelectorAll('#rate-grp button').forEach(b=>b.addEventListener('click',()=>{
-    document.querySelectorAll('#rate-grp button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active'); RATE=parseFloat(b.dataset.rate); recompute(); persist();
-  }));
-  document.getElementById('save-btn').addEventListener('click',()=>{ persist(); if(navigator.vibrate)navigator.vibrate(30); toast('💾 تم حفظ حسابك — متاح أوفلاين'); });
-  document.getElementById('reset-btn').addEventListener('click',()=>{ FIELDS.forEach(id=>document.getElementById(id).value=''); recompute(); persist(); toast('↺ تم تفريغ الحقول'); });
-});
+    /* النصاب المعتمد */
+    $('z-nisab').textContent = nis.value != null ? E.fmt(nis.value) : '—';
+    $('z-nisab-cur').textContent = nis.value != null ? c : '';
+    const badge = $('z-nisab-badge');
+    if (nis.value == null) { badge.textContent = 'أدخِل سعر الجرام'; badge.className = 'zk-nisabbox-badge wait'; }
+    else {
+      badge.textContent = nis.basis === 'gold' ? 'على نصاب الذهب (85 جم)' : 'على نصاب الفضة (595 جم)';
+      badge.className = 'zk-nisabbox-badge ok';
+    }
+
+    /* قيم الأصول */
+    $('z-gold-val').textContent = '= ' + f(pool.goldVal);
+    $('z-silver-val').textContent = '= ' + f(pool.silverVal);
+
+    /* النتيجة */
+    $('z-pool').textContent = E.fmt(pool.net);
+    $('z-pool-cur').textContent = c;
+    $('z-nisab-out').textContent = nis.value != null ? E.fmt(nis.value) : '—';
+    $('z-nisab-out-cur').textContent = nis.value != null ? c : '';
+    $('z-due').textContent = E.fmt(d.due);
+    $('z-due-cur').textContent = c;
+
+    /* شريط التقدّم نحو النصاب */
+    const pct = nis.value ? Math.max(0, Math.min(100, Math.round((pool.net / nis.value) * 100))) : 0;
+    $('z-track-fill').style.width = pct + '%';
+    $('z-track-fill').className = 'zk-track-fill' + (pct >= 100 ? ' full' : '');
+    const lbl = $('z-track-lbl');
+    if (!nis.value) lbl.textContent = 'أدخِل سعر الذهب أو الفضة لتحديد النصاب';
+    else if (pool.net <= 0) lbl.textContent = 'أدخِل قيم أموالك ليبدأ الحساب';
+    else if (pct >= 100) lbl.textContent = '✅ بلغ مالُك النصاب (' + pct + '%)' + (hawl.ok && !hawl.passed ? ' — والحولُ لم يتمّ بعد' : '');
+    else lbl.textContent = 'بلغتَ ' + pct + '% من النصاب — يتبقّى ' + f(nis.value - pool.net);
+
+    const box = $('z-due-box');
+    const hawlPending = hawl.ok && !hawl.passed;
+    box.classList.toggle('pending', hawlPending);
+    $('z-due-label').textContent = hawlPending ? 'الواجب عند تمام الحول' :
+      (d.meets ? 'زكاتك المستحقة (' + rate() + '%)' : 'زكاتك المستحقة');
+
+    /* الرقاقات */
+    $('chip-nisab').textContent = '📏 النصاب: ' + (nis.value != null ? f(nis.value) : '—');
+    $('chip-pool').textContent = '🧮 الوعاء: ' + f(pool.net);
+    $('chip-due').textContent = '💰 المستحق: ' + f(d.due);
+
+    renderPriceAge(c, nis);
+    renderHawl(hawl, d, c);
+    renderHistory(c);
+    renderFitr(c);
+    renderAnimal();
+  }
+
+  /* سعرٌ قديم = نصابٌ خاطئ: ننبّه بعد 30 يومًا من آخر تعديل */
+  function renderPriceAge(c, nis) {
+    const el = $('z-price-age');
+    if (!el) return;
+    const at = (st && st.pricesAt) || 0;
+    if (nis.value == null || !at) { el.hidden = true; return; }
+    const days = Math.floor((Date.now() - at) / 86400000);
+    if (days < 30) { el.hidden = true; return; }
+    el.hidden = false;
+    el.textContent = '⚠️ سعر الجرام المحفوظ مضى عليه ' + days + ' يومًا — حدّثه لأن النصاب يتحرّك مع السعر (المبلغ المحسوب الآن تقديري).';
+    el.style.color = 'var(--gold-dark, #a87a1e)';
+  }
+
+  /* ── الحول ─────────────────────────────────────────────────────────── */
+  function hijriLabel(parts) {
+    return parts ? parts.d + ' ' + MONTHS[parts.m - 1] + ' ' + parts.y + ' هـ' : '—';
+  }
+  function renderHawl(hawl, d, c) {
+    const start = $('z-hawl-start').value;
+    if (!start || !hawl.ok) {
+      $('z-hawl-days').textContent = '—';
+      $('z-hawl-days-lbl').textContent = 'يومًا متبقّيًا';
+      $('z-hawl-end').textContent = '—';
+      $('z-hawl-sub').textContent = 'اختر تاريخ البداية لعرض موعد الزكاة';
+      $('z-hawl-bar-fill').style.width = '0%';
+      $('z-hawl-ics').disabled = true;
+      $('z-hawl-box').classList.remove('due');
+      return;
+    }
+    $('z-hawl-end').textContent = hijriLabel(hawl.hijriEnd) + ' · ' + hawl.endISO;
+    $('z-hawl-bar-fill').style.width = Math.max(2, Math.min(100, hawl.pct)) + '%';
+    $('z-hawl-ics').disabled = false;
+    if (hawl.passed) {
+      $('z-hawl-days').textContent = '✓';
+      $('z-hawl-days-lbl').textContent = 'حال الحول';
+      $('z-hawl-sub').textContent = d.meets
+        ? 'حال الحول على مالك — أخرِج ' + E.fmt(d.due, c) + ' الآن.'
+        : 'حال الحول، لكن مالك لم يبلغ النصاب هذا العام.';
+      $('z-hawl-box').classList.add('due');
+    } else {
+      $('z-hawl-days').textContent = hawl.daysLeft;
+      $('z-hawl-days-lbl').textContent = hawl.daysLeft <= 30 ? 'يومًا — اقترب الموعد' : 'يومًا متبقّيًا';
+      $('z-hawl-sub').textContent = 'بدأ الحول: ' + hijriLabel(hawl.hijriStart) + ' — لا تجب الزكاة قبل تمامه.';
+      $('z-hawl-box').classList.remove('due');
+    }
+  }
+
+  /* ── السجل ─────────────────────────────────────────────────────────── */
+  function renderHistory(c) {
+    const wrap = $('z-history');
+    const rows = E.history();
+    if (!rows.length) {
+      wrap.innerHTML = '<div class="zk-hist-empty"><span>🗂️</span><div><b>لا حسابات محفوظة بعد</b><br>' +
+        'اضغط «حفظ في السجل» بعد الحساب لتعود إليه لاحقًا وتقارن أعوامك.</div></div>';
+      return;
+    }
+    wrap.innerHTML = rows.slice(0, 8).map(r =>
+      '<div class="zk-hist-row">' +
+      '<div class="zk-hist-date">' + (r.date || '') + '<span>' + (r.rate || 2.5) + '%</span></div>' +
+      '<div class="zk-hist-amt">' + E.fmt(r.due || 0) + ' <small>' + (r.cur || c) + '</small></div>' +
+      '<div class="zk-hist-pool">وعاء ' + E.fmt(r.pool || 0) + '</div>' +
+      '</div>').join('') +
+      '<button class="zk-btn sm" id="z-hist-clear">مسح السجل</button>';
+    const clr = $('z-hist-clear');
+    if (clr) clr.addEventListener('click', () => {
+      if (!confirm('مسح كل الحسابات المحفوظة؟')) return;
+      E.clearHistory(); renderHistory(c); toast('🗑️ مُسح السجل');
+    });
+  }
+
+  /* ── زكاة الفطر ────────────────────────────────────────────────────── */
+  function renderFitr(c) {
+    const heads = num($('z-fitr-heads')), price = num($('z-fitr-price')), kg = num($('z-fitr-kg')) || 2.5;
+    if (!heads || !price) {
+      $('z-fitr-out').textContent = '—';
+      $('z-fitr-kg-out').textContent = heads ? 'أدخِل سعر الكيلو' : 'لأسرةٍ من كم فرد؟';
+      return;
+    }
+    const r = E.fitr(heads, price, kg);
+    $('z-fitr-out').textContent = E.fmt(r.amount, c);
+    $('z-fitr-kg-out').textContent = r.totalKg + ' كجم إجمالًا (' + heads + ' × ' + kg + ')';
+  }
+
+  /* ── الأنعام ───────────────────────────────────────────────────────── */
+  function renderAnimal() {
+    const kind = $('z-an-kind').value, count = num($('z-an-count'));
+    const r = E.livestock(kind, count);
+    const out = $('z-an-out');
+    if (!count) { out.textContent = 'أدخِل العدد لمعرفة الواجب'; out.className = 'zk-animal-out'; return; }
+    out.innerHTML = '<b>' + (r.desc || '') + '</b>' + (r.kind ? ' <span>— ' + r.kind + '</span>' : '');
+    out.className = 'zk-animal-out ' + (/دون النصاب/.test(r.desc || '') ? 'none' : 'has');
+  }
+
+  /* ── أحداث ─────────────────────────────────────────────────────────── */
+  function bind() {
+    FIELDS.forEach(([id]) => {
+      const el = $(id);
+      if (el) el.addEventListener('input', () => { render(); persist(); });
+    });
+    $('z-gold-price').addEventListener('input', () => { priceTouched = true; render(); persist(); });
+    $('z-silver-price').addEventListener('input', () => { priceTouched = true; render(); persist(); });
+    $('z-cur').addEventListener('input', () => { render(); persist(); });
+    $('z-basis').addEventListener('change', () => { render(); persist(); });
+
+    document.querySelectorAll('#z-rate-grp button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#z-rate-grp button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        st.rate = parseFloat(b.dataset.rate);
+        render(); persist();
+      });
+    });
+
+    $('z-hawl-start').addEventListener('change', () => { render(); persist(); });
+    $('z-hawl-clear').addEventListener('click', () => {
+      $('z-hawl-start').value = ''; render(); persist(); toast('↺ مُسح تاريخ الحول');
+    });
+    $('z-hawl-ics').addEventListener('click', downloadICS);
+
+    $('z-save').addEventListener('click', () => {
+      const { pool, nis, d, hawl, c } = compute();
+      if (!nis.value) { toast('⚠️ أدخِل سعر الذهب أو الفضة أولًا'); return; }
+      E.addHistory({
+        pool: pool.net, nisab: nis.value, due: d.due, rate: rate(), cur: c,
+        basis: nis.basis, goldP: num($('z-gold-price')), silverP: num($('z-silver-price')),
+        hawlPassed: hawl.ok ? hawl.passed : null,
+      });
+      renderHistory(c);
+      if (navigator.vibrate) navigator.vibrate(25);
+      toast('💾 حُفظ الحساب في سجلك — أوفلاين');
+    });
+
+    $('z-copy').addEventListener('click', copySummary);
+    $('z-reset').addEventListener('click', () => {
+      FIELDS.forEach(([id]) => { const el = $(id); if (el) el.value = ''; });
+      render(); persist(); toast('↺ فُرّغت الحقول — الأسعار محفوظة');
+    });
+
+    ['z-fitr-heads', 'z-fitr-price', 'z-fitr-kg'].forEach(id => {
+      $(id).addEventListener('input', () => { renderFitr(cur()); persist(); });
+    });
+    ['z-an-kind', 'z-an-count'].forEach(id => $(id).addEventListener('input', renderAnimal));
+    $('z-an-kind').addEventListener('change', renderAnimal);
+
+    /* تغيّر التاريخ عند منتصف الليل لا يفسد عدّاد الحول */
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+  }
+
+  function copySummary() {
+    const { pool, nis, d, hawl, c } = compute();
+    const lines = [
+      '🧮 ملخّص زكاتي — زاد',
+      'الوعاء الزكوي: ' + E.fmt(pool.net, c),
+      'النصاب المعتمد: ' + (nis.value != null ? E.fmt(nis.value, c) : 'غير محدّد'),
+      'المستحق (' + rate() + '%): ' + E.fmt(d.due, c),
+    ];
+    if (hawl.ok) lines.push('الحول: ' + (hawl.passed ? 'تمّ ✓' : hawl.daysLeft + ' يومًا متبقّيًا حتى ' + hawl.endISO));
+    const text = lines.join('\n');
+    const done = () => toast('📋 نُسخ الملخّص');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+    } else fallbackCopy(text, done);
+  }
+  function fallbackCopy(text, done) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) { toast('تعذّر النسخ'); }
+    document.body.removeChild(ta);
+  }
+
+  function downloadICS() {
+    const { hawl, d, c } = compute();
+    if (!hawl.ok) return;
+    const body = E.ics({
+      dateISO: hawl.endISO,
+      title: 'زكاة مالي — تمّ الحول',
+      desc: 'الواجب التقديري: ' + E.fmt(d.due, c) + ' (نصاب ' + E.fmt(compute().nis.value, c) + '). راجع أرقامك في تطبيق زاد.',
+    });
+    const blob = new Blob([body], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'zad-zakat-hawl-' + hawl.endISO + '.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    toast('📅 نُزِّل ملف التذكير — افتحه ليُضاف للتقويم');
+  }
+
+  /* ── استعادة الحالة ────────────────────────────────────────────────── */
+  function restore() {
+    const a = st.assets || {};
+    $('z-gold-g').value = a.goldG || '';
+    $('z-silver-g').value = a.silverG || '';
+    $('z-cash').value = a.cash || '';
+    $('z-stocks').value = a.stocks || '';
+    $('z-funds').value = a.funds || '';
+    $('z-trade').value = a.trade || '';
+    $('z-debts').value = a.debts || '';
+    if (a.goldP) $('z-gold-price').value = a.goldP;
+    if (a.silverP) $('z-silver-price').value = a.silverP;
+    if (st.cur) $('z-cur').value = st.cur;
+    if (st.basis) $('z-basis').value = st.basis;
+    if (st.hawlStart) $('z-hawl-start').value = st.hawlStart;
+    if (st.fitrHeads) $('z-fitr-heads').value = st.fitrHeads;
+    if (st.fitrPrice) $('z-fitr-price').value = st.fitrPrice;
+    if (st.fitrKg) $('z-fitr-kg').value = st.fitrKg;
+    document.querySelectorAll('#z-rate-grp button').forEach(b => {
+      b.classList.toggle('active', parseFloat(b.dataset.rate) === rate());
+    });
+  }
+
+  function boot() {
+    E = window.ZadZakat;
+    if (!E) { console.warn('[Zakat] المحرّك غير محمّل'); return; }
+    st = E.load();
+    restore();
+    bind();
+    render();
+    if (st.migrated) {
+      setTimeout(() => toast('↩️ استرجعنا أرقامك من الحاسبة القديمة'), 700);
+    }
+    window.zakatUI = { render, compute, refresh: () => { st = E.load(); restore(); render(); } };
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
 </script>
 
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
   <script src="js/design-system.min.js" defer></script>
-  <script src="js/zakat-module.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
-    <script src="js/utils/helpers.min.js" defer></script>
+    <script src="js/ui/zakat-engine.js" defer></script>
+  <script src="js/utils/helpers.min.js" defer></script>
   <script src="js/core/state-manager.min.js" defer></script>
   <script src="js/core/router.min.js" defer></script>
   <script src="js/ui/design-tokens.min.js" defer></script>
