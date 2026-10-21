@@ -288,6 +288,8 @@
     transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .25s,color .2s,box-shadow .25s;
     animation:zadNavIn .45s cubic-bezier(.22,.68,0,1) backwards;
   }
+  /* العناوين الطويلة (مثل «حواء — عبادتي في عذري») تتقصّ بنقاط بدل قطع جاف */
+  .sidebar .nav a > span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   /* احترام مقياس الخط في الإعدادات (كان بيتلغى بسبب الحجم الثابت فوق) */
   html[data-fs="sm"] .sidebar .nav a{font-size:13.5px}
   html[data-fs="lg"] .sidebar .nav a,html[data-font="lg"] .sidebar .nav a,html[data-font="xl"] .sidebar .nav a{font-size:16.5px}
