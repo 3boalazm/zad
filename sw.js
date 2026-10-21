@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261021-special-r19';
+const CACHE_STATIC = 'zad-20261021-special-r20';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -64,7 +64,7 @@ const PRECACHE = [
      مع qibla.html نفسها، وإلا فُتحت الصفحة من الكاش أوفلاين ومات التصحيح بالذات
      في الوقت الذي يُستخدم فيه (بلا شبكة). */
   './js/vendor/adhan.min.js', './js/prayer-notifications.min.js',
-  './js/vendor/geomag.min.js', './js/vendor/canvas-confetti.min.js',
+  './js/vendor/geomag.min.js', './js/vendor/canvas-confetti.min.js', './js/vendor/dexie.min.js',
   /* R19: GSAP موطَّن محليًا بدل cdnjs (كان 37 صفحة تعتمد على CDN خارجي
      فيسقط كل الأنيميشن أوفلاين) + وحدة الوضع الخاص المشتركة. */
   './js/vendor/gsap.min.js', './js/vendor/ScrollTrigger.min.js', './js/ui/special-mode.min.js',
