@@ -628,7 +628,7 @@
     <!-- ══════════════════════════════════════════════════════════
          ٨ · شاهد واستمع
          ══════════════════════════════════════════════════════════ -->
-    <section class="zh-media" aria-label="شاهد واستمع">
+    <section class="zh-media" aria-label="محاضرات مرئية">
       <div class="zh-media-h">
         <h2>🎬 محاضرات مرئية</h2>
         <div style="display:flex;align-items:center;gap:10px">
@@ -637,23 +637,49 @@
         </div>
       </div>
       <div class="vid-carousel" id="vid-carousel"><div class="vc-track" id="vc-track"></div></div>
-
-      <div class="zh-media-h" style="margin-top:16px">
-        <h2>🎧 استماع</h2>
-        <a href="playlist.html">عرض الكل ←</a>
-      </div>
-      <div class="vid-carousel" id="pl-carousel"><div class="vc-track" id="pl-track"></div></div>
     </section>
 
-    <!-- ٨.٥ · المكتبة النصية -->
-    <a class="zh-lib-link" href="maktaba-nassiya.html">
-      <span class="ll-ico">📖</span>
-      <span class="ll-t">
-        <b>المكتبة النصية</b>
-        <small>٤٢٧٣ حديثًا مشروحًا في ٧ أبواب — وبحث يعمل بلا إنترنت</small>
-      </span>
-      <span class="ll-go">‹</span>
-    </a>
+    <!-- ══════════════════════════════════════════════════════════
+         ٨.٥ · استمع — قسم مستقل (كان صفًّا ثانويًا داخل «شاهد واستمع»)
+         كل بطاقة مادة صوتية حقيقية (بلاي ليست أو إذاعة)، ودفعة جديدة
+         عشوائية عند كل فتح — بنفس منطق قسم الفيديو.
+         ══════════════════════════════════════════════════════════ -->
+    <section class="zh-media" aria-label="مكتبة صوتية">
+      <div class="zh-media-h">
+        <h2>🎧 استمع</h2>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button type="button" id="pl-shuffle" class="zh-shuf" aria-label="مواد صوتية أخرى">🎲 استماع آخر</button>
+          <a href="playlist.html">عرض الكل ←</a>
+        </div>
+      </div>
+      <div class="vid-carousel" id="pl-carousel"><div class="vc-track" id="pl-track"></div></div>
+      <p class="zh-media-note">مصاحف مرتّلة · إذاعات قرآنية · سلاسل صوتية — <b id="pl-count">٢٦</b> مادة تتبدّل عند كل فتح</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         ٨.٦ · المكتبة النصية — قسم مستقل ببنود
+         كان رابطًا واحدًا ضخمًا بلا بنود؛ الآن شريط أبواب يُخلط عند كل فتح
+         (٤١ بابًا من فهرس maktaba.js) وكل باب يفتح على تصنيفه مباشرة.
+         ══════════════════════════════════════════════════════════ -->
+    <section class="zh-media" aria-label="المكتبة النصية">
+      <div class="zh-media-h">
+        <h2>📖 المكتبة النصية</h2>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button type="button" id="lib-shuffle" class="zh-shuf" aria-label="أبواب أخرى">🎲 أبواب أخرى</button>
+          <a href="maktaba-nassiya.html">عرض الكل ←</a>
+        </div>
+      </div>
+      <div class="vid-carousel" id="lib-carousel"><div class="vc-track" id="lib-track"></div></div>
+
+      <a class="zh-lib-link" href="maktaba-nassiya.html">
+        <span class="ll-ico">📚</span>
+        <span class="ll-t">
+          <b>المكتبة الكاملة</b>
+          <small>٤٢٧٣ حديثًا مشروحًا في ٧ أبواب و٤١ بابًا فرعيًا — بحث يعمل بلا إنترنت</small>
+        </span>
+        <span class="ll-go">‹</span>
+      </a>
+    </section>
 
     <!-- ٩ · التثبيت -->
     <div class="zh-install" id="pwa-card" onclick="installPWA?.()">
@@ -681,6 +707,8 @@
 <script src="js/nav-accordion.min.js" defer></script>
 <script src="js/data/verses.js" defer></script>
 <script src="js/data/videos.js" defer></script>
+<script src="js/data/audio.js" defer></script>
+<script src="js/data/maktaba-index.js" defer></script>
 <script src="js/ui/daily-verse.js" defer></script>
 <script src="js/ui/media-random.js" defer></script>
 <script src="js/utils/helpers.min.js" defer></script>
@@ -1125,7 +1153,8 @@ function zhInitVerse() {
 
 /* ── الوسائط ────────────────────────────────────────────────── */
 function zhDragScroll(car) {
-  if (!car) return;
+  if (!car || car.dataset.dragBound) return;   /* الربط مرة واحدة — كان بيتراكم مع كل خلط */
+  car.dataset.dragBound = '1';
   let down = false, startX = 0, left = 0;
   car.addEventListener('mousedown', e => { down = true; startX = e.pageX - car.offsetLeft; left = car.scrollLeft; });
   car.addEventListener('mouseleave', () => { down = false; });
@@ -1145,13 +1174,31 @@ const VC_FALLBACK = [
   { id:'YgKfcLUbu60', title:'أوائل ذي الحجة | أفضل أيام الدهر', badge:'' }
 ];
 
-/* عيّنة عشوائية من المكتبة — تتغيّر مع كل زيارة، ولا تعيد نفس الدفعة مرتين */
-function zhVideoBatch() {
-  if (window.ZadMedia) {
-    const list = window.ZadMedia.pickVideos(8, { prefer: 'yt', avoidLast: true, remember: true });
-    if (list.length) return list.map(v => ({ id: v.id, title: v.t, badge: v.b || '', dur: v.b || '' }));
+/* دفعة ثابتة خلال الجلسة الواحدة.
+   المطلوب: «عشوائي كل ما تفتح التطبيق» — فالجلسة (sessionStorage) هي الحدّ:
+   أول فتح يعرض دفعة جديدة، والرجوع من صفحة داخلية لا يقلب الرئيسية كلها.
+   زر 🎲 وحده يفرض دفعة جديدة (force). */
+function zhSessionBatch(key, make, force) {
+  if (!force) {
+    try {
+      const raw = sessionStorage.getItem(key);
+      if (raw) { const v = JSON.parse(raw); if (Array.isArray(v) && v.length) return v; }
+    } catch (e) {}
   }
-  return VC_FALLBACK;
+  const fresh = make();
+  try { if (Array.isArray(fresh) && fresh.length) sessionStorage.setItem(key, JSON.stringify(fresh)); } catch (e) {}
+  return fresh;
+}
+
+/* عيّنة عشوائية من المكتبة — تتغيّر مع كل زيارة، ولا تعيد نفس الدفعة مرتين */
+function zhVideoBatch(force) {
+  return zhSessionBatch('zad_home_videos', () => {
+    if (window.ZadMedia) {
+      const list = window.ZadMedia.pickVideos(8, { prefer: 'yt', avoidLast: true, remember: true });
+      if (list.length) return list.map(v => ({ id: v.id, title: v.t, badge: v.b || '', dur: v.b || '' }));
+    }
+    return VC_FALLBACK;
+  }, force);
 }
 
 function zhVideoCarousel(batch) {
@@ -1173,7 +1220,7 @@ function zhBindVideoShuffle() {
     const track = document.getElementById('vc-track');
     if (track) { track.style.opacity = '0'; track.style.transition = 'opacity .18s'; }
     setTimeout(() => {
-      zhVideoCarousel(zhVideoBatch());
+      zhVideoCarousel(zhVideoBatch(true));
       if (track) { track.style.opacity = '1'; track.scrollLeft = 0; }
       const car = document.getElementById('vid-carousel');
       if (car) car.scrollTo({ left: 0, behavior: 'smooth' });
@@ -1181,19 +1228,122 @@ function zhBindVideoShuffle() {
   });
 }
 
-const PL_FEATURED = [
-  { id:'azma', name:'العظماء', desc:'سلسلة قصص العظماء', icon:'🌟', color:'#c9a14a', badge:'🔥 الأكثر استماعاً' },
-  { id:'kmr',  name:'مختارات صوتية', desc:'مجموعة مسموعة مختارة', icon:'🎵', color:'#5856d6', badge:'🎧 مميزة' }
+/* ── المكتبة الصوتية: دفعة عشوائية عند كل فتح ──
+   كانت بطاقتين ثابتتين («العظماء» + «مختارات صوتية») في كل زيارة؛
+   الآن ٢٦ مادة (بلاي ليستان + ٢٤ إذاعة) تُخلط مع تجنّب آخر دفعة. */
+const AUDIO_FALLBACK = [
+  { id:'pl-azma', t:'العظماء', s:'سلسلة قصص العظماء — مصطفى أبو العزم', ico:'🌟', bg:'linear-gradient(135deg,#c9a14a,#8a6d1f)', badge:'🎧 سلسلة صوتية', href:'playlist.html?pl=azma' },
+  { id:'pl-kmr',  t:'مختارات صوتية', s:'مجموعة مسموعة مختارة', ico:'🎵', bg:'linear-gradient(135deg,#5856d6,#3b3a9e)', badge:'🎵 بلاي ليست', href:'playlist.html?pl=kmr' },
+  { id:'r1', t:'إذاعة القرآن الكريم من القاهرة', s:'بث مباشر رسمي منذ ١٩٦٤', ico:'🕌', bg:'linear-gradient(135deg,#0e3b2e,#1f5e4b)', badge:'📻 بث مباشر', href:'Quran-radio.HTML?station=1' }
 ];
 
-function zhPlaylistCarousel() {
+function zhAudioBatch(force) {
+  return zhSessionBatch('zad_home_audio', () => {
+    if (window.ZadMedia) {
+      const list = window.ZadMedia.pickAudio(8, { avoidLast: true, remember: true, minPerKind: { pl: 2 } });
+      if (list.length) return list;
+    }
+    return AUDIO_FALLBACK;
+  }, force);
+}
+
+const zhEsc = str => String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function zhAudioCarousel(batch) {
   const track = document.getElementById('pl-track');
   if (!track) return;
-  track.innerHTML = PL_FEATURED.map(p =>
-    `<a class="vc-card" href="playlist.html?pl=${p.id}">`
-    + `<div class="vc-thumb" style="display:flex;align-items:center;justify-content:center;font-size:46px;background:linear-gradient(135deg,${p.color},${p.color}99)">${p.icon}</div>`
-    + `<div class="vc-info"><div class="vc-title">${p.name}</div><div class="vc-badge">${p.badge}</div></div></a>`).join('');
+  const list = batch || zhAudioBatch();
+  track.innerHTML = list.map(a =>
+    `<a class="vc-card" href="${zhEsc(a.href)}">`
+    + `<div class="vc-thumb vc-thumb-audio" style="background:${zhEsc(a.bg)}"><span aria-hidden="true">${zhEsc(a.ico)}</span></div>`
+    + `<div class="vc-info"><div class="vc-title">${zhEsc(a.t)}</div>`
+    + `<div class="vc-sub">${zhEsc(a.s)}</div>`
+    + `<div class="vc-badge">${zhEsc(a.badge)}</div></div></a>`).join('');
   zhDragScroll(document.getElementById('pl-carousel'));
+
+  const cnt = document.getElementById('pl-count');
+  if (cnt) {
+    const total = (window.ZadMedia && window.ZadMedia.audioStats) ? window.ZadMedia.audioStats().total : list.length;
+    cnt.textContent = zhNum(total);
+  }
+}
+
+/* ── المكتبة النصية: باب مختلف عند كل فتح ──
+   ٤١ بابًا فرعيًا من فهرس المكتبة؛ الدفعة لا تتكرر في الفتح التالي
+   (مفتاح zad_lib_last) وكل بطاقة تفتح تصنيفها #/c/<id> مباشرة. */
+const LIB_ICONS = ['📖','📜','🕌','⚖️','✨','📣','🗺️'];
+const LIB_TINTS = [
+  ['#0e3b2e','#1f6b52'], ['#5b3a7e','#8a63b0'], ['#0b4f6c','#1789b3'],
+  ['#7a3b2e','#b06a4f'], ['#8a6d1f','#c9a14a'], ['#3f4d6b','#6b7fa8'], ['#4a3b2e','#7d6450']
+];
+
+function zhLibPool() {
+  const idx = window.ZAD_MAKTABA_INDEX || [];
+  return idx.map(x => ({
+    id: x.id, t: x.t, n: x.n, p: x.p,
+    icon: LIB_ICONS[x.i % LIB_ICONS.length],
+    tint: LIB_TINTS[x.i % LIB_TINTS.length]
+  }));
+}
+
+function zhLibBatch(n, force) {
+  return zhSessionBatch('zad_home_lib', () => {
+    const pool = zhLibPool();
+    if (!pool.length) return [];
+    let seen = [];
+    try { seen = JSON.parse(localStorage.getItem('zad_lib_last') || '[]'); } catch (e) { seen = []; }
+    let fresh = pool.filter(x => seen.indexOf(x.id) === -1);
+    if (fresh.length < (n || 8)) fresh = pool;      /* لو الفهرس صغير */
+    const picked = window.ZadMedia
+      ? window.ZadMedia.shuffle(fresh).slice(0, n || 8)
+      : fresh.slice().sort(() => Math.random() - 0.5).slice(0, n || 8);
+    try { localStorage.setItem('zad_lib_last', JSON.stringify(picked.map(x => x.id))); } catch (e) {}
+    return picked;
+  }, force);
+}
+
+function zhLibCarousel(batch) {
+  const track = document.getElementById('lib-track');
+  if (!track) return;
+  const list = batch || zhLibBatch(8);
+  track.innerHTML = list.map(b =>
+    `<a class="vc-card" href="maktaba-nassiya.html#/c/${zhEsc(b.id)}">`
+    + `<div class="vc-thumb vc-thumb-audio" style="background:linear-gradient(135deg,${b.tint[0]},${b.tint[1]})"><span aria-hidden="true">${b.icon}</span></div>`
+    + `<div class="vc-info"><div class="vc-title">${zhEsc(b.t)}</div>`
+    + `<div class="vc-sub">${zhEsc(b.p)}</div>`
+    + `<div class="vc-badge">📚 ${zhNum(b.n)} حديثًا</div></div></a>`).join('');
+  zhDragScroll(document.getElementById('lib-carousel'));
+}
+
+function zhBindLibShuffle() {
+  const btn = document.getElementById('lib-shuffle');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const track = document.getElementById('lib-track');
+    if (track) { track.style.opacity = '0'; track.style.transition = 'opacity .18s'; }
+    setTimeout(() => {
+      zhLibCarousel(zhLibBatch(8, true));
+      const car = document.getElementById('lib-carousel');
+      if (car) car.scrollTo({ left: 0, behavior: 'smooth' });
+      if (track) track.style.opacity = '1';
+    }, 180);
+  });
+}
+
+/* 🎲 استماع آخر — دفعة جديدة في نفس الموضع */
+function zhBindAudioShuffle() {
+  const btn = document.getElementById('pl-shuffle');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const track = document.getElementById('pl-track');
+    if (track) { track.style.opacity = '0'; track.style.transition = 'opacity .18s'; }
+    setTimeout(() => {
+      zhAudioCarousel(zhAudioBatch(true));
+      if (track) { track.style.opacity = '1'; }
+      const car = document.getElementById('pl-carousel');
+      if (car) car.scrollTo({ left: 0, behavior: 'smooth' });
+    }, 180);
+  });
 }
 
 /* ── الصلاة القادمة + عدّادها ───────────────────────────────── */
@@ -1277,7 +1427,10 @@ function zhInit() {
   zhRenderNotifBadge();
   zhVideoCarousel();
   zhBindVideoShuffle();
-  zhPlaylistCarousel();
+  zhAudioCarousel();
+  zhBindAudioShuffle();
+  zhLibCarousel();
+  zhBindLibShuffle();
   zhNowCard();
 
   /* المواقيت: محليًا فورًا، ثم كل دقيقة نحرّك الشمس */

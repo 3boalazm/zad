@@ -1855,7 +1855,7 @@ function renderGrid() {
     const isActive = current?.id === s.id;
     const isFav    = favorites.includes(s.id);
     return `
-    <div class="station-card ${isActive ? 'active' : ''}"
+    <div class="station-card ${isActive ? 'active' : ''}" id="station-${s.id}"
          style="animation:fade-up .3s ease ${i * 45}ms both"
          onclick="playStation(STATIONS.find(x=>x.id===${s.id}))">
       <div class="card-top">
@@ -2061,6 +2061,30 @@ window.addEventListener('offline', () => {
 document.getElementById('stat-total').textContent = STATIONS.length;
 renderGrid();
 restoreLastStation();
+
+/* ════════════════════════════════════════
+   رابط مباشر: Quran-radio.HTML?station=<id>
+   تفتح الإذاعة محدَّدة وجاهزة للـ▶ (بدون تشغيل تلقائي —
+   المتصفحات تمنع الصوت قبل تفاعل المستخدم).
+════════════════════════════════════════ */
+(function applyDeepLink() {
+  const q = new URLSearchParams(location.search).get('station');
+  if (!q) return;
+  const st = STATIONS.find(x => String(x.id) === String(q));
+  if (!st) return;
+  current = st;
+  updateUI();
+  setStatus('جاهزة للاستماع — اضغط ▶');
+  setTimeout(() => {
+    const card = document.getElementById('station-' + st.id);
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.style.outline = '2px solid var(--gold)';
+      card.style.outlineOffset = '2px';
+      setTimeout(() => { card.style.outline = ''; }, 2600);
+    }
+  }, 150);
+})();
 
 /* ══════════════════════════════════════════════════
    POPUP PLAYER LOGIC + WAKE LOCK + BACKGROUND AUDIO
