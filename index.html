@@ -1238,6 +1238,7 @@ const AUDIO_FALLBACK = [
 ];
 
 function zhAudioBatch(force) {
+  if (!window.ZAD_AUDIO || !window.ZAD_AUDIO.length) return AUDIO_FALLBACK;   /* ملف البيانات ما وصلش — منخزّنش احتياطي */
   return zhSessionBatch('zad_home_audio', () => {
     if (window.ZadMedia) {
       const list = window.ZadMedia.pickAudio(8, { avoidLast: true, remember: true, minPerKind: { pl: 2 } });
@@ -1306,6 +1307,9 @@ function zhLibCarousel(batch) {
   const track = document.getElementById('lib-track');
   if (!track) return;
   const list = batch || zhLibBatch(8);
+  const section = track.closest('section.zh-media');
+  if (section) section.hidden = !list.length;   /* فهرس ما وصلش ⇒ منعرضش قسم فاضي */
+  if (!list.length) return;
   track.innerHTML = list.map(b =>
     `<a class="vc-card" href="maktaba-nassiya.html#/c/${zhEsc(b.id)}">`
     + `<div class="vc-thumb vc-thumb-audio" style="background:linear-gradient(135deg,${b.tint[0]},${b.tint[1]})"><span aria-hidden="true">${b.icon}</span></div>`
