@@ -19,3 +19,12 @@ html[data-excuse="on"] .fab-ai{box-shadow:0 12px 32px -10px rgba(168,77,119,.7) 
 html[data-excuse="on"] #zad-excuse-pill{animation:zhPillIn .35s ease both}
 @keyframes zhPillIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){html[data-excuse="on"] #zad-excuse-pill{animation:none}}
+
+/* ══════════════════════════════════════════════════════════
+   R21 — المكتبة الصوتية: بطاقة مادة صوتية داخل كاروسيل الرئيسية
+   ══════════════════════════════════════════════════════════ */
+.vc-thumb-audio{display:flex;align-items:center;justify-content:center;font-size:46px;color:#fff;text-shadow:0 6px 22px rgba(0,0,0,.3);line-height:1}
+.vc-sub{font-size:10.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zh-media-note{font-size:11px;color:var(--muted);margin:6px 2px 0;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.zh-media-note b{color:var(--gold-dark)}
+@media (max-width:480px){ .vc-thumb-audio{font-size:38px} }

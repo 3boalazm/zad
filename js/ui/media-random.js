@@ -70,6 +70,72 @@ window.ZadMedia = (function () {
     return out;
   }
 
+  /* ── المكتبة الصوتية (بلاي ليستات + إذاعات) ── */
+  var LAST_AUDIO = 'zad_media_last_audio';
+
+  function audioPool() {
+    return (window.ZAD_AUDIO || []).filter(function (a) { return a && a.t; });
+  }
+
+  function lastAudioBatch() {
+    try { return JSON.parse(localStorage.getItem(LAST_AUDIO) || '[]'); } catch (e) { return []; }
+  }
+
+  /**
+   * عيّنة من المكتبة الصوتية — نفس منطق الفيديو:
+   * خلط حقيقي + تجنّب آخر دفعة + ضمان حضور كل فئة (minPerKind).
+   *
+   * مثال: pickAudio(8, { minPerKind: { pl: 2 } }) ⇒ البلاي ليستين دائمًا
+   * ظاهرين، و٦ إذاعات متبدّلة، والترتيب النهائي عشوائي في كل مرة.
+   */
+  function pickAudio(n, opts) {
+    opts = opts || {};
+    var pool = audioPool();
+    if (!pool.length) return [];
+    if (opts.only) pool = pool.filter(function (a) { return a.k === opts.only; });
+    if (!pool.length) pool = audioPool();
+
+    var seen = opts.avoidLast ? lastAudioBatch() : [];
+    var fresh = function (list) { return list.filter(function (a) { return seen.indexOf(a.id) === -1; }); };
+
+    var out = [];
+
+    /* ضمان الحد الأدنى لكل فئة */
+    var mins = opts.minPerKind || {};
+    Object.keys(mins).forEach(function (kind) {
+      var ofKind = pool.filter(function (a) { return a.k === kind; });
+      var want = Math.min(mins[kind], ofKind.length);
+      var chosen = shuffle(fresh(ofKind), opts.seed).slice(0, want);
+      if (chosen.length < want) {
+        var fill = shuffle(ofKind, opts.seed).filter(function (a) { return chosen.indexOf(a) === -1; });
+        chosen = chosen.concat(fill.slice(0, want - chosen.length));
+      }
+      chosen.forEach(function (a) { if (out.indexOf(a) === -1) out.push(a); });
+    });
+
+    /* الباقي من الكل، مع تفضيل ما لم يظهر في آخر دفعة */
+    var restFresh = shuffle(fresh(pool.filter(function (a) { return out.indexOf(a) === -1; })), opts.seed);
+    if (restFresh.length < n - out.length) {
+      var restAll = shuffle(pool.filter(function (a) { return out.indexOf(a) === -1; }), opts.seed);
+      restFresh = restFresh.concat(restAll.filter(function (a) { return restFresh.indexOf(a) === -1; }));
+    }
+
+    out = out.concat(restFresh).slice(0, n);
+    out = shuffle(out);      /* ترتيب نهائي عشوائي — الحد الأدنى مش شرط يتصدّر */
+
+    if (opts.remember) {
+      try { localStorage.setItem(LAST_AUDIO, JSON.stringify(out.map(function (a) { return a.id; }))); } catch (e) {}
+    }
+    return out;
+  }
+
+  function audioStats() {
+    var all = audioPool();
+    var by = {};
+    all.forEach(function (a) { by[a.k] = (by[a.k] || 0) + 1; });
+    return { total: all.length, by: by };
+  }
+
   /** كل فيديو يمكن مشاهدته داخل الموقع (له معرّف يوتيوب) */
   function playable() {
     return videos().filter(function (v) { return v.k === 'yt' && v.id; });
@@ -97,6 +163,7 @@ window.ZadMedia = (function () {
 
   return {
     pickVideos: pickVideos, randomVideo: randomVideo, byId: byId,
+    pickAudio: pickAudio, audio: audioPool, audioStats: audioStats,
     playable: playable, videos: videos, shuffle: shuffle, stats: stats
   };
 })();
