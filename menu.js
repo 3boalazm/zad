@@ -72,6 +72,7 @@
     { href: 'ghars.html',            icon: '🌱', label: 'غرس — قصص للأطفال', section: 'sec-kids' },
     { href: 'kids-gazette.html',     icon: '📰', label: 'صحيفة القرية',     section: 'sec-kids' },
     { href: 'hikayat-hajj.html',     icon: '🕋', label: 'حكاية حج',          section: 'sec-kids' },
+    { href: 'kids-academy.html',     icon: '✏️', label: 'أكاديمية الحروف',   section: 'sec-kids' },
     { href: 'kids-school.html',      icon: '🏫', label: 'مدرستي الجميلة',    section: 'sec-kids' },
     { href: 'kids-day.html',         icon: '🕰️', label: 'يومي',             section: 'sec-kids' },
 

@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261021-kids-r17';
+const CACHE_STATIC = 'zad-20261021-academy-r18';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -94,7 +94,7 @@ const PRECACHE = [
   './kids-liars.html', './kids-recipe.html', './kids-compass.html',
   './kids-lab.html', './kids-hospitality.html', './kids-day.html',
   './kids-heroes.html', './kids-school.html',
-  './kids-fun.html', './kids-creativity.html', './kids-parents.html',
+  './kids-fun.html', './kids-academy.html', './kids-creativity.html', './kids-parents.html',
 
   /* ── R14: المكتبة النصية + محرّكات اليوم ──
      صفحة المكتبة وبياناتها تُخزَّن مسبقًا، فيعمل البحث في ١٥٠ حديثًا بلا شبكة.

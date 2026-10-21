@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a5d47">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>أكاديمية زاد الصغيرة · زاد</title>
+<meta name="description" content="حروفي وأرقامي وأضدادي وأوراق عمل للطباعة — كلها داخل زاد، بدون إعلانات ولا روابط خارجية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+.k-hero{background:linear-gradient(135deg,#1a5d47 0%,#2a7a5f 50%,#c9a14a 145%);border-radius:24px;padding:30px 26px;color:#fff;position:relative;overflow:hidden;margin-bottom:18px;box-shadow:0 16px 48px -12px rgba(14,59,46,.4)}
+.k-hero::after{content:'✏️';position:absolute;top:14px;left:20px;font-size:60px;opacity:.16;line-height:1}
+.k-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:2px;font-weight:700;margin-bottom:8px}
+.k-htitle{font-size:27px;font-weight:900;line-height:1.25;margin-bottom:10px;font-family:'ThmanyahSans',sans-serif}
+.k-intro{font-size:14px;color:rgba(255,255,255,.88);line-height:2;max-width:580px}
+.k-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.k-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:99px}
+.k-sec-title{display:flex;align-items:center;gap:10px;margin:22px 0 12px;font-size:17px;color:var(--green-deep);font-weight:800;font-family:'ThmanyahSans',sans-serif}
+html[data-theme="dark"] .k-sec-title,html[data-theme="oled"] .k-sec-title{color:var(--sys-green)}
+.k-sec-title::before{content:"";width:5px;height:20px;background:linear-gradient(180deg,var(--gold),var(--green-soft));border-radius:3px;flex-shrink:0}
+.k-foot{background:linear-gradient(135deg,var(--green-deep),var(--green-mid));border-radius:18px;padding:22px;text-align:center;color:#fff;margin-top:18px}
+.k-foot .ft{font-family:'Amiri',serif;font-size:17px;line-height:1.9}
+
+/* ══ تبويبات الأكاديمية ══ */
+.acad-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;scrollbar-width:none}
+.acad-tabs::-webkit-scrollbar{display:none}
+.ac-tab{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;padding:10px 16px;border-radius:99px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s;flex-shrink:0}
+.ac-tab:hover{border-color:var(--green-soft);color:var(--green-deep)}
+.ac-tab.active{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+html[data-theme="dark"] .ac-tab.active,html[data-theme="oled"] .ac-tab.active{background:var(--sys-green);border-color:var(--sys-green);color:#001a08}
+.ac-panel{display:none}
+.ac-panel.active{display:block;animation:acFade .28s ease both}
+@keyframes acFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ══ الحروف ══ */
+.ac-bar{display:flex;align-items:center;gap:10px;background:var(--sand);border:1px solid var(--border);border-radius:13px;padding:9px 13px;margin-bottom:12px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.ac-bar .ac-stars{margin-inline-start:auto;background:#fff;border-radius:99px;padding:3px 11px;color:var(--gold-dark,#a87a1e);font-weight:900;white-space:nowrap}
+html[data-theme="dark"] .ac-bar .ac-stars,html[data-theme="oled"] .ac-bar .ac-stars{background:rgba(255,255,255,.08);color:var(--sys-yellow)}
+.ac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:9px;margin-bottom:16px}
+.ac-lbtn{aspect-ratio:1;border-radius:15px;border:1.5px solid var(--border);background:var(--card);color:var(--ink);font-family:'Amiri',serif;font-size:27px;font-weight:700;cursor:pointer;transition:all .18s;position:relative;display:flex;align-items:center;justify-content:center}
+.ac-lbtn:hover{border-color:var(--green-soft);transform:translateY(-2px)}
+.ac-lbtn:active{transform:scale(.95)}
+.ac-lbtn.done{background:linear-gradient(135deg,var(--green-pale),var(--card));border-color:var(--green-soft)}
+.ac-lbtn.done::after{content:'✓';position:absolute;top:3px;left:5px;font-size:10px;color:#1a7d4f;font-weight:900}
+.ac-lbtn.sel{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,161,74,.22)}
+.ac-num{font-family:'ThmanyahSans',sans-serif!important;font-size:25px!important}
+
+/* ══ لوحة التفاصيل ══ */
+.ac-detail{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:18px;box-shadow:var(--shadow-sm);margin-bottom:18px}
+.ac-dhead{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.ac-big{width:84px;height:84px;flex-shrink:0;border-radius:22px;background:linear-gradient(135deg,#1a5d47,#2a7a5f);color:#fff;font-family:'Amiri',serif;font-size:50px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px -12px rgba(14,59,46,.7)}
+.ac-big.num{font-family:'ThmanyahSans',sans-serif;font-size:42px}
+.ac-dtitle{font-size:19px;font-weight:900;color:var(--ink);margin-bottom:3px}
+.ac-dsub{font-size:12px;color:var(--muted)}
+.ac-words{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 14px}
+.ac-word{background:var(--sand);border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center}
+.ac-word .e{display:block;font-size:27px;line-height:1.2;margin-bottom:5px}
+.ac-word b{font-family:'Amiri',serif;font-size:18px;color:var(--ink)}
+.ac-dnum{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;background:var(--sand);border:1px dashed var(--border);border-radius:14px;padding:12px;margin-bottom:14px;min-height:56px}
+.ac-dnum span{font-size:23px;line-height:1}
+.ac-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ac-btn{flex:1;min-width:110px;padding:11px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:all .18s}
+.ac-btn:hover{border-color:var(--gold);background:var(--gold-pale)}
+.ac-btn:active{transform:scale(.97)}
+.ac-btn.primary{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+.ac-btn.primary:hover{background:var(--green-mid)}
+.ac-btn.star{background:var(--gold-pale);border-color:var(--gold);color:var(--gold-dark,#8a6822)}
+.ac-btn.star.on{background:#1a7d4f;border-color:#1a7d4f;color:#fff}
+.ac-nav{display:flex;gap:8px;margin-top:10px}
+.ac-nav .ac-btn{flex:1}
+
+/* ══ الأضداد ══ */
+.ac-game{background:linear-gradient(135deg,var(--gold-pale),var(--card));border:1.5px solid var(--gold);border-radius:20px;padding:18px;box-shadow:var(--shadow-sm)}
+.ac-gtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;font-size:12.5px;font-weight:800;color:var(--muted)}
+.ac-gscore{background:#fff;border-radius:99px;padding:3px 12px;color:var(--gold-dark,#a87a1e);font-weight:900}
+html[data-theme="dark"] .ac-gscore,html[data-theme="oled"] .ac-gscore{background:rgba(255,255,255,.08);color:var(--sys-yellow)}
+.ac-gbar{height:8px;border-radius:99px;background:var(--sand-2);overflow:hidden;margin-bottom:16px}
+.ac-gbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .4s ease}
+.ac-q{font-size:17px;font-weight:900;color:var(--ink);line-height:1.7;margin-bottom:14px;text-align:center}
+.ac-q b{font-family:'Amiri',serif;font-size:26px;color:var(--green-deep)}
+html[data-theme="dark"] .ac-q b,html[data-theme="oled"] .ac-q b{color:var(--sys-green)}
+.ac-opts{display:flex;flex-direction:column;gap:9px}
+.ac-opt{padding:14px 16px;border-radius:14px;border:2px solid var(--border);background:var(--card);color:var(--ink);font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;text-align:right;transition:all .15s}
+.ac-opt:hover{border-color:var(--green-soft);transform:translateY(-1px)}
+.ac-opt.ok{background:#1a7d4f;border-color:#1a7d4f;color:#fff}
+.ac-opt.no{background:#c0392b;border-color:#c0392b;color:#fff}
+.ac-opt.dis{pointer-events:none;opacity:.6}
+.ac-gend{text-align:center;padding:8px 0}
+.ac-gend .big{font-size:46px;margin-bottom:8px}
+.ac-gend h3{font-size:18px;color:var(--green-deep);margin-bottom:6px}
+html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:var(--sys-green)}
+.ac-gend p{font-size:13.5px;color:var(--muted);line-height:1.9;margin-bottom:14px}
+
+/* ══ أوراق العمل ══ */
+.ac-sheet-ctrl{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.ac-field{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:13px;font-weight:800;color:var(--ink)}
+.ac-field select{padding:9px 12px;border-radius:11px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.ws-sheet{background:#fff;color:#12211b;border-radius:16px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
+.ws-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:2px solid #12211b;padding-bottom:8px;margin-bottom:14px}
+.ws-head b{font-family:'ThmanyahSans',sans-serif;font-size:17px}
+.ws-head small{font-size:11px;color:#5b6b62}
+.ws-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:640px){.ws-grid{grid-template-columns:repeat(3,1fr)}}
+.ws-cell{border:1.5px dashed #a8b3ac;border-radius:12px;padding:10px;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.ws-cell .ch{font-family:'Amiri',serif;font-size:46px;line-height:1;color:#b9c3bc;font-weight:700}
+.ws-cell .nm{font-size:12px;color:#5b6b62;font-weight:700}
+.ws-cell .ln{width:100%;height:1px;border-bottom:1px dashed #c8d0ca;margin-top:6px}
+.ws-cell .ln+.ln{margin-top:14px}
+.ws-cell .circles{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.ws-cell .circles i{width:15px;height:15px;border:1.6px solid #9aa8a0;border-radius:50%;display:block}
+.ws-opp{font-family:'Amiri',serif;font-size:22px;color:#3d4a43}
+.ws-foot{text-align:center;font-size:10.5px;color:#7d8a83;margin-top:12px;border-top:1px solid #e2e7e4;padding-top:8px}
+
+/* ══ طباعة ══ */
+@media print{
+  .sidebar,.sidebar-overlay,.topbar,.k-hero,.acad-tabs,.k-sec-title,.ac-bar,.ac-sheet-ctrl,.ac-actions,.k-foot,.reading-progress-bar,.pwa-install-fab,#zad-lang-fab,.zad-nav-tools,.notif-wrap{display:none!important}
+  html,body{background:#fff!important;color:#000!important}
+  .main{padding:0!important;margin:0!important}
+  .app{display:block!important}
+  .ac-panel{display:none!important}
+  .ac-panel.active{display:block!important}
+  .ac-panel:not(.active){display:none!important}
+  .ws-sheet{box-shadow:none;border:none;border-radius:0;padding:0;margin:0}
+  .ws-grid{grid-template-columns:repeat(3,1fr)}
+  @page{size:A4;margin:12mm}
+}
+@media(max-width:480px){
+  .ac-words{grid-template-columns:1fr 1fr}
+  .ac-word:last-child{grid-column:1/-1}
+  .ac-big{width:70px;height:70px;font-size:42px;border-radius:18px}
+}
+</style>
+<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+<script src="js/font-scale.js"></script>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+<button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a>
+    </nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+  <main class="main">
+    <h1 class="sr-only">أكاديمية زاد الصغيرة</h1>
+    <div class="topbar">
+      <div class="tb-left"><button class="hamburger" id="hamburger" aria-label="القائمة">☰</button><a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a></div>
+      <div class="tb-center"><div class="page-title">أكاديمية <span>زاد</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
+      </div>
+    </div>
+
+    <div class="k-hero">
+      <div class="k-eyebrow">✏️ تعلّم في البيت</div>
+      <div class="k-htitle">أكاديميةُ زاد الصغيرة</div>
+      <div class="k-intro">حروفي وأرقامي وأضدادي وأوراقُ عملٍ تُطبع من المتصفّح — كلُّ شيءٍ صُنع داخل زاد، بلا روابط خارجية ولا إعلانات.</div>
+      <div class="k-chips">
+        <span class="k-chip">🔤 ٢٨ حرفًا</span>
+        <span class="k-chip">🔢 ٠–٢٠</span>
+        <span class="k-chip">🖨️ تُطبع</span>
+        <span class="k-chip">📴 تعمل بلا إنترنت*</span>
+      </div>
+    </div>
+
+    <div class="acad-tabs" role="tablist" aria-label="أقسام الأكاديمية">
+      <button class="ac-tab active" role="tab" aria-selected="true" aria-controls="tab-letters" data-tab="letters" onclick="acTab('letters',this)">🔤 حروفي</button>
+      <button class="ac-tab" role="tab" aria-selected="false" aria-controls="tab-numbers" data-tab="numbers" onclick="acTab('numbers',this)">🔢 أرقامي</button>
+      <button class="ac-tab" role="tab" aria-selected="false" aria-controls="tab-opposites" data-tab="opposites" onclick="acTab('opposites',this)">↔️ أضدادي</button>
+      <button class="ac-tab" role="tab" aria-selected="false" aria-controls="tab-sheets" data-tab="sheets" onclick="acTab('sheets',this)">🖨️ أوراق العمل</button>
+    </div>
+
+    <!-- ══════════ الحروف ══════════ -->
+    <section class="ac-panel active" id="tab-letters" role="tabpanel">
+      <div class="ac-bar"><span>🔤 اضغط على أيِّ حرفٍ لتسمعه وتتعلم كلماته</span><span class="ac-stars" id="ac-lstars">⭐ 0</span></div>
+      <div class="ac-grid" id="ac-letters"></div>
+      <div class="ac-detail" id="ac-letter-card">
+        <div class="ac-dhead">
+          <div class="ac-big" id="ac-l-big">ا</div>
+          <div><div class="ac-dtitle" id="ac-l-title">حرف الألف</div><div class="ac-dsub" id="ac-l-sub">اضغط 🔊 لتسمع الحرف</div></div>
+        </div>
+        <div class="ac-words" id="ac-l-words"></div>
+        <div class="ac-actions">
+          <button class="ac-btn primary" onclick="acSpeakLetter()">🔊 اسمع</button>
+          <button class="ac-btn star" id="ac-l-star" onclick="acLearnLetter()">⭐ علّمتها</button>
+          <button class="ac-btn" onclick="acStep(-1)">← السابق</button>
+          <button class="ac-btn" onclick="acStep(1)">التالي →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ الأرقام ══════════ -->
+    <section class="ac-panel" id="tab-numbers" role="tabpanel">
+      <div class="ac-bar"><span>🔢 اضغط على أيِّ رقمٍ لتسمعه وتَعُدّ</span><span class="ac-stars" id="ac-nstars">⭐ 0</span></div>
+      <div class="ac-grid" id="ac-numbers"></div>
+      <div class="ac-detail" id="ac-number-card">
+        <div class="ac-dhead">
+          <div class="ac-big num" id="ac-n-big">0</div>
+          <div><div class="ac-dtitle" id="ac-n-title">صِفر</div><div class="ac-dsub" id="ac-n-sub">لا شيء… نبدأ من هنا</div></div>
+        </div>
+        <div class="ac-dnum" id="ac-n-dots"></div>
+        <div class="ac-actions">
+          <button class="ac-btn primary" onclick="acSpeakNumber()">🔊 اسمع</button>
+          <button class="ac-btn star" id="ac-n-star" onclick="acLearnNumber()">⭐ علّمتها</button>
+          <button class="ac-btn" onclick="acStepN(-1)">← السابق</button>
+          <button class="ac-btn" onclick="acStepN(1)">التالي →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ الأضداد ══════════ -->
+    <section class="ac-panel" id="tab-opposites" role="tabpanel">
+      <div class="ac-game">
+        <div id="ac-opp-start" class="ac-gend">
+          <div class="big">↔️</div>
+          <h3>لعبةُ الأضداد</h3>
+          <p>عشرةُ أسئلةٍ… اختر عكسَ الكلمة. كلُّ إجابةٍ صحيحة = نجمة.</p>
+          <button class="ac-btn primary" style="max-width:220px;margin:0 auto" onclick="oppStart()">ابدأ اللعب ←</button>
+        </div>
+        <div id="ac-opp-play" style="display:none">
+          <div class="ac-gtop"><span id="ac-opp-count">سؤال 1 من 10</span><span class="ac-gscore">⭐ <span id="ac-opp-score">0</span></span></div>
+          <div class="ac-gbar"><i id="ac-opp-bar"></i></div>
+          <div class="ac-q" id="ac-opp-q"></div>
+          <div class="ac-opts" id="ac-opp-opts"></div>
+        </div>
+        <div id="ac-opp-end" class="ac-gend" style="display:none">
+          <div class="big" id="ac-opp-emoji">🎉</div>
+          <h3 id="ac-opp-title">أحسنت!</h3>
+          <p id="ac-opp-msg"></p>
+          <button class="ac-btn primary" style="max-width:220px;margin:0 auto" onclick="oppStart()">العب مرّة أخرى ↺</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ أوراق العمل ══════════ -->
+    <section class="ac-panel" id="tab-sheets" role="tabpanel">
+      <div class="ac-sheet-ctrl">
+        <div class="ac-field">
+          <label for="ws-type">نوعُ الورقة:</label>
+          <select id="ws-type" onchange="buildSheet()">
+            <option value="letters">🔤 حروف للكتابة فوقها</option>
+            <option value="numbers">🔢 أرقام وعدّ</option>
+            <option value="opposites">↔️ أضداد وفراغات</option>
+          </select>
+        </div>
+        <div class="ac-field" style="margin-bottom:0">
+          <label for="ws-count">عددُ الخلايا:</label>
+          <select id="ws-count" onchange="buildSheet()">
+            <option value="9">٩ خلايا</option>
+            <option value="12" selected>١٢ خلية</option>
+            <option value="15">١٥ خلية</option>
+          </select>
+        </div>
+        <div class="ac-actions" style="margin-top:14px">
+          <button class="ac-btn primary" onclick="window.print()">🖨️ اطبع الورقة</button>
+          <button class="ac-btn" onclick="buildSheet()">🔄 ورقة جديدة</button>
+        </div>
+      </div>
+      <div class="ws-sheet" id="ws-sheet"></div>
+    </section>
+
+    <div class="k-foot"><div class="ft">«مَن سلك طريقًا يلتمسُ فيه علمًا سهّل اللهُ له طريقًا إلى الجنّة» — تعلّم حرفًا كلَّ يوم.</div></div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   أكاديمية زاد الصغيرة — كل المحتوى داخل الصفحة، بلا شبكة
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  var LETTERS = [
+    {l:'ا',n:'الألف',w:[['أَسَد','🦁'],['أَرنب','🐰'],['أُمّ','🤱']]},
+    {l:'ب',n:'الباء',w:[['بَطة','🦆'],['بَيت','🏠'],['بُرتُقال','🍊']]},
+    {l:'ت',n:'التاء',w:[['تَمر','🌴'],['تُفّاح','🍎'],['تِمساح','🐊']]},
+    {l:'ث',n:'الثاء',w:[['ثَعلب','🦊'],['ثَوب','👕'],['ثَلج','❄️']]},
+    {l:'ج',n:'الجيم',w:[['جَمَل','🐪'],['جَبَل','⛰️'],['جَزَر','🥕']]},
+    {l:'ح',n:'الحاء',w:[['حِصان','🐴'],['حوت','🐋'],['حَقيبة','🎒']]},
+    {l:'خ',n:'الخاء',w:[['خُبز','🍞'],['خَروف','🐑'],['خِيار','🥒']]},
+    {l:'د',n:'الدال',w:[['دُبّ','🐻'],['دَجاجة','🐔'],['دَرس','📚']]},
+    {l:'ذ',n:'الذال',w:[['ذِئب','🐺'],['ذَهب','🥇'],['ذُرة','🌽']]},
+    {l:'ر',n:'الراء',w:[['رُمان','🍎'],['رِيشة','🪶'],['رَكعة','🕌']]},
+    {l:'ز',n:'الزاي',w:[['زَرافة','🦒'],['زَيتون','🫒'],['زَهرة','🌸']]},
+    {l:'س',n:'السين',w:[['سَمكة','🐟'],['سَيّارة','🚗'],['سُكّر','🍬']]},
+    {l:'ش',n:'الشين',w:[['شَمس','☀️'],['شَجَرة','🌳'],['شِراع','⛵']]},
+    {l:'ص',n:'الصاد',w:[['صَقر','🦅'],['صَلاة','🕌'],['صَبر','🌿']]},
+    {l:'ض',n:'الضاد',w:[['ضِفدع','🐸'],['ضِرس','🦷'],['ضَوء','💡']]},
+    {l:'ط',n:'الطاء',w:[['طائرة','✈️'],['طَير','🐦'],['طَبيب','🩺']]},
+    {l:'ظ',n:'الظاء',w:[['ظَبي','🦌'],['ظِلّ','🌥️'],['ظُفر','✋']]},
+    {l:'ع',n:'العين',w:[['عَين','👁️'],['عَسَل','🍯'],['عُصفور','🐦']]},
+    {l:'غ',n:'الغين',w:[['غَزال','🦌'],['غَيمة','☁️'],['غُرفة','🚪']]},
+    {l:'ف',n:'الفاء',w:[['فيل','🐘'],['فَراشة','🦋'],['فَراولة','🍓']]},
+    {l:'ق',n:'القاف',w:[['قِطّة','🐱'],['قَمَر','🌙'],['قُرآن','📖']]},
+    {l:'ك',n:'الكاف',w:[['كِتاب','📚'],['كَلب','🐶'],['كُرة','⚽']]},
+    {l:'ل',n:'اللام',w:[['لَيمون','🍋'],['لُعبة','🧩'],['لَحم','🍖']]},
+    {l:'م',n:'الميم',w:[['مَوز','🍌'],['ماء','💧'],['مِفتاح','🔑']]},
+    {l:'ن',n:'النون',w:[['نَملة','🐜'],['نَخلة','🌴'],['نور','✨']]},
+    {l:'ه',n:'الهاء',w:[['هُدهد','🐦'],['هِلال','🌙'],['هاتف','📱']]},
+    {l:'و',n:'الواو',w:[['وَردة','🌹'],['وَرَق','📄'],['وَطن','🏡']]},
+    {l:'ي',n:'الياء',w:[['يَد','✋'],['ياسمين','🌼'],['يَقطين','🎃']]}
+  ];
+
+  var NUM_NAMES = ['صِفر','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة','عشرة',
+    'أحدَ عشر','اثنا عشر','ثلاثةَ عشر','أربعةَ عشر','خمسةَ عشر','ستةَ عشر','سبعةَ عشر','ثمانيةَ عشر','تسعةَ عشر','عشرون'];
+  var NUM_EMOJI = ['✨','⭐','🍎','🌼','🐟','🦋','🍯','🌙','🎈','🐣','🧩'];
+
+  var PAIRS = [['كبير','صغير'],['طويل','قصير'],['حار','بارد'],['نهار','ليل'],['فوق','تحت'],
+    ['سعيد','حزين'],['سريع','بطيء'],['نظيف','متّسخ'],['ثقيل','خفيف'],['قوي','ضعيف'],
+    ['جديد','قديم'],['مفتوح','مُغلق'],['قريب','بعيد'],['كثير','قليل']];
+
+  /* ── التخزين: نفس مفتاح ألعاب الأطفال ── */
+  var KEY = 'zad_kids_v2';
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){ return {}; } }
+  function getAcad(){
+    var s = load(), a = s.academy || {};
+    return { letters: a.letters || [], numbers: a.numbers || [], stars: a.stars || 0, oppBest: a.oppBest || 0 };
+  }
+  function setAcad(a){
+    try{
+      var s = load(); s.academy = a;
+      localStorage.setItem(KEY, JSON.stringify(s));
+      if (window.zadPatchState) window.zadPatchState({ academy: a });
+    }catch(e){}
+  }
+  function toast(msg){
+    if (typeof window.showToast === 'function') { window.showToast(msg); return; }
+    var t = document.getElementById('ac-toast');
+    if (!t){
+      t = document.createElement('div'); t.id = 'ac-toast';
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0e3b2e;color:#fff;padding:11px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:opacity .3s';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg; t.style.opacity = '1';
+    clearTimeout(t._h); t._h = setTimeout(function(){ t.style.opacity = '0'; }, 2200);
+  }
+  function speak(text){
+    if (!('speechSynthesis' in window)) { toast('🔇 الصوت غير متاح على هذا الجهاز'); return; }
+    try{
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ar-SA'; u.rate = 0.85; u.pitch = 1.05;
+      window.speechSynthesis.speak(u);
+    }catch(e){ toast('🔇 تعذّر تشغيل الصوت'); }
+  }
+
+  /* ── تبويبات ── */
+  window.acTab = function(name, btn){
+    document.querySelectorAll('.acad-tabs .ac-tab').forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+    document.querySelectorAll('.ac-panel').forEach(function(p){ p.classList.remove('active'); });
+    var p = document.getElementById('tab-' + name);
+    if (p) p.classList.add('active');
+    if (name === 'sheets') buildSheet();
+    if (name === 'letters') renderLetters();
+    if (name === 'numbers') renderNumbers();
+  };
+
+  /* ══ الحروف ══ */
+  var curL = 0, curN = 0;
+
+  function renderLetters(){
+    var a = getAcad(), box = document.getElementById('ac-letters');
+    box.innerHTML = LETTERS.map(function(x, i){
+      var done = a.letters.indexOf(x.l) > -1;
+      return '<button type="button" class="ac-lbtn' + (done ? ' done' : '') + (i === curL ? ' sel' : '') +
+             '" data-i="' + i + '" aria-label="حرف ' + x.n + '">' + x.l + '</button>';
+    }).join('');
+    box.querySelectorAll('.ac-lbtn').forEach(function(b){
+      b.addEventListener('click', function(){ showLetter(parseInt(b.getAttribute('data-i'), 10)); });
+    });
+    document.getElementById('ac-lstars').textContent = '⭐ ' + a.stars;
+    document.getElementById('ac-nstars').textContent = '⭐ ' + a.stars;
+  }
+
+  function showLetter(i){
+    curL = (i + LETTERS.length) % LETTERS.length;
+    var x = LETTERS[curL], a = getAcad();
+    document.getElementById('ac-l-big').textContent = x.l;
+    document.getElementById('ac-l-title').textContent = 'حرف ' + x.n;
+    document.getElementById('ac-l-sub').textContent = 'كلماته: ' + x.w.map(function(w){ return w[0]; }).join(' · ');
+    document.getElementById('ac-l-words').innerHTML = x.w.map(function(w){
+      return '<div class="ac-word"><span class="e">' + w[1] + '</span><b>' + w[0] + '</b></div>';
+    }).join('');
+    var btn = document.getElementById('ac-l-star');
+    var on = a.letters.indexOf(x.l) > -1;
+    btn.classList.toggle('on', on);
+    btn.textContent = on ? '✓ تعلّمتها' : '⭐ علّمتها';
+    renderLetters();
+    speak(x.n.replace('ال', '') + '… ' + x.w[0]);
+  }
+
+  window.acStep = function(d){ showLetter(curL + d); };
+  window.acSpeakLetter = function(){
+    var x = LETTERS[curL];
+    speak(x.n + '… ' + x.w.map(function(w){ return w[0]; }).join('، '));
+  };
+  window.acLearnLetter = function(){
+    var a = getAcad(), x = LETTERS[curL], i = a.letters.indexOf(x.l);
+    if (i > -1) { a.letters.splice(i, 1); a.stars = Math.max(0, a.stars - 1); toast('أزلنا العلامة'); }
+    else { a.letters.push(x.l); a.stars++; toast('⭐ أحسنت! تعلّمت حرف ' + x.n); }
+    setAcad(a); renderLetters(); showLetter(curL);
+  };
+
+  /* ══ الأرقام ══ */
+  function renderNumbers(){
+    var a = getAcad(), box = document.getElementById('ac-numbers');
+    var html = '';
+    for (var n = 0; n <= 20; n++){
+      var done = a.numbers.indexOf(n) > -1;
+      html += '<button type="button" class="ac-lbtn ac-num' + (done ? ' done' : '') + (n === curN ? ' sel' : '') +
+              '" data-n="' + n + '" aria-label="الرقم ' + NUM_NAMES[n] + '">' + n + '</button>';
+    }
+    box.innerHTML = html;
+    box.querySelectorAll('.ac-lbtn').forEach(function(b){
+      b.addEventListener('click', function(){ showNumber(parseInt(b.getAttribute('data-n'), 10)); });
+    });
+    document.getElementById('ac-lstars').textContent = '⭐ ' + a.stars;
+    document.getElementById('ac-nstars').textContent = '⭐ ' + a.stars;
+  }
+
+  function showNumber(n){
+    curN = Math.max(0, Math.min(20, n));
+    var a = getAcad();
+    document.getElementById('ac-n-big').textContent = curN;
+    document.getElementById('ac-n-title').textContent = NUM_NAMES[curN];
+    document.getElementById('ac-n-sub').textContent = curN === 0 ? 'لا شيء… نبدأ من هنا' : 'عُدّ معي: ' + NUM_NAMES[curN];
+    var e = NUM_EMOJI[curN % NUM_EMOJI.length];
+    var dots = '';
+    for (var k = 0; k < curN; k++) dots += '<span>' + e + '</span>';
+    document.getElementById('ac-n-dots').innerHTML = dots || '<span style="font-size:13px;color:var(--muted)">لا شيء</span>';
+    var btn = document.getElementById('ac-n-star');
+    var on = a.numbers.indexOf(curN) > -1;
+    btn.classList.toggle('on', on);
+    btn.textContent = on ? '✓ تعلّمتها' : '⭐ علّمتها';
+    renderNumbers();
+    speak(NUM_NAMES[curN]);
+  }
+
+  window.acStepN = function(d){ showNumber(curN + d); };
+  window.acSpeakNumber = function(){ speak(NUM_NAMES[curN]); };
+  window.acLearnNumber = function(){
+    var a = getAcad(), i = a.numbers.indexOf(curN);
+    if (i > -1) { a.numbers.splice(i, 1); a.stars = Math.max(0, a.stars - 1); toast('أزلنا العلامة'); }
+    else { a.numbers.push(curN); a.stars++; toast('⭐ أحسنت! تعلّمت الرقم ' + NUM_NAMES[curN]); }
+    setAcad(a); renderNumbers(); showNumber(curN);
+  };
+
+  /* ══ الأضداد ══ */
+  var opp = { i: 0, score: 0, pool: [], locked: false };
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+
+  window.oppStart = function(){
+    opp = { i: 0, score: 0, pool: shuffle(PAIRS).slice(0, 10), locked: false };
+    document.getElementById('ac-opp-start').style.display = 'none';
+    document.getElementById('ac-opp-end').style.display = 'none';
+    document.getElementById('ac-opp-play').style.display = '';
+    oppRender();
+  };
+
+  function oppRender(){
+    opp.locked = false;
+    var pair = opp.pool[opp.i];
+    var askFirst = Math.random() > 0.5;
+    var word = askFirst ? pair[0] : pair[1];
+    var answer = askFirst ? pair[1] : pair[0];
+    var distractors = shuffle(PAIRS.filter(function(p){ return p[0] !== pair[0]; }))
+      .slice(0, 2).map(function(p){ return p[0]; });
+    var opts = shuffle([answer].concat(distractors));
+    document.getElementById('ac-opp-count').textContent = 'سؤال ' + (opp.i + 1) + ' من ' + opp.pool.length;
+    document.getElementById('ac-opp-score').textContent = opp.score;
+    document.getElementById('ac-opp-bar').style.width = Math.round(opp.i / opp.pool.length * 100) + '%';
+    document.getElementById('ac-opp-q').innerHTML = 'ما عكسُ كلمة <b>' + word + '</b>؟';
+    var box = document.getElementById('ac-opp-opts');
+    box.innerHTML = opts.map(function(o){
+      return '<button type="button" class="ac-opt" data-v="' + o + '">' + o + '</button>';
+    }).join('');
+    box.querySelectorAll('.ac-opt').forEach(function(b){
+      b.addEventListener('click', function(){ oppAnswer(b, answer, pair); });
+    });
+  }
+
+  function oppAnswer(btn, answer, pair){
+    if (opp.locked) return;
+    opp.locked = true;
+    var ok = btn.getAttribute('data-v') === answer;
+    btn.classList.add(ok ? 'ok' : 'no');
+    document.querySelectorAll('#ac-opp-opts .ac-opt').forEach(function(b){
+      b.classList.add('dis');
+      if (b.getAttribute('data-v') === answer) b.classList.add('ok');
+    });
+    if (ok){ opp.score++; document.getElementById('ac-opp-score').textContent = opp.score; toast('✅ صح!'); }
+    else toast('❌ عكسها: ' + answer);
+    setTimeout(function(){
+      opp.i++;
+      if (opp.i >= opp.pool.length) oppFinish(); else oppRender();
+    }, 950);
+  }
+
+  function oppFinish(){
+    var a = getAcad();
+    if (opp.score > a.oppBest) a.oppBest = opp.score;
+    a.stars += opp.score;
+    setAcad(a);
+    document.getElementById('ac-opp-play').style.display = 'none';
+    document.getElementById('ac-opp-end').style.display = '';
+    var full = opp.score === opp.pool.length;
+    document.getElementById('ac-opp-emoji').textContent = full ? '🏅' : '🎉';
+    document.getElementById('ac-opp-title').textContent = full ? 'بطلُ الأضداد!' : 'أحسنت!';
+    document.getElementById('ac-opp-msg').innerHTML = 'أجبتَ صحيحًا على <b>' + opp.score + '</b> من <b>' + opp.pool.length +
+      '</b> — كسبتَ <b>' + opp.score + '</b> نجمة. أفضلُ نتيجة: <b>' + a.oppBest + '</b>.';
+    renderLetters(); renderNumbers();
+    if (typeof confetti === 'function' && full){ try{ confetti({ particleCount: 110, spread: 75, origin: { y: .65 } }); }catch(e){} }
+  }
+
+  /* ══ أوراق العمل ══ */
+  window.buildSheet = function(){
+    var type = (document.getElementById('ws-type') || {}).value || 'letters';
+    var count = parseInt((document.getElementById('ws-count') || {}).value, 10) || 12;
+    var cells = [], i;
+    var title = type === 'letters' ? 'ورقةُ الحروف — تتبّع الحرف' :
+                type === 'numbers' ? 'ورقةُ الأرقام — عُدّ وأكمل' : 'ورقةُ الأضداد — اكتب العكس';
+    if (type === 'letters'){
+      var pick = shuffle(LETTERS).slice(0, Math.min(count, LETTERS.length));
+      cells = pick.map(function(x){
+        return '<div class="ws-cell"><span class="ch">' + x.l + '</span><span class="nm">' + x.n +
+               '</span><span class="ln"></span><span class="ln"></span></div>';
+      });
+    } else if (type === 'numbers'){
+      cells = shuffle([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]).slice(0, count).map(function(n){
+        var circles = '';
+        for (var k = 0; k < Math.min(n, 12); k++) circles += '<i></i>';
+        return '<div class="ws-cell"><span class="ch" style="font-family:ThmanyahSans,sans-serif;color:#9fb0a7">' + n +
+               '</span><span class="nm">' + NUM_NAMES[n] + '</span><span class="circles">' + circles + '</span></div>';
+      });
+    } else {
+      cells = shuffle(PAIRS).slice(0, Math.min(count, PAIRS.length)).map(function(p){
+        return '<div class="ws-cell"><span class="ws-opp">' + p[0] + '</span><span class="nm">العكس: </span>' +
+               '<span class="ln"></span></div>';
+      });
+    }
+    document.getElementById('ws-sheet').innerHTML =
+      '<div class="ws-head"><b>' + title + '</b><small>الاسم: ....................   التاريخ: ..........</small></div>' +
+      '<div class="ws-grid">' + cells.join('') + '</div>' +
+      '<div class="ws-foot">أكاديمية زاد الصغيرة · zad.app</div>';
+  };
+
+  /* ══ الإقلاع ══ */
+  document.addEventListener('DOMContentLoaded', function(){
+    renderLetters();
+    showLetter(Math.floor(Math.random() * LETTERS.length));
+    renderNumbers();
+    showNumber(1);
+    buildSheet();
+  });
+})();
+</script>
+</body>
+</html>
