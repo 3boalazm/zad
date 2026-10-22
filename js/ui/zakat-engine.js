@@ -36,8 +36,11 @@
     LEGACY_KEY: 'zad_v2',
   };
 
-  const ASSET_KEYS = ['gold', 'silver', 'cash', 'stocks', 'funds', 'trade'];
-  const FIELD_IDS = ['gold-g', 'gold-p', 'silver-g', 'silver-p', 'cash', 'stocks', 'funds', 'trade', 'debts'];
+  /* ٢٠٢٦: أُضيفت العملات الرقمية ودخل الإيجار والديون المضمونة —
+     أكثر ما يُسأل عنه من الشباب، وكان غائبًا تمامًا. */
+  const ASSET_KEYS = ['gold', 'silver', 'cash', 'stocks', 'funds', 'trade', 'crypto', 'rent', 'receivable'];
+  const FIELD_IDS = ['gold-g', 'gold-p', 'silver-g', 'silver-p', 'cash', 'stocks', 'funds', 'trade',
+                     'crypto', 'rent', 'receivable', 'debts'];
 
   function n(v) {
     const x = parseFloat(v);
@@ -50,9 +53,12 @@
     const goldVal = n(a.goldG) * n(a.goldP);
     const silverVal = n(a.silverG) * n(a.silverP);
     const cash = n(a.cash), stocks = n(a.stocks), funds = n(a.funds), trade = n(a.trade);
-    const gross = goldVal + silverVal + cash + stocks + funds + trade;
+    const crypto = n(a.crypto);          /* قيمة المحفظة بسعر السوق يوم الحول */
+    const rent = n(a.rent);              /* دخل إيجار مُستلَم ومُدَّخر — أصلٌ نقدي */
+    const receivable = n(a.receivable);  /* ديون لك مرجوّة السداد */
+    const gross = goldVal + silverVal + cash + stocks + funds + trade + crypto + rent + receivable;
     const net = Math.max(0, gross - n(a.debts));
-    return { goldVal, silverVal, gross, net };
+    return { goldVal, silverVal, cash, stocks, funds, trade, crypto, rent, receivable, gross, net };
   }
 
   /* ── 2. النصاب ────────────────────────────────────────────────────────────
@@ -227,7 +233,8 @@
   function defaults() {
     return {
       cur: 'ج.م', rate: CONST.RATE_LUNAR, basis: 'lower',
-      assets: { goldG: '', goldP: '', silverG: '', silverP: '', cash: '', stocks: '', funds: '', trade: '', debts: '' },
+      assets: { goldG: '', goldP: '', silverG: '', silverP: '', cash: '', stocks: '', funds: '', trade: '',
+                crypto: '', rent: '', receivable: '', debts: '' },
       hawlStart: '', fitrHeads: '', fitrPrice: '', history: [], updatedAt: 0,
     };
   }
@@ -242,7 +249,8 @@
       a.goldG = z['gold-g'] || ''; a.goldP = z['gold-p'] || '';
       a.silverG = z['silver-g'] || ''; a.silverP = z['silver-p'] || '';
       a.cash = z.cash || ''; a.stocks = z.stocks || ''; a.funds = z.funds || '';
-      a.trade = z.trade || ''; a.debts = z.debts || '';
+      a.trade = z.trade || ''; a.crypto = z.crypto || ''; a.rent = z.rent || '';
+      a.receivable = z.receivable || ''; a.debts = z.debts || '';
       const rate = parseFloat(z.rate) === CONST.RATE_SOLAR ? CONST.RATE_SOLAR : CONST.RATE_LUNAR;
       return { cur: z.cur || 'ج.م', rate, assets: a };
     } catch (e) { return null; }

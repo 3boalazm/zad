@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>زكاة المال الجديد — أسهم وصناديق وكريبتو | زاد</title>
+<meta name="description" content="زكاة ٢٠٢٦ لأشكال المال الحديثة: الأسهم والصناديق الاستثمارية والعملات الرقمية وعقار الإيجار وعروض التجارة والديون — بأمثلة محسوبة وخلاف المذاهب.">
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&display=swap"></noscript>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<link rel="stylesheet" href="css/fiqh.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+.zz-ex{background:var(--sand);border:1px solid var(--border);border-radius:13px;padding:12px 14px;margin:9px 0}
+.zz-ex-h{font-size:11px;font-weight:800;color:var(--gold-dark,#8a6a1f);margin-bottom:6px;letter-spacing:.4px}
+.zz-ex-rows{font-size:12px;color:var(--ink);line-height:2}
+.zz-ex-rows div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--border);padding:3px 0}
+.zz-ex-rows div:last-child{border-bottom:none;font-weight:900;color:var(--green-deep)}
+html[data-theme="dark"] .zz-ex-rows div:last-child,html[data-theme="oled"] .zz-ex-rows div:last-child{color:var(--sys-green)}
+.zz-ex-rows span:last-child{font-variant-numeric:tabular-nums}
+.zz-ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;font-variant-numeric:tabular-nums}
+.zz-jump{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}
+.zz-jump a{display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:var(--sand);text-decoration:none;color:var(--ink);font-size:12px;font-weight:800;transition:.15s}
+.zz-jump a:hover{border-color:var(--green-soft);background:var(--green-pale)}
+.zz-jump .i{font-size:17px}
+.zz-tag{display:inline-block;font-size:9.5px;font-weight:800;border-radius:6px;padding:2px 7px;margin-inline-start:5px;vertical-align:middle}
+.zz-tag.a{background:rgba(42,122,95,.14);color:var(--green-deep)}
+.zz-tag.b{background:rgba(201,161,74,.18);color:#8a6a1f}
+html[data-theme="dark"] .zz-tag.a,html[data-theme="oled"] .zz-tag.a{background:#0e2a1e;color:var(--sys-green)}
+html[data-theme="dark"] .zz-tag.b,html[data-theme="oled"] .zz-tag.b{background:#26200f;color:#e6c97a}
+</style>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<script src="js/net-ledger.js" defer></script>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">زكاة المال الجديد ٢٠٢٦</h1>
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">زكاة <span>المال الجديد</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fq-wrap">
+      <section class="fq-hero" data-icon="🪙">
+        <div class="fq-eyebrow">مالٌ لم يُسأل عنه قبل ٢٠٢٠</div>
+        <h2 class="fq-title">أسهم… وصناديق… وعملات رقمية</h2>
+        <p class="fq-sub">أشكال المال تغيّرت، وأسئلة الشباب تغيّرت معها. هنا كل نوعٍ جديد من المال: كيف يُقوَّم، وهل يدخل الوعاء الزكوي، ومتى يبدأ الحول، وخلاف المذاهب والمجامع الفقهية — بأمثلة محسوبة بالجنيه.</p>
+        <div class="fq-chips"><span class="fq-chip">٦ أنواع جديدة</span><span class="fq-chip">أمثلة محسوبة</span><span class="fq-chip">خلافٌ مذكور</span></div>
+      </section>
+
+      <nav class="fq-toc"><a href="#rule">القاعدة</a><a href="#stocks">الأسهم</a><a href="#funds">الصناديق</a><a href="#crypto">الكريبتو</a><a href="#rent">العقار</a><a href="#trade">التجارة</a><a href="#debt">الديون</a><a href="#calc">احسب</a></nav>
+
+      <section class="fq-sec" id="rule">
+        <h2>القاعدة التي لا تتغيّر</h2>
+        <p>المال الذي تجب فيه الزكاة يُقدَّر بـ<b>قيمته السوقية يوم وجوب الزكاة</b>، لا برأس مالٍ دفعته قبل عشر سنين. والنصاب يُقدر بالذهب أو الفضة (الأدنى أرفق)، والمقدار ٢٫٥٪، والشرط الشرعي: <b>حولان الحول</b> على نصابٍ كامل.</p>
+        <div class="fq-grid">
+          <div class="fq-card"><b>متى يُقوَّم؟</b><small>يوم الحول — بنفس عملتك — لا عند الشراء.</small></div>
+          <div class="fq-card"><b>ما يدخل الوعاء؟</b><small>كل ما هو نامٍ أو مُعدّ للتداول: نقد، أسهم، صناديق، عرض تجارة.</small></div>
+          <div class="fq-card"><b>ما لا يدخل؟</b><small>دار سكنك، سيارتك، أثاثك، عقار مؤجَّر بالقيمة (والزكاة في إيجاره المُدَّخر).</small></div>
+          <div class="fq-card"><b>الأصل الأهم</b><small>لا تُخرج الزكاة من مالٍ مغصوب أو دينٍ لا يُرجى.</small></div>
+        </div>
+        <div class="zz-jump">
+          <a href="zakat.html"><span class="i">🧮</span> الحاسبة الكاملة</a>
+          <a href="zakat-ahkam.html"><span class="i">📋</span> أحكام الزكاة</a>
+          <a href="zakat-anwa.html"><span class="i">📊</span> أنواع الزكاة</a>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="stocks">
+        <h2>١ — الأسهم</h2>
+        <p>الأسهم لا تُزكى بذاتها، بل <b>بما تمثّله من مالٍ نامٍ</b> داخل الشركة. والتفصيل يختلف بحسب نشاط الشركة ونيتك من التملّك.</p>
+        <div class="fq-grid">
+          <div class="fq-card"><b>للتداول <span class="zz-tag a">٢٫٥٪</span></b><small>تُزكى <b>قيمتها السوقية</b> يوم الحول كاملة. هذا مذهب جمهور المعاصرين؛ لأنها عروض تجارة.</small></div>
+          <div class="fq-card"><b>للاستثمار الطويل <span class="zz-tag b">الأحوط</span></b><small>بعضهم يرى زكاة <b>حصتها من الأصول الزكوية</b> للشركة (نقد + بضاعة) نسبةً إلى رأس مالها، وبعضهم يكتفي بالقيمة السوقية. والثاني أيسر وأشيع.</small></div>
+        </div>
+        <div class="zz-ex">
+          <div class="zz-ex-h">مثال محسوب — محفظة تداول</div>
+          <div class="zz-ex-rows">
+            <div><span>قيمة الأسهم يوم الحول</span><span>٨٠٬٠٠٠ ج.م</span></div>
+            <div><span>النصاب (<span class="zz-ltr">٨٥ × ٤٬٢٥٠</span>)</span><span>٣٦١٬٢٥٠ ج.م</span></div>
+            <div><span>الحكم</span><span>دون النصاب — لا زكاة (حتى يُضاف إليها نقد أو ذهب)</span></div>
+          </div>
+        </div>
+        <div class="zz-ex">
+          <div class="zz-ex-h">مثال محسوب — أسهمٌ بلغت النصاب</div>
+          <div class="zz-ex-rows">
+            <div><span>قيمة الأسهم يوم الحول</span><span>٤٠٠٬٠٠٠ ج.م</span></div>
+            <div><span>الزكاة <span class="zz-ltr">٢٫٥٪ × ٤٠٠٬٠٠٠</span></span><span>١٠٬٠٠٠ ج.م</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="funds">
+        <h2>٢ — الصناديق الاستثمارية</h2>
+        <p>الصندوق وعاءٌ لجمع الأموال، ويُزكى بما فيه من أصولٍ زكوية. صندوق الأسهم يُزكى كالأسهم، وصندوق السندات/المال يُزكى نقدًا (<span class="zz-ltr">٢٫٥٪</span> على قيمته).</p>
+        <table class="fq-table">
+          <thead><tr><th>نوع الصندوق</th><th>ما يُزكى</th><th>المقدار</th></tr></thead>
+          <tbody>
+            <tr><td>أسهم</td><td>القيمة السوقية للوحدات</td><td>٢٫٥٪</td></tr>
+            <tr><td>سوق نقد / ودائع</td><td>قيمة الوحدات كأصلٍ نقدي</td><td>٢٫٥٪</td></tr>
+            <tr><td>سندات (صكوك دين)</td><td>يُزكى المبلغ المملوك نقدًا</td><td>٢٫٥٪ على الأصل</td></tr>
+            <tr><td>صناديق مختلطة</td><td>الأنسب: تُقوَّم كاملة بسعر الوحدة</td><td>٢٫٥٪</td></tr>
+          </tbody>
+        </table>
+        <div class="fq-warn">تنبيه: كثيرٌ من صناديق السندات تُقرض بفائدة؛ لا تجعل الزكاة «تُطهِّر» ربا محقّقًا. الرجوع للمختصّين في المال أولى.</div>
+      </section>
+
+      <section class="fq-sec" id="crypto">
+        <h2>٣ — العملات الرقمية</h2>
+        <p>لا نصّ صريح فيها؛ والمعاصرون على قولين: أنها مالٌ قائمٌ بذاته تُزكى كعروض تجارة، أو أنها لا تُزكى لأنها ليست نقدًا ولا عروضًا. والأرجح والأحوط عند أكثر المجامع: <b>تُقوَّم بسعر السوق يوم الحول وتُزكى ٢٫٥٪</b>.</p>
+        <ol class="fq-steps">
+          <li data-n="١"><b>قدّر قيمتها</b><span>سعر العملة يوم الحول × الكمية في محفظتك. سعر الصرف المتغيّر لا يُغيّر القاعدة.</span></li>
+          <li data-n="٢"><b>أضِف إلى الوعاء</b><span>مع بقية أموالك الزكوية.</span></li>
+          <li data-n="٣"><b>احذف ما ليس ملكك</b><span>لا تُزكِّ العملات المُقترضة أو المحتفظ بها لغيرك.</span></li>
+        </ol>
+        <div class="zz-ex">
+          <div class="zz-ex-h">مثال محسوب — محفظة رقمية + نقد</div>
+          <div class="zz-ex-rows">
+            <div><span>كريبتو يوم الحول</span><span>٤٠٬٠٠٠ ج.م</span></div>
+            <div><span>نقد في البنك</span><span>٣٥٠٬٠٠٠ ج.م</span></div>
+            <div><span>إجمالي الوعاء</span><span>٣٩٠٬٠٠٠ ج.م</span></div>
+            <div><span>فوق النصاب ⇒ الزكاة (<span class="zz-ltr">٢٫٥٪</span>)</span><span>٩٬٧٥٠ ج.م</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="rent">
+        <h2>٤ — عقار الإيجار</h2>
+        <p>العقار المُغَلّ بالإيجار <b>ليس عرض تجارة</b>؛ فقيمته لا تُزكى، وإنما يُزكى <b>الإيجار المُستلَم المُدَّخر</b> عند حولان الحول عليه مع أموالك. وأمّا العقار المعدّ للبيع فقيمته تُزكى كعرض تجارة.</p>
+        <div class="zz-ex">
+          <div class="zz-ex-h">مثال محسوب — إيجار سنوي</div>
+          <div class="zz-ex-rows">
+            <div><span>إيجار سنوي مُستلَم</span><span>١٢٠٬٠٠٠ ج.م</span></div>
+            <div><span>مصروف منه على الصيانة</span><span>٢٠٬٠٠٠ ج.م</span></div>
+            <div><span>الباقي يوم الحول</span><span>١٠٠٬٠٠٠ ج.م</span></div>
+            <div><span>الحكم</span><span>دون النصاب ⇒ لا زكاة حتى يُضاف لنقود أخرى</span></div>
+          </div>
+        </div>
+        <div class="fq-note">لو بلغ الباقي مع بقية أموالك النصاب: تُزكى المجموعة ٢٫٥٪.</div>
+      </section>
+
+      <section class="fq-sec" id="trade">
+        <h2>٥ — عروض التجارة</h2>
+        <p>كل ما أعددته للبيع — بضاعة متجر، سيارات معرض، أجهزة — يُقوَّم بسعر السوق يوم الحول، ويُضاف إلى النقد. والمخزون الراكد الذي لا يُباع يُقوَّم كذلك عند الجمهور، وقيل بالاحتياط.</p>
+        <div class="fq-grid">
+          <div class="fq-card"><b>ما يُحسب</b><small>سعر السوق للبضاعة + النقد + المدينون الموسرون.</small></div>
+          <div class="fq-card"><b>ما يُطرح</b><small>الديون الحالّة عليك، وليس رأس مال الشركة كله.</small></div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="debt">
+        <h2>٦ — الديون</h2>
+        <table class="fq-table">
+          <thead><tr><th>الحالة</th><th>الحكم</th></tr></thead>
+          <tbody>
+            <tr><td>دينٌ لك على <b>مُوسِر</b></td><td>يُضاف للوعاء وتُزكى السنة كاملة — أو تُزكى عند القبض لكل سنةٍ مضت عند بعضهم.</td></tr>
+            <tr><td>دينٌ لك على <b>مُعسِر</b></td><td>لا زكاة حتى تقبضه؛ تُزكيه لسنةٍ واحدة عند القبض عند الجمهور.</td></tr>
+            <tr><td>دينٌ عليك (حالّ)</td><td>يُطرَح من الوعاء قبل الحساب.</td></tr>
+            <tr><td>دينٌ عليك (مؤجّل)</td><td>يُطرح عند الحنابلة وبعض المعاصرين إن كان يستهلك الوعاء.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="fq-sec" id="calc">
+        <h2>احسب زكاتك الآن</h2>
+        <p>الحاسبة الكاملة صارت تشمل العملات الرقمية ودخل الإيجار والديون المرجوّة. أدخل الأرقام وسترى الوعاء والنصاب والزكاة مباشرة.</p>
+        <div class="fq-actions">
+          <a class="fq-btn solid" href="zakat.html">🧮 افتح الحاسبة</a>
+          <a class="fq-btn" href="zakat-ahkam.html">📋 أحكام الزكاة</a>
+        </div>
+      </section>
+
+      <section class="fq-sec">
+        <h2>اقرأ أيضًا</h2>
+        <div class="fq-grid">
+          <a class="fq-card" href="zakat-anwa.html"><b>أنواع الزكاة</b><small>الزروع والأنعام والعسل والركاز.</small></a>
+          <a class="fq-card" href="sadaqah.html"><b>الصدقة والبر</b><small>ما بعد الفريضة — أبوابٌ للتطوّع.</small></a>
+          <a class="fq-card" href="mirath.html"><b>حاسبة الميراث</b><small>توزيع التركة بالكسور.</small></a>
+        </div>
+      </section>
+
+      <div class="fq-note" style="margin-bottom:18px">الأحكام على ما استقرّ عليه أكثر المجامع الفقهية المعاصرة، ومسائل الأسهم والصناديق والعملات الرقمية فيها خلافٌ معتبر؛ وما أشكل عليك فاسأل عالمًا بسوقك وبلدك. والصبر في تقويم المال خير من العجلة.</div>
+    </div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+</body>
+</html>

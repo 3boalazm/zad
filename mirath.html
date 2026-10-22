@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>حاسبة الميراث — كسور دقيقة ووصية واجبة | زاد</title>
+<meta name="description" content="حاسبة ميراث دقيقة: فروض وعصبات وحجب مع السبب، عول وردّ، أربعة مذاهب، والوصية الواجبة وفق القانون المصري.">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+/* ── الهيرو ─────────────────────────────────────────────────────── */
+.mh-hero{background:linear-gradient(135deg,#0e3b2e 0%,#15503d 55%,#7c5f1b 130%);border-radius:22px;padding:30px 26px 26px;color:#fff;position:relative;overflow:hidden;margin-bottom:18px;box-shadow:0 18px 50px -18px rgba(14,59,46,.55)}
+.mh-hero::after{content:'⚖️';position:absolute;top:14px;left:22px;font-size:56px;opacity:.12;line-height:1}
+.mh-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:3px;font-weight:700;margin-bottom:8px}
+.mh-title{font-size:27px;font-weight:900;line-height:1.25;margin:0 0 8px;font-family:'ThmanyahSans',sans-serif}
+.mh-sub{font-size:13.5px;color:rgba(255,255,255,.84);line-height:1.85;max-width:600px;margin:0}
+.mh-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.mh-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(230,201,122,.35);border-radius:99px;padding:6px 13px;font-size:12px;font-weight:700;color:#f6ecd2;backdrop-filter:blur(4px)}
+.mh-chip b{color:#fff}
+
+/* ── الشبكة ─────────────────────────────────────────────────────── */
+.mh-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:16px;align-items:start}
+@media(max-width:960px){.mh-grid{grid-template-columns:1fr}}
+.mh-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:16px 16px 6px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.mh-card h2{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:800;color:var(--green-deep);margin:0 0 12px;font-family:'ThmanyahSans',sans-serif}
+html[data-theme="dark"] .mh-card h2,html[data-theme="oled"] .mh-card h2{color:var(--sys-green)}
+.mh-card h2::before{content:"";width:5px;height:17px;border-radius:3px;background:linear-gradient(180deg,var(--gold),var(--green-soft));flex:0 0 auto}
+.mh-hint{font-size:11.5px;color:var(--muted);line-height:1.7;margin:-6px 0 12px}
+
+/* ── مجموعات الورثة ─────────────────────────────────────────────── */
+.mh-grp{margin-bottom:14px}
+.mh-grp-h{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.mh-grp-h::after{content:"";flex:1;height:1px;background:var(--border)}
+.mh-hs{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:7px}
+.mh-h{display:flex;align-items:center;gap:7px;padding:9px 10px;border:1.5px solid var(--border);border-radius:12px;background:var(--sand);transition:.16s;cursor:pointer;min-height:46px;user-select:none;position:relative}
+.mh-h:hover{border-color:var(--green-soft);background:var(--card)}
+.mh-h.on{border-color:var(--gold);background:var(--gold-pale,#fbf5e4);box-shadow:0 0 0 3px rgba(201,161,74,.12)}
+html[data-theme="dark"] .mh-h.on,html[data-theme="oled"] .mh-h.on{background:#26200f;border-color:#8a6a1f}
+.mh-hi{font-size:14px;flex:0 0 auto;width:20px;text-align:center;line-height:1}
+.mh-hn{flex:1;min-width:0;font-size:11.8px;font-weight:700;color:var(--ink);line-height:1.35}
+.mh-hc{flex:0 0 auto;min-width:24px;height:24px;padding:0 7px;border-radius:99px;display:grid;place-items:center;background:var(--card);border:1px solid var(--border);font-size:11px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.mh-h.on .mh-hc{background:var(--gold);border-color:var(--gold);color:#241c06}
+.mh-dec{flex:0 0 auto;width:24px;height:24px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:15px;font-weight:800;line-height:1;cursor:pointer;display:none;place-items:center;font-family:inherit;padding:0}
+.mh-h.on .mh-dec{display:grid}
+.mh-dec:hover{color:#a8442f;border-color:#d9a08f;background:#fdf2ee}
+html[data-theme="dark"] .mh-dec:hover,html[data-theme="oled"] .mh-dec:hover{background:#2a1512;border-color:#5c2e26;color:#ff9a80}
+.mh-dec:active{transform:scale(.9)}
+/* ── الخيارات ───────────────────────────────────────────────────── */
+.mh-opt{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink)}
+.mh-opt:last-child{border-bottom:none}
+.mh-opt small{display:block;font-size:10.5px;color:var(--muted);font-weight:500;margin-top:2px;line-height:1.6}
+.mh-seg{display:inline-flex;background:var(--sand);border:1px solid var(--border);border-radius:11px;padding:3px;gap:2px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end}
+.mh-seg button{border:none;background:none;padding:6px 10px;border-radius:8px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap}
+.mh-seg button.on{background:var(--green-deep);color:#fff;box-shadow:var(--shadow-sm)}
+html[data-theme="dark"] .mh-seg button.on,html[data-theme="oled"] .mh-seg button.on{background:var(--sys-green);color:#06251b}
+.mh-sw{width:44px;height:25px;border-radius:99px;border:1.5px solid var(--border);background:var(--sand);position:relative;cursor:pointer;flex:0 0 auto;transition:.18s}
+.mh-sw::after{content:"";position:absolute;top:2.5px;inset-inline-start:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:.18s}
+.mh-sw.on{background:var(--green-soft);border-color:var(--green-soft)}
+.mh-sw.on::after{inset-inline-start:23px}
+.mh-money{display:flex;gap:8px;align-items:center}
+.mh-money input{width:130px;padding:9px 11px;border:1.5px solid var(--border);border-radius:10px;background:var(--sand);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;text-align:end;-moz-appearance:textfield}
+.mh-money input::-webkit-outer-spin-button,.mh-money input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.mh-money select{padding:9px 8px;border:1.5px solid var(--border);border-radius:10px;background:var(--sand);color:var(--ink);font-family:inherit;font-size:12px;font-weight:700}
+.mh-money input:focus,.mh-money select:focus{outline:none;border-color:var(--green-soft);background:var(--card)}
+
+/* ── النتيجة ────────────────────────────────────────────────────── */
+.mh-out{position:sticky;top:14px}
+@media(max-width:960px){.mh-out{position:static}}
+.mh-res{background:var(--card);border:1.5px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm);overflow:hidden}
+.mh-res-h{padding:14px 16px;background:linear-gradient(135deg,rgba(14,59,46,.06),rgba(201,161,74,.1));border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mh-res-h b{font-size:13.5px;font-weight:800;color:var(--green-deep);font-family:'ThmanyahSans',sans-serif}
+html[data-theme="dark"] .mh-res-h b,html[data-theme="oled"] .mh-res-h b{color:var(--sys-green)}
+.mh-res-h span{font-size:11px;color:var(--muted);font-weight:700}
+.mh-sum{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px 2px}
+.mh-pill{display:inline-flex;align-items:center;gap:5px;background:var(--green-pale);color:var(--green-deep);border:1px solid rgba(42,122,95,.22);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:800}
+html[data-theme="dark"] .mh-pill,html[data-theme="oled"] .mh-pill{background:#0e2a1e;color:var(--sys-green);border-color:#1e4433}
+.mh-pill.gold{background:var(--gold-pale,#fbf5e4);color:#8a6a1f;border-color:rgba(201,161,74,.35)}
+html[data-theme="dark"] .mh-pill.gold,html[data-theme="oled"] .mh-pill.gold{background:#26200f;color:#e6c97a;border-color:#4a3d1c}
+.mh-tbl{width:100%;border-collapse:collapse;margin:8px 0 0}
+.mh-tbl th{font-size:10.5px;color:var(--muted);font-weight:700;text-align:start;padding:8px 14px;border-bottom:1px solid var(--border)}
+.mh-tbl td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--ink);vertical-align:middle}
+.mh-tbl tr:last-child td{border-bottom:none}
+.mh-tbl .who{font-weight:800}
+.mh-tbl .who small{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:2px}
+.mh-tbl .fr{font-family:'Amiri',serif;font-size:15px;font-weight:700;color:var(--green-deep);white-space:nowrap}
+html[data-theme="dark"] .mh-tbl .fr,html[data-theme="oled"] .mh-tbl .fr{color:var(--sys-green)}
+.mh-tbl .pc{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mh-tbl .amt{font-weight:800;color:#8a6a1f;white-space:nowrap;font-variant-numeric:tabular-nums}
+html[data-theme="dark"] .mh-tbl .amt,html[data-theme="oled"] .mh-tbl .amt{color:#e6c97a}
+.mh-empty{padding:26px 18px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.8}
+.mh-empty b{display:block;font-size:15px;color:var(--ink);margin-bottom:6px}
+.mh-blocked{padding:4px 14px 12px}
+.mh-blocked h4{margin:10px 0 6px;font-size:11px;color:#a8442f;font-weight:800;letter-spacing:.4px}
+html[data-theme="dark"] .mh-blocked h4,html[data-theme="oled"] .mh-blocked h4{color:#ff9a80}
+.mh-blocked li{list-style:none;font-size:11.5px;color:var(--muted);padding:4px 0;line-height:1.6}
+.mh-blocked strong{color:var(--ink);font-weight:700}
+.mh-blocked ul{margin:0;padding:0}
+.mh-notes{padding:0 14px 14px;font-size:11.5px;color:var(--muted);line-height:1.75}
+.mh-notes li{margin-bottom:4px}
+.mh-acts{display:flex;gap:8px;padding:0 14px 14px;flex-wrap:wrap}
+.mh-btn{flex:1;min-width:120px;padding:10px 12px;border-radius:11px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:.16s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.mh-btn:hover{border-color:var(--green-soft);background:var(--green-pale)}
+.mh-btn.solid{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+.mh-btn.solid:hover{filter:brightness(1.08)}
+html[data-theme="dark"] .mh-btn.solid,html[data-theme="oled"] .mh-btn.solid{background:var(--sys-green);border-color:var(--sys-green);color:#06251b}
+.mh-disc{padding:11px 14px;background:rgba(201,161,74,.09);border-top:1px solid var(--border);font-size:10.8px;line-height:1.75;color:var(--muted)}
+.mh-examples{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.mh-ex{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:99px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;line-height:1.5}
+.mh-ex::before{content:"▸";font-size:9px;color:var(--gold);line-height:1}
+.mh-ex:active{transform:scale(.96)}
+.mh-ex:hover{color:var(--green-deep);border-color:var(--green-soft);background:var(--green-pale)}
+@media print{.sidebar,.topbar,.mh-acts,.mh-in,.mh-hero::after,.notif-wrap{display:none!important}.mh-grid{display:block}.mh-res{box-shadow:none}}
+#zad-cmd-fab,.zad-tkbr-fab{display:none!important}
+</style>
+<script src="js/net-ledger.js" defer></script>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">حاسبة الميراث الشرعي</h1>
+
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">حاسبة <span>الميراث</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mh-hero">
+      <div class="mh-eyebrow">🧬 عِلم الفرائض</div>
+      <h2 class="mh-title">قِسمةٌ بعدل… وكسورٌ لا تُخطئ</h2>
+      <p class="mh-sub">أضِف الورثة الموجودين فعلًا، وسيُحسب لكل واحدٍ فرضُه أو تعصيبُه بدقّة الكسر، مع ذكر سبب الحجب، والعول والردّ، والعمريّتين والأكدرية، وأربعة مذاهب، والوصية الواجبة في القانون المصري.</p>
+      <div class="mh-chips">
+        <span class="mh-chip">أصل المسألة: <b id="ch-base">—</b></span>
+        <span class="mh-chip">الحالة: <b id="ch-state">—</b></span>
+        <span class="mh-chip">الورثة: <b id="ch-count">٠</b></span>
+      </div>
+    </section>
+
+    <div class="mh-grid">
+      <!-- الإدخال -->
+      <div class="mh-in">
+        <section class="mh-card">
+          <h2>من هو موجود من الورثة؟</h2>
+          <p class="mh-hint">اضغط + لإضافة وارث، و− لإنقاص العدد. الأعداد تُحفظ على جهازك تلقائيًا.</p>
+
+          <div class="mh-examples" id="mh-examples">
+            <button class="mh-ex" data-ex="umari">زوج وأبوان</button>
+            <button class="mh-ex" data-ex="awl">زوج وأختان وأم</button>
+            <button class="mh-ex" data-ex="two">بنتان وأم</button>
+            <button class="mh-ex" data-ex="akdariyya">الأكدرية</button>
+            <button class="mh-ex" data-ex="reset">تفريغ</button>
+          </div>
+
+          <div id="mh-groups"></div>
+        </section>
+
+        <section class="mh-card">
+          <h2>خيارات الحساب</h2>
+          <div class="mh-opt">
+            <div>المذهب<small>يختلف الحكم في الجدّ مع الإخوة، والأخت مع البنت.</small></div>
+            <div class="mh-seg" id="mh-mad"></div>
+          </div>
+          <div class="mh-opt">
+            <div>الوصية الواجبة<small>لأولاد الابن المتوفى قبل أبيه، وللطبقة الأولى من أولاد البنت — قانون ٧١ لسنة ١٩٤٦.</small></div>
+            <button class="mh-sw" id="mh-was" role="switch" aria-checked="false" aria-label="الوصية الواجبة"></button>
+          </div>
+          <div class="mh-opt">
+            <div>وصية اختيارية<small>نسبة تُخرج قبل الميراث، وأقصاها الثلث.</small></div>
+            <div class="mh-money">
+              <input type="number" id="mh-beq" min="0" max="33" step="1" placeholder="0" aria-label="نسبة الوصية">
+              <span style="font-size:12px;color:var(--muted);font-weight:700">٪</span>
+            </div>
+          </div>
+          <div class="mh-opt">
+            <div>قيمة التركة<small>اختياري — لعرض نصيب كل وارث بالمبلغ.</small></div>
+            <div class="mh-money">
+              <input type="number" id="mh-estate" min="0" step="1000" placeholder="0" aria-label="قيمة التركة">
+              <select id="mh-cur" aria-label="العملة">
+                <option value="ج.م">ج.م</option>
+                <option value="ر.س">ر.س</option>
+                <option value="د.إ">د.إ</option>
+                <option value="$">$</option>
+                <option value="€">€</option>
+              </select>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- النتيجة -->
+      <aside class="mh-out">
+        <div class="mh-res" aria-live="polite">
+          <div class="mh-res-h">
+            <b>نتيجة القسمة</b>
+            <span id="mh-res-sub">—</span>
+          </div>
+          <div class="mh-sum" id="mh-sum"></div>
+          <div id="mh-body">
+            <div class="mh-empty"><b>لم تُضِف ورثة بعد</b>ابدأ بإضافة الزوج/الزوجة أو الأبناء أو الوالدين، وستظهر القسمة هنا لحظيًا.</div>
+          </div>
+          <div class="mh-acts">
+            <button class="mh-btn" id="mh-copy">📋 نسخ النتيجة</button>
+            <button class="mh-btn solid" id="mh-share">📤 مشاركة</button>
+          </div>
+          <div class="mh-disc">⚠️ نتيجة استرشادية مبنية على قواعد الفرائض المعتمدة، وقد تختلف بتفاصيل لا تدخلها الحاسبة (كالحمل والمفقود والخنثى والغرقى). في النزاعات الرجوع إلى المحكمة أو دار الإفتاء المختصة.</div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="mh-card" style="margin-top:16px">
+      <h2>اقرأ أيضًا</h2>
+      <div class="mh-examples">
+        <a class="mh-ex" href="wasiyya.html" style="text-decoration:none">الوصية والثلث</a>
+        <a class="mh-ex" href="janaza.html" style="text-decoration:none">أحكام الجنازة</a>
+        <a class="mh-ex" href="qada.html" style="text-decoration:none">قضاء الفوائت</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/mirath-engine.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var M = null;
+  var KEY = 'zad_mirath_v1';
+  var AR = function (n) { return String(n).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }); };
+
+  var ICONS = {
+    husband: '🤵', wives: '👰', father: '👨', mother: '👩', grandfather: '👴',
+    gm_m: '👵', gm_f: '👵', sons: '👦', daughters: '👧', gsons: '🧒', gdaughters: '👧',
+    brothers: '🧑', sisters: '👩', pbrothers: '🧑', psisters: '👩',
+    mbrothers: '🧑', msisters: '👩', nephews: '🧑', pnephews: '🧑',
+    uncles: '👨', puncles: '👨', cousins: '🧑', pcousins: '🧑'
+  };
+  var GROUPS = [
+    { id: 'spouse', t: 'الزوجية' },
+    { id: 'usul', t: 'الأصول (الآباء والأجداد)' },
+    { id: 'children', t: 'الأبناء' },
+    { id: 'grand', t: 'أبناء الابن' },
+    { id: 'sib', t: 'الإخوة والأخوات' },
+    { id: 'ext', t: 'العصبة الأبعد (أبناء الإخوة والأعمام)' }
+  ];
+
+  var S = { c: {}, mad: 'hanafi', was: false, beq: 0, estate: 0, cur: 'ج.م' };
+
+  function load() {
+    try {
+      var v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (v && v.c) { S.c = Object.assign(S.c, v.c); S.mad = v.mad || 'hanafi'; S.was = !!v.was; S.beq = +v.beq || 0; S.estate = +v.estate || 0; S.cur = v.cur || 'ج.م'; }
+    } catch (e) {}
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+  function money(x) {
+    var v = Math.round(x * 100) / 100;
+    return v.toLocaleString('ar-EG', { maximumFractionDigits: 2 }) + ' ' + S.cur;
+  }
+
+  /* ── بناء قوائم الورثة ─────────────────────────────────────────── */
+  function build() {
+    var wrap = document.getElementById('mh-groups');
+    var html = '';
+    GROUPS.forEach(function (g) {
+      var list = M.HEIRS.filter(function (h) { return h.group === g.id; });
+      if (!list.length) return;
+      html += '<div class="mh-grp"><div class="mh-grp-h">' + g.t + '</div><div class="mh-hs">';
+      list.forEach(function (h) {
+        html += '<div class="mh-h" data-id="' + h.id + '" role="button" tabindex="0" aria-label="' + h.name + '">' +
+          '<span class="mh-hi">' + (ICONS[h.id] || '•') + '</span>' +
+          '<span class="mh-hn">' + h.name + '</span>' +
+          '<span class="mh-hc">٠</span>' +
+          '<button class="mh-dec" data-d="-1" aria-label="إنقاص عدد ' + h.name + '">−</button></div>';
+      });
+      html += '</div></div>';
+    });
+    wrap.innerHTML = html;
+
+    function bump(card, d) {
+      var id = card.getAttribute('data-id');
+      var max = (M.HEIRS.filter(function (x) { return x.id === id; })[0] || {}).max || 1;
+      S.c[id] = Math.max(0, Math.min(max, (S.c[id] || 0) + d));
+      if (id === 'husband' && S.c.husband) S.c.wives = 0;
+      if (id === 'wives' && S.c.wives) S.c.husband = 0;
+      save(); render();
+    }
+    wrap.addEventListener('click', function (e) {
+      var card = e.target.closest('.mh-h');
+      if (!card) return;
+      var dec = e.target.closest('.mh-dec');
+      bump(card, dec ? -1 : 1);
+    });
+    wrap.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var card = e.target.closest('.mh-h');
+      if (!card) return;
+      e.preventDefault(); bump(card, 1);
+    });
+  }
+
+  /* ── الخيارات ──────────────────────────────────────────────────── */
+  function buildOpts() {
+    var md = document.getElementById('mh-mad');
+    md.innerHTML = M.MADHHABS.map(function (m) {
+      return '<button data-mad="' + m.id + '">' + m.name + '</button>';
+    }).join('');
+    md.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-mad]');
+      if (!b) return;
+      S.mad = b.getAttribute('data-mad'); save(); render();
+    });
+
+    document.getElementById('mh-was').addEventListener('click', function () {
+      S.was = !S.was; save(); render();
+    });
+    document.getElementById('mh-beq').addEventListener('input', function () {
+      S.beq = Math.max(0, Math.min(33, +this.value || 0)); save(); render();
+    });
+    document.getElementById('mh-estate').addEventListener('input', function () {
+      S.estate = Math.max(0, +this.value || 0); save(); render();
+    });
+    document.getElementById('mh-cur').addEventListener('change', function () {
+      S.cur = this.value; save(); render();
+    });
+    document.getElementById('mh-examples').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ex]');
+      if (!b) return;
+      applyExample(b.getAttribute('data-ex'));
+    });
+    document.getElementById('mh-copy').addEventListener('click', copyResult);
+    document.getElementById('mh-share').addEventListener('click', shareResult);
+  }
+
+  function resetCounts() { M.HEIRS.forEach(function (h) { S.c[h.id] = 0; }); }
+  function applyExample(k) {
+    resetCounts(); S.was = false; S.beq = 0;
+    if (k === 'umari') { S.c.husband = 1; S.c.father = 1; S.c.mother = 1; }
+    if (k === 'awl') { S.c.husband = 1; S.c.sisters = 2; S.c.mother = 1; }
+    if (k === 'two') { S.c.daughters = 2; S.c.mother = 1; }
+    if (k === 'akdariyya') { S.c.husband = 1; S.c.mother = 1; S.c.grandfather = 1; S.c.sisters = 1; }
+    syncInputs(); save(); render();
+  }
+
+  function syncInputs() {
+    document.querySelectorAll('.mh-h').forEach(function (el) {
+      var id = el.getAttribute('data-id');
+      var n = S.c[id] || 0;
+      el.classList.toggle('on', n > 0);
+      el.querySelector('.mh-hc').textContent = n ? AR(n) : '٠';
+      el.setAttribute('aria-pressed', n > 0 ? 'true' : 'false');
+      el.title = n ? (n + ' — اضغط للزيادة، و− للإنقاص') : 'اضغط للإضافة';
+    });
+    document.getElementById('mh-was').classList.toggle('on', S.was);
+    document.getElementById('mh-was').setAttribute('aria-checked', S.was ? 'true' : 'false');
+    if (document.getElementById('mh-beq').value !== String(S.beq || '')) document.getElementById('mh-beq').value = S.beq || '';
+    if (document.getElementById('mh-estate').value !== String(S.estate || '')) document.getElementById('mh-estate').value = S.estate || '';
+    document.getElementById('mh-cur').value = S.cur;
+    document.querySelectorAll('#mh-mad button').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-mad') === S.mad);
+    });
+  }
+
+  /* ── العرض ─────────────────────────────────────────────────────── */
+  var last = null;
+
+  function render() {
+    syncInputs();
+    var input = {};
+    M.HEIRS.forEach(function (h) { input[h.id] = S.c[h.id] || 0; });
+    var r = M.calculate(input, { madhhab: S.mad, wasiyyaWajiba: S.was, bequest: S.beq });
+
+    last = r;
+    var count = r.shares.reduce(function (a, s) { return a + (s.heads || 1); }, 0) + r.blocked.length;
+
+    document.getElementById('ch-base').textContent = r.shares.length ? AR(r.base) : '—';
+    document.getElementById('ch-state').textContent = r.shares.length ? (r.awlTo ? 'عالت' : (r.radd ? 'ردّ' : 'مستقيمة')) : '—';
+    document.getElementById('ch-count').textContent = AR(count);
+    document.getElementById('mh-res-sub').textContent = r.shares.length ? (AR(r.base) + ' سهم · ' + M.MADHHABS.filter(function (m) { return m.id === S.mad; })[0].name) : '—';
+
+    var sum = document.getElementById('mh-sum');
+    var pills = [];
+    if (r.shares.length) {
+      pills.push('<span class="mh-pill">أصل المسألة <b>' + AR(r.base) + '</b></span>');
+      if (r.awlTo) pills.push('<span class="mh-pill gold">عول إلى <b>' + AR(r.awlTo) + '</b></span>');
+      if (r.radd) pills.push('<span class="mh-pill gold">ردّ الباقي</span>');
+      if (r.wasiyya) pills.push('<span class="mh-pill gold">وصية <b>' + M.fmt(r.wasiyya.frac) + '</b></span>');
+      pills.push('<span class="mh-pill">' + AR(r.shares.length) + ' وارث</span>');
+    }
+    sum.innerHTML = pills.join('');
+
+    var body = document.getElementById('mh-body');
+    if (!r.shares.length && !r.blocked.length) {
+      body.innerHTML = '<div class="mh-empty"><b>لم تُضِف ورثة بعد</b>ابدأ بإضافة الزوج/الزوجة أو الأبناء أو الوالدين، وستظهر القسمة هنا لحظيًا.</div>';
+      return;
+    }
+
+    var html = '';
+    if (r.wasiyya) {
+      html += '<div class="mh-notes" style="padding-top:12px"><b style="color:var(--green-deep)">' +
+        (S.was ? 'الوصية الواجبة' : 'الوصية') + ': ' + M.fmt(r.wasiyya.frac) + ' — ' + r.wasiyya.forWho +
+        '</b><br>تُخصم من التركة قبل القسمة، والباقي يُقسَّم على الورثة.</div>';
+    }
+    if (r.shares.length) {
+      html += '<table class="mh-tbl"><thead><tr><th>الوارث</th><th>الفرض</th><th>النسبة</th>' +
+        (S.estate > 0 ? '<th>المبلغ</th>' : '') + '</tr></thead><tbody>';
+      r.shares.slice().sort(function (a, b) { return b.pct - a.pct; }).forEach(function (s) {
+        var heads = s.heads || 1;
+        var each = heads > 1 ? ('<small>' + AR(heads) + ' × ' + M.fmt(s.each) + (S.estate > 0 ? ' = ' + money(S.estate * s.fracOfEstate / heads) : '') + '</small>') : '';
+        var note = s.why ? '<small>' + s.why + '</small>' : '';
+        html += '<tr><td class="who">' + s.name + note + '</td>' +
+          '<td class="fr">' + M.fmt(s.frac) + '</td>' +
+          '<td class="pc">' + AR(s.pct) + '٪' + each + '</td>' +
+          (S.estate > 0 ? '<td class="amt">' + money(S.estate * s.fracOfEstate) + '</td>' : '') +
+          '</tr>';
+      });
+      html += '</tbody></table>';
+    }
+    if (r.blocked.length) {
+      html += '<div class="mh-blocked"><h4>محجوبون</h4><ul>' + r.blocked.map(function (b) {
+        return '<li><strong>' + b.name + '</strong> — ' + b.why + '</li>';
+      }).join('') + '</ul></div>';
+    }
+    if (r.notes.length) {
+      html += '<div class="mh-notes"><ul>' + r.notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></div>';
+    }
+    body.innerHTML = html;
+  }
+
+  /* ── نسخ / مشاركة ──────────────────────────────────────────────── */
+  function resultText() {
+    if (!last || !last.shares.length) return 'لم تُحسب مسألة بعد — زاد';
+    var lines = ['قسمة الميراث — ' + M.MADHHABS.filter(function (m) { return m.id === S.mad; })[0].name,
+      'أصل المسألة: ' + AR(last.base) + (last.awlTo ? ' (عول إلى ' + AR(last.awlTo) + ')' : ''),
+      ''];
+    last.shares.forEach(function (s) {
+      lines.push('• ' + s.name + ': ' + M.fmt(s.frac) + ' (' + AR(s.pct) + '٪)' + (S.estate > 0 ? ' = ' + money(S.estate * s.fracOfEstate) : ''));
+    });
+    if (last.wasiyya) lines.push('', 'الوصية: ' + M.fmt(last.wasiyya.frac) + ' — ' + last.wasiyya.forWho);
+    if (last.blocked.length) lines.push('', 'المحجوبون: ' + last.blocked.map(function (b) { return b.name; }).join('، '));
+    lines.push('', '— حساب زاد (استرشادي)');
+    return lines.join('\n');
+  }
+  function copyResult() {
+    var t = resultText();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function () { toast('نُسخت النتيجة'); }, function () { fallbackCopy(t); });
+    } else fallbackCopy(t);
+  }
+  function fallbackCopy(t) {
+    var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('نُسخت النتيجة'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  function shareResult() {
+    var t = resultText();
+    if (navigator.share) navigator.share({ title: 'قسمة الميراث — زاد', text: t }).catch(function () {});
+    else copyResult();
+  }
+  function toast(m) {
+    var t = document.getElementById('mh-toast');
+    if (!t) {
+      t = document.createElement('div'); t.id = 'mh-toast';
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(14px);background:#0e3b2e;color:#fff;padding:11px 20px;border-radius:12px;font-size:12.5px;font-weight:700;z-index:9999;opacity:0;transition:.25s;box-shadow:0 12px 30px -12px rgba(0,0,0,.5)';
+      document.body.appendChild(t);
+    }
+    t.textContent = m; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(t._h); t._h = setTimeout(function () { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(14px)'; }, 2200);
+  }
+
+  function boot() {
+    M = window.Mirath;
+    if (!M) return;
+    M.HEIRS.forEach(function (h) { S.c[h.id] = 0; });
+    load(); build(); buildOpts(); render();
+    window.mirathUI = { render: render, state: S };
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+</body>
+</html>

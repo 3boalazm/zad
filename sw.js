@@ -41,7 +41,8 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261022-contrast-r24';
+const CACHE_STATIC = 'zad-20261022-polish-r28';
+const CACHE_AUDIO  = 'zad-quran-audio-v1'; /* تلاوة: تُحفظ كما هي (opaque مسموح) */
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -56,6 +57,9 @@ const PRECACHE = [
   './icons/icon-192.svg', './icons/icon-512.svg',
   /* core JS */
   './js/font-scale.js', /* R6: مقياس الخط الموحّد — تحمّله كل صفحة قبل أول رسم */
+  './js/quran-store.js', './js/quran-reader.js', './js/quran-audio.js',
+  './js/data/quran/surahs.json', './js/data/quran/juz/01.json',
+  './fonts/amiri-quran.woff2', './mushaf-quran.html',
   './js/app.min.js', './js/adhkar-azkar.min.js', './js/ghars-stories.min.js', './js/diagnostics.min.js', './js/storage.min.js', './js/calendar.min.js',
   /* P1-2: محرك المواقيت مُوطَّن محليًا بدل cdn.jsdelivr.net (المدرج في BYPASS
      أدناه، فكان يرفض تخزينه ويموت الحساب أوفلاين). 15 KB فقط.
@@ -90,6 +94,10 @@ const PRECACHE = [
   './barnamaj.html',                                /* الوجهة الفعلية لاختصار "ورد اليوم" و redirect صفحة worship.html */
   './mushaf-quran.html', './js/quran-module.min.js',    /* قارئ المصحف: الصفحة نفسها + رسائل الخطأ المدمجة فيها أفضل من fallback الـ SW العام */
   './zakat.html', './js/ui/zakat-engine.js', './zakat-ahkam.html', './zakat-anwa.html',
+  /* ── T22: الفقه اللحظي (ميراث · وصية · جنازة · قضاء · سفر · مسلم جديد) ── */
+  './css/fiqh.css', './js/mirath-engine.js',
+  './mirath.html', './wasiyya.html', './janaza.html', './qada.html', './musafir.html', './new-muslim.html',
+  './zakat-2026.html', './wird.html', './js/wird-companion.js', './js/khatma-share.js', './js/hifz-srs.js', './js/net-ledger.js', './js/web-fonts.js', './js/iqama.js',
   './odhiya.html', './js/ui/hajj-now.js',
   './manasik.html', './arafah.html', './js/audio-manager.min.js', './hasad.html', './sadaqah.html',
   './arafah-dua.html', './hikayat-hajj.html',
@@ -161,11 +169,11 @@ self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
-        keys.filter(k => k !== CACHE_STATIC).map(k => caches.delete(k))
+        keys.filter(k => k !== CACHE_STATIC && k !== CACHE_AUDIO).map(k => caches.delete(k))  /* لا تمسح التلاوة المحمّلة */
       ))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ includeUncontrolled: true }))
-      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20261019-no-welcome' })))
+      .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED', ver: '20261022-quran-r27' })))
   );
 });
 
@@ -186,6 +194,30 @@ function fetchWithTimeout(request, timeout) {
 /* ── استقبال أمر التفعيل الفوري من الصفحة ── */
 self.addEventListener('message', e => {
   if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+
+  /* تحميل صوت صفحة كاملة للاستماع بلا إنترنت.
+     الصفحة تطلب، والـSW هو اللي ينزّل (no-cors) ويخزّن — لأن fetch من
+     الصفحة لملف صوت على نطاق تاني محتاج CORS، والـ<audio> مش محتاجه. */
+  if (e.data && e.data.type === 'cache-audio' && Array.isArray(e.data.urls)) {
+    const urls = e.data.urls.slice(0, 120);
+    const port = e.source;
+    let done = 0;
+    Promise.all(urls.map(u => caches.open(CACHE_AUDIO).then(c => c.match(u).then(hit => {
+      if (hit) return 1;
+      return fetch(u, { mode: 'no-cors' })
+        .then(res => c.put(u, res).then(() => 1))
+        .catch(() => 0);
+    })).catch(() => 0).then(r => {
+      done++;
+      if (port && port.postMessage) {
+        try { port.postMessage({ type: 'cache-audio-progress', done, total: urls.length }); } catch (err) {}
+      }
+      return r;
+    }))).then(results => {
+      const ok = results.reduce((a, b) => a + b, 0);
+      if (port && port.postMessage) port.postMessage({ type: 'cache-audio-done', ok, total: urls.length });
+    });
+  }
 });
 
 /* ── P1-7: النقر على إشعار مواقيت الصلاة ─────────────────────────────────────
@@ -222,6 +254,42 @@ self.addEventListener('fetch', e => {
   if (!url.startsWith('http')) return;
   if (e.request.method !== 'GET') return;   /* لا تتدخّل في POST */
   if (bypass(url)) return;
+
+  /* بيانات القرآن والتفسير → Cache First دائمًا.
+     ملفات ثابتة لا تتغيّر أبدًا (نصّ عثماني + تفسير ميسّر)، وتكرار تحميلها
+     على شبكة ضعيفة كان سيجعل القراءة تتقطّع — وهي بالضبط الحالة اللي
+     المستخدم بيفتح فيها المصحف. الكاش هنا هو «التحميل للاستخدام أوفلاين». */
+  if (/\/js\/data\/(quran|tafsir)\//.test(url)) {
+    e.respondWith(
+      caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+        if (res && res.status === 200) {
+          const clone = res.clone();
+          caches.open(CACHE_STATIC).then(c => c.put(e.request, clone)).catch(() => {});
+        }
+        return res;
+      }))
+    );
+    return;
+  }
+
+  /* ══ تلاوة القرآن ══
+     الوسم الصوتي (<audio>) لا يحتاج CORS، والاستجابة قد تكون opaque؛ لذلك
+     nosemgrep: لا نتحقّق من status ولا نقرأ الجسم — نخزّنها كما هي ونعيدها.
+     بهذا تعمل التلاوة بلا إنترنت بعد أول سماع. */
+  if (/everyayah\.com|cdn\.islamic\.network/.test(url)) {
+    e.respondWith(
+      caches.open(CACHE_AUDIO).then(c => c.match(e.request).then(hit => {
+        if (hit) return hit;
+        return fetch(e.request).then(res => {
+          if (res && (res.status === 200 || res.type === 'opaque')) {
+            c.put(e.request, res.clone()).catch(() => {});
+          }
+          return res;
+        }).catch(() => Response.error());
+      }))
+    );
+    return;
+  }
 
   /* الصور والخطوط → Cache First (نادراً ما تتغيّر) */
   const isMedia = /\.(png|jpg|jpeg|svg|gif|webp|woff2?|mp4|mp3|otf|ttf)/i.test(url);

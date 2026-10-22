@@ -1,0 +1,128 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   زاد — نظام تصميم موحّد لصفحات الفقه واللحظات
+   (الجنازة · قضاء الفوائت · السفر · المسلم الجديد · الوصية)
+   يعتمد على متغيّرات الموقع نفسها (style.min.css) فيتبع الثيمات الثلاثة.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── الغلاف ─────────────────────────────────────────────────────────── */
+.fq-hero{background:linear-gradient(135deg,#0e3b2e 0%,#15503d 58%,#7c5f1b 135%);border-radius:22px;padding:30px 26px 26px;color:#fff;position:relative;overflow:hidden;margin-bottom:18px;box-shadow:0 18px 50px -18px rgba(14,59,46,.55)}
+.fq-hero::after{content:attr(data-icon);position:absolute;top:12px;left:22px;font-size:56px;opacity:.13;line-height:1}
+.fq-eyebrow{font-size:11px;color:#e6c97a;letter-spacing:3px;font-weight:700;margin-bottom:8px}
+.fq-title{font-size:27px;font-weight:900;line-height:1.28;margin:0 0 8px;font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif;color:#fff}
+.fq-sub{font-size:13.5px;color:rgba(255,255,255,.85);line-height:1.85;max-width:620px;margin:0}
+.fq-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.fq-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(230,201,122,.35);border-radius:99px;padding:6px 13px;font-size:12px;font-weight:700;color:#f6ecd2;backdrop-filter:blur(4px)}
+.fq-chip b{color:#fff}
+
+/* ── تخطيط ──────────────────────────────────────────────────────────── */
+.fq-wrap{max-width:920px;margin:0 auto}
+.fq-sec{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:20px 18px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.fq-sec>h2{display:flex;align-items:center;gap:9px;font-size:16.5px;font-weight:800;color:var(--green-deep);margin:0 0 12px;font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif;scroll-margin-top:90px}
+html[data-theme="dark"] .fq-sec>h2,html[data-theme="oled"] .fq-sec>h2{color:var(--sys-green)}
+.fq-sec>h2::before{content:"";width:5px;height:18px;border-radius:3px;background:linear-gradient(180deg,var(--gold),var(--green-soft));flex:0 0 auto}
+.fq-sec h3{font-size:13.5px;font-weight:800;color:var(--ink);margin:16px 0 7px;display:flex;align-items:center;gap:7px}
+.fq-sec h3 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--green-pale);color:var(--green-deep);font-size:11px;font-weight:800;flex:0 0 auto}
+html[data-theme="dark"] .fq-sec h3 .n,html[data-theme="oled"] .fq-sec h3 .n{background:#0e2a1e;color:var(--sys-green)}
+.fq-sec p{font-size:13px;line-height:2;color:var(--ink);margin:0 0 9px}
+.fq-sec p.mut{color:var(--muted);font-size:12px;line-height:1.85}
+.fq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.fq-card{background:var(--sand);border:1px solid var(--border);border-radius:13px;padding:12px 13px}
+.fq-card b{display:block;font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.fq-card small{font-size:11.5px;color:var(--muted);line-height:1.75;display:block}
+a.fq-card{display:block;text-decoration:none;color:inherit;transition:.16s}
+a.fq-card:hover{border-color:var(--green-soft);background:var(--green-pale)}
+html[data-theme="dark"] a.fq-card:hover,html[data-theme="oled"] a.fq-card:hover{background:#0e2a1e;border-color:#1e4433}
+
+/* ── الخطوات المرقّمة ───────────────────────────────────────────────── */
+.fq-steps{list-style:none;margin:0;padding:0;position:relative}
+.fq-steps li{position:relative;padding:0 44px 18px 0;border-inline-start:2px dashed rgba(201,161,74,.35);margin-inline-start:15px}
+.fq-steps li:last-child{border-inline-start-color:transparent;padding-bottom:4px}
+.fq-steps li::before{content:attr(data-n);position:absolute;inset-inline-start:-17px;top:-2px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--green-deep),var(--green-mid,#1a5d47));color:#fff;font-size:12.5px;font-weight:800;box-shadow:0 6px 14px -8px rgba(14,59,46,.9)}
+html[data-theme="dark"] .fq-steps li::before,html[data-theme="oled"] .fq-steps li::before{background:var(--sys-green);color:#06251b}
+.fq-steps b{display:block;font-size:13.5px;color:var(--ink);font-weight:800;margin-bottom:3px}
+.fq-steps span{display:block;font-size:12.5px;color:var(--muted);line-height:1.9}
+
+/* ── تنبيهات ────────────────────────────────────────────────────────── */
+.fq-note,.fq-warn,.fq-ok{display:flex;gap:10px;border-radius:13px;padding:11px 14px;font-size:12px;line-height:1.85;margin:10px 0}
+.fq-note{background:rgba(201,161,74,.1);border:1px solid rgba(201,161,74,.32);color:#6b5316}
+.fq-warn{background:rgba(168,68,47,.08);border:1px solid rgba(168,68,47,.28);color:#8f3a27}
+.fq-ok{background:var(--green-pale);border:1px solid rgba(42,122,95,.24);color:var(--green-deep)}
+html[data-theme="dark"] .fq-note,html[data-theme="oled"] .fq-note{background:#26200f;border-color:#4a3d1c;color:#e6c97a}
+html[data-theme="dark"] .fq-warn,html[data-theme="oled"] .fq-warn{background:#2a1512;border-color:#5c2e26;color:#ff9a80}
+html[data-theme="dark"] .fq-ok,html[data-theme="oled"] .fq-ok{background:#0e2a1e;border-color:#1e4433;color:var(--sys-green)}
+.fq-note b,.fq-warn b,.fq-ok b{font-weight:800}
+
+/* ── اقتباس / دعاء ──────────────────────────────────────────────────── */
+.fq-dua{background:linear-gradient(180deg,rgba(201,161,74,.08),rgba(201,161,74,.02));border:1px solid rgba(201,161,74,.3);border-radius:14px;padding:14px 16px;margin:10px 0}
+.fq-dua p{font-family:'Amiri','Traditional Arabic',serif;font-size:16px;line-height:2.1;color:var(--ink);margin:0 0 5px}
+.fq-dua small{display:block;font-size:10.5px;color:var(--muted);font-weight:700}
+.fq-ayah{font-family:'Amiri Quran','Amiri',serif;font-size:17px;line-height:2.2;color:var(--green-deep);text-align:center;padding:6px 4px}
+html[data-theme="dark"] .fq-ayah,html[data-theme="oled"] .fq-ayah{color:var(--sys-green)}
+
+/* ── أكورديون ───────────────────────────────────────────────────────── */
+.fq-acc{border:1px solid var(--border);border-radius:13px;background:var(--sand);margin-bottom:8px;overflow:hidden}
+.fq-acc summary{cursor:pointer;padding:12px 14px;font-size:12.5px;font-weight:800;color:var(--ink);list-style:none;display:flex;align-items:center;gap:9px}
+.fq-acc summary::-webkit-details-marker{display:none}
+.fq-acc summary::before{content:"›";font-size:17px;color:var(--gold);transition:.2s;line-height:1;transform:rotate(90deg);font-weight:800}
+.fq-acc[open] summary::before{transform:rotate(-90deg)}
+.fq-acc .in{padding:0 14px 13px;font-size:12.5px;color:var(--muted);line-height:1.95}
+.fq-acc .in p{margin:0 0 8px}
+
+/* ── جدول ───────────────────────────────────────────────────────────── */
+.fq-table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.fq-table th{text-align:start;font-size:10.5px;color:var(--muted);font-weight:800;padding:8px 10px;border-bottom:1.5px solid var(--border);white-space:nowrap}
+.fq-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--ink);line-height:1.7;vertical-align:top}
+.fq-table tr:last-child td{border-bottom:none}
+.fq-table td b{color:var(--green-deep);font-weight:800}
+html[data-theme="dark"] .fq-table td b,html[data-theme="oled"] .fq-table td b{color:var(--sys-green)}
+
+/* ── أزرار ──────────────────────────────────────────────────────────── */
+.fq-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;border-radius:11px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:.16s;text-decoration:none}
+.fq-btn:hover{border-color:var(--green-soft);background:var(--green-pale)}
+.fq-btn.solid{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+.fq-btn.solid:hover{filter:brightness(1.08)}
+html[data-theme="dark"] .fq-btn.solid,html[data-theme="oled"] .fq-btn.solid{background:var(--sys-green);border-color:var(--sys-green);color:#06251b}
+.fq-btn.ghost{background:transparent}
+.fq-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* ── فهرس داخلي ─────────────────────────────────────────────────────── */
+.fq-toc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.fq-toc a{font-size:11px;font-weight:700;color:var(--muted);text-decoration:none;padding:6px 11px;border-radius:99px;border:1px solid var(--border);background:var(--card);transition:.15s}
+.fq-toc a:hover{color:var(--green-deep);border-color:var(--green-soft);background:var(--green-pale)}
+
+/* ── شارة / عدّاد ───────────────────────────────────────────────────── */
+.fq-badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 7px;border-radius:8px;background:var(--gold-pale,#fbf5e4);color:#8a6a1f;font-size:11px;font-weight:800}
+html[data-theme="dark"] .fq-badge,html[data-theme="oled"] .fq-badge{background:#26200f;color:#e6c97a}
+
+html[data-theme="dark"] .fq-hero,html[data-theme="oled"] .fq-hero{box-shadow:0 18px 50px -20px #000}
+@media print{.sidebar,.topbar,.fq-toc,.fq-actions,.side-foot{display:none!important}.fq-hero{background:#fff!important;color:#000!important;box-shadow:none}.fq-hero *{color:#000!important}.fq-sec{box-shadow:none;break-inside:avoid}}
+
+/* ── القراءة أولًا: لا أزرار عائمة فوق النص ───────────────────────────
+   كان شريط التكبير وزرّ الأوامر يغطّيان أزرار «قضيت» في عدّاد الفوائت
+   على الهاتف. صفحات الفقه للقراءة والعمل المباشر، فتُخفى هنا (نفس ما
+   تفعله mushaf-quran.html مع زرّ الأوامر). */
+#zad-cmd-fab,.zad-tkbr-fab{display:none!important}
+
+/* ── الهاتف ─────────────────────────────────────────────────────────── */
+.fq-wrap{padding-bottom:26px}
+@media (max-width:560px){
+  .fq-hero{padding:22px 17px 20px;border-radius:18px;margin-bottom:14px}
+  .fq-hero::after{font-size:44px;top:10px;left:14px}
+  .fq-title{font-size:21.5px;line-height:1.34;margin-bottom:7px}
+  .fq-eyebrow{font-size:10px;letter-spacing:2px;margin-bottom:6px}
+  .fq-sub{font-size:12.5px;line-height:1.9}
+  .fq-chips{gap:6px;margin-top:13px}
+  .fq-chip{padding:5px 11px;font-size:11px}
+  .fq-sec{padding:16px 13px;border-radius:15px}
+  .fq-sec>h2{font-size:15px;margin-bottom:10px}
+  .fq-sec p{font-size:12.5px;line-height:1.95}
+  .fq-grid{grid-template-columns:1fr}
+  .fq-steps li{padding-inline-end:38px;margin-inline-start:13px}
+  .fq-steps li::before{width:28px;height:28px;inset-inline-start:-15px;font-size:11.5px}
+  .fq-steps b{font-size:13px}
+  .fq-steps span{font-size:12px;line-height:1.85}
+  .fq-dua p{font-size:15px;line-height:2}
+  .fq-table{font-size:11.5px}
+  .fq-table th,.fq-table td{padding:7px 7px}
+  .fq-btn{padding:9px 13px;font-size:11.5px}
+}

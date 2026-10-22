@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>الجنازة — من الاحتضار إلى الدفن | زاد</title>
+<meta name="description" content="دليل عملي كامل لأحكام الجنازة: الاحتضار، الغسل، التكفين، صلاة الجنازة، الدفن، العزاء، وأدعية مأثورة — بلا إنترنت.">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<link rel="stylesheet" href="css/fiqh.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+</style>
+<script src="js/net-ledger.js" defer></script>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">أحكام الجنازة من الاحتضار إلى الدفن</h1>
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">أحكام <span>الجنازة</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fq-wrap">
+      <section class="fq-hero" data-icon="🕊️">
+        <div class="fq-eyebrow">أحكام ومواساة</div>
+        <h2 class="fq-title">من الاحتضار إلى الدفن… خطوةً بخطوة</h2>
+        <p class="fq-sub">ما يُقال عند الاحتضار، وكيف يُغسَّل ويُكفَّن، وصلاة الجنازة بتكبيراتها وأدعيتها، والدفن والعزاء، وأحكام الشهيد والسقط والمفقود — مرتّبة لتُقرأ في اللحظة التي تحتاجها، وتعمل بلا إنترنت.</p>
+        <div class="fq-chips"><span class="fq-chip">٧ مراحل</span><span class="fq-chip">أدعية مأثورة</span><span class="fq-chip">أحكام خاصة</span></div>
+      </section>
+
+      <nav class="fq-toc" aria-label="فهرس الصفحة">
+        <a href="#ihtidar">الاحتضار</a><a href="#ghusl">الغسل</a><a href="#kafan">التكفين</a>
+        <a href="#salat">صلاة الجنازة</a><a href="#dafn">الدفن</a><a href="#aza">العزاء</a>
+        <a href="#khasa">أحكام خاصة</a><a href="#dua">أدعية</a>
+      </nav>
+
+      <section class="fq-sec" id="ihtidar">
+        <h2>١ — عند الاحتضار</h2>
+        <p>يُستحبّ توجيه المحتضر إلى القبلة، وتلقينه الشهادة بلطف دون إلحاح، والدعاء له بالثبات. قال ﷺ: «لقّنوا موتاكم لا إله إلا الله».</p>
+        <ol class="fq-steps">
+          <li data-n="١"><b>التلقين بلطف</b><span>قُل عنده «لا إله إلا الله» مرّةً، فإن تكلّم بها فلا تُكرّر عليه حتى يحتاج.</span></li>
+          <li data-n="٢"><b>الدعاء له</b><span>«اللهم اغفر له وارحمه وثبّته عند السؤال» — والدعاء في هذه اللحظة مستجاب.</span></li>
+          <li data-n="٣"><b>تغميض العينين وشدّ الفك</b><span>يُغمض عينيه ويربط فكّه بعصابة عريضة، ويُغطّى بثوب.</span></li>
+          <li data-n="٤"><b>تخفيف المؤونة</b><span>يُسرَّع في تجهيزه، ويُترك عنده من يذكّره بالخير، ويُمنع البكاء بصوتٍ عالٍ والنياحة.</span></li>
+        </ol>
+        <div class="fq-dua">
+          <p>«إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا»</p>
+          <small>دعاء المصيبة — صحيح مسلم</small>
+        </div>
+        <div class="fq-note">من مات له ميت فليقل: «الحمد لله الذي جعل المصيبة في غير ديني»، وليستقبل العزاء بصبرٍ واحتساب.</div>
+      </section>
+
+      <section class="fq-sec" id="ghusl">
+        <h2>٢ — غسل الميت</h2>
+        <p>غسل الميت فرض كفاية على المسلمين. يُقدَّم في الغسل الأقرب فالأقرب من الرجال، وأولى الناس به من أوصى له الميت، ثم الأب، ثم الجدّ، ثم الابن، ثم ابن الابن، ثم الأخ الشقيق… وللمرأة من النساء كذلك.</p>
+        <ol class="fq-steps">
+          <li data-n="١"><b>الستر والنية</b><span>يُوضع على سرير أو لوح، ويُستر ما بين السرة والركبة، وينوي الغاسل القربة.</span></li>
+          <li data-n="٢"><b>إزالة الأذى</b><span>يُنظَّف ما خرج من أذى، ويُلفّ خرقة على يده للتنظيف دون مباشرة.</span></li>
+          <li data-n="٣"><b>الوضوء</b><span>يُوضَّأ الميت وضوء الصلاة دون مضمضة ولا استنشاق.</span></li>
+          <li data-n="٤"><b>غسل الرأس والوجه</b><span>بماء وسدر، ثم يُمشَّط شعره بلطف.</span></li>
+          <li data-n="٥"><b>الشقّ الأيمن ثم الأيسر</b><span>يُغسل الشقّ الأيمن من جسمه ثم الأيسر، ثلاثًا أو أكثر حتى ينقى.</span></li>
+          <li data-n="٦"><b>الختام بالكافور</b><span>يُجعل في الغسلة الأخيرة كافور وطيب، ويُجفَّف بثوب.</span></li>
+        </ol>
+        <div class="fq-grid">
+          <div class="fq-card"><b>الزوج يغسل زوجته</b><small>يجوز للزوج غسل زوجته، وللزوجة غسل زوجها عند الجمهور ما دامت العدة.</small></div>
+          <div class="fq-card"><b>الشهيد لا يُغسَّل</b><small>شهيد المعركة يُكفَّن بثيابه بلا غسل ولا صلاة عند الجمهور.</small></div>
+          <div class="fq-card"><b>السقط</b><small>إن استهلّ صارخًا غُسّل وكُفّن وصُلّي عليه، وإلا غُسّل وكُفّن فقط عند بعضهم.</small></div>
+          <div class="fq-card"><b>المحرم</b><small>يُغسَّل المحرم بماء وسدر، ولا يُطيَّب، ويُكفَّن في إحرامه.</small></div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="kafan">
+        <h2>٣ — التكفين</h2>
+        <p>الكفن الواجب ما يستر الميت كلّه، والأفضل ثلاثة أثواب بيض للرجل (لفافتان وإزار)، وللمرأة خمسة عند الشافعية والحنابلة (إزار، خمار، قميص، لفافتان).</p>
+        <ol class="fq-steps">
+          <li data-n="١"><b>البسط والطيب</b><span>تُبسط الأكفان، ويُجعل الحنوط والطيب على مواضع السجود.</span></li>
+          <li data-n="٢"><b>اللفّ</b><span>يُلفّ الميت باللفافة العليا ثم التي تحتها، مع إدخال الزائد عند الرأس والقدمين.</span></li>
+          <li data-n="٣"><b>الشدّ</b><span>يُشدّ بشريطٍ لا يُعقَد عقدة، حتى لا يُنبش القبر لأخذه.</span></li>
+        </ol>
+        <div class="fq-note">الأفضل أن تكون الأكفان من القطن الأبيض، ولا يُسرف في الثمن؛ فالسُّنة البياض والاعتدال.</div>
+      </section>
+
+      <section class="fq-sec" id="salat">
+        <h2>٤ — صلاة الجنازة</h2>
+        <p>فرض كفاية، تُصلّى قائمًا بلا ركوع ولا سجود، وأركانها أربع تكبيرات: يقرأ بعد الأولى الفاتحة، ويصلّي على النبي ﷺ بعد الثانية (الصلاة الإبراهيمية)، ويدعو للميت بعد الثالثة، ثم يكبّر الرابعة ويسلّم.</p>
+        <div class="fq-dua">
+          <p>«اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ، وَعَافِهِ وَاعْفُ عَنْهُ، وَأَكْرِمْ نُزُلَهُ، وَوَسِّعْ مُدْخَلَهُ، وَاغْسِلْهُ بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ، وَنَقِّهِ مِنَ الْخَطَايَا كَمَا يُنَقَّى الثَّوْبُ الْأَبْيَضُ مِنَ الدَّنَسِ، وَأَبْدِلْهُ دَارًا خَيْرًا مِنْ دَارِهِ، وَأَهْلًا خَيْرًا مِنْ أَهْلِهِ، وَأَدْخِلْهُ الْجَنَّةَ، وَأَعِذْهُ مِنْ عَذَابِ الْقَبْرِ وَمِنْ عَذَابِ النَّارِ»</p>
+          <small>دعاء صلاة الجنازة — صحيح مسلم</small>
+        </div>
+        <div class="fq-grid">
+          <div class="fq-card"><b>مكانها</b><small>المسجد أو المُصلّى أو عند القبر؛ والأفضل أن تُصلّى قبل الدفن.</small></div>
+          <div class="fq-card"><b>الموضع</b><small>يُقف الإمام عند صدر الرجل وعند وسط المرأة.</small></div>
+          <div class="fq-card"><b>من فاتته تكبيرة</b><small>يقضيها ما لم يسلّم الإمام، فإن سلّم فقد فاتته الصلاة وله أن يصلّي منفردًا عند بعضهم.</small></div>
+          <div class="fq-card"><b>الغائب</b><small>تُصلّى صلاة الغائب على من مات في بلدٍ آخر ولم يُصلَّ عليه فيه.</small></div>
+        </div>
+        <h3><span class="n">☝</span> على الطفل والسقط</h3>
+        <p>يُصلّى على الطفل إذا استهلّ صارخًا، ويُدعى لوالديه بالعافية والبركة، ولا يُشتكى من أجله.</p>
+      </section>
+
+      <section class="fq-sec" id="dafn">
+        <h2>٥ — حمل الجنازة والدفن</h2>
+        <ol class="fq-steps">
+          <li data-n="١"><b>الإسراع بها</b><span>قال ﷺ: «أسرعوا بالجنازة» — ولا يُشتدّ المشي إسراعًا يُخلّ بالوقار.</span></li>
+          <li data-n="٢"><b>اللحد</b><span>الأفضل حفر اللحد (شقّ في جانب القبر)؛ ويُجوز الشقّ في الأرض الرخوة.</span></li>
+          <li data-n="٣"><b>الإنزال</b><span>يُوضع الميت على شقّه الأيمن مستقبلًا القبلة، ويُحلّ الشدّ عن رأسه.</span></li>
+          <li data-n="٤"><b>الردم</b><span>يُردم القبر ويُرفع قدر شبر، ويُرشّ بالماء، ويُوضع عليه حجر علامة.</span></li>
+          <li data-n="٥"><b>الدعاء</b><span>يقف المشيّعون قليلًا يدعون له، ويسألون الله له الثبات.</span></li>
+        </ol>
+        <div class="fq-warn">يُحرَّم النبش والتمثيل بالميت، ويُحرَّم البناء على القبور وتجصيصها وإسراجها على الراجح، ويُحرَّم نقل الموتى من بلدٍ لبلدٍ لغير ضرورة أو وصية معتبرة.</div>
+        <div class="fq-note">التلقين بعد الدفن: مسألةٌ فيها خلاف؛ استحبّه بعضهم ولم يثبت به حديث صحيح مرفوع. والأولى الدعاء له، فقد كان النبي ﷺ إذا فرغ من الدفن قال: «استغفروا لأخيكم واسألوا الله له الثبات».</div>
+      </section>
+
+      <section class="fq-sec" id="aza">
+        <h2>٦ — العزاء</h2>
+        <p>التعزية سُنّة، وأفضل ألفاظها ما ورد: «إن لله ما أخذ، وله ما أعطى، وكل شيء عنده بأجل مسمّى» — تُقال مرةً عند المصيبة أو عند الدفن، ولا تُكرّر كلما لقيته.</p>
+        <div class="fq-grid">
+          <div class="fq-card"><b>مدة العزاء</b><small>ثلاثة أيام، وما بعدها فلا يُجدَّد الحزن ولا يُلزم أهل الميت باستقبال المعزّين.</small></div>
+          <div class="fq-card"><b>الطعام</b><small>يُستحبّ لأقارب الميت وجيرانه أن يصنعوا لأهل الميت طعامًا؛ أما صنع أهل الميت طعامًا للناس فمكروه عند كثير من أهل العلم.</small></div>
+          <div class="fq-card"><b>ما يُنهى عنه</b><small>النياحة، والصراخ، ولطم الخدود، وشقّ الثياب، ووصف الميت بما ليس فيه.</small></div>
+          <div class="fq-card"><b>عزاء غير المسلم</b><small>تُشرع مواساته بالكلام الطيب، ولا يُدعى له بالمغفرة في الآخرة.</small></div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="khasa">
+        <h2>٧ — أحكام خاصة</h2>
+        <details class="fq-acc"><summary>الشهيد في المعركة</summary><div class="in"><p>لا يُغسَّل ولا يُكفَّن ولا يُصلّى عليه عند الجمهور، ويُدفن بثيابه، ويُصلّى عليه إن كان قد صلّى عليه قبل موته.</p></div></details>
+        <details class="fq-acc"><summary>الغريق والحريق والهدم</summary><div class="in"><p>يُغسَّلون ويُكفَّنون ويُصلّى عليهم؛ فليسوا شهداء معركةٍ في أحكام الدنيا عند الجمهور، وإن كان لهم أجر الشهادة.</p></div></details>
+        <details class="fq-acc"><summary>السقط</summary><div class="in"><p>ما تمّ له أربعة أشهر ونُفخت فيه الروح: يُغسَّل ويُكفَّن ويُصلّى عليه؛ وما دونه يُلفّ في خرقة ويُدفن بلا صلاة.</p></div></details>
+        <details class="fq-acc"><summary>المفقود</summary><div class="in"><p>يُنتظر حتى يُحكم بموته، ثم يُصلّى عليه صلاة الغائب. ولا يُقسَّم ماله إلا بعد الحكم.</p></div></details>
+        <details class="fq-acc"><summary>من مات في بلدٍ بعيد</summary><div class="in"><p>يُغسَّل ويُكفَّن ويُدفن حيث مات إن تعذّر نقله؛ ولا يُنقل لغير غرضٍ صحيح، ويُصلّى عليه صلاة الغائب في بلده.</p></div></details>
+        <details class="fq-acc"><summary>الدفن الجماعي</summary><div class="in"><p>عند الضرورة يُدفن عدة موتى في قبر واحد، ويُقدَّم الأفضل والأقرأ للقرآن، ويُجعل بين كل اثنين حاجز من تراب.</p></div></details>
+        <details class="fq-acc"><summary>الصلاة على الميت بعد الدفن</summary><div class="in"><p>تُشرع الصلاة عليه بعد دفنه إن لم يُصلَّ عليه، أو لمن فاتته الصلاة، ما لم يتغيّر الميت.</p></div></details>
+      </section>
+
+      <section class="fq-sec" id="dua">
+        <h2>أدعية مأثورة</h2>
+        <div class="fq-dua"><p>«اللَّهُمَّ اغْفِرْ لِحَيِّنَا وَمَيِّتِنَا، وَشَاهِدِنَا وَغَائِبِنَا، وَصَغِيرِنَا وَكَبِيرِنَا، وَذَكَرِنَا وَأُنْثَانَا»</p><small>دعاء الجنازة — أبو داود والترمذي</small></div>
+        <div class="fq-dua"><p>«السَّلَامُ عَلَيْكُمْ أَهْلَ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ، نَسْأَلُ اللَّهَ لَنَا وَلَكُمُ الْعَافِيَةَ»</p><small>دعاء زيارة القبور — صحيح مسلم</small></div>
+        <div class="fq-dua"><p>«إِنَّ لِلَّهِ مَا أَخَذَ، وَلَهُ مَا أَعْطَى، وَكُلُّ شَيْءٍ عِنْدَهُ بِأَجَلٍ مُسَمَّى… فَلْتَحْتَسِبْ وَلْتَصْبِرْ»</p><small>تعزية — صحيح البخاري</small></div>
+      </section>
+
+      <section class="fq-sec">
+        <h2>اقرأ أيضًا</h2>
+        <div class="fq-grid">
+        <a class="fq-card" href="mirath.html"><b>حاسبة الميراث</b><small>توزيع التركة بعد الدفن</small></a>
+        <a class="fq-card" href="wasiyya.html"><b>الوصية والثلث</b><small>ما قبل القسمة</small></a>
+        <a class="fq-card" href="new-muslim.html"><b>المسلم الجديد</b><small>بداية الطريق</small></a>
+        </div>
+      </section>
+
+      <div class="fq-note" style="margin-bottom:18px">هذا الدليل للتذكير العام، والمسائل الخلافية ذُكر فيها الراجح عند الجمهور مع التنبيه. في الحالات الواقعية يُرجع إلى أهل العلم في بلدك، وإلى الجهات المختصة في إجراءات الدفن.</div>
+    </div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+</body>
+</html>

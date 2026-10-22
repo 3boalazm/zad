@@ -37,6 +37,7 @@
     { href: 'mushaf.html',       icon: '📖', label: 'الورد اليومي',      section: 'sec-quran' },
     { href: 'mushaf-quran.html', icon: '🕋', label: 'المصحف الشريف',   section: 'sec-quran' },
     { href: 'tasmee.html',       icon: '🎙️', label: 'تسميع القرآن',     section: 'sec-quran' },
+    { href: 'wird.html',         icon: '🤝', label: 'رفيق الورد',        section: 'sec-quran' },
     { href: 'Quran-radio.HTML',  icon: '📻', label: 'إذاعات القرآن',   section: 'sec-quran' },
     { href: 'ai.html',           icon: '🤖', label: 'تدبّر بالذكاء',    section: 'sec-quran' },
     { href: 'takbeer.html',      icon: '📿', label: 'المسبحة',          section: 'sec-quran' },
@@ -64,6 +65,15 @@
     { href: 'zakat-ahkam.html',  icon: '📋', label: 'أحكام الزكاة',          section: 'sec-tools' },
     { href: 'zakat-anwa.html',   icon: '📊', label: 'أنواع الزكاة وحسابها',  section: 'sec-tools' },
     { href: 'sadaqah.html',      icon: '💚', label: 'الصدقة والبر',     section: 'sec-tools' },
+
+    { sep: 'الفقه واللحظات', id: 'sec-fiqh' },
+    { href: 'mirath.html',       icon: '🧬', label: 'حاسبة الميراث',    section: 'sec-fiqh' },
+    { href: 'zakat-2026.html',   icon: '🪙', label: 'زكاة المال الجديد', section: 'sec-fiqh' },
+    { href: 'wasiyya.html',      icon: '📜', label: 'الوصية والثلث',    section: 'sec-fiqh' },
+    { href: 'janaza.html',       icon: '🕊️', label: 'أحكام الجنازة',    section: 'sec-fiqh' },
+    { href: 'qada.html',         icon: '⏳', label: 'قضاء الفوائت',     section: 'sec-fiqh' },
+    { href: 'musafir.html',      icon: '🧭', label: 'أحكام السفر',      section: 'sec-fiqh' },
+    { href: 'new-muslim.html',   icon: '🌱', label: 'المسلم الجديد',    section: 'sec-fiqh' },
 
     { sep: 'المكتبة والمعرفة', id: 'sec-learn' },
     { href: 'playlist.html',        icon: '🎵', label: 'المكتبة الصوتية', section: 'sec-learn' },
@@ -127,7 +137,7 @@
 
   /* ── كل الأقسام (بالترتيب الظاهر) ───────────────────────────────────── */
   const ALL_SECTIONS = [
-    'sec-prayer','sec-quran','sec-dhikr','sec-hajj','sec-tools','sec-learn',
+    'sec-prayer','sec-quran','sec-dhikr','sec-hajj','sec-tools','sec-fiqh','sec-learn',
     'sec-kids','sec-kids-play','sec-kids-lab','sec-track','sec-family',
     'sec-special','sec-settings'
   ];

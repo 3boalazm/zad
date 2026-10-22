@@ -8,9 +8,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
 <title>الورد اليومي — زاد</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
 <link rel="stylesheet" href="css/style.min.css">
 <link rel="stylesheet" href="css/premium-ui.min.css">
 <style>
@@ -247,6 +246,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
       (window.vaq = window.vaq || []).push(arguments);
     };
   </script>
+<script src="js/net-ledger.js" defer></script>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -307,6 +307,12 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
       </div>
       <div class="mh-arrow">←</div>
     </a>
+
+    <!-- ══ الورد الذكي: مراجعة متباعدة ═══════════════════════ -->
+    <div id="zad-srs-mount"></div>
+
+    <!-- ══ الختمة العائلية ═══════════════════════════════════ -->
+    <div id="zad-khatma-mount"></div>
 
     <!-- ══ Mushaf Stats ═══════════════════════════════════════ -->
     <div class="mushaf-stats">
@@ -510,7 +516,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
   <script src="js/quran-module.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
-  <script src="js/share-button.min.js" defer></script>
+    <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>
@@ -990,6 +996,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if(grid){ grid.addEventListener('click',onClick); renderHifz30(); }
   });
   window.addEventListener('focus',renderHifz30);
+})();
+</script>
+
+<script src="js/hifz-srs.js" defer></script>
+<script>
+(function(){
+  function boot(){
+    var el = document.getElementById('zad-srs-mount');
+    if (el && window.ZadSRS) window.ZadSRS.mount(el, { limit: 4 });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+
+<script src="js/khatma-share.js" defer></script>
+<script>
+(function(){
+  function boot(){
+    var el = document.getElementById('zad-khatma-mount');
+    if (el && window.ZadKhatma) window.ZadKhatma.mount(el, { withGroup: false });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 </script>
 </body>

@@ -8,9 +8,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
 <title>صندوق الخصوصية · زاد</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
 <link rel="stylesheet" href="css/style.min.css">
 <link rel="stylesheet" href="css/premium-ui.min.css">
 <style>
@@ -83,7 +82,7 @@ html[data-theme="dark"] .pv-unknown,html[data-theme="oled"] .pv-unknown{backgrou
       <div class="tb-right">
       </div>
     </div>
-<div class="pv-hero"><h1>🛡️ صندوق الخصوصية</h1><p>عباداتُك أمانةٌ في جهازك. لا إعلانات، لا تتبّع، لا حسابَ مطلوب — وأنت المتحكّم الكامل في بياناتك. هنا ترى بالضبط ما يعرفه التطبيق، وتُصدّر بياناتك أو تمحوها متى شئت.</p></div><h2 class="section-title">🔍 أدواتُ التحكم ببياناتك</h2><div class="pv-tool"><h3>📊 تقرير الشفافية اليومي</h3><p>«ماذا يعرف التطبيق عنّي؟» — اضغط لترى كلَّ ما هو محفوظٌ على جهازك.</p>
+<div class="pv-hero"><h1>🛡️ صندوق الخصوصية</h1><p>عباداتُك أمانةٌ في جهازك. لا إعلانات، لا تتبّع، لا حسابَ مطلوب — وأنت المتحكّم الكامل في بياناتك. هنا ترى بالضبط ما يعرفه التطبيق، وتُصدّر بياناتك أو تمحوها متى شئت.</p></div><h2 class="section-title">🔍 أدواتُ التحكم ببياناتك</h2><div class="pv-tool" id="net-ledger-tool" style="border-color:rgba(201,161,74,.45)"><h3>📡 سجل الشبكة الحيّ</h3><p>كل طلب خارجي يخرج من هذا التطبيق — مكتوبٌ هنا بسببه وما يُرسِله، ومَن شاء أوقفه. لا يوجد تطبيق ديني آخر يعرض هذا؛ ونحن نعتبره شرطًا للثقة لا ميزةً إضافية. السجل يبقى على جهازك، ويُحتفظ بآخر ٢٠٠ سطر — بلا أي نصٍّ كتبتَه.</p><div id="net-ledger"></div><div class="nl-removed" style="margin-top:12px;font-size:11.5px;line-height:1.9;color:var(--muted);background:rgba(168,68,47,.07);border:1px solid rgba(168,68,47,.22);border-radius:11px;padding:10px 13px"><b style="color:#8f3a27">أُزيل نهائيًا:</b> كان التطبيق يستخدم <code>ipapi.co</code> لتقدير مدينتك من عنوان IP عند فشل GPS — أي أنه كان يرسل IPك لطرفٍ ثالث لمجرّد أنك رفضت إذن الموقع. حُذف السطر من الكود، وصار البديل: اختيار المدينة يدويًا (أدق، وأصدق).</div></div><div class="pv-tool"><h3>📊 تقرير الشفافية اليومي</h3><p>«ماذا يعرف التطبيق عنّي؟» — اضغط لترى كلَّ ما هو محفوظٌ على جهازك.</p>
 <button class="pv-btn green" id="pv-report-btn">اعرف ماذا نعرف عنك</button>
 <div class="pv-report" id="pv-report"></div>
 <div class="pv-unknown">🔒 <b>ما لا نعرفه عنك إطلاقاً:</b> اسمُك الحقيقي · بريدُك · رقمُ هاتفك · موقعُك التاريخي · تفاصيلُ عباداتك. كلُّ ذلك يبقى على جهازك فقط.</div></div><div class="pv-tool"><h3>📤 تصدير البيانات</h3><p>احتفظ بنسخةٍ من كلِّ بياناتك (المهام، التكبيرات، الورد، الأوسمة) — تُولَّد محلياً ولا تمرّ بخادم.</p>
@@ -154,6 +153,7 @@ html[data-theme="dark"] .pv-unknown,html[data-theme="oled"] .pv-unknown{backgrou
   <script src="js/design-system.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
+  <script src="js/net-ledger.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
@@ -172,5 +172,15 @@ html[data-theme="dark"] .pv-unknown,html[data-theme="oled"] .pv-unknown{backgrou
 <script src="js/vendor/gsap.min.js" defer></script>
 <script src="js/vendor/canvas-confetti.min.js" defer></script>
 <script src="animations.min.js" defer></script>
+
+<script>
+(function(){
+  function boot(){
+    var el=document.getElementById('net-ledger');
+    if(el && window.ZadNet) window.ZadNet.render(el);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
 </body>
 </html>
