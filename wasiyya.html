@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>الوصية — الثلث والوصية الواجبة | زاد</title>
+<meta name="description" content="أحكام الوصية في الإسلام: الثلث، الوصية لغير الوارث، الوصية الواجبة في القانون المصري، ونموذج وصية جاهز مع حاسبة.">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<link rel="stylesheet" href="css/fiqh.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+.ws-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.ws-form label{display:block;font-size:10.5px;color:var(--muted);font-weight:800;margin-bottom:5px}
+.ws-form input,.ws-form select{width:100%;padding:10px 11px;border:1.5px solid var(--border);border-radius:10px;background:var(--sand);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700}
+.ws-form input:focus,.ws-form select:focus{outline:none;border-color:var(--green-soft);background:var(--card)}
+.ws-out{margin-top:12px;border:1.5px solid rgba(201,161,74,.4);background:rgba(201,161,74,.08);border-radius:14px;padding:13px 15px}
+.ws-out b{display:block;font-size:14px;font-weight:900;color:#8a6a1f;margin-bottom:3px}
+html[data-theme="dark"] .ws-out b,html[data-theme="oled"] .ws-out b{color:#e6c97a}
+.ws-out small{font-size:11.5px;color:var(--muted);line-height:1.8;display:block}
+.ws-tpl{white-space:pre-wrap;font-family:'Amiri',serif;font-size:14.5px;line-height:2.1;background:var(--sand);border:1px dashed var(--border);border-radius:12px;padding:14px 16px;color:var(--ink);margin:10px 0}
+
+@media (max-width:560px){
+  .ws-form{grid-template-columns:1fr}
+  .ws-out b{font-size:13px}
+  .ws-tpl{font-size:13.5px;line-height:2.05;padding:12px 13px}
+}
+</style>
+<script src="js/net-ledger.js" defer></script>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">أحكام الوصية والوصية الواجبة</h1>
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">الوصية <span>والثلث</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fq-wrap">
+      <section class="fq-hero" data-icon="📜">
+        <div class="fq-eyebrow">ما بعد العمر</div>
+        <h2 class="fq-title">وصيّةٌ تُكتب اليوم… وتُقرأ بعد سنين</h2>
+        <p class="fq-sub">الثلث الذي تملكه بعد موتك، وشروط الوصية الصحيحة، والوصية الواجبة لأبناء الابن المتوفى في القانون المصري، ونموذجٌ جاهز تكتبه وتنسخه — مع حاسبةٍ للثلث.</p>
+        <div class="fq-chips"><span class="fq-chip">الثلث</span><span class="fq-chip">الوصية الواجبة</span><span class="fq-chip">نموذج جاهز</span></div>
+      </section>
+
+      <nav class="fq-toc"><a href="#rule">الحكم والشروط</a><a href="#calc">حاسبة الثلث</a><a href="#wajiba">الوصية الواجبة</a><a href="#tmpl">نموذج</a><a href="#mistakes">أخطاء شائعة</a></nav>
+
+      <section class="fq-sec" id="rule">
+        <h2>١ — الحكم والشروط</h2>
+        <p>الوصية مستحبّة، وأفضل ما يوصي به المرء ثلث ماله في وجوه البرّ، وقد قال ﷺ لسعد: «الثلث، والثلث كثير» — أي كافٍ وكثير في الوصية.</p>
+        <div class="fq-grid">
+          <div class="fq-card"><b>الحدّ: الثلث</b><small>لا تنفذ وصية بأكثر من ثلث التركة إلا بإجازة الورثة البالغين الراشدين بعد الموت.</small></div>
+          <div class="fq-card"><b>لغير الوارث</b><small>الوصية لوارثٍ لا تنفذ إلا بإجازة بقية الورثة؛ لئلا يُفضي ذلك إلى حرمان أحد.</small></div>
+          <div class="fq-card"><b>التركة بعد الدين</b><small>تُقدَّم الديون ثم الوصية ثم الميراث. فلا وصية قبل سداد دينٍ ثابت.</small></div>
+          <div class="fq-card"><b>الرجوع عنها</b><small>يجوز لك تغيير وصيتك أو إلغاؤها ما دمت حيًّا؛ ولا تلزم إلا بعد الموت.</small></div>
+        </div>
+        <div class="fq-note"><b>الوصية والورثة:</b> لا يجوز أن تقصد بالوصية حرمان وارثٍ من حقه أو الإضرار به؛ فذلك من الجور الذي نهى عنه الشرع.</div>
+      </section>
+
+      <section class="fq-sec" id="calc">
+        <h2>٢ — حاسبة الثلث</h2>
+        <div class="ws-form">
+          <div><label>قيمة التركة</label><input type="number" id="ws-estate" min="0" step="1000" placeholder="مثال: 500000" value="500000"></div>
+          <div><label>نسبة الوصية (حتى ٣٣٪)</label><input type="number" id="ws-pct" min="0" max="33" step="1" value="33"></div>
+          <div><label>العملة</label><select id="ws-cur"><option>ج.م</option><option>ر.س</option><option>د.إ</option><option>$</option><option>€</option></select></div>
+        </div>
+        <div class="ws-out">
+          <b id="ws-amount">—</b>
+          <small id="ws-rest">—</small>
+        </div>
+        <div class="fq-actions">
+          <a class="fq-btn solid" href="mirath.html">🧬 توزيع الميراث</a>
+          <button class="fq-btn" id="ws-use">استخدام في النموذج</button>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="wajiba">
+        <h2>٣ — الوصية الواجبة (القانون المصري)</h2>
+        <p>أوجبت <b>المادة ٧٦</b> من <b>قانون الوصية المصري رقم ٧١ لسنة ١٩٤٦</b> وصيةً لأولاد الابن الذين مات أبوهم في حياة جدّهم أو جدّتهم، وللطبقة الأولى من أولاد البنت، بشرط ألّا يكونوا وراثين.</p>
+        <div class="fq-grid">
+          <div class="fq-card"><b>مقدارها</b><small>مثل نصيب أبيهم لو كان حيًّا عند الموت، بحدٍّ أقصى الثلث. فإن كان الميت أعطاهم بغير عوض أقل من ذلك كُمّلت الوصية، وإن أعطاهم مثلها أو أكثر سقطت.</small></div>
+          <div class="fq-card"><b>من يستحقّها</b><small>أولاد الابن مهما نزلوا ما دام النسب من جهة الذكور، والطبقة الأولى فقط من أولاد البنت (أبناؤها وبناتها)، لا أولاد أولادهم. والشرط ألّا يكونوا وراثين.</small></div>
+          <div class="fq-card"><b>كيف تُقسم</b><small>تُقسَّم قسمة الميراث: للذكر مثل حظ الأنثيين، ويحجب كلُّ أصلٍ فرعَه دون فرع غيره، وتُخصم من التركة قبل قسمتها على الورثة.</small></div>
+          <div class="fq-card"><b>مثال</b><small>توفي جدّ عن ابنٍ حي وبنت، وله أحفاد من ابنٍ متوفى. يُقدَّر نصيب ابنهم كأنه حي، ثم يُخصم بحدّ الثلث، والباقي يُقسم على الورثة الأحياء.</small></div>
+        </div>
+        <div class="fq-note">تطبيقُ الوصية الواجبة متاحٌ في <a href="mirath.html" style="color:inherit;font-weight:800">حاسبة الميراث</a> بمفتاحٍ مستقل، وتظهر قيمتها قبل قسمة الباقي.</div>
+      </section>
+
+      <section class="fq-sec" id="tmpl">
+        <h2>٤ — نموذج وصية</h2>
+        <div class="ws-tpl" id="ws-template">بسم الله الرحمن الرحيم
+
+أوصي أنا ____________________، وأنا بكامل أهليتي، بأن تُخرج من تركتي بعد سداد ديوني ومصروف تجهيزي: نسبة ____________________ من مالي، تُصرف في ____________________________________________________ .
+
+وإن مات أحد الورثة قبل قسمة التركة فوصيتي أن يُعمل بأحكام الوصية الواجبة وفق القانون.
+
+وهذه وصيتي، وأشهد الله عليها، وأشهد عليها من يقرؤها.
+
+الموصي: ____________________
+التاريخ: ____________________
+الشهود: ____________________</div>
+        <div class="fq-actions">
+          <button class="fq-btn solid" id="ws-copy">📋 نسخ النموذج</button>
+          <button class="fq-btn" onclick="window.print()">🖨️ طباعة</button>
+        </div>
+        <div class="fq-warn">النموذج استرشادي لا يُغني عن استشارة محامٍ أو كاتب عدل، وعن توثيقه بالطريقة المعتمدة في بلدك.</div>
+      </section>
+
+      <section class="fq-sec" id="mistakes">
+        <h2>٥ — أخطاء شائعة</h2>
+        <details class="fq-acc"><summary>تأخير الوصية «حتى يكبر الأولاد»</summary><div class="in"><p>الموت لا يستأذن. اكتب وصيتك ولو بسيطة، وعدّلها كلما تغيّرت أحوالك.</p></div></details>
+        <details class="fq-acc"><summary>الوصية لوارثٍ بلا إجازة</summary><div class="in"><p>لا تنفذ إلا بإجازة بقية الورثة؛ فالنبي ﷺ قال: «لا وصية لوارث».</p></div></details>
+        <details class="fq-acc"><summary>الوصية بأكثر من الثلث</summary><div class="in"><p>الزائد لا ينفذ إلا بإجازة الورثة بعد الموت. احسب ثلثك بدقة قبل الكتابة.</p></div></details>
+        <details class="fq-acc"><summary>إغفال الدَّين</summary><div class="in"><p>الدَّين مقدَّم على الوصية والميراث، ولو لم يُذكر في الوصية. وكتابة الديون في الوثيقة تحفظ الحقوق.</p></div></details>
+        <details class="fq-acc"><summary>الوصية بمالٍ لا تملكه</summary><div class="in"><p>لا تنفذ الوصية بمالٍ مملوكٍ لغيرك، ولا بما يزيد على التركة وقت الموت.</p></div></details>
+      </section>
+
+      <section class="fq-sec">
+        <h2>اقرأ أيضًا</h2>
+        <div class="fq-grid">
+        <a class="fq-card" href="mirath.html"><b>حاسبة الميراث</b><small>الكسور والعول والحجب</small></a>
+        <a class="fq-card" href="janaza.html"><b>أحكام الجنازة</b><small>ما يُقال ويُفعل</small></a>
+        <a class="fq-card" href="qada.html"><b>⏳ قضاء الفوائت</b><small>لأن الحق لا يسقط</small></a>
+        </div>
+      </section>
+
+      <div class="fq-note" style="margin-bottom:18px">«كُتِبَ عَلَيْكُمْ إِذَا حَضَرَ أَحَدَكُمُ الْمَوْتُ إِن تَرَكَ خَيْرًا الْوَصِيَّةُ لِلْوَالِدَيْنِ وَالْأَقْرَبِينَ بِالْمَعْرُوفِ» — والوصية بالمعروف هي التي لا تجور على وارث ولا تُجاوز الثلث.</div>
+    </div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var AR = function (n) { return String(n).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }); };
+  function money(v) { return v.toLocaleString('ar-EG', { maximumFractionDigits: 2 }); }
+  function calc() {
+    var estEl = document.getElementById('ws-estate'), pctEl = document.getElementById('ws-pct');
+    var est = Math.max(0, +estEl.value || 0);
+    var rawPct = +pctEl.value || 0;
+    var pct = Math.max(0, Math.min(33, rawPct));
+    if (rawPct !== pct) pctEl.value = pct;   /* لا تعرض ٥٠ وتحتسب ٣٣ */
+    var cur = document.getElementById('ws-cur').value;
+    var amt = est * pct / 100;
+    document.getElementById('ws-amount').textContent = 'قيمة الوصية: ' + money(amt) + ' ' + cur;
+    document.getElementById('ws-rest').textContent = 'الباقي للميراث: ' + money(est - amt) + ' ' + cur +
+      (pct >= 33 ? ' — وهذا سقف الثلث المأذون به.' : ' — ويجوز لك رفعها إلى الثلث (٣٣٪).');
+  }
+  function boot() {
+    ['ws-estate', 'ws-pct', 'ws-cur'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', calc);
+      document.getElementById(id).addEventListener('change', calc);
+    });
+    calc();
+    document.getElementById('ws-use').addEventListener('click', function () {
+      var est = Math.max(0, +document.getElementById('ws-estate').value || 0);
+      var pct = Math.max(0, Math.min(33, +document.getElementById('ws-pct').value || 0));
+      var cur = document.getElementById('ws-cur').value;
+      var t = 'بسم الله الرحمن الرحيم\n\nأوصي أنا ____________________، وأنا بكامل أهليتي، بأن تُخرج من تركتي بعد سداد ديوني ومصروف تجهيزي مبلغ ' +
+        money(est * pct / 100) + ' ' + cur + ' (نسبة ' + AR(pct) + '٪ من التركة)، تُصرف في ____________________________________________________ .\n\n' +
+        'وإن مات أحد الورثة قبل قسمة التركة فوصيتي أن يُعمل بأحكام الوصية الواجبة وفق القانون.\n\nوهذه وصيتي، وأشهد الله عليها، وأشهد عليها من يقرؤها.\n\nالموصي: ____________________\nالتاريخ: ____________________\nالشهود: ____________________';
+      document.getElementById('ws-template').textContent = t;
+      document.getElementById('ws-template').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    document.getElementById('ws-copy').addEventListener('click', function () {
+      var t = document.getElementById('ws-template').textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, ok);
+      else ok();
+      function ok() {
+        var b = document.getElementById('ws-copy');
+        var old = b.textContent; b.textContent = '✓ نُسخ';
+        setTimeout(function () { b.textContent = old; }, 1800);
+      }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+</body>
+</html>

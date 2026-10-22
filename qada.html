@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>قضاء الفوائت — عدّاد وخطة | زاد</title>
+<meta name="description" content="احسب صلواتك الفائتة، وتابع قضاءها يومًا بيوم، بخطة واقعية وعدّاد محفوظ على جهازك — يعمل بلا إنترنت.">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<link rel="stylesheet" href="css/fiqh.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+.qd-ring{position:relative;width:132px;height:132px;margin:0 auto 6px;display:grid;place-items:center}
+.qd-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.qd-ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.qd-ring .bg{stroke:var(--border)}
+.qd-ring .fg{stroke:url(#qdgrad);transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+.qd-ring b{font-size:26px;font-weight:900;color:var(--green-deep);font-variant-numeric:tabular-nums;line-height:1}
+html[data-theme="dark"] .qd-ring b,html[data-theme="oled"] .qd-ring b{color:var(--sys-green)}
+.qd-ring small{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-top:3px;text-align:center}
+
+.qd-rows{display:flex;flex-direction:column;gap:7px;margin-top:6px;max-width:600px}
+.qd-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1.5px solid var(--border);border-radius:12px;background:var(--sand)}
+.qd-row .nm{flex:1;min-width:0;font-size:12.5px;font-weight:800;color:var(--ink)}
+.qd-row .nm small{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+.qd-inp{width:74px;padding:7px 8px;border:1.5px solid var(--border);border-radius:9px;background:var(--card);color:var(--ink);font-family:inherit;font-size:13px;font-weight:800;text-align:center;-moz-appearance:textfield}
+.qd-inp::-webkit-outer-spin-button,.qd-inp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.qd-inp:focus{outline:none;border-color:var(--green-soft)}
+.qd-do{width:38px;height:34px;border-radius:9px;border:1.5px solid var(--gold);background:var(--gold-pale,#fbf5e4);color:#8a6a1f;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:.15s;flex:0 0 auto}
+html[data-theme="dark"] .qd-do,html[data-theme="oled"] .qd-do{background:#26200f;color:#e6c97a;border-color:#6b5522}
+.qd-do:hover{filter:brightness(.97)}
+.qd-do:active{transform:scale(.94)}
+.qd-row .raw{font-size:10.5px;color:var(--muted);min-width:44px;text-align:end;font-weight:700}
+
+.qd-plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin-top:10px}
+.qd-stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 12px;text-align:center}
+.qd-stat b{display:block;font-size:19px;font-weight:900;color:var(--green-deep);font-variant-numeric:tabular-nums}
+html[data-theme="dark"] .qd-stat b,html[data-theme="oled"] .qd-stat b{color:var(--sys-green)}
+.qd-stat small{font-size:10.5px;color:var(--muted);font-weight:700}
+.qd-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.qd-tools .fq-btn{flex:1;min-width:130px}
+.qd-est{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;align-items:end;margin-top:10px}
+.qd-est label{display:block;font-size:10.5px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.qd-est input{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;background:var(--sand);color:var(--ink);font-family:inherit;font-size:12.5px;font-weight:700;text-align:center;-moz-appearance:textfield}
+.qd-est input::-webkit-outer-spin-button,.qd-est input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.qd-tabs{display:flex;gap:6px;background:var(--sand);border:1px solid var(--border);border-radius:11px;padding:3px;margin-bottom:12px}
+.qd-tabs button{flex:1;border:none;background:none;padding:8px;border-radius:8px;font-family:inherit;font-size:11.5px;font-weight:800;color:var(--muted);cursor:pointer;transition:.15s}
+.qd-tabs button.on{background:var(--green-deep);color:#fff}
+html[data-theme="dark"] .qd-tabs button.on,html[data-theme="oled"] .qd-tabs button.on{background:var(--sys-green);color:#06251b}
+
+@media (max-width:560px){
+  .qd-plan{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .qd-stat{padding:9px 6px}
+  .qd-stat b{font-size:16px}
+  .qd-stat small{font-size:9px;line-height:1.5;display:block;margin-top:2px}
+  .qd-row{padding:8px 9px;gap:7px}
+  .qd-inp{width:62px}
+  .qd-do{width:36px;font-size:10.5px}
+  .qd-est{grid-template-columns:1fr 1fr}
+}
+</style>
+<script src="js/net-ledger.js" defer></script>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">قضاء الصلوات الفائتة</h1>
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">قضاء <span>الفوائت</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fq-wrap">
+      <section class="fq-hero" data-icon="⏳">
+        <div class="fq-eyebrow">دَينٌ لله</div>
+        <h2 class="fq-title">ما فات… يُقضى، ولا يُترك</h2>
+        <p class="fq-sub">عدّادٌ لصلواتك الفائتة يعيش على جهازك، وخطةٌ يومية واقعية تُنهي القضاء في مدة تعرفها مسبقًا. لا حساب، ولا إرسال، ولا حكمٍ عليك — فقط طريقٌ للرجوع.</p>
+        <div class="fq-chips"><span class="fq-chip">يُحفظ محليًا</span><span class="fq-chip">يعمل أوفلاين</span><span class="fq-chip">خطة يومية</span></div>
+      </section>
+
+      <nav class="fq-toc"><a href="#tracker">العدّاد</a><a href="#rules">أحكام القضاء</a><a href="#plan">خطة ٣٠ يومًا</a><a href="#fatwa">مسائل متكررة</a></nav>
+
+      <section class="fq-sec" id="tracker">
+        <h2>عدّاد الفوائت</h2>
+        <div class="qd-tabs" id="qd-tabs"><button data-tab="manual" class="on">إدخال يدوي</button><button data-tab="est">تقدير بالسنوات</button></div>
+
+        <div id="qd-manual">
+          <p class="mut">أدخل ما تعرف أنه فاتك من كل صلاة. لا أحد يطّلع على هذه الأرقام غيرك — كلها في ذاكرة متصفحك.</p>
+          <div class="qd-rows" id="qd-rows"></div>
+          <div class="qd-tools">
+            <button class="fq-btn solid" id="qd-save">💾 حفظ</button>
+            <button class="fq-btn ghost" id="qd-reset">↺ تصفير الكل</button>
+          </div>
+        </div>
+
+        <div id="qd-est" hidden>
+          <p class="mut">تقدير تقريبي: من سنة بلوغك إلى سنة التزامك، يومٌ واحد لكل صلاة في اليوم. عدِّله بعد ذلك يدويًا إن أردت.</p>
+          <div class="qd-est">
+            <div><label>سنة البلوغ</label><input type="number" id="qd-birth" placeholder="مثال: 2010" min="1930" max="2026"></div>
+            <div><label>سنة الالتزام</label><input type="number" id="qd-since" placeholder="مثال: 2023" min="1930" max="2026"></div>
+            <div><label>أيام الفوائت أسبوعيًا</label><input type="number" id="qd-skip" value="7" min="1" max="7"></div>
+            <div><button class="fq-btn solid" id="qd-calc" style="width:100%">احسب</button></div>
+          </div>
+          <div class="fq-note" style="margin-top:10px">لا تُرهق نفسك بالأرقام: القضاء واجبٌ على التراخي عند جمهور الفقهاء، والأهم أن تبدأ اليوم بخطةٍ تُطيقها.</div>
+        </div>
+      </section>
+
+      <section class="fq-sec">
+        <h2>تقدّمك</h2>
+        <div class="qd-ring" id="qd-ring">
+          <svg viewBox="0 0 132 132" aria-hidden="true">
+            <defs><linearGradient id="qdgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9a14a"/><stop offset="1" stop-color="#2a7a5f"/></linearGradient></defs>
+            <circle class="bg" cx="66" cy="66" r="56"></circle>
+            <circle class="fg" cx="66" cy="66" r="56" stroke-dasharray="351.86" stroke-dashoffset="351.86" id="qd-arc"></circle>
+          </svg>
+          <div><b id="qd-pct">٠٪</b><small>أُقضِي</small></div>
+        </div>
+        <div class="qd-plan">
+          <div class="qd-stat"><b id="qd-total">٠</b><small>إجمالي الفوائت</small></div>
+          <div class="qd-stat"><b id="qd-left">٠</b><small>المتبقي</small></div>
+          <div class="qd-stat"><b id="qd-done">٠</b><small>ما قضيته</small></div>
+        </div>
+        <div class="fq-grid" style="margin-top:10px">
+          <div class="fq-card"><b>خطتك اليومية</b><small id="qd-daily">حدّد عدد الفوائت التي تقضيها يوميًا لعرض المدة.</small></div>
+          <div class="fq-card"><b>نية القضاء</b><small>«نويت أن أصلي فرض الفجر قضاءً لله تعالى» — النية في القلب، والتسمية باللسان مستحبة.</small></div>
+        </div>
+        <div class="qd-est" style="margin-top:10px">
+          <div><label>كم فائتة تقضي في اليوم؟</label><input type="number" id="qd-perday" value="5" min="1" max="50"></div>
+          <div style="grid-column:span 2"><div class="fq-ok" id="qd-eta" style="margin:0">أدخل الأرقام لتحسب المدة.</div></div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="rules">
+        <h2>أحكام القضاء</h2>
+        <div class="fq-note"><b>الأصل:</b> «من نسي صلاةً أو نام عنها فكفّارتها أن يصليها إذا ذكرها» — مسلم. فالقضاء واجبٌ فورًا عند الجمهور في حقّ من تركها نسيانًا أو نومًا، وعلى التراخي عند من تركها عمدًا ثم تاب.</div>
+        <div class="fq-grid">
+          <div class="fq-card"><b>الترتيب</b><small>يُستحبّ قضاء الفوائت مرتّبة، فإن كثرت فبقدر ما يتيسّر، وتُقدَّم الفائتة على الحاضرة عند بعضهم.</small></div>
+          <div class="fq-card"><b>الجهر والإسرار</b><small>تُقضى الصلاة كما فُرضت: الجهرية جهرًا والإسرارية سرًّا، ولا يلزم مراعاة الوقت.</small></div>
+          <div class="fq-card"><b>الفوائت الكثيرة</b><small>يسقط الترتيب إن كثرت الفوائت عند الجمهور، ويبقى الأصل المبادرة بالقضاء.</small></div>
+          <div class="fq-card"><b>الصوم</b><small>من أفطر عمدًا لزمه القضاء والتوبة، ومن نسي أو مرض فالقضاء كذلك مع الفدية عند العجز الدائم.</small></div>
+        </div>
+        <details class="fq-acc"><summary>هل تُقضى السنن الرواتب؟</summary><div class="in"><p>الرواتب لا تُقضى على الراجح إلا ما ورد فيه دليل كسنة الفجر وركعتي الظهر بعد العصر لمن فاتته، والوتر يُقضى عند الحنفية والحنابلة.</p></div></details>
+        <details class="fq-acc"><summary>من ترك الصلاة عمدًا سنين</summary><div class="in"><p>الجمهور على وجوب القضاء مع التوبة والاستغفار، وهو قول مالك وأبي حنيفة وأحمد. والتوبة تجبّ ما قبلها في حقّ من أسلم أو تاب توبةً صادقة عند بعضهم، لكن الأحوط القضاء.</p></div></details>
+        <details class="fq-acc"><summary>هل يجب إخبار أحد؟</summary><div class="in"><p>لا. ستر الله عليك، ولا حاجة أن تُعلن ذنوبك؛ القضاء بينك وبين ربك.</p></div></details>
+      </section>
+
+      <section class="fq-sec" id="plan">
+        <h2>خطة ٣٠ يومًا</h2>
+        <ol class="fq-steps">
+          <li data-n="١"><b>الأسبوع الأول: عادة</b><span>مع كل صلاةٍ حاضرة، اقضِ واحدة من مثلها. لا تزد قبل أن تثبت.</span></li>
+          <li data-n="٢"><b>الأسبوع الثاني: وتيرة</b><span>زد فائتةً مع الفجر والعشاء — أهدأ الأوقات وأقلّها انشغالًا.</span></li>
+          <li data-n="٣"><b>الأسبوع الثالث: ثبات</b><span>اجعل لك وردًا ثابتًا بعد الفجر: ١٥ دقيقة = ٤ ركعات قضاء.</span></li>
+          <li data-n="٤"><b>الأسبوع الرابع: مراجعة</b><span>أعد حساب المتبقي، واكتب رقمًا واحدًا تراه يقلّ — هذا ما يثبّتك.</span></li>
+        </ol>
+        <div class="fq-ok">اجعل هدفك الوصول إلى صفرٍ في العدّاد، لا إلى عددٍ كبير في يوم واحد. القليل الدائم خيرٌ من الكثير المنقطع.</div>
+      </section>
+
+      <section class="fq-sec" id="fatwa">
+        <h2>مسائل متكررة</h2>
+        <details class="fq-acc"><summary>نسيت صلاة وأنا في الطريق</summary><div class="in"><p>صلِّها حيث تذكّرت إن أمكن، فإن كان في موضعٍ لا يصحّ فيه أو خشيتَ فوات جماعةٍ فانتظر، ثم اقضها.</p></div></details>
+        <details class="fq-acc"><summary>هل أصلي الفائتة جماعة؟</summary><div class="in"><p>نعم، تصحّ جماعة، ويقف الإمام والمأموم كما في الصلاة الحاضرة.</p></div></details>
+        <details class="fq-acc"><summary>عددٌ كبير لا أستطيع حصره</summary><div class="in"><p>اجتهد في التقدير حتى يغلب على ظنك، ثم اقضِ ما قدرت، وتُب إلى الله؛ ولا يُكلّف الله نفسًا إلا وسعها.</p></div></details>
+        <details class="fq-acc"><summary>هل يقضي المسافر والمريض؟</summary><div class="in"><p>المسافر يقضي ما أفطر في سفره من صيامٍ وما تركه من صلوات بالصورة التي كانت لازمة له.</p></div></details>
+      </section>
+
+      <section class="fq-sec">
+        <h2>اقرأ أيضًا</h2>
+        <div class="fq-grid">
+        <a class="fq-card" href="musafir.html"><b>أحكام السفر</b><small>قصر وجمع وتيمم</small></a>
+        <a class="fq-card" href="new-muslim.html"><b>المسلم الجديد</b><small>خطة ٣٠ يومًا</small></a>
+        <a class="fq-card" href="janaza.html"><b>أحكام الجنازة</b><small>من الاحتضار إلى الدفن</small></a>
+        </div>
+      </section>
+
+      <div class="fq-note" style="margin-bottom:18px">المسائل الفقهية المذكورة على قول الجمهور مع تنبيهٍ للخلاف. والله غفورٌ رحيم، «وأقم الصلاة لذكري».</div>
+    </div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var AR = function (n) { return String(n).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }); };
+  var KEY = 'zad_qada_v1';
+  var PRAYERS = [
+    { id: 'fajr', name: 'الفجر', sub: 'ركعتان جهرًا' },
+    { id: 'dhuhr', name: 'الظهر', sub: 'أربع ركعات سرًّا' },
+    { id: 'asr', name: 'العصر', sub: 'أربع ركعات سرًّا' },
+    { id: 'maghrib', name: 'المغرب', sub: 'ثلاث ركعات جهرًا' },
+    { id: 'isha', name: 'العشاء', sub: 'أربع ركعات جهرًا' }
+  ];
+  var S = { left: {}, done: 0, perDay: 5 };
+
+  function load() {
+    try {
+      var v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (v) { S.left = v.left || {}; S.done = +v.done || 0; S.perDay = +v.perDay || 5; }
+    } catch (e) {}
+    PRAYERS.forEach(function (p) { S.left[p.id] = Math.max(0, Math.round(+S.left[p.id] || 0)); });
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+  function buildRows() {
+    var wrap = document.getElementById('qd-rows');
+    wrap.innerHTML = PRAYERS.map(function (p) {
+      return '<div class="qd-row" data-id="' + p.id + '">' +
+        '<span class="nm">' + p.name + '<small>' + p.sub + '</small></span>' +
+        '<input class="qd-inp" type="number" min="0" inputmode="numeric" aria-label=" الفائت من ' + p.name + '" value="' + (S.left[p.id] || 0) + '">' +
+        '<button class="qd-do" data-go="1" aria-label="قضيت واحدة من ' + p.name + '">قضيت</button></div>';
+    }).join('');
+
+    wrap.addEventListener('input', function (e) {
+      var row = e.target.closest('.qd-row'); if (!row || !e.target.classList.contains('qd-inp')) return;
+      S.left[row.getAttribute('data-id')] = Math.max(0, Math.round(+e.target.value || 0));
+      save(); paint();
+    });
+    wrap.addEventListener('click', function (e) {
+      var b = e.target.closest('.qd-do'); if (!b) return;
+      var row = b.closest('.qd-row'); var id = row.getAttribute('data-id');
+      if (!S.left[id]) { toast('لا فائت من ' + row.querySelector('.nm').firstChild.textContent.trim()); return; }
+      S.left[id]--; S.done++;
+      row.querySelector('.qd-inp').value = S.left[id];
+      save(); paint();
+      b.animate ? b.animate([{ transform: 'scale(1)' }, { transform: 'scale(.86)' }, { transform: 'scale(1)' }], { duration: 220 }) : null;
+    });
+  }
+
+  function paint() {
+    var total = 0, left = 0;
+    PRAYERS.forEach(function (p) { left += S.left[p.id] || 0; });
+    total = left + S.done;
+    var pct = total ? Math.round(S.done / total * 100) : 0;
+    document.getElementById('qd-total').textContent = AR(total);
+    document.getElementById('qd-left').textContent = AR(left);
+    document.getElementById('qd-done').textContent = AR(S.done);
+    document.getElementById('qd-pct').textContent = AR(pct) + '٪';
+    var arc = document.getElementById('qd-arc');
+    var C = 2 * Math.PI * 56;
+    arc.style.strokeDashoffset = String(C * (1 - pct / 100));
+    var per = Math.max(1, S.perDay);
+    var days = left ? Math.ceil(left / per) : 0;
+    document.getElementById('qd-eta').textContent = left
+      ? ('بمعدّل ' + AR(per) + ' يوميًا: ' + AR(days) + ' يومًا، أي نحو ' + AR(Math.ceil(days / 30)) + ' شهرًا.')
+      : 'لا شيء متبقٍّ — تقبّل الله منك.';
+    document.getElementById('qd-daily').textContent = left
+      ? ('اقضِ ' + AR(per) + ' في اليوم؛ الفائت الأكبر عندك: ' + PRAYERS.slice().sort(function (a, b) { return (S.left[b.id] || 0) - (S.left[a.id] || 0); })[0].name + '.')
+      : 'العدّاد صفر — حافظ على الحاضر.';
+    document.getElementById('qd-perday').value = S.perDay;
+  }
+
+  function toast(m) {
+    var t = document.getElementById('qd-toast');
+    if (!t) {
+      t = document.createElement('div'); t.id = 'qd-toast';
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(14px);background:#0e3b2e;color:#fff;padding:11px 20px;border-radius:12px;font-size:12.5px;font-weight:700;z-index:9999;opacity:0;transition:.25s';
+      document.body.appendChild(t);
+    }
+    t.textContent = m; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(t._h); t._h = setTimeout(function () { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(14px)'; }, 2000);
+  }
+
+  function boot() {
+    load(); buildRows(); paint();
+
+    document.getElementById('qd-perday').addEventListener('input', function () {
+      S.perDay = Math.max(1, Math.min(50, +this.value || 1)); save(); paint();
+    });
+    document.getElementById('qd-save').addEventListener('click', function () { save(); toast('حُفظ العدد على جهازك'); });
+    document.getElementById('qd-reset').addEventListener('click', function () {
+      if (!confirm('هل تريد تصفير العدّاد بالكامل؟')) return;
+      S.left = {}; PRAYERS.forEach(function (p) { S.left[p.id] = 0; }); S.done = 0;
+      save(); document.getElementById('qd-rows').querySelectorAll('.qd-inp').forEach(function (i) { i.value = 0; }); paint();
+    });
+
+    var tabs = document.getElementById('qd-tabs');
+    tabs.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-tab]'); if (!b) return;
+      tabs.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      var est = b.getAttribute('data-tab') === 'est';
+      document.getElementById('qd-est').hidden = !est;
+      document.getElementById('qd-manual').hidden = est;
+    });
+
+    document.getElementById('qd-calc').addEventListener('click', function () {
+      var birth = +document.getElementById('qd-birth').value || 0;
+      var since = +document.getElementById('qd-since').value || 0;
+      var skip = Math.max(1, Math.min(7, +document.getElementById('qd-skip').value || 7));
+      var thisYear = new Date().getFullYear();
+      if (!birth || !since || since <= birth) { toast('أدخل سنتَي البلوغ والالتزام'); return; }
+      var days = Math.round((since - birth) * 365.25);
+      var per = Math.round(days * skip / 7);
+      if (per > 60000) per = 60000;
+      PRAYERS.forEach(function (p) { S.left[p.id] = per; });
+      save();
+      document.getElementById('qd-rows').querySelectorAll('.qd-inp').forEach(function (i, idx) { i.value = S.left[PRAYERS[idx].id]; });
+      paint();
+      document.getElementById('qd-tabs').querySelector('[data-tab="manual"]').click();
+      toast('قُدِّر لكل صلاة ' + AR(per) + ' فائتة — عدّلها كما تشاء');
+    });
+
+    window.qadaUI = { state: S, paint: paint };
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>المسلم الجديد — بداية الطريق | زاد</title>
+<meta name="description" content="دليل عملي لمن أسلم حديثًا: الشهادتان، الغسل، الوضوء، الصلوات الخمس، خطة ٣٠ يومًا، وأجوبة عن أكثر ما يُسأل عنه — بلا إنترنت.">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<link rel="stylesheet" href="css/fiqh.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+.nm-week{border:1px solid var(--border);border-radius:13px;background:var(--sand);margin-bottom:8px;overflow:hidden}
+.nm-week summary{cursor:pointer;padding:12px 14px;font-size:12.5px;font-weight:800;color:var(--ink);list-style:none;display:flex;align-items:center;gap:9px}
+.nm-week summary::-webkit-details-marker{display:none}
+.nm-week summary .t{flex:1}
+.nm-week summary .b{font-size:10px;color:var(--muted);font-weight:700;background:var(--card);border:1px solid var(--border);padding:3px 8px;border-radius:99px}
+.nm-week .in{padding:0 14px 13px;font-size:12.5px;color:var(--muted);line-height:1.95}
+.nm-week .in ul{margin:0;padding-inline-start:18px}
+.nm-week .in li{margin-bottom:5px}
+.nm-hi{display:flex;gap:10px;align-items:flex-start;background:linear-gradient(135deg,rgba(42,122,95,.1),rgba(201,161,74,.06));border:1px solid rgba(42,122,95,.2);border-radius:14px;padding:13px 15px;margin:10px 0}
+.nm-hi .i{font-size:22px;line-height:1}
+.nm-hi p{margin:0;font-size:12.5px;color:var(--ink);line-height:1.9}
+.nm-big{font-family:'Amiri',serif;font-size:21px;line-height:2;text-align:center;color:var(--green-deep);padding:8px}
+html[data-theme="dark"] .nm-big,html[data-theme="oled"] .nm-big{color:var(--sys-green)}
+</style>
+<script src="js/net-ledger.js" defer></script>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">دليل المسلم الجديد</h1>
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">المسلم <span>الجديد</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fq-wrap">
+      <section class="fq-hero" data-icon="🌱">
+        <div class="fq-eyebrow">بدايةٌ مباركة</div>
+        <h2 class="fq-title">خطوتك الأولى… ونحن معك في الباقي</h2>
+        <p class="fq-sub">أسلمتَ، فدخلتَ دينًا يُحبّك على قدر ما تقبل منه، ولا يُطالبك بكل شيء في يومٍ واحد. هذه خريطةٌ هادئة لأول ثلاثين يومًا: الشهادتان، الغسل، الوضوء، الصلوات الخمس، وما تحتاجه فعلًا — دون أن تُغرق نفسك.</p>
+        <div class="fq-chips"><span class="fq-chip">خطة ٣٠ يومًا</span><span class="fq-chip">أجوبة صريحة</span><span class="fq-chip">بلا ضغط</span></div>
+      </section>
+
+      <nav class="fq-toc"><a href="#first">الخطوة الأولى</a><a href="#week">أول أسبوع</a><a href="#learn">ما تتعلّمه</a><a href="#plan30">خطة ٣٠ يومًا</a><a href="#faq">أسئلة</a></nav>
+
+      <section class="fq-sec" id="first">
+        <h2>١ — الخطوة الأولى: الشهادتان</h2>
+        <p>الإسلام يبدأ بكلمتين تقولهما بقلبك ولسانك، ولا يحتاج إلى وسيط:</p>
+        <div class="fq-dua">
+          <p>أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ</p>
+          <small>معناها: لا معبود بحقٍّ إلا الله، ومحمد ﷺ عبده ورسوله الذي جاء بالدين.</small>
+        </div>
+        <div class="nm-hi"><span class="i">💚</span><p>لا تشعر أنك مطالَبٌ بأن تصير عالمًا قبل أن تبدأ. يكفيك أن تُصدّق وتعمل بما تعلم، وتتعلّم ما يمرّ عليك من وقتك.</p></div>
+        <h3><span class="n">١</span> الاغتسال</h3>
+        <p>يُستحبّ لمن أسلم أن يغتسل غسلًا كاملًا: ينوي ثم يعمّم الماء على بدنه كلّه، ويبدأ بميامينه. وإن لم يتيسّر فالتوبة وحدها كافية، والغسل سنّةٌ مؤكدة عند كثير من أهل العلم.</p>
+      </section>
+
+      <section class="fq-sec" id="week">
+        <h2>٢ — أول أسبوع: ثلاث عادات فقط</h2>
+        <ol class="fq-steps">
+          <li data-n="١"><b>الوضوء</b><span>نية، ثم يديك، مضمضة واستنشاق، وجهك، ذراعاك إلى المرفقين، رأسك، رجلاك إلى الكعبين — بالترتيب وبلا إسراف في الماء.</span></li>
+          <li data-n="٢"><b>الصلوات الخمس</b><span>ابدأ بالفرائض وحدها. لا تُحمّل نفسك السنن الآن. إن نسيت وقتًا فصلِّه فور تذكّرك.</span></li>
+          <li data-n="٣"><b>ذكرٌ قصير</b><span>«سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر» عشرًا في الصباح والمساء، يكفي للبداية.</span></li>
+        </ol>
+        <div class="fq-ok"><b>تذكير:</b> الصلاة لا تحتاج مسجدًا ولا عربية كاملة؛ تحتاج طهارةً ووقتًا ونيّة. وستتعلّم الأذكار تدريجيًا من داخل التطبيق.</div>
+        <div class="fq-dua"><p>«يَسِّرُوا وَلَا تُعَسِّرُوا، وَبَشِّرُوا وَلَا تُنَفِّرُوا»</p><small>صحيح البخاري</small></div>
+      </section>
+
+      <section class="fq-sec" id="learn">
+        <h2>٣ — ما يجب أن تتعلّمه (بهذا الترتيب)</h2>
+        <table class="fq-table">
+          <thead><tr><th>الأولوية</th><th>الموضوع</th><th>لماذا الآن؟</th></tr></thead>
+          <tbody>
+            <tr><td><b>١</b></td><td>الطهارة والصلاة</td><td>أول ما يُسأل عنه العبد؛ وبه تنتظم حياتك اليومية.</td></tr>
+            <tr><td><b>٢</b></td><td>أركان الإسلام والإيمان</td><td>تعرف أين أنت من الدين، وما المطلوب منك.</td></tr>
+            <tr><td><b>٣</b></td><td>الحلال والحرام الأساسي</td><td>المأكل والمشرب والكسب؛ وما يخصّك في يومك.</td></tr>
+            <tr><td><b>٤</b></td><td>الأخلاق</td><td>«إنما بُعثت لأتمّم مكارم الأخلاق» — وهي أثقل ما في الميزان.</td></tr>
+            <tr><td><b>٥</b></td><td>القرآن</td><td>اقرأ ولو آيةً كل يوم، واستمع للقراء؛ ولا تستعجل الختم.</td></tr>
+          </tbody>
+        </table>
+        <div class="fq-note">لا تبدأ بالخلافات الفقهية ولا بالجدال. ابدأ بما تحتاجه غدًا، واسأل من تثق بعلمه.</div>
+      </section>
+
+      <section class="fq-sec" id="plan30">
+        <h2>٤ — خطة ثلاثين يومًا</h2>
+        <details class="nm-week" open><summary><span class="t">الأسبوع الأول — الطهارة والصلاة</span><span class="b">٧ أيام</span></summary><div class="in"><ul><li>تعلّم الوضوء عمليًا مع كل صلاة.</li><li>صلِّ الخمس في وقتها مهما كانت قصيرة.</li><li>احفظ الفاتحة على مهل.</li></ul></div></details>
+        <details class="nm-week"><summary><span class="t">الأسبوع الثاني — أذكار اليوم</span><span class="b">٧ أيام</span></summary><div class="in"><ul><li>أذكار الصباح والمساء (من قسم الأذكار).</li><li>دعاء قبل الأكل وبعده، وقبل النوم.</li><li>اقرأ سورة قصيرة واستمع لمعناها.</li></ul></div></details>
+        <details class="nm-week"><summary><span class="t">الأسبوع الثالث — الزكاة والصيام</span><span class="b">٧ أيام</span></summary><div class="in"><ul><li>اعرف زكاة مالك إن بلغ النصاب وحال عليه الحول.</li><li>تدريبٌ على صيام يومٍ تطوّعًا إن استطعت.</li><li>صدقةٌ صغيرة كل يوم.</li></ul></div></details>
+        <details class="nm-week"><summary><span class="t">الأسبوع الرابع — الثبات والأسرة</span><span class="b">٧ أيام</span></summary><div class="in"><ul><li>ثبّت صلواتك الخمس دون تفويت.</li><li>تعلّم حقوق الوالدين وصلة الرحم ولو كانوا على غير دينك.</li><li>ابحث عن مجتمعٍ مسلمٍ محلي أو أونلاين صحبةً صالحة.</li></ul></div></details>
+        <div class="fq-ok">الهدف ليس «إتمام الخطة» بل بناء عادةٍ تدوم. إن فاتك يوم فأكمل من الغد ولا تبدأ من الصفر.</div>
+      </section>
+
+      <section class="fq-sec" id="faq">
+        <h2>٥ — أسئلة يكثر أن يسألها الجدد</h2>
+        <details class="fq-acc"><summary>هل يجب أن أغتسل بعد إسلامي؟</summary><div class="in"><p>يُستحبّ، وليس شرطًا لصحة الإسلام. إن أمكنك فاغتسل غسلًا كاملًا بعد الشهادتين.</p></div></details>
+        <details class="fq-acc"><summary>ماذا عن الصلوات التي فاتتني قبل الإسلام؟</summary><div class="in"><p>الإسلام يجبّ ما قبله من الشرك، والجمهور على أن الكافر إذا أسلم لم يُلزم بقضاء ما فاته من صلاةٍ وصيام. ابدأ من اليوم.</p></div></details>
+        <details class="fq-acc"><summary>هل أغيّر اسمي؟</summary><div class="in"><p>لا يجب إلا إن كان اسمًا فيه تعظيمٌ لغير الله أو معنى قبيح. وكثيرٌ من الصحابة أبقوا أسماءهم.</p></div></details>
+        <details class="fq-acc"><summary>هل الختان واجب؟</summary><div class="in"><p>سُنّةٌ مؤكدة في حقّ الذكر، ويُستحبّ تأخيره حتى يزول عنك الحرج ولا يضرّك. ليس شرطًا لدخول الإسلام.</p></div></details>
+        <details class="fq-acc"><summary>أهلي غير مسلمين — كيف أتعامل معهم؟</summary><div class="in"><p>بالبِرّ والإحسان، «وَعَاشِرُوهُنَّ بِالْمَعْرُوفِ»، وقال ﷺ لأسماء: «صِلي أمك». لا قطيعة ولا إساءة، والاختلاف في الدين لا يُبرّر العقوق.</p></div></details>
+        <details class="fq-acc"><summary>هل آكل من طعام أهلي؟</summary><div class="in"><p>طعام أهل الكتاب حلالٌ أصله، وطعام غيرهم يُنظر في مكوناته؛ وكل ما فيه خنزير أو خمر أو ما ذُبح لغير الله فحرام. وتستطيع أن تأكل ما هو حلالٌ بوضوح.</p></div></details>
+        <details class="fq-acc"><summary>هل يجب أن أتعلّم العربية أولًا؟</summary><div class="in"><p>تحتاج من العربية ما تصحّ به صلاتك كالفاتحة والتكبير، وتتعلّم الباقي على مهل. وتُشرع لك الدعاء بلغتك.</p></div></details>
+        <details class="fq-acc"><summary>أشعر بالوحدة أو بالتقصير</summary><div class="in"><p>هذا شعورٌ يمرّ به كثيرون؛ والله يقبل التوبة ويعفو عن الكثير. لا تترك الصلاة بسبب ذنبٍ وقعت فيه — عُد مباشرةً، ولا تؤجّل الرجوع.</p></div></details>
+      </section>
+
+      <section class="fq-sec">
+        <h2>ابدأ من هنا</h2>
+        <div class="fq-grid">
+          <a class="fq-card" href="mushaf-quran.html" style="text-decoration:none"><b>🕋 المصحف الشريف</b><small>اقرأ واستمع آيةً آية، وكلمةً بكلمة.</small></a>
+          <a class="fq-card" href="prayers.html" style="text-decoration:none"><b>🕌 مواقيت الصلاة</b><small>اعرف وقت كل صلاة في مدينتك.</small></a>
+          <a class="fq-card" href="adhkar.html" style="text-decoration:none"><b>🤲 الأذكار</b><small>أذكار الصباح والمساء والنوم.</small></a>
+          <a class="fq-card" href="hasn.html" style="text-decoration:none"><b>🏰 حصن المسلم</b><small>أدعية مختارة لكل حال.</small></a>
+        </div>
+      </section>
+
+      <section class="fq-sec">
+        <h2>اقرأ أيضًا</h2>
+        <div class="fq-grid">
+        <a class="fq-card" href="qada.html"><b>قضاء الفوائت</b><small>إن فاتك شيء</small></a>
+        <a class="fq-card" href="mirath.html"><b>حاسبة الميراث</b><small>علم الفرائض</small></a>
+        <a class="fq-card" href="janaza.html"><b>أحكام الجنازة</b><small>حقّ الجسد والمسلم</small></a>
+        </div>
+      </section>
+
+      <div class="fq-note" style="margin-bottom:18px">«إِنَّ الدِّينَ يُسْرٌ، وَلَنْ يُشَادَّ الدِّينَ أَحَدٌ إِلَّا غَلَبَهُ، فَسَدِّدُوا وَقَارِبُوا» — صحيح البخاري. واعلم أن الله يفرح بتوبتك أكثر مما تتصوّر.</div>
+    </div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+</body>
+</html>

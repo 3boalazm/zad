@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>وضع السفر — قصر وجمع وتيمم | زاد</title>
+<meta name="description" content="أحكام صلاة المسافر: متى تقصر، ومدة القصر، والجمع بين الصلاتين، والتيمم، وأداة تخبرك بحكم صلاتك في سفرك.">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<link rel="stylesheet" href="css/fiqh.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+
+.ms-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.ms-form label{display:block;font-size:10.5px;color:var(--muted);font-weight:800;margin-bottom:5px}
+.ms-form input,.ms-form select{width:100%;padding:10px 11px;border:1.5px solid var(--border);border-radius:10px;background:var(--sand);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700}
+.ms-form input:focus,.ms-form select:focus{outline:none;border-color:var(--green-soft);background:var(--card)}
+.ms-verdict{margin-top:12px;border-radius:14px;padding:14px 16px;border:1.5px solid var(--border);background:var(--sand);display:flex;gap:12px;align-items:flex-start}
+.ms-verdict .ico{font-size:26px;line-height:1;flex:0 0 auto}
+.ms-verdict b{display:block;font-size:14px;font-weight:900;color:var(--green-deep);margin-bottom:3px}
+html[data-theme="dark"] .ms-verdict b,html[data-theme="oled"] .ms-verdict b{color:var(--sys-green)}
+.ms-verdict small{font-size:11.5px;color:var(--muted);line-height:1.8;display:block}
+.ms-verdict.no b{color:#8f3a27}
+html[data-theme="dark"] .ms-verdict.no b,html[data-theme="oled"] .ms-verdict.no b{color:#ff9a80}
+.ms-verdict.jam{border-color:rgba(201,161,74,.5);background:rgba(201,161,74,.08)}
+.ms-toggles{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ms-chip{border:1.5px solid var(--border);background:var(--card);color:var(--muted);border-radius:99px;padding:7px 13px;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;transition:.15s}
+.ms-chip.on{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+html[data-theme="dark"] .ms-chip.on,html[data-theme="oled"] .ms-chip.on{background:var(--sys-green);border-color:var(--sys-green);color:#06251b}
+.ms-kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px}
+.ms-kv:last-child{border-bottom:none}
+.ms-kv b{color:var(--ink);font-weight:800}
+.ms-kv span{color:var(--muted);text-align:end}
+</style>
+<script src="js/net-ledger.js" defer></script>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">أحكام صلاة المسافر</h1>
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">وضع <span>السفر</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fq-wrap">
+      <section class="fq-hero" data-icon="🧭">
+        <div class="fq-eyebrow">رُخَصٌ لا تُترك</div>
+        <h2 class="fq-title">سفرٌ… وقصرٌ وجمعٌ وتيمّم</h2>
+        <p class="fq-sub">متى تكون مسافرًا في حكم الشرع؟ وكم يومًا تقصر؟ وكيف تجمع بين الصلاتين؟ وما شروط التيمم وكيفيته؟ أداةٌ تجيبك بحسب مسافتك ومدّتك، وفقهٌ مختصرٌ يشرح «لماذا».</p>
+        <div class="fq-chips"><span class="fq-chip">قصر · جمع</span><span class="fq-chip">تيمم وجبيرة</span><span class="fq-chip">أربعة مذاهب</span></div>
+      </section>
+
+      <nav class="fq-toc"><a href="#tool">أداة الحكم</a><a href="#qasr">القصر</a><a href="#jam">الجمع</a><a href="#tayammum">التيمم</a><a href="#masail">مسائل</a></nav>
+
+      <section class="fq-sec" id="tool">
+        <h2>أداة: ما حكم صلاتي الآن؟</h2>
+        <div class="ms-form">
+          <div><label>مسافة السفر (كم)</label><input type="number" id="ms-dist" min="0" step="1" placeholder="مثال: 320" value="320"></div>
+          <div><label>عدد أيام الإقامة في الوجهة</label><input type="number" id="ms-days" min="0" step="1" placeholder="مثال: 3" value="3"></div>
+          <div><label>المذهب (مدة القصر)</label>
+            <select id="ms-mad">
+              <option value="4">الجمهور: ٤ أيام أو أقل</option>
+              <option value="15">الحنفي: ١٥ يومًا أو أقل</option>
+            </select>
+          </div>
+          <div><label>هل خرجت من عمران بلدك؟</label>
+            <select id="ms-out"><option value="1">نعم</option><option value="0">لا، ما زلت داخلها</option></select>
+          </div>
+        </div>
+        <div class="ms-toggles">
+          <button class="ms-chip on" id="ms-needjam">أحتاج الجمع لحرجٍ أو مشقة</button>
+          <button class="ms-chip" id="ms-sick">مريض/عاجز عن الماء</button>
+        </div>
+        <div class="ms-verdict" id="ms-verdict">
+          <div class="ico">🧭</div>
+          <div><b>—</b><small>—</small></div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="qasr">
+        <h2>١ — القصر: شروطه وأحكامه</h2>
+        <p>القصر هو أداء الرباعية (الظهر والعصر والعشاء) ركعتين. وهو رخصةٌ ثابتة بالكتاب والسنّة، والأفضل عند الجمهور فعله، وعند الحنفية الإتمام أفضل إن أمن المشقة.</p>
+        <div class="fq-grid">
+          <div class="fq-card"><b>المسافة</b><small>أربعة بُرُد ≈ ٨٥ كم عند الجمهور (٨١ كم في بعض التقادير). وما دونها فليس سفرًا يُقصر فيه.</small></div>
+          <div class="fq-card"><b>الخروج من العمران</b><small>لا يبدأ القصر إلا بعد مفارقة بيوت البلد، وينتهي بدخول بلد الإقامة.</small></div>
+          <div class="fq-card"><b>المدة</b><small>الجمهور: لا يقصر من نوى إقامةً لا يعلم انتهاءها في أربعة أيام. الحنفية: خمسة عشر يومًا.</small></div>
+          <div class="fq-card"><b>النية والترخّص</b><small>لا يُشترط لفظ نية القصر، وإنما يكفي أنه مسافر فيُصلّي ركعتين بنية الظهر مثلًا.</small></div>
+        </div>
+        <table class="fq-table">
+          <thead><tr><th>الصلاة</th><th>في الحضر</th><th>في السفر</th></tr></thead>
+          <tbody>
+            <tr><td>الفجر</td><td>ركعتان</td><td><b>ركعتان</b> — لا قصر</td></tr>
+            <tr><td>الظهر</td><td>أربع</td><td><b>ركعتان</b></td></tr>
+            <tr><td>العصر</td><td>أربع</td><td><b>ركعتان</b></td></tr>
+            <tr><td>المغرب</td><td>ثلاث</td><td><b>ثلاث</b> — لا قصر</td></tr>
+            <tr><td>العشاء</td><td>أربع</td><td><b>ركعتان</b></td></tr>
+          </tbody>
+        </table>
+        <div class="fq-note">السنن الرواتب لا تُقصر؛ تُصلَّى كما هي إن شئت، والوتر يُصلَّى على حاله.</div>
+      </section>
+
+      <section class="fq-sec" id="jam">
+        <h2>٢ — الجمع بين الصلاتين</h2>
+        <p>يجوز للمسافر الجمع بين الظهر والعصر، وبين المغرب والعشاء، تقديمًا أو تأخيرًا. والفجر لا تُجمع مع غيرها.</p>
+        <ol class="fq-steps">
+          <li data-n="١"><b>جمع التقديم</b><span>تصلي الظهر ثم العصر في وقت الظهر، أو المغرب ثم العشاء في وقت المغرب، بلا فاصل طويل.</span></li>
+          <li data-n="٢"><b>جمع التأخير</b><span>تؤخّر الظهر إلى وقت العصر فتصليهما معًا، أو المغرب إلى العشاء.</span></li>
+          <li data-n="٣"><b>الترتيب</b><span>أيًّا كان نوع الجمع فالترتيب بين الصلاتين واجب عند الجمهور.</span></li>
+          <li data-n="٤"><b>الشرط</b><span>السفر أو المشقة الحقيقية؛ ولا يُشترط أن تكون مسافرًا لكل جمعٍ إذا لم تكن هناك مشقة.</span></li>
+        </ol>
+        <div class="fq-note"><b>الأفضل:</b> القصر بلا جمعٍ إذا كان الوقت يتّسع؛ والجمع رخصةٌ للحاجة كالطريق والمواصلات والمطار.</div>
+      </section>
+
+      <section class="fq-sec" id="tayammum">
+        <h2>٣ — التيمم والجبيرة</h2>
+        <p>التيمم بديل الوضوء والغسل عند تعذّر الماء أو الضرر به: بضربةٍ على التراب الطاهر، تمسح وجهك وكفّيك.</p>
+        <ol class="fq-steps">
+          <li data-n="١"><b>النية</b><span>انوِ رفع الحدث أو استباحة الصلاة.</span></li>
+          <li data-n="٢"><b>الضرب على الصعيد</b><span>بباطن كفّيك على ترابٍ أو رملٍ طاهر لا نجس.</span></li>
+          <li data-n="٣"><b>الوجه</b><span>امسح وجهك بباطن كفّيك.</span></li>
+          <li data-n="٤"><b>الكفّان</b><span>ثم امسح كفّيك ببعضهما إلى الرسغين.</span></li>
+        </ol>
+        <div class="fq-grid">
+          <div class="fq-card"><b>متى يجوز؟</b><small>عدم الماء، أو الضرر من استعماله، أو كونه بعيدًا أو محتاجًا له لغير الطهارة.</small></div>
+          <div class="fq-card"><b>ماذا يُبطل التيمم؟</b><small>كل ما يُبطل الوضوء، ووجود الماء عند القدرة عليه.</small></div>
+          <div class="fq-card"><b>الجبيرة</b><small>للمجبور على عضوه جبيرة: يغسل الصحيح ويمسح على الجبيرة، فإن تضرّر تيمّم.</small></div>
+          <div class="fq-card"><b>صلاة واحدة أم أكثر؟</b><small>عند الجمهور: لكل صلاة تيممٌ جديد، ويُجمع بين الصلاتين بتيممٍ واحد عند الحاجة.</small></div>
+        </div>
+      </section>
+
+      <section class="fq-sec" id="masail">
+        <h2>مسائل في السفر</h2>
+        <details class="fq-acc"><summary>المسافر خلف مقيم</summary><div class="in"><p>صلّى معه كاملةً ولا يقصر؛ لأنه مأموم، ويُتمّ إذا صلّى خلف مقيمٍ عند الجمهور.</p></div></details>
+        <details class="fq-acc"><summary>المقيم خلف مسافر</summary><div class="in"><p>إذا سلّم الإمام بعد ركعتين أتمّ المأموم المقيم ركعتين أخريين بلا أذان، ثم يسلّم.</p></div></details>
+        <details class="fq-acc"><summary>هل تلزم الجمعة المسافر؟</summary><div class="in"><p>لا تلزم المسافر على الراجح، فإن شهدها صحّت وسقطت عنه الظهر.</p></div></details>
+        <details class="fq-acc"><summary>من نوى الإقامة في بلده بعد السفر</summary><div class="in"><p>ينتهي حكم السفر بدخول بلده أو بلد إقامته، فيُتمّ ولا يجمع بلا مشقة.</p></div></details>
+        <details class="fq-acc"><summary>الصيام في السفر</summary><div class="in"><p>الفطر رخصةٌ في السفر، ويُقضى ما لم يصمه. والأفضل الفطر إن كان الجمع أشقّ، والصيام لمن قدر.</p></div></details>
+        <details class="fq-acc"><summary>السفر في رمضان والجمع في الطائرة</summary><div class="in"><p>تُصلّى الصلاة على وقتها بحسب بلد الإقلاع، وإن تعذّر السجود سجّد بقلبه أو على الكرسي مقدار الوسع.</p></div></details>
+      </section>
+
+      <section class="fq-sec">
+        <h2>اقرأ أيضًا</h2>
+        <div class="fq-grid">
+        <a class="fq-card" href="qada.html"><b>⏳ قضاء الفوائت</b><small>عدّاد وخطة</small></a>
+        <a class="fq-card" href="janaza.html"><b>أحكام الجنازة</b><small>أحكام السفر الأخير</small></a>
+        <a class="fq-card" href="mirath.html"><b>حاسبة الميراث</b><small>الفرائض بدقّة</small></a>
+        </div>
+      </section>
+
+      <div class="fq-note" style="margin-bottom:18px">الأحكام على مذهب الجمهور مع ذكر خلاف الحنفية في مدة القصر؛ واختر ما يناسب بلدك أو ما يُفتي به أهل العلم عندك.</div>
+    </div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var AR = function (n) { return String(n).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }); };
+  var needJam = true;
+
+  function calc() {
+    var dist = +document.getElementById('ms-dist').value || 0;
+    var days = +document.getElementById('ms-days').value || 0;
+    var limit = +document.getElementById('ms-mad').value;
+    var out = document.getElementById('ms-out').value === '1';
+    var box = document.getElementById('ms-verdict');
+
+    var travel = dist >= 81 && out;
+    var within = days <= limit;
+    var qasr = travel && within;
+
+    box.classList.toggle('no', !qasr);
+    box.classList.toggle('jam', qasr && needJam);
+
+    var title, desc, ico;
+    if (!out) { ico = '🏙️'; title = 'أنت في بلدك — تُتمّ الصلاة'; desc = 'لا يبدأ حكم السفر إلا بعد مفارقة عمران بلدك. صلِّ أربعًا ولا تجمع إلا لسببٍ شرعي.'; }
+    else if (dist < 81) { ico = '📏'; title = 'المسافة أقل من مسافة القصر'; desc = 'المسافة ' + AR(dist) + ' كم، ومسافة القصر ≈ ٨١–٨٥ كم عند الجمهور. تُتمّ الصلاة كاملة ولا تقصر.'; }
+    else if (!within) { ico = '📅'; title = 'نويت إقامة تُنهي حكم السفر'; desc = 'إقامتك ' + AR(days) + ' يومًا تتجاوز حدّ مذهبك (' + AR(limit) + ' أيام). تُتمّ الصلاة، ولا تقصر إلا أن تكون على سفرٍ دائم.'; }
+    else {
+      ico = '🧭';
+      title = 'أنت مسافر — تُقصر الرباعية ركعتين';
+      desc = 'المسافة ' + AR(dist) + ' كم، وإقامتك ' + AR(days) + ' يومًا. تقصر الظهر والعصر والعشاء، وتُتمّ الفجر والمغرب.' +
+        (needJam ? ' ويجوز لك الجمع بين الظهر والعصر والمغرب والعشاء للحاجة.' : ' والجمع رخصةٌ عند الحاجة فقط.');
+    }
+    box.querySelector('.ico').textContent = ico;
+    box.querySelector('b').textContent = title;
+    box.querySelector('small').textContent = desc;
+  }
+
+  function boot() {
+    ['ms-dist', 'ms-days', 'ms-mad', 'ms-out'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', calc);
+      document.getElementById(id).addEventListener('change', calc);
+    });
+    document.getElementById('ms-needjam').addEventListener('click', function () {
+      needJam = !needJam; this.classList.toggle('on', needJam); calc();
+    });
+    document.getElementById('ms-sick').addEventListener('click', function () {
+      var on = this.classList.toggle('on');
+      if (on) {
+        var v = document.getElementById('ms-verdict');
+        v.querySelector('.ico').textContent = '🤲';
+        v.querySelector('b').textContent = 'تيمّم — تعذّر الماء أو ضرّك';
+        v.querySelector('small').textContent = 'اضرب باطن كفّيك على ترابٍ طاهر، فامسح وجهك ثم كفّيك. ولكل صلاة تيمّمٌ جديد عند الجمهور، وتبطل بطروء الماء أو ناقض الوضوء.';
+        v.classList.remove('no');
+      } else calc();
+    });
+    calc();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+</body>
+</html>
