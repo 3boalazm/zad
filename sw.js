@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261022-polish-r28';
+const CACHE_STATIC = 'zad-20261022-i18n-r29';
 const CACHE_AUDIO  = 'zad-quran-audio-v1'; /* تلاوة: تُحفظ كما هي (opaque مسموح) */
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
@@ -97,7 +97,7 @@ const PRECACHE = [
   /* ── T22: الفقه اللحظي (ميراث · وصية · جنازة · قضاء · سفر · مسلم جديد) ── */
   './css/fiqh.css', './js/mirath-engine.js',
   './mirath.html', './wasiyya.html', './janaza.html', './qada.html', './musafir.html', './new-muslim.html',
-  './zakat-2026.html', './wird.html', './js/wird-companion.js', './js/khatma-share.js', './js/hifz-srs.js', './js/net-ledger.js', './js/web-fonts.js', './js/iqama.js',
+  './zakat-2026.html', './wird.html', './js/a11y-mode.js', './lang.min.js', './js/wird-companion.js', './js/khatma-share.js', './js/hifz-srs.js', './js/net-ledger.js', './js/web-fonts.js', './js/iqama.js',
   './odhiya.html', './js/ui/hajj-now.js',
   './manasik.html', './arafah.html', './js/audio-manager.min.js', './hasad.html', './sadaqah.html',
   './arafah-dua.html', './hikayat-hajj.html',

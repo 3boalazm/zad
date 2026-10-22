@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════
-   زاد — Complete i18n System (AR / EN / FR)
+   زاد — Complete i18n System (AR / EN / FR / ID / UR / BN / TR)
    • واجهة المستخدم: ترجمة ثابتة (بدون API، تعمل أوفلاين).
    • الأذكار: ترانزليتريشن + معنى منسوخ يدوياً (لا ترجمة آلية للنص الشرعي).
    • القرآن/الحديث: استخدم تراجم معتمدة عبر API (alquran.cloud) — لا تُترجم آلياً.
@@ -597,7 +597,251 @@ fr: {
   'about.contact':'Me contacter','about.social':'Suivez-moi sur',
   'about.app.title':'À propos de Zad','about.sources':'Sources islamiques',
   'about.tech':'Technologies utilisées',
-}
+},
+  /* ─ ID ─ */
+  id: {
+    'brand.name': 'Zad',
+    'brand.sub': 'Sahabat Ibadah & Kebaikan',
+    'common.darkMode': '🌙 Mode Gelap',
+    'common.language': '🌐 Bahasa',
+    'common.search': 'Cari di aplikasi...',
+    'common.noAds': 'Berjalan tanpa internet 📴',
+    'common.done': '✅ Selesai',
+    'common.reset': 'Atur ulang',
+    'common.save': 'Simpan',
+    'common.send': 'Kirim',
+    'nav.dashboard': 'Dasbor',
+    'nav.virtues': 'Keutamaan Sepuluh Hari',
+    'nav.worship': 'Jadwal Ibadah',
+    'nav.mushaf': 'Wird Al-Quran',
+    'nav.tasbih': 'Tasbih & Takbir',
+    'nav.adhkar': 'Zikir & Doa',
+    'nav.odhiya': 'Panduan Kurban',
+    'nav.arafah': 'Hari Arafah',
+    'nav.sadaqah': 'Sedekah & Kebaikan',
+    'nav.badges': 'Lencanaku',
+    'nav.hasad': 'Panen Ibadah',
+    'nav.kids': 'Mode Anak',
+    'nav.tasmee': 'Setoran Hafalan',
+    'nav.ai': 'Tadabur dengan AI',
+    'nav.settings': 'Pengaturan',
+    'nav.report': 'Laporkan Masalah',
+    'nav.about': 'Tentang Aplikasi',
+    'index.title': 'Zad Harian',
+    'index.sub': 'Ikuti wird harian, ibadah, dan musim kebaikan di satu tempat',
+    'index.install.title': 'Pasang Aplikasi',
+    'index.install.sub': 'Berjalan tanpa internet di masjid',
+    'index.notif.title': 'Aktifkan Pengingat Salat',
+    'index.notif.sub': 'Jangan lewatkan wird di hari-hari berkah ini',
+    'index.countdown': 'Hitung Mundur',
+    'index.hours': 'Jam',
+    'index.mins': 'Menit',
+    'index.secs': 'Detik',
+    'index.stat.takbeer': 'Total Takbir',
+    'index.stat.juz': 'Juz Khatam',
+    'index.stat.pray': 'Salat Berjamaah',
+    'index.stat.wird': 'Capaian Wird',
+    'index.start': 'Mulai Harimu Sekarang',
+    'index.grid.worship': 'Wird Hari Ini',
+    'index.grid.worship.sub': 'Ikuti jadwal ibadahmu',
+    'index.grid.mushaf': 'Baca Al-Quran',
+    'index.grid.mushaf.sub': 'Lanjutkan rencana khatam',
+    'index.grid.tasbih': 'Bertakbirlah',
+    'index.grid.tasbih.sub': 'Penghitung takbir mutlak',
+    'index.grid.tasmee': 'Setoran Hafalan',
+    'index.grid.tasmee.sub': 'Koreksi bacaan dengan AI',
+    'index.grid.ai': 'Tadabur dengan AI',
+    'index.grid.ai.sub': 'Tanya tentang ayat dan hukum',
+    'index.grid.badges': 'Lencanaku',
+    'index.grid.badges.sub': 'Pencapaian ruhanimu',
+    'worship.title': 'Jadwal Ibadah Harian',
+    'worship.sub': 'Allah melihat setiap kebaikan yang kau lakukan',
+    'worship.label': 'Ibadah',
+    'worship.fajr': 'Salat Subuh berjamaah',
+  },
+  /* ─ UR ─ */
+  ur: {
+    'brand.name': 'زاد',
+    'brand.sub': 'عبادت اور بھلائی کا ساتھی',
+    'common.darkMode': '🌙 ڈارک موڈ',
+    'common.language': '🌐 زبان',
+    'common.search': 'ایپ میں تلاش کریں...',
+    'common.noAds': 'انٹرنیٹ کے بغیر چلتا ہے 📴',
+    'common.done': '✅ ہو گیا',
+    'common.reset': 'دوبارہ',
+    'common.save': 'محفوظ کریں',
+    'common.send': 'بھیجیں',
+    'nav.dashboard': 'ڈیش بورڈ',
+    'nav.virtues': 'عشرہ کے فضائل',
+    'nav.worship': 'عبادات کا شیڈول',
+    'nav.mushaf': 'قرآنی ورد',
+    'nav.tasbih': 'تسبیح و تکبیر',
+    'nav.adhkar': 'اذکار و دعا',
+    'nav.odhiya': 'قربانی کی رہنمائی',
+    'nav.arafah': 'عرفہ کا دن',
+    'nav.sadaqah': 'صدقہ و نیکی',
+    'nav.badges': 'میرے تمغے',
+    'nav.hasad': 'عبادات کی کٹائی',
+    'nav.kids': 'بچوں کا موڈ',
+    'nav.tasmee': 'قرآن کی تسمیع',
+    'nav.ai': 'ذہانت سے تدبر',
+    'nav.settings': 'ترتیبات',
+    'nav.report': 'مسئلہ کی اطلاع',
+    'nav.about': 'ایپ کے بارے میں',
+    'index.title': 'زاد روزانہ',
+    'index.sub': 'اپنا روزانہ ورد، عبادات اور خیر کے موسم ایک جگہ دیکھیں',
+    'index.install.title': 'ایپ انسٹال کریں',
+    'index.install.sub': 'مسجد میں انٹرنیٹ کے بغیر چلتی ہے',
+    'index.notif.title': 'نماز کی یاد دہانی فعال کریں',
+    'index.notif.sub': 'ان بابرکت دنوں میں اپنا ورد نہ چھوڑیں',
+    'index.countdown': 'الٹی گنتی',
+    'index.hours': 'گھنٹے',
+    'index.mins': 'منٹ',
+    'index.secs': 'سیکنڈ',
+    'index.stat.takbeer': 'کل تکبیریں',
+    'index.stat.juz': 'ختم کے پارے',
+    'index.stat.pray': 'جماعت کی نمازیں',
+    'index.stat.wird': 'ورد کی تکمیل',
+    'index.start': 'اپنا دن ابھی شروع کریں',
+    'index.grid.worship': 'آج کا ورد',
+    'index.grid.worship.sub': 'اپنے عبادات کا شیڈول دیکھیں',
+    'index.grid.mushaf': 'قرآن پڑھیں',
+    'index.grid.mushaf.sub': 'ختم کا منصوبہ جاری رکھیں',
+    'index.grid.tasbih': 'اللہ اکبر کہیں',
+    'index.grid.tasbih.sub': 'مطلق تکبیر کا کاؤنٹر',
+    'index.grid.tasmee': 'قرآن کی تسمیع',
+    'index.grid.tasmee.sub': 'ذہانت سے تلاوت کی درستی',
+    'index.grid.ai': 'ذہانت سے تدبر',
+    'index.grid.ai.sub': 'آیات و احکام کے بارے پوچھیں',
+    'index.grid.badges': 'میرے تمغے',
+    'index.grid.badges.sub': 'آپ کی روحانی کامیابیاں',
+    'worship.title': 'روزانہ عبادات کا شیڈول',
+    'worship.sub': 'اللہ ہر نیکی دیکھتا ہے جو تم کرتے ہو',
+    'worship.label': 'عبادت',
+    'worship.fajr': 'نماز فجر باجماعت',
+  },
+  /* ─ BN ─ */
+  bn: {
+    'brand.name': 'যাদ',
+    'brand.sub': 'ইবাদত ও কল্যাণের সঙ্গী',
+    'common.darkMode': '🌙 ডার্ক মোড',
+    'common.language': '🌐 ভাষা',
+    'common.search': 'অ্যাপে খুঁজুন...',
+    'common.noAds': 'ইন্টারনেট ছাড়াই চলে 📴',
+    'common.done': '✅ সম্পন্ন',
+    'common.reset': 'রিসেট',
+    'common.save': 'সংরক্ষণ',
+    'common.send': 'পাঠান',
+    'nav.dashboard': 'ড্যাশবোর্ড',
+    'nav.virtues': 'দশ দিনের ফজিলত',
+    'nav.worship': 'ইবাদতের সূচি',
+    'nav.mushaf': 'কুরআনের ওয়ারদ',
+    'nav.tasbih': 'তাসবিহ ও তাকবির',
+    'nav.adhkar': 'জিকির ও দুআ',
+    'nav.odhiya': 'কুরবানির নির্দেশিকা',
+    'nav.arafah': 'আরাফার দিন',
+    'nav.sadaqah': 'সদকা ও সৎকর্ম',
+    'nav.badges': 'আমার ব্যাজ',
+    'nav.hasad': 'ইবাদতের ফসল',
+    'nav.kids': 'শিশু মোড',
+    'nav.tasmee': 'কুরআন তেলাওয়াত',
+    'nav.ai': 'এআই দিয়ে তাদাব্বুর',
+    'nav.settings': 'সেটিংস',
+    'nav.report': 'সমস্যা জানান',
+    'nav.about': 'অ্যাপ সম্পর্কে',
+    'index.title': 'দৈনিক যাদ',
+    'index.sub': 'দৈনিক ওয়ারদ, ইবাদত ও কল্যাণের মৌসুম এক জায়গায়',
+    'index.install.title': 'অ্যাপ ইনস্টল করুন',
+    'index.install.sub': 'মসজিদে ইন্টারনেট ছাড়াই চলে',
+    'index.notif.title': 'নামাজের রিমাইন্ডার চালু করুন',
+    'index.notif.sub': 'এই বরকতময় দিনে ওয়ারদ মিস করবেন না',
+    'index.countdown': 'কাউন্টডাউন',
+    'index.hours': 'ঘণ্টা',
+    'index.mins': 'মিনিট',
+    'index.secs': 'সেকেন্ড',
+    'index.stat.takbeer': 'মোট তাকবির',
+    'index.stat.juz': 'খতমের পারা',
+    'index.stat.pray': 'জামাতে নামাজ',
+    'index.stat.wird': 'ওয়ারদ অর্জন',
+    'index.start': 'এখনই দিন শুরু করুন',
+    'index.grid.worship': 'আজকের ওয়ারদ',
+    'index.grid.worship.sub': 'আপনার ইবাদতের সূচি দেখুন',
+    'index.grid.mushaf': 'কুরআন পড়ুন',
+    'index.grid.mushaf.sub': 'খতম পরিকল্পনা চালান',
+    'index.grid.tasbih': 'আল্লাহু আকবার বলুন',
+    'index.grid.tasbih.sub': 'মুতলাক তাকবির কাউন্টার',
+    'index.grid.tasmee': 'কুরআন তেলাওয়াত',
+    'index.grid.tasmee.sub': 'এআই দিয়ে তেলাওয়াত সংশোধন',
+    'index.grid.ai': 'এআই দিয়ে তাদাব্বুর',
+    'index.grid.ai.sub': 'আয়াত ও বিধান সম্পর্কে জিজ্ঞাসা',
+    'index.grid.badges': 'আমার ব্যাজ',
+    'index.grid.badges.sub': 'আপনার আধ্যাত্মিক অর্জন',
+    'worship.title': 'দৈনিক ইবাদতের সূচি',
+    'worship.sub': 'আল্লাহ আপনার প্রতিটি ভালো কাজ দেখেন',
+    'worship.label': 'ইবাদত',
+    'worship.fajr': 'ফজরের নামাজ জামাতে',
+  },
+  /* ─ TR ─ */
+  tr: {
+    'brand.name': 'Zad',
+    'brand.sub': 'İbadet ve Hayır Yoldaşı',
+    'common.darkMode': '🌙 Karanlık Mod',
+    'common.language': '🌐 Dil',
+    'common.search': 'Uygulamada ara...',
+    'common.noAds': 'İnternetsiz çalışır 📴',
+    'common.done': '✅ Tamam',
+    'common.reset': 'Sıfırla',
+    'common.save': 'Kaydet',
+    'common.send': 'Gönder',
+    'nav.dashboard': 'Panel',
+    'nav.virtues': 'On Günün Fazileti',
+    'nav.worship': 'İbadet Takvimi',
+    'nav.mushaf': 'Kur\'an Virdi',
+    'nav.tasbih': 'Tesbih ve Tekbir',
+    'nav.adhkar': 'Zikir ve Dua',
+    'nav.odhiya': 'Kurban Rehberi',
+    'nav.arafah': 'Arefe Günü',
+    'nav.sadaqah': 'Sadaka ve İyilik',
+    'nav.badges': 'Rozetlerim',
+    'nav.hasad': 'İbadet Hasadı',
+    'nav.kids': 'Çocuk Modu',
+    'nav.tasmee': 'Kur\'an Tilaveti',
+    'nav.ai': 'Yapay Zekâ ile Tefekkür',
+    'nav.settings': 'Ayarlar',
+    'nav.report': 'Sorun Bildir',
+    'nav.about': 'Uygulama Hakkında',
+    'index.title': 'Günlük Zad',
+    'index.sub': 'Günlük virdini, ibadetini ve hayır mevsimlerini tek yerde takip et',
+    'index.install.title': 'Uygulamayı Yükle',
+    'index.install.sub': 'Mescitte internetsiz çalışır',
+    'index.notif.title': 'Namaz Hatırlatıcılarını Aç',
+    'index.notif.sub': 'Bu mübarek günlerde virdini kaçırma',
+    'index.countdown': 'Geri Sayım',
+    'index.hours': 'Saat',
+    'index.mins': 'Dakika',
+    'index.secs': 'Saniye',
+    'index.stat.takbeer': 'Toplam Tekbir',
+    'index.stat.juz': 'Hatim Cüzü',
+    'index.stat.pray': 'Cemaatle Namaz',
+    'index.stat.wird': 'Vird Tamamlanması',
+    'index.start': 'Gününe Şimdi Başla',
+    'index.grid.worship': 'Bugünün Virdi',
+    'index.grid.worship.sub': 'İbadet takvimini takip et',
+    'index.grid.mushaf': 'Kur\'an Oku',
+    'index.grid.mushaf.sub': 'Hatim planını sürdür',
+    'index.grid.tasbih': 'Tekbir Getir',
+    'index.grid.tasbih.sub': 'Mutlak tekbir sayacı',
+    'index.grid.tasmee': 'Kur\'an Tilaveti',
+    'index.grid.tasmee.sub': 'Yapay zekâ ile tilavet düzeltme',
+    'index.grid.ai': 'Yapay Zekâ ile Tefekkür',
+    'index.grid.ai.sub': 'Ayet ve hükümleri sor',
+    'index.grid.badges': 'Rozetlerim',
+    'index.grid.badges.sub': 'Manevi başarıların',
+    'worship.title': 'Günlük İbadet Takvimi',
+    'worship.sub': 'Allah yaptığın her hayrı görür',
+    'worship.label': 'İbadet',
+    'worship.fajr': 'Sabah namazı cemaatle',
+  },
 };
 
 /* ── Dhikr transliterations (translit + meaning per language) ─────────── */
@@ -619,8 +863,19 @@ const DHIKR_DB = [
 ];
 
 /* ── ترتيب اللغات للتدوير: عربي → إنجليزي → فرنسي → عربي ─────────────── */
-const LANG_CYCLE = ['ar', 'en', 'fr'];
-const LANG_NEXT_LABEL = { ar: 'EN', en: 'FR', fr: 'عربي' };
+/* ستّ لغات: العربية (المصدر) + الخمس الأكثر وصولًا للمسلمين:
+   الإنجليزية (الهند/نيجيريا/المهجر) · الإندونيسية (٢٤٠م) · الأردية (باكستان ٢٤٠م)
+   · البنغالية (بنغلاديش ١٥٠م) · التركية (٨٥م). */
+const LANG_CYCLE = ['ar', 'en', 'id', 'ur', 'bn', 'tr'];
+const LANG_NEXT_LABEL = { ar:'EN', en:'ID', id:'UR', ur:'BN', bn:'TR', tr:'عربي' };
+const LANG_SUBTITLE = {
+  ar: 'رفيق العبادة والخير', en: 'Worship Companion', fr: 'Compagnon d’adoration',
+  id: 'Sahabat Ibadah', ur: 'عبادت کا ساتھی', bn: 'ইবাদতের সঙ্গী', tr: 'İbadet Yoldaşı'
+};
+const LANG_INSTALL = {
+  ar: '📲 تثبيت / تحميل التطبيق', en: '📲 Install App', fr: "📲 Installer l'application",
+  id: '📲 Pasang Aplikasi', ur: '📲 ایپ انسٹال کریں', bn: '📲 অ্যাপ ইনস্টল করুন', tr: '📲 Uygulamayı Yükle'
+};
 
 /* ── i18n Engine ─────────────────────────────────────────────── */
 const I18N = {
@@ -632,10 +887,11 @@ const I18N = {
         || key;
   },
 
-  isRTL() { return this.current === 'ar'; },
+  /* الأردية تُكتب من اليمين لليسار مثل العربية */
+  isRTL() { return this.current === 'ar' || this.current === 'ur'; },
 
   setLang(lang) {
-    if (!LANG_CYCLE.includes(lang)) lang = 'ar';
+    if (LANG_CYCLE.indexOf(lang) === -1) lang = 'ar';
     this.current = lang;
     localStorage.setItem('zad_lang', lang);
     document.documentElement.setAttribute('lang', lang);
@@ -651,7 +907,7 @@ const I18N = {
     const sb = document.getElementById('sidebar-lang-val');
     if (sb) sb.textContent = label;
     /* أزرار اختيار صريحة إن وُجدت */
-    ['ar','en','fr'].forEach(L => {
+    LANG_CYCLE.forEach(L => {
       const b = document.getElementById('lang-'+L+'-btn');
       if (b) b.classList.toggle('active', lang === L);
     });
@@ -660,6 +916,7 @@ const I18N = {
   apply() {
     const lang = this.current;
     const isAr = lang === 'ar';
+    const rtl = this.isRTL();
 
     /* 1) عناصر data-i18n */
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -695,6 +952,8 @@ const I18N = {
 
     /* 3) عناصر النصوص العامة عبر UI_MAP (الشريط الجانبي/الأقسام/الأزرار) */
     const swap = (el) => {
+      /* لا نلمس عنصرًا فيه أبناء (أيقونة/شارة) — كنا نمحوها */
+      if (el.children && el.children.length) return;
       const txt = el.textContent.trim();
       if (!el.dataset.ar) el.dataset.ar = txt;
       if (isAr) { el.textContent = el.dataset.ar; return; }
@@ -706,15 +965,51 @@ const I18N = {
     const bn = document.querySelector('.brand-name');
     const bs = document.querySelector('.brand-sub');
     if (bn) bn.textContent = isAr ? 'زاد' : 'Zad';
-    if (bs) bs.textContent = isAr ? 'رفيق العبادة والخير' : (lang==='fr' ? 'Compagnon d’adoration' : 'Worship Companion');
+    if (bs) bs.textContent = LANG_SUBTITLE[lang] || LANG_SUBTITLE.en;
 
     /* روابط القائمة + الفواصل */
     document.querySelectorAll('.nav a span:last-child, .nav .nav-sep .sep-txt').forEach(swap);
     /* عناوين الأقسام */
-    document.querySelectorAll('.section-title, .kids-title').forEach(el => { if (el.children.length === 0) swap(el); });
+    document.querySelectorAll('.section-title, .kids-title, .zh-card-t, .card h2, .fq-sec h2, .gp-sec-title, .zh-l-n, .gp-sec-title, .section-title *').forEach(el => { if (el.children.length === 0) swap(el); });
     /* الأزرار العامة */
     /* استثناء أزرار محوّل اللغة: swap يكتب textContent فيمحو الأيقونة والاسم والعلامة ✓ */
     document.querySelectorAll('button:not([data-i18n]):not(.hamburger):not(.notif-btn):not(.btn-theme):not(.zad-lang-trigger):not(.zad-lang-opt)').forEach(swap);
+
+    /* 3.5) تعميم على عُقد النصوص داخل المحتوى (مطابقة تامة، بلا لمس النص الشرعي) */
+    const SKIP = /(quran|ayah|dhikr|dua|hadith|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
+    const mainEl = document.querySelector('.main');
+    if (mainEl) {
+      /* استعادة أي نص عُرِّب سابقًا قبل تطبيق اللغة الجديدة */
+      const w2 = document.createTreeWalker(mainEl, NodeFilter.SHOW_TEXT, null);
+      const back = []; let nn;
+      while ((nn = w2.nextNode())) if (nn.__zadAr) back.push(nn);
+      back.forEach(n => { n.nodeValue = n.__zadAr; n.__zadAr = null; });
+    }
+    if (!isAr && mainEl) {
+      const walker = document.createTreeWalker(mainEl, NodeFilter.SHOW_TEXT, {
+        acceptNode(n) {
+          const pe = n.parentElement;
+          if (!pe) return NodeFilter.FILTER_REJECT;
+          if (pe.closest('script,style,textarea,select,option,[data-i18n]')) return NodeFilter.FILTER_REJECT;
+          if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
+          const t = n.nodeValue.trim();
+          if (t.length < 2 || t.length > 60) return NodeFilter.FILTER_REJECT;
+          return UI_MAP[t] ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      });
+      const hits = [];
+      let node;
+      while ((node = walker.nextNode())) hits.push(node);
+      hits.forEach(n => {
+        const key = n.nodeValue.trim();
+        const v = UI_MAP[key][lang] || UI_MAP[key].en;
+        if (!v) return;
+        if (!n.__zadAr) n.__zadAr = n.nodeValue;
+        const lead = n.nodeValue.match(/^\s*/)[0];
+        const trail = n.nodeValue.match(/\s*$/)[0];
+        n.nodeValue = lead + v + trail;
+      });
+    }
 
     /* 4) عنوان الصفحة (وسط الشريط العلوي) */
     const pageTitleEl = document.querySelector('.page-title');
@@ -733,14 +1028,15 @@ const I18N = {
 
     /* 5) زر التثبيت + صف الوضع الداكن */
     const instBtn = document.getElementById('sidebar-install-btn');
-    if (instBtn) instBtn.textContent = isAr ? '📲 تثبيت / تحميل التطبيق' : (lang==='fr' ? "📲 Installer l'application" : '📲 Install App');
+    if (instBtn) instBtn.textContent = LANG_INSTALL[lang] || LANG_INSTALL.en;
     document.querySelectorAll('.theme-row span:first-child').forEach(el => {
       if (!el.dataset.ar) el.dataset.ar = el.textContent;
-      el.textContent = isAr ? (el.dataset.ar || '🌙 الوضع الداكن') : (lang==='fr' ? '🌙 Mode sombre' : '🌙 Dark Mode');
+      const dark = { en:'🌙 Dark Mode', fr:'🌙 Mode sombre', id:'🌙 Mode Gelap', ur:'🌙 ڈارک موڈ', bn:'🌙 ডার্ক মোড', tr:'🌙 Karanlık Mod' };
+      el.textContent = isAr ? (el.dataset.ar || '🌙 الوضع الداكن') : (dark[lang] || dark.en);
     });
 
     /* 6) الاتجاه + لغة الصفحة */
-    document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
+    document.documentElement.dir  = rtl ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
     document.body && document.body.setAttribute('data-lang', lang);
   },
@@ -768,165 +1064,234 @@ document.addEventListener('DOMContentLoaded', () => I18N.init());
    ════════════════════════════════════════════════════════════ */
 const UI_MAP = {
 
-  'القرآن الكريم': { en:'The Holy Quran', fr:'Le Saint Coran' },
-  'المواسم والمناسك': { en:'Seasons & Rites', fr:'Saisons et rites' },
-  'الزكاة والصدقة': { en:'Zakat & Charity', fr:'Zakat et aumône' },
-  'المكتبة والمعرفة': { en:'Library & Knowledge', fr:'Bibliothèque et savoir' },
-  'ركن الأطفال': { en:'Kids Corner', fr:'Espace enfants' },
-  'ألعاب القرية': { en:'Village Games', fr:'Jeux du village' },
-  'ورش وإبداع': { en:'Workshops & Creativity', fr:'Ateliers et créativité' },
-  'المتابعة والإحصاء': { en:'Tracking & Stats', fr:'Suivi et statistiques' },
-  'العائلة والتربية': { en:'Family & Parenting', fr:'Famille et éducation' },
-  'الذكر والدعاء': { en:'Dhikr and Dua', fr:'Dhikr et invocations' },
-  'وضع خاص': { en:'Special Care', fr:'Soin particulier' },
-  'برنامج اليوم': { en:'Daily Program', fr:'Programme du jour' },
-  'الورد اليومي': { en:'Daily Wird', fr:'Wird quotidien' },
-  'الأذكار': { en:'Dhikr', fr:'Invocations' },
-  'قيم الدعاء': { en:'Du\'a Values', fr:'Les valeurs de l\'invocation' },
-  'السنن المهجورة': { en:'Forgotten Sunnahs', fr:'Sunan oubliées' },
-  'الرقية الشرعية': { en:'Ruqyah Healing', fr:'Rouqya' },
-  'مناسك الحج': { en:'Hajj Rites', fr:'Rites du Hajj' },
-  'دعاء يوم عرفة': { en:'Arafah Supplication', fr:'Invocation d\'Arafah' },
-  'لوحة رمضان': { en:'Ramadan Board', fr:'Tableau de Ramadan' },
-  'حاسبة الزكاة': { en:'Zakat Calculator', fr:'Calculateur de Zakat' },
-  'أحكام الزكاة': { en:'Zakat Rules', fr:'Règles de la Zakat' },
-  'أنواع الزكاة وحسابها': { en:'Zakat Types and Calculation', fr:'Types de Zakat et calcul' },
-  'المكتبة الصوتية': { en:'Audio Library', fr:'Bibliothèque audio' },
-  'المكتبة المرئية': { en:'Video Library', fr:'Bibliothèque vidéo' },
-  'المكتبة النصية': { en:'Text Library', fr:'Bibliothèque de textes' },
-  'ثُريّا — الرئيسية': { en:'Thuraya — Home', fr:'Thuraya — Accueil' },
-  'حكايات القرية': { en:'Village Tales', fr:'Contes du village' },
-  'غرس — قصص للأطفال': { en:'Ghars — Kids Stories', fr:'Ghars — Histoires pour enfants' },
-  'صحيفة القرية': { en:'Village Gazette', fr:'Gazette du village' },
-  'حكاية حج': { en:'A Hajj Story', fr:'Une histoire de Hajj' },
-  'مدرستي الجميلة': { en:'My Lovely School', fr:'Ma belle école' },
-  'يومي': { en:'My Day', fr:'Ma journée' },
-  'محقّق القرية': { en:'Village Detective', fr:'Détective du village' },
-  'مدينة الميزان': { en:'City of Balance', fr:'La cité de la balance' },
-  'قصر الذاكرة': { en:'Memory Palace', fr:'Le palais de la mémoire' },
-  'من يكذب؟': { en:'Who Is Lying?', fr:'Qui ment ?' },
-  'عرين الأبطال': { en:'Heroes Den', fr:'L\'antre des héros' },
-  'شاشة المرح': { en:'Fun Screen', fr:'Écran de jeux' },
-  'بستان الذكر': { en:'Dhikr Garden', fr:'Le jardin du dhikr' },
-  'الوصفة': { en:'The Recipe', fr:'La recette' },
-  'الطريق إلى البيت': { en:'The Way Home', fr:'Le chemin de la maison' },
-  'التجربة': { en:'The Experiment', fr:'L\'expérience' },
-  'ترتيب الضيافة': { en:'Hospitality Order', fr:'Ordre de l\'hospitalité' },
-  'نادي الإبداع': { en:'Creativity Club', fr:'Club de créativité' },
-  'حصاد الشهر': { en:'Monthly Harvest', fr:'Bilan mensuel' },
-  'المجموعات والمنافسة': { en:'Groups and Competition', fr:'Groupes et compétition' },
-  'دليل المربي': { en:'Parent Guide', fr:'Guide des parents' },
-  'الخصوصية وكيف يعمل': { en:'Privacy and How It Works', fr:'Confidentialité et fonctionnement' },
-  'زهرة — رفيقةُ العذر': { en:'Zahra — Cycle Companion', fr:'Zahra — Compagne du cycle' },
-  'حواء — عبادتي في عذري': { en:'Hawwa — Worship During Excuse', fr:'Hawwa — Adoration en excuse' },
-  'عن المطوّر': { en:'About the Developer', fr:'À propos du développeur' },
+  'القرآن الكريم': { en:'The Holy Quran', fr:'Le Saint Coran', ur:'قرآن مجید', id:'Al-Quran', tr:'Kur\'an-ı Kerim', bn:'পবিত্র কুরআন'},
+  'المواسم والمناسك': { en:'Seasons & Rites', fr:'Saisons et rites', ur:'موسم اور مناسک', id:'Musim & Manasik', tr:'Mevsimler ve Menasik', bn:'মৌসুম ও মানাসিক'},
+  'الزكاة والصدقة': { en:'Zakat & Charity', fr:'Zakat et aumône', ur:'زکوٰۃ و صدقہ', id:'Zakat & Sedekah', tr:'Zekât ve Sadaka', bn:'যাকাত ও দান'},
+  'المكتبة والمعرفة': { en:'Library & Knowledge', fr:'Bibliothèque et savoir', ur:'کتب خانہ و معرفت', id:'Perpustakaan & Ilmu', tr:'Kütüphane ve Bilgi', bn:'লাইব্রেরি ও জ্ঞান'},
+  'ركن الأطفال': { en:'Kids Corner', fr:'Espace enfants', ur:'بچوں کا گوشہ', id:'Pojok Anak', tr:'Çocuk Köşesi', bn:'শিশু কর্নার'},
+  'ألعاب القرية': { en:'Village Games', fr:'Jeux du village', ur:'گاؤں کے کھیل', id:'Permainan Desa', tr:'Köy Oyunları', bn:'গ্রামের খেলা'},
+  'ورش وإبداع': { en:'Workshops & Creativity', fr:'Ateliers et créativité', ur:'ورکشاپ و تخلیق', id:'Lokakarya & Kreativitas', tr:'Atölye ve Yaratıcılık', bn:'কর্মশালা ও সৃজন'},
+  'المتابعة والإحصاء': { en:'Tracking & Stats', fr:'Suivi et statistiques', ur:'نگرانی و اعداد', id:'Pelacakan & Statistik', tr:'Takip ve İstatistik', bn:'ট্র্যাকিং ও পরিসংখ্যান'},
+  'العائلة والتربية': { en:'Family & Parenting', fr:'Famille et éducation', ur:'خاندان و تربیت', id:'Keluarga & Parenting', tr:'Aile ve Terbiye', bn:'পরিবার ও লালন-পালন'},
+  'الذكر والدعاء': { en:'Dhikr and Dua', fr:'Dhikr et invocations', ur:'ذکر و دعا', id:'Zikir & Doa', tr:'Zikir ve Dua', bn:'জিকির ও দুআ'},
+  'وضع خاص': { en:'Special Care', fr:'Soin particulier', ur:'خصوصی حالت', id:'Mode Khusus', tr:'Özel Durum', bn:'বিশেষ অবস্থা'},
+  'برنامج اليوم': { en:'Daily Program', fr:'Programme du jour', ur:'روز کا پروگرام', id:'Program Harian', tr:'Günlük Program', bn:'দৈনিক কর্মসূচি'},
+  'الورد اليومي': { en:'Daily Wird', fr:'Wird quotidien', ur:'روزانہ ورد', id:'Wird Harian', tr:'Günlük Vird', bn:'দৈনিক ওয়ারদ'},
+  'الأذكار': { en:'Dhikr', fr:'Invocations', ur:'اذکار', id:'Zikir', tr:'Zikirler', bn:'জিকির'},
+  'قيم الدعاء': { en:'Du\'a Values', fr:'Les valeurs de l\'invocation', ur:'دعا کی قدریں', id:'Nilai Doa', tr:'Dua Değerleri', bn:'দুআর মূল্যবোধ'},
+  'السنن المهجورة': { en:'Forgotten Sunnahs', fr:'Sunan oubliées', ur:'بھولی سنتیں', id:'Sunnah yang Terlupakan', tr:'Unutulan Sünnetler', bn:'বিস্মৃত সুন্নাহ'},
+  'الرقية الشرعية': { en:'Ruqyah Healing', fr:'Rouqya', ur:'شرعی رقیہ', id:'Ruqyah Syar\'iyah', tr:'Şer\'i Rukye', bn:'শরিয়তসম্মত রুকইয়াহ'},
+  'مناسك الحج': { en:'Hajj Rites', fr:'Rites du Hajj', ur:'مناسک حج', id:'Manasik Haji', tr:'Hac Menasiki', bn:'হজের মানাসিক'},
+  'دعاء يوم عرفة': { en:'Arafah Supplication', fr:'Invocation d\'Arafah', ur:'عرفہ کی دعا', id:'Doa Hari Arafah', tr:'Arefe Günü Duası', bn:'আরাফার দিনের দুআ'},
+  'لوحة رمضان': { en:'Ramadan Board', fr:'Tableau de Ramadan', ur:'رمضان ڈیش بورڈ', id:'Papan Ramadan', tr:'Ramazan Panosu', bn:'রমজান ড্যাশবোর্ড'},
+  'حاسبة الزكاة': { en:'Zakat Calculator', fr:'Calculateur de Zakat', ur:'زکوٰۃ کیلکولیٹر', id:'Kalkulator Zakat', tr:'Zekât Hesaplayıcı', bn:'যাকাত ক্যালকুলেটর'},
+  'أحكام الزكاة': { en:'Zakat Rules', fr:'Règles de la Zakat', ur:'زکوٰۃ کے احکام', id:'Hukum Zakat', tr:'Zekât Hükümleri', bn:'যাকাতের বিধান'},
+  'أنواع الزكاة وحسابها': { en:'Zakat Types and Calculation', fr:'Types de Zakat et calcul', ur:'زکوٰۃ کی اقسام اور حساب', id:'Jenis Zakat dan Hitungannya', tr:'Zekât Türleri ve Hesabı', bn:'যাকাতের প্রকার ও হিসাব'},
+  'المكتبة الصوتية': { en:'Audio Library', fr:'Bibliothèque audio', ur:'صوتی کتب خانہ', id:'Perpustakaan Audio', tr:'Sesli Kütüphane', bn:'অডিও লাইব্রেরি'},
+  'المكتبة المرئية': { en:'Video Library', fr:'Bibliothèque vidéo', ur:'بصری کتب خانہ', id:'Perpustakaan Video', tr:'Görsel Kütüphane', bn:'ভিডিও লাইব্রেরি'},
+  'المكتبة النصية': { en:'Text Library', fr:'Bibliothèque de textes', ur:'متنی کتب خانہ', id:'Perpustakaan Teks', tr:'Metin Kütüphanesi', bn:'টেক্সট লাইব্রেরি'},
+  'ثُريّا — الرئيسية': { en:'Thuraya — Home', fr:'Thuraya — Accueil', ur:'ثریا — ہوم', id:'Thuraya — Beranda', tr:'Thuraya — Ana Sayfa', bn:'থুরাইয়া — হোম'},
+  'حكايات القرية': { en:'Village Tales', fr:'Contes du village', ur:'گاؤں کی کہانیاں', id:'Kisah Desa', tr:'Köy Masalları', bn:'গ্রামের গল্প'},
+  'غرس — قصص للأطفال': { en:'Ghars — Kids Stories', fr:'Ghars — Histoires pour enfants', ur:'غرس — بچوں کی کہانیاں', id:'Ghars — Cerita Anak', tr:'Ghars — Çocuk Hikâyeleri', bn:'গারস — শিশুদের গল্প'},
+  'صحيفة القرية': { en:'Village Gazette', fr:'Gazette du village', ur:'گاؤں کا اخبار', id:'Koran Desa', tr:'Köy Gazetesi', bn:'গ্রামের পত্রিকা'},
+  'حكاية حج': { en:'A Hajj Story', fr:'Une histoire de Hajj', ur:'حج کی کہانی', id:'Kisah Haji', tr:'Hac Hikâyesi', bn:'হজের গল্প'},
+  'مدرستي الجميلة': { en:'My Lovely School', fr:'Ma belle école', ur:'میرا خوبصورت اسکول', id:'Sekolahku yang Indah', tr:'Güzel Okulum', bn:'আমার সুন্দর স্কুল'},
+  'يومي': { en:'My Day', fr:'Ma journée', ur:'میرا دن', id:'Hariku', tr:'Günüm', bn:'আমার দিন'},
+  'محقّق القرية': { en:'Village Detective', fr:'Détective du village', ur:'گاؤں کا جاسوس', id:'Detektif Desa', tr:'Köy Dedektifi', bn:'গ্রামের গোয়েন্দা'},
+  'مدينة الميزان': { en:'City of Balance', fr:'La cité de la balance', ur:'میزان کا شہر', id:'Kota Keseimbangan', tr:'Denge Şehri', bn:'ভারসাম্যের শহর'},
+  'قصر الذاكرة': { en:'Memory Palace', fr:'Le palais de la mémoire', ur:'یادداشت کا محل', id:'Istana Memori', tr:'Hafıza Sarayı', bn:'স্মৃতির প্রাসাদ'},
+  'من يكذب؟': { en:'Who Is Lying?', fr:'Qui ment ?', ur:'کون جھوٹ بول رہا ہے؟', id:'Siapa yang Berbohong?', tr:'Kim Yalan Söylüyor?', bn:'কে মিথ্যা বলছে?'},
+  'عرين الأبطال': { en:'Heroes Den', fr:'L\'antre des héros', ur:'ہیروز کا اڈہ', id:'Sarang Para Pahlawan', tr:'Kahramanlar Yuvası', bn:'বীরদের আস্তানা'},
+  'شاشة المرح': { en:'Fun Screen', fr:'Écran de jeux', ur:'تفریح کی اسکرین', id:'Layar Keseruan', tr:'Eğlence Ekranı', bn:'মজার স্ক্রিন'},
+  'بستان الذكر': { en:'Dhikr Garden', fr:'Le jardin du dhikr', ur:'ذکر کا باغ', id:'Taman Zikir', tr:'Zikir Bahçesi', bn:'জিকিরের বাগান'},
+  'الوصفة': { en:'The Recipe', fr:'La recette', ur:'ترکیب', id:'Resep', tr:'Tarif', bn:'রেসিপি'},
+  'الطريق إلى البيت': { en:'The Way Home', fr:'Le chemin de la maison', ur:'گھر کا راستہ', id:'Jalan Pulang', tr:'Eve Giden Yol', bn:'বাড়ির পথ'},
+  'التجربة': { en:'The Experiment', fr:'L\'expérience', ur:'تجربہ', id:'Eksperimen', tr:'Deney', bn:'পরীক্ষা'},
+  'ترتيب الضيافة': { en:'Hospitality Order', fr:'Ordre de l\'hospitalité', ur:'مہمان نوازی کی ترتیب', id:'Urutan Menjamu', tr:'Misafir Ağırlama Sırası', bn:'আপ্যায়নের ক্রম'},
+  'نادي الإبداع': { en:'Creativity Club', fr:'Club de créativité', ur:'تخلیقی کلب', id:'Klub Kreativitas', tr:'Yaratıcılık Kulübü', bn:'সৃজন ক্লাব'},
+  'حصاد الشهر': { en:'Monthly Harvest', fr:'Bilan mensuel', ur:'مہینے کی کٹائی', id:'Panen Bulanan', tr:'Aylık Hasat', bn:'মাসিক ফসল'},
+  'المجموعات والمنافسة': { en:'Groups and Competition', fr:'Groupes et compétition', ur:'گروپ اور مقابلہ', id:'Grup & Kompetisi', tr:'Gruplar ve Yarışma', bn:'দল ও প্রতিযোগিতা'},
+  'دليل المربي': { en:'Parent Guide', fr:'Guide des parents', ur:'مربی کی رہنمائی', id:'Panduan Orang Tua', tr:'Ebeveyn Rehberi', bn:'অভিভাবক নির্দেশিকা'},
+  'الخصوصية وكيف يعمل': { en:'Privacy and How It Works', fr:'Confidentialité et fonctionnement', ur:'رازداری اور طریقہ کار', id:'Privasi & Cara Kerja', tr:'Gizlilik ve Nasıl Çalışır', bn:'গোপনীয়তা ও কার্যপদ্ধতি'},
+  'زهرة — رفيقةُ العذر': { en:'Zahra — Cycle Companion', fr:'Zahra — Compagne du cycle', ur:'زہرہ — عذر کی ساتھی', id:'Zahra — Pendamping Uzur', tr:'Zehra — Mazeret Yoldaşı', bn:'জাহরা — ওজরের সঙ্গী'},
+  'حواء — عبادتي في عذري': { en:'Hawwa — Worship During Excuse', fr:'Hawwa — Adoration en excuse', ur:'حوا — عذر میں میری عبادت', id:'Hawa — Ibadah Saat Uzur', tr:'Havva — Mazerette İbadetim', bn:'হাওয়া — ওজরে আমার ইবাদত'},
+  'عن المطوّر': { en:'About the Developer', fr:'À propos du développeur', ur:'ڈویلپر کے بارے میں', id:'Tentang Pengembang', tr:'Geliştirici Hakkında', bn:'ডেভেলপার সম্পর্কে'},
   /* روابط القائمة */
-  'لوحة التحكم':          { en:'Dashboard', fr:'Tableau de bord' },
-  'مواقيت الصلاة':        { en:'Prayer Times', fr:'Heures de prière' },
-  'اتجاه القبلة':         { en:'Qibla Direction', fr:'Direction de la Qibla' },
-  'التقويم الهجري':       { en:'Hijri Calendar', fr:'Calendrier Hégirien' },
-  'ورد العشر':            { en:'Daily Quran Wird', fr:'Wird quotidien du Coran' },
-  'الورد القرآني':        { en:'Daily Quran Wird', fr:'Wird quotidien du Coran' },
-  'المصحف الشريف':        { en:'Holy Quran', fr:'Saint Coran' },
-  'تسميع القرآن':         { en:'Quran Memorization', fr:'Mémorisation du Coran' },
-  'إذاعات القرآن':        { en:'Quran Radio', fr:'Radios du Coran' },
-  'المسبحة':              { en:'Tasbih Counter', fr:'Compteur de Tasbih' },
-  'الأذكار والدعاء':      { en:'Dhikr & Supplications', fr:'Dhikr et invocations' },
-  'الأربعون النووية':     { en:'The Forty Nawawi', fr:'Les Quarante de Nawawi' },
-  'الأدعية':              { en:'Supplications', fr:'Invocations' },
-  'جدول العبادات':        { en:'Worship Tracker', fr:'Suivi des adorations' },
-  'فضائل العشر':          { en:'Virtues of the 10 Days', fr:'Mérites des 10 jours' },
-  'يوم عرفة':             { en:'Day of Arafah', fr:'Jour de Arafah' },
-  'دليل الأضحية':         { en:'Sacrifice Guide', fr:'Guide du sacrifice' },
-  'صدقة العشر':           { en:'Charity & Giving', fr:'Aumône et bienfaisance' },
-  'الصدقة والبر':         { en:'Charity & Giving', fr:'Aumône et bienfaisance' },
-  'حصاد العشر':           { en:'Worship Harvest', fr:'Bilan des adorations' },
-  'حصاد العبادات':        { en:'Worship Harvest', fr:'Bilan des adorations' },
-  'إحصاء العشر':          { en:'Worship Summary', fr:'Récapitulatif des adorations' },
-  'إحصاء العبادات':       { en:'Worship Summary', fr:'Récapitulatif des adorations' },
-  'أوسمتي':               { en:'My Badges', fr:'Mes badges' },
-  'محاضرات العشر':        { en:'Lectures of the 10 Days', fr:'Conférences des 10 jours' },
-  'المرئيات والمحاضرات':   { en:'Islamic Lectures', fr:'Conférences islamiques' },
-  'قائمة التشغيل':        { en:'Playlist', fr:'Liste de lecture' },
-  'ثُريّا — وضع الأطفال': { en:'Thuraya — Kids Mode', fr:'Thuraya — Mode enfants' },
-  'غرس — رحلة الحج':     { en:'Ghars — Hajj Journey', fr:'Ghars — Voyage du Hajj' },
-  'أسماء الله الحسنى':    { en:'The 99 Names of Allah', fr:'Les 99 noms d’Allah' },
-  'تدبّر بالذكاء':        { en:'AI Reflection', fr:'Réflexion par IA' },
-  'حسابي':                { en:'My Account', fr:'Mon compte' },
-  'الإعدادات':            { en:'Settings', fr:'Paramètres' },
-  'بلاغ مشكلة':          { en:'Report Issue', fr:'Signaler un problème' },
-  'عن التطبيق':          { en:'About', fr:'À propos' },
+  'لوحة التحكم': { en:'Dashboard', fr:'Tableau de bord', ur:'ڈیش بورڈ', id:'Dasbor', tr:'Panel', bn:'ড্যাশবোর্ড'},
+  'مواقيت الصلاة': { en:'Prayer Times', fr:'Heures de prière', ur:'نماز کے اوقات', id:'Waktu Salat', tr:'Namaz Vakitleri', bn:'নামাজের সময়'},
+  'اتجاه القبلة': { en:'Qibla Direction', fr:'Direction de la Qibla', ur:'قبلہ کی سمت', id:'Arah Kiblat', tr:'Kıble Yönü', bn:'কিবলার দিক'},
+  'التقويم الهجري': { en:'Hijri Calendar', fr:'Calendrier Hégirien', ur:'ہجری کیلنڈر', id:'Kalender Hijriah', tr:'Hicri Takvim', bn:'হিজরি ক্যালেন্ডার'},
+  'ورد العشر': { en:'Daily Quran Wird', fr:'Wird quotidien du Coran', ur:'عشرہ کا ورد', id:'Wird Sepuluh Hari', tr:'On Günlük Vird', bn:'দশ দিনের ওয়ারদ'},
+  'الورد القرآني': { en:'Daily Quran Wird', fr:'Wird quotidien du Coran', ur:'قرآنی ورد', id:'Wird Al-Quran', tr:'Kur\'an Virdi', bn:'কুরআনের ওয়ারদ'},
+  'المصحف الشريف': { en:'Holy Quran', fr:'Saint Coran', ur:'قرآن مجید', id:'Mushaf Suci', tr:'Kur\'an-ı Kerim', bn:'পবিত্র মুসহাফ'},
+  'تسميع القرآن': { en:'Quran Memorization', fr:'Mémorisation du Coran', ur:'قرآن کی تسمیع', id:'Setoran Hafalan', tr:'Kur\'an Tilaveti', bn:'কুরআন তেলাওয়াত'},
+  'إذاعات القرآن': { en:'Quran Radio', fr:'Radios du Coran', ur:'قرآنی ریڈیو', id:'Radio Quran', tr:'Kur\'an Radyoları', bn:'কুরআন রেডিও'},
+  'المسبحة': { en:'Tasbih Counter', fr:'Compteur de Tasbih', ur:'تسبیح کاؤنٹر', id:'Tasbih', tr:'Tesbih', bn:'তাসবিহ'},
+  'الأذكار والدعاء': { en:'Dhikr & Supplications', fr:'Dhikr et invocations', ur:'اذکار و دعا', id:'Zikir & Doa', tr:'Zikir ve Dua', bn:'জিকির ও দুআ'},
+  'الأربعون النووية': { en:'The Forty Nawawi', fr:'Les Quarante de Nawawi', ur:'نووی کی چالیس حدیثیں', id:'Arbain Nawawi', tr:'Nevevi Kırk Hadis', bn:'নববীর চল্লিশ হাদিস'},
+  'الأدعية': { en:'Supplications', fr:'Invocations', ur:'دعائیں', id:'Doa-doa', tr:'Dualar', bn:'দুআসমূহ'},
+  'جدول العبادات': { en:'Worship Tracker', fr:'Suivi des adorations', ur:'عبادات کا شیڈول', id:'Jadwal Ibadah', tr:'İbadet Takvimi', bn:'ইবাদতের সূচি'},
+  'فضائل العشر': { en:'Virtues of the 10 Days', fr:'Mérites des 10 jours', ur:'عشرہ کے فضائل', id:'Keutamaan Sepuluh Hari', tr:'On Günün Fazileti', bn:'দশ দিনের ফজিলত'},
+  'يوم عرفة': { en:'Day of Arafah', fr:'Jour de Arafah', ur:'عرفہ کا دن', id:'Hari Arafah', tr:'Arefe Günü', bn:'আরাফার দিন'},
+  'دليل الأضحية': { en:'Sacrifice Guide', fr:'Guide du sacrifice', ur:'قربانی کی رہنمائی', id:'Panduan Kurban', tr:'Kurban Rehberi', bn:'কুরবানির নির্দেশিকা'},
+  'صدقة العشر': { en:'Charity & Giving', fr:'Aumône et bienfaisance', ur:'عشرہ کا صدقہ', id:'Sedekah Sepuluh Hari', tr:'On Gün Sadakası', bn:'দশ দিনের সদকা'},
+  'الصدقة والبر': { en:'Charity & Giving', fr:'Aumône et bienfaisance', ur:'صدقہ و نیکی', id:'Sedekah & Kebaikan', tr:'Sadaka ve İyilik', bn:'সদকা ও সৎকর্ম'},
+  'حصاد العشر': { en:'Worship Harvest', fr:'Bilan des adorations', ur:'عشرہ کی کٹائی', id:'Panen Sepuluh Hari', tr:'On Gün Hasadı', bn:'দশ দিনের ফসল'},
+  'حصاد العبادات': { en:'Worship Harvest', fr:'Bilan des adorations', ur:'عبادات کی کٹائی', id:'Panen Ibadah', tr:'İbadet Hasadı', bn:'ইবাদতের ফসল'},
+  'إحصاء العشر': { en:'Worship Summary', fr:'Récapitulatif des adorations', ur:'عشرہ کا خلاصہ', id:'Ringkasan Sepuluh Hari', tr:'On Gün Özeti', bn:'দশ দিনের সারসংক্ষেপ'},
+  'إحصاء العبادات': { en:'Worship Summary', fr:'Récapitulatif des adorations', ur:'عبادات کا خلاصہ', id:'Ringkasan Ibadah', tr:'İbadet Özeti', bn:'ইবাদতের সারসংক্ষেপ'},
+  'أوسمتي': { en:'My Badges', fr:'Mes badges', ur:'میرے تمغے', id:'Lencanaku', tr:'Rozetlerim', bn:'আমার ব্যাজ'},
+  'محاضرات العشر': { en:'Lectures of the 10 Days', fr:'Conférences des 10 jours', ur:'عشرہ کے لیکچر', id:'Ceramah Sepuluh Hari', tr:'On Gün Sohbetleri', bn:'দশ দিনের বক্তৃতা'},
+  'المرئيات والمحاضرات': { en:'Islamic Lectures', fr:'Conférences islamiques', ur:'ویڈیوز و لیکچر', id:'Video & Ceramah', tr:'Videolar ve Sohbetler', bn:'ভিডিও ও বক্তৃতা'},
+  'قائمة التشغيل': { en:'Playlist', fr:'Liste de lecture', ur:'پلے لسٹ', id:'Daftar Putar', tr:'Oynatma Listesi', bn:'প্লেলিস্ট'},
+  'ثُريّا — وضع الأطفال': { en:'Thuraya — Kids Mode', fr:'Thuraya — Mode enfants', ur:'ثریا — بچوں کا موڈ', id:'Thuraya — Mode Anak', tr:'Thuraya — Çocuk Modu', bn:'থুরাইয়া — শিশু মোড'},
+  'غرس — رحلة الحج': { en:'Ghars — Hajj Journey', fr:'Ghars — Voyage du Hajj', ur:'غرس — حج کا سفر', id:'Ghars — Perjalanan Haji', tr:'Ghars — Hac Yolculuğu', bn:'গারস — হজের সফর'},
+  'أسماء الله الحسنى': { en:'The 99 Names of Allah', fr:'Les 99 noms d’Allah', ur:'اللہ کے حسین نام', id:'Asmaul Husna', tr:'Allah\'ın Güzel İsimleri', bn:'আল্লাহর সুন্দর নামসমূহ'},
+  'تدبّر بالذكاء': { en:'AI Reflection', fr:'Réflexion par IA', ur:'ذہانت سے تدبر', id:'Tadabur dengan AI', tr:'Yapay Zekâ ile Tefekkür', bn:'এআই দিয়ে তাদাব্বুর'},
+  'حسابي': { en:'My Account', fr:'Mon compte', ur:'میرا اکاؤنٹ', id:'Akun Saya', tr:'Hesabım', bn:'আমার অ্যাকাউন্ট'},
+  'الإعدادات': { en:'Settings', fr:'Paramètres', ur:'ترتیبات', id:'Pengaturan', tr:'Ayarlar', bn:'সেটিংস'},
+  'بلاغ مشكلة': { en:'Report Issue', fr:'Signaler un problème', ur:'مسئلہ کی اطلاع', id:'Laporkan Masalah', tr:'Sorun Bildir', bn:'সমস্যা জানান'},
+  'عن التطبيق': { en:'About', fr:'À propos', ur:'ایپ کے بارے میں', id:'Tentang Aplikasi', tr:'Uygulama Hakkında', bn:'অ্যাপ সম্পর্কে'},
   /* فواصل الأقسام */
-  'الصلاة والتقويم':     { en:'Prayer & Calendar', fr:'Prière et calendrier' },
-  'القرآن والعبادة':     { en:'Quran & Worship', fr:'Coran et adoration' },
-  'الحج والمناسك':       { en:'Hajj & Rites', fr:'Hajj et rites' },
-  'المتابعة':            { en:'Tracking', fr:'Suivi' },
-  'التعلم والترفيه':    { en:'Learning & Entertainment', fr:'Apprentissage et loisirs' },
-  'التعلّم والترفيه':   { en:'Learning & Entertainment', fr:'Apprentissage et loisirs' },
+  'الصلاة والتقويم': { en:'Prayer & Calendar', fr:'Prière et calendrier', ur:'نماز و کیلنڈر', id:'Salat & Kalender', tr:'Namaz ve Takvim', bn:'নামাজ ও ক্যালেন্ডার'},
+  'القرآن والعبادة': { en:'Quran & Worship', fr:'Coran et adoration', ur:'قرآن و عبادت', id:'Quran & Ibadah', tr:'Kur\'an ve İbadet', bn:'কুরআন ও ইবাদত'},
+  'الحج والمناسك': { en:'Hajj & Rites', fr:'Hajj et rites', ur:'حج و مناسک', id:'Haji & Manasik', tr:'Hac ve Menasik', bn:'হজ ও মানাসিক'},
+  'المتابعة': { en:'Tracking', fr:'Suivi', ur:'نگرانی', id:'Pelacakan', tr:'Takip', bn:'ট্র্যাকিং'},
+  'التعلم والترفيه': { en:'Learning & Entertainment', fr:'Apprentissage et loisirs', ur:'سیکھنا اور تفریح', id:'Belajar & Hiburan', tr:'Öğrenme ve Eğlence', bn:'শেখা ও বিনোদন'},
+  'التعلّم والترفيه': { en:'Learning & Entertainment', fr:'Apprentissage et loisirs', ur:'سیکھنا اور تفریح', id:'Belajar & Hiburan', tr:'Öğrenme ve Eğlence', bn:'শেখা ও বিনোদন'},
   /* عامة */
-  'الوضع الداكن':        { en:'Dark Mode', fr:'Mode sombre' },
-  'تثبيت / تحميل التطبيق': { en:'Install App', fr:"Installer l'application" },
+  'الوضع الداكن': { en:'Dark Mode', fr:'Mode sombre', ur:'ڈارک موڈ', id:'Mode Gelap', tr:'Karanlık Mod', bn:'ডার্ক মোড'},
+  'تثبيت / تحميل التطبيق': { en:'Install App', fr:"Installer l'application", ur:'ایپ انسٹال کریں', id:'Pasang Aplikasi', tr:'Uygulamayı Yükle', bn:'অ্যাপ ইনস্টল করুন'},
   /* عناوين أقسام */
-  'ابدأ يومك الآن':              { en:'Start Your Day Now', fr:'Commencez votre journée' },
-  'مؤشر الالتزام الروحاني':      { en:'Spiritual Commitment Index', fr:'Indice d’engagement spirituel' },
-  '📖 آية اليوم':                { en:'📖 Verse of the Day', fr:'📖 Verset du jour' },
-  '⚡ عبادات سريعة':             { en:'⚡ Quick Worship', fr:'⚡ Adorations rapides' },
-  '🕌 الفرائض':                  { en:'🕌 Obligatory Prayers', fr:'🕌 Prières obligatoires' },
-  '⭐ السنن والنوافل':           { en:'⭐ Sunnah & Optional Prayers', fr:'⭐ Prières surérogatoires' },
-  '📿 الذكر والاستغفار':        { en:'📿 Dhikr & Repentance', fr:'📿 Dhikr et repentir' },
-  '🌙 الصيام والعطاء':          { en:'🌙 Fasting & Giving', fr:'🌙 Jeûne et don' },
-  '📅 تتبع الصيام — الأيام التسعة': { en:'📅 Fasting Tracker — Nine Days', fr:'📅 Suivi du jeûne — neuf jours' },
-  '📖 خطة الختمة — 10 أيام':   { en:'📖 Quran Completion Plan — 10 Days', fr:'📖 Plan de lecture — 10 jours' },
-  '🤲 تحدي الدعاء والعطاء':    { en:'🤲 Dua & Giving Challenge', fr:'🤲 Défi invocation et don' },
-  '✨ إحياء السنن اليومية':     { en:'✨ Daily Sunnah Revival', fr:'✨ Raviver les sunnas quotidiennes' },
-  '🚫 لصوص العشر':              { en:'🚫 Time Thieves', fr:'🚫 Les voleurs de temps' },
-  '📊 إحصائيات اليوم':         { en:"📊 Today's Stats", fr:'📊 Statistiques du jour' },
-  '🏅 أوسمتي':                  { en:'🏅 My Badges', fr:'🏅 Mes badges' },
-  '🎬 محاضرات العشر':          { en:'🎬 Lectures of the 10 Days', fr:'🎬 Conférences des 10 jours' },
+  'ابدأ يومك الآن': { en:'Start Your Day Now', fr:'Commencez votre journée', ur:'اپنا دن شروع کریں', id:'Mulai Harimu', tr:'Gününe Başla', bn:'আপনার দিন শুরু করুন'},
+  'مؤشر الالتزام الروحاني': { en:'Spiritual Commitment Index', fr:'Indice d’engagement spirituel', ur:'روحانی پابندی کا اشاریہ', id:'Indeks Komitmen Spiritual', tr:'Manevi Bağlılık Endeksi', bn:'আধ্যাত্মিক অঙ্গীকার সূচক'},
+  '📖 آية اليوم': { en:'📖 Verse of the Day', fr:'📖 Verset du jour', ur:'📖 آج کی آیت', id:'📖 Ayat Hari Ini', tr:'📖 Günün Ayeti', bn:'📖 আজকের আয়াত'},
+  '⚡ عبادات سريعة': { en:'⚡ Quick Worship', fr:'⚡ Adorations rapides', ur:'⚡ فوری عبادات', id:'⚡ Ibadah Cepat', tr:'⚡ Hızlı İbadetler', bn:'⚡ দ্রুত ইবাদত'},
+  '🕌 الفرائض': { en:'🕌 Obligatory Prayers', fr:'🕌 Prières obligatoires', ur:'🕌 فرض نمازیں', id:'🕌 Salat Wajib', tr:'🕌 Farz Namazlar', bn:'🕌 ফরজ নামাজ'},
+  '⭐ السنن والنوافل': { en:'⭐ Sunnah & Optional Prayers', fr:'⭐ Prières surérogatoires', ur:'⭐ سنتیں و نفل', id:'⭐ Sunnah & Nafilah', tr:'⭐ Sünnet ve Nafile', bn:'⭐ সুন্নাহ ও নফল'},
+  '📿 الذكر والاستغفار': { en:'📿 Dhikr & Repentance', fr:'📿 Dhikr et repentir', ur:'📿 ذکر و استغفار', id:'📿 Zikir & Istigfar', tr:'📿 Zikir ve İstiğfar', bn:'📿 জিকির ও ইস্তিগফার'},
+  '🌙 الصيام والعطاء': { en:'🌙 Fasting & Giving', fr:'🌙 Jeûne et don', ur:'🌙 روزہ و عطیہ', id:'🌙 Puasa & Berbagi', tr:'🌙 Oruç ve İnfak', bn:'🌙 রোজা ও দান'},
+  '📅 تتبع الصيام — الأيام التسعة': { en:'📅 Fasting Tracker — Nine Days', fr:'📅 Suivi du jeûne — neuf jours', ur:'📅 روزوں کی نگرانی — نو دن', id:'📅 Pelacak Puasa — Sembilan Hari', tr:'📅 Oruç Takibi — Dokuz Gün', bn:'📅 রোজার হিসাব — নয় দিন'},
+  '📖 خطة الختمة — 10 أيام': { en:'📖 Quran Completion Plan — 10 Days', fr:'📖 Plan de lecture — 10 jours', ur:'📖 ختمِ قرآن کا منصوبہ — ۱۰ دن', id:'📖 Rencana Khatam — 10 Hari', tr:'📖 Hatim Planı — 10 Gün', bn:'📖 খতম পরিকল্পনা — ১০ দিন'},
+  '🤲 تحدي الدعاء والعطاء': { en:'🤲 Dua & Giving Challenge', fr:'🤲 Défi invocation et don', ur:'🤲 دعا و عطیہ چیلنج', id:'🤲 Tantangan Doa & Berbagi', tr:'🤲 Dua ve İnfak Meydan Okuması', bn:'🤲 দুআ ও দানের চ্যালেঞ্জ'},
+  '✨ إحياء السنن اليومية': { en:'✨ Daily Sunnah Revival', fr:'✨ Raviver les sunnas quotidiennes', ur:'✨ روزانہ سنتیں زندہ کریں', id:'✨ Menghidupkan Sunnah Harian', tr:'✨ Günlük Sünnetleri İhya', bn:'✨ দৈনিক সুন্নাহ পুনর্জীবন'},
+  '🚫 لصوص العشر': { en:'🚫 Time Thieves', fr:'🚫 Les voleurs de temps', ur:'🚫 عشرہ کے چور', id:'🚫 Pencuri Waktu', tr:'🚫 Zaman Hırsızları', bn:'🚫 সময়ের চোরেরা'},
+  '📊 إحصائيات اليوم': { en:"📊 Today's Stats", fr:'📊 Statistiques du jour', ur:'📊 آج کے اعداد', id:'📊 Statistik Hari Ini', tr:'📊 Günün İstatistikleri', bn:'📊 আজকের পরিসংখ্যান'},
+  '🏅 أوسمتي': { en:'🏅 My Badges', fr:'🏅 Mes badges', ur:'🏅 میرے تمغے', id:'🏅 Lencanaku', tr:'🏅 Rozetlerim', bn:'🏅 আমার ব্যাজ'},
+  '🎬 محاضرات العشر': { en:'🎬 Lectures of the 10 Days', fr:'🎬 Conférences des 10 jours', ur:'🎬 عشرہ کے لیکچر', id:'🎬 Ceramah Sepuluh Hari', tr:'🎬 On Gün Sohbetleri', bn:'🎬 দশ দিনের বক্তৃতা'},
   /* أزرار */
-  'تفعيل':     { en:'Activate', fr:'Activer' },
-  'مشاركة':    { en:'Share', fr:'Partager' },
-  'تحميل':     { en:'Download', fr:'Télécharger' },
-  'تثبيت':     { en:'Install', fr:'Installer' },
-  'إرسال':     { en:'Send', fr:'Envoyer' },
-  'إغلاق':     { en:'Close', fr:'Fermer' },
-  'عرض الكل ←': { en:'View all ←', fr:'Voir tout ←' },
-  'ملخص العشر ←': { en:'Summary ←', fr:'Récapitulatif ←' },
-  'ملخص العبادات ←': { en:'Summary ←', fr:'Récapitulatif ←' },
-  'تذكيرات':   { en:'Reminders', fr:'Rappels' },
-  'تغيير':     { en:'Change', fr:'Changer' },
+  'تفعيل': { en:'Activate', fr:'Activer', ur:'فعال کریں', id:'Aktifkan', tr:'Etkinleştir', bn:'চালু করুন'},
+  'مشاركة': { en:'Share', fr:'Partager', ur:'شیئر', id:'Bagikan', tr:'Paylaş', bn:'শেয়ার'},
+  'تحميل': { en:'Download', fr:'Télécharger', ur:'ڈاؤن لوڈ', id:'Unduh', tr:'İndir', bn:'ডাউনলোড'},
+  'تثبيت': { en:'Install', fr:'Installer', ur:'انسٹال', id:'Pasang', tr:'Yükle', bn:'ইনস্টল'},
+  'إرسال': { en:'Send', fr:'Envoyer', ur:'بھیجیں', id:'Kirim', tr:'Gönder', bn:'পাঠান'},
+  'إغلاق': { en:'Close', fr:'Fermer', ur:'بند کریں', id:'Tutup', tr:'Kapat', bn:'বন্ধ করুন'},
+  'عرض الكل ←': { en:'View all ←', fr:'Voir tout ←', ur:'سب دیکھیں ←', id:'Lihat semua ←', tr:'Tümünü gör ←', bn:'সব দেখুন ←'},
+  'ملخص العشر ←': { en:'Summary ←', fr:'Récapitulatif ←', ur:'خلاصہ ←', id:'Ringkasan ←', tr:'Özet ←', bn:'সারসংক্ষেপ ←'},
+  'ملخص العبادات ←': { en:'Summary ←', fr:'Récapitulatif ←', ur:'خلاصہ ←', id:'Ringkasan ←', tr:'Özet ←', bn:'সারসংক্ষেপ ←'},
+  'تذكيرات': { en:'Reminders', fr:'Rappels', ur:'یاد دہانیاں', id:'Pengingat', tr:'Hatırlatıcılar', bn:'রিমাইন্ডার'},
+  'تغيير': { en:'Change', fr:'Changer', ur:'تبدیل کریں', id:'Ubah', tr:'Değiştir', bn:'পরিবর্তন'},
   /* أيام/أوقات */
-  'يتجدد في':  { en:'Resets at', fr:'Réinitialisé à' },
-  'صفحة':      { en:'Page', fr:'Page' },
-  'الجزء':     { en:'Juz', fr:'Juz' },
-  'آية':        { en:'Verse', fr:'Verset' },
+  'يتجدد في': { en:'Resets at', fr:'Réinitialisé à', ur:'تجدید ہوتی ہے', id:'Diperbarui pada', tr:'Yenilenme', bn:'নবায়ন হবে'},
+  'صفحة': { en:'Page', fr:'Page', ur:'صفحہ', id:'Halaman', tr:'Sayfa', bn:'পৃষ্ঠা'},
+  'الجزء': { en:'Juz', fr:'Juz', ur:'پارہ', id:'Juz', tr:'Cüz', bn:'পারা'},
+  'آية': { en:'Verse', fr:'Verset', ur:'آیت', id:'Ayat', tr:'Ayet', bn:'আয়াত'},
+  'مرحبًا': { en:'Welcome', fr:'Bienvenue', id:'Selamat datang', ur:'خوش آمدید', bn:'স্বাগতম', tr:'Hoş geldiniz' },
+  'الصلاة القادمة': { en:'Next prayer', fr:'Prochaine prière', id:'Salat berikutnya', ur:'اگلی نماز', bn:'পরবর্তী নামাজ', tr:'Sıradaki namaz' },
+  'بعد': { en:'in', fr:'dans', id:'lagi', ur:'بعد', bn:'পরে', tr:'sonra' },
+  'حدّد موقعك لعرض مواقيتك على القوس': { en:'Set your location to show your prayer times on the arc', fr:'Définissez votre position pour afficher vos horaires sur l’arc', id:'Atur lokasi untuk menampilkan waktu salat di busur', ur:'اپنی جگہ مقرر کریں تاکہ اوقات قوس پر دکھائیں', bn:'আপনার অবস্থান নির্ধারণ করুন', tr:'Konumunu belirle, vakitler yayda görünsün' },
+  'ورد اليوم': { en:'Today’s wird', fr:'Wird du jour', id:'Wird hari ini', ur:'آج کا ورد', bn:'আজকের ওয়ারদ', tr:'Bugünün virdi' },
+  '🔥 يوم متتالٍ': { en:'🔥 day streak', fr:'🔥 jours d’affilée', id:'🔥 hari beruntun', ur:'🔥 مسلسل دن', bn:'🔥 দিন ধারাবাহিক', tr:'🔥 gün serisi' },
+  '🏅 وسام': { en:'🏅 Badge', fr:'🏅 Insigne', id:'🏅 Lencana', ur:'🏅 تمغہ', bn:'🏅 ব্যাজ', tr:'🏅 Rozet' },
+  'الآن': { en:'Now', fr:'Maintenant', id:'Sekarang', ur:'اب', bn:'এখন', tr:'Şimdi' },
+  'افتح وردك': { en:'Open your wird', fr:'Ouvrir votre wird', id:'Buka wird-mu', ur:'اپنا ورد کھولیں', bn:'আপনার ওয়ারদ খুলুন', tr:'Virdini aç' },
+  'خطوة واحدة تكفي اليوم': { en:'One step is enough today', fr:'Une étape suffit aujourd’hui', id:'Satu langkah cukup hari ini', ur:'آج ایک قدم کافی ہے', bn:'আজ এক ধাপই যথেষ্ট', tr:'Bugün bir adım yeter' },
+  '📖 وردك القرآني': { en:'📖 Your Quran wird', fr:'📖 Votre wird coranique', id:'📖 Wird Al-Quranmu', ur:'📖 آپ کا قرآنی ورد', bn:'📖 আপনার কুরআন ওয়ারদ', tr:'📖 Kur’an virdin' },
+  '🤲 أذكار الوقت': { en:'🤲 Dhikr of the hour', fr:'🤲 Dhikr du moment', id:'🤲 Zikir waktu', ur:'🤲 وقت کے اذکار', bn:'🤲 সময়ের জিকির', tr:'🤲 Vakit zikri' },
+  '📿 سبّح': { en:'📿 Glorify', fr:'📿 Glorifiez', id:'📿 Bertasbih', ur:'📿 تسبیح کریں', bn:'📿 তাসবিহ করুন', tr:'📿 Tesbih et' },
+  'التفاصيل ←': { en:'Details ←', fr:'Détails ←', id:'Detail ←', ur:'تفصیل ←', bn:'বিস্তারিত ←', tr:'Detaylar ←' },
+  'من 12 عبادة': { en:'of 12 acts', fr:'sur 12 actes', id:'dari 12 ibadah', ur:'۱۲ عبادات میں سے', bn:'১২ ইবাদতের মধ্যে', tr:'12 ibadetten' },
+  'الفجر': { en:'Fajr', fr:'Fajr', id:'Subuh', ur:'فجر', bn:'ফজর', tr:'Sabah' },
+  'الظهر': { en:'Dhuhr', fr:'Dhohr', id:'Zuhur', ur:'ظہر', bn:'যোহর', tr:'Öğle' },
+  'العصر': { en:'Asr', fr:'Asr', id:'Asar', ur:'عصر', bn:'আসর', tr:'İkindi' },
+  'المغرب': { en:'Maghrib', fr:'Maghreb', id:'Magrib', ur:'مغرب', bn:'মাগরিব', tr:'Akşam' },
+  'العشاء': { en:'Isha', fr:'Icha', id:'Isya', ur:'عشاء', bn:'এশা', tr:'Yatsı' },
+  'السنن الرواتب': { en:'Sunnah rawatib', fr:'Sunan rawatib', id:'Sunnah rawatib', ur:'سنن رواتب', bn:'সুন্নত রাওয়াতিব', tr:'Revatib sünnetler' },
+  'صلاة الضحى': { en:'Duha prayer', fr:'Prière du Duha', id:'Salat Duha', ur:'نماز چاشت', bn:'দুহা নামাজ', tr:'Duha namazı' },
+  'قيام الليل': { en:'Night prayer', fr:'Prière de la nuit', id:'Salat malam', ur:'تہجد', bn:'রাতের নামাজ', tr:'Gece namazı' },
+  'أذكار الصباح': { en:'Morning dhikr', fr:'Dhikr du matin', id:'Zikir pagi', ur:'صبح کے اذکار', bn:'সকালের জিকির', tr:'Sabah zikri' },
+  'أذكار المساء': { en:'Evening dhikr', fr:'Dhikr du soir', id:'Zikir petang', ur:'شام کے اذکار', bn:'সন্ধ্যার জিকির', tr:'Akşam zikri' },
+  '١٠٠ تكبيرة': { en:'100 takbirs', fr:'100 takbirs', id:'100 takbir', ur:'۱۰۰ تکبیر', bn:'১০০ তাকবির', tr:'100 tekbir' },
+  'استغفار وتوبة': { en:'Istighfar & repentance', fr:'Istighfar et repentir', id:'Istigfar & tobat', ur:'استغفار و توبہ', bn:'ইস্তিগফার ও তওবা', tr:'İstiğfar ve tevbe' },
+  '☀️ آية الصباح': { en:'☀️ Morning verse', fr:'☀️ Verset du matin', id:'☀️ Ayat pagi', ur:'☀️ صبح کی آیت', bn:'☀️ সকালের আয়াত', tr:'☀️ Sabah ayeti' },
+  'أرقام اليوم': { en:'Today’s numbers', fr:'Les chiffres du jour', id:'Angka hari ini', ur:'آج کے اعداد', bn:'আজকের সংখ্যা', tr:'Bugünün sayıları' },
+  'الملخص ←': { en:'Summary ←', fr:'Récapitulatif ←', id:'Ringkasan ←', ur:'خلاصہ ←', bn:'সারসংক্ষেপ ←', tr:'Özet ←' },
+  'تكبيرة': { en:'Takbir', fr:'Takbir', id:'Takbir', ur:'تکبیر', bn:'তাকবির', tr:'Tekbir' },
+  'جزء من الختمة': { en:'Juz of the khatma', fr:'Juz de la khatma', id:'Juz khatam', ur:'ختم کا پارہ', bn:'খতমের পারা', tr:'Hatim cüzü' },
+  'صلوات': { en:'Prayers', fr:'Prières', id:'Salat', ur:'نمازیں', bn:'নামাজ', tr:'Namazlar' },
+  'إنجاز الورد': { en:'Wird progress', fr:'Progression du wird', id:'Capaian wird', ur:'ورد کی تکمیل', bn:'ওয়ারদ অগ্রগতি', tr:'Vird ilerlemesi' },
+  'الكل ←': { en:'All ←', fr:'Tout ←', id:'Semua ←', ur:'سب ←', bn:'সব ←', tr:'Tümü ←' },
+  'اذهب إلى': { en:'Go to', fr:'Aller à', id:'Buka', ur:'جائیں', bn:'যান', tr:'Git' },
+  'صباح ومساء': { en:'Morning & evening', fr:'Matin et soir', id:'Pagi & petang', ur:'صبح و شام', bn:'সকাল ও সন্ধ্যা', tr:'Sabah ve akşam' },
+  'تكبير وذكر': { en:'Takbir & dhikr', fr:'Takbir et dhikr', id:'Takbir & zikir', ur:'تکبیر و ذکر', bn:'তাকবির ও জিকির', tr:'Tekbir ve zikir' },
+  'حكايات وألعاب': { en:'Stories & games', fr:'Histoires et jeux', id:'Kisah & permainan', ur:'کہانیاں و کھیل', bn:'গল্প ও খেলা', tr:'Hikâyeler ve oyunlar' },
+  'فرائض بدقّة': { en:'Inheritance, precisely', fr:'Héritage, avec précision', id:'Warisan, presisi', ur:'فرائض بدقت', bn:'নির্ভুল ফারায়েজ', tr:'Ferâiz, titizlikle' },
+  'عدّاد القضاء': { en:'Missed-prayer counter', fr:'Compteur de rattrapage', id:'Penghitung qada', ur:'قضا کا کاؤنٹر', bn:'কাজা কাউন্টার', tr:'Kaza sayacı' },
+  'شخصان لا أكثر': { en:'Only two people', fr:'Deux personnes seulement', id:'Hanya dua orang', ur:'صرف دو لوگ', bn:'মাত্র দুই জন', tr:'Yalnızca iki kişi' },
+  'أسهم وكريبتو': { en:'Stocks & crypto', fr:'Actions et crypto', id:'Saham & kripto', ur:'اسٹاک و کریپٹو', bn:'স্টক ও ক্রিপ্টো', tr:'Hisse ve kripto' },
+  '🎧 استمع': { en:'🎧 Listen', fr:'🎧 Écouter', id:'🎧 Dengarkan', ur:'🎧 سنیں', bn:'🎧 শুনুন', tr:'🎧 Dinle' },
+  'المكتبة الكاملة': { en:'Full library', fr:'Bibliothèque complète', id:'Perpustakaan lengkap', ur:'مکمل کتب خانہ', bn:'সম্পূর্ণ লাইব্রেরি', tr:'Tam kütüphane' },
+  'ثبّت زاد على هاتفك': { en:'Install Zad on your phone', fr:'Installez Zad sur votre téléphone', id:'Pasang Zad di ponselmu', ur:'زاد کو اپنے فون پر نصب کریں', bn:'ফোনে যাদ ইনস্টল করুন', tr:'Zad’ı telefonuna yükle' },
+  'يعمل بدون إنترنت — في المصلى والمسجد': { en:'Works offline — in the prayer room and the mosque', fr:'Fonctionne hors ligne — à la salle de prière et à la mosquée', id:'Berjalan tanpa internet — di musala dan masjid', ur:'انٹرنیٹ کے بغیر چلتا ہے — نماز کے کمرے اور مسجد میں', bn:'ইন্টারনেট ছাড়াই চলে — নামাজের ঘরে ও মসজিদে', tr:'İnternetsiz çalışır — mescit ve camide' },
+  'انشر التطبيق': { en:'Share the app', fr:'Partager l’app', id:'Bagikan aplikasi', ur:'ایپ شیئر کریں', bn:'অ্যাপ শেয়ার করুন', tr:'Uygulamayı paylaş' },
 };
 
 /* ── خريطة عناوين الصفحات (عربي/إنجليزي/فرنسي) ─────────────── */
 const PAGE_TITLES = {
-  'index.html':       { ar:['زاد','اليومي'], en:['Daily','Zad'], fr:['Zad','Quotidien'] },
-  'prayers.html':     { ar:['مواقيت','الصلاة'], en:['Prayer','Times'], fr:['Heures de','prière'] },
-  'worship.html':     { ar:['جدول','العبادات'], en:['Worship','Tracker'], fr:['Suivi des','adorations'] },
-  'adhkar.html':      { ar:['الأذكار','والدعاء'], en:['Dhikr &','Supplications'], fr:['Dhikr et','invocations'] },
-  'fadael.html':      { ar:['فضائل','العشر'], en:['Virtues of the','10 Days'], fr:['Mérites des','10 jours'] },
-  'hasad.html':       { ar:['حصاد','العبادات'], en:['Worship','Harvest'], fr:['Bilan des','adorations'] },
-  'summary.html':     { ar:['ملخص','العبادات'], en:['Worship','Summary'], fr:['Récapitulatif','adorations'] },
-  'badges.html':      { ar:['أوسمتي',''], en:['My','Badges'], fr:['Mes','badges'] },
-  'ai.html':          { ar:['تدبّر','بالذكاء'], en:['AI','Reflection'], fr:['Réflexion','par IA'] },
-  'videos.html':      { ar:['المرئيات','والمحاضرات'], en:['Islamic','Lectures'], fr:['Conférences','islamiques'] },
-  'settings.html':    { ar:['الإعدادات',''], en:['','Settings'], fr:['','Paramètres'] },
-  'about.html':       { ar:['عن','التطبيق'], en:['About','the App'], fr:['À propos de','l’app'] },
-  'mushaf.html':      { ar:['الورد','القرآني'], en:['Daily','Wird'], fr:['Wird','quotidien'] },
-  'takbeer.html':     { ar:['المسبحة',''], en:['','Tasbih'], fr:['','Tasbih'] },
-  'mushaf-quran.html':{ ar:['المصحف','الشريف'], en:['Holy','Quran'], fr:['Saint','Coran'] },
-  'arafah.html':      { ar:['يوم','عرفة'], en:['Day of','Arafah'], fr:['Jour de','Arafah'] },
-  'odhiya.html':      { ar:['دليل','الأضحية'], en:['Sacrifice','Guide'], fr:['Guide du','sacrifice'] },
-  'sadaqah.html':     { ar:['الصدقة','والبر'], en:['Charity &','Giving'], fr:['Aumône et','bien'] },
-  'hijri.html':       { ar:['التقويم','الهجري'], en:['Hijri','Calendar'], fr:['Calendrier','Hégirien'] },
-  'kids.html':        { ar:['ثُريّا',''], en:['','Thuraya'], fr:['','Thuraya'] },
-  'ghars.html':       { ar:['غرس',''], en:['','Ghars'], fr:['','Ghars'] },
-  'report.html':      { ar:['بلاغ','مشكلة'], en:['Report','Issue'], fr:['Signaler un','problème'] },
-  'profile.html':     { ar:['حسابي','وبياناتي'], en:['My','Account'], fr:['Mon','compte'] },
+  'index.html':       { ar:['زاد','اليومي'], en:['Daily','Zad'], fr:['Zad','Quotidien'], ur:['روزانہ', 'زاد'], id:['Harian', 'Zad'], tr:['Günlük', 'Zad'], bn:['দৈনিক', 'যাদ'] },
+  'prayers.html':     { ar:['مواقيت','الصلاة'], en:['Prayer','Times'], fr:['Heures de','prière'], ur:['نماز کے', 'اوقات'], id:['Waktu', 'Salat'], tr:['Namaz', 'Vakitleri'], bn:['নামাজের', 'সময়'] },
+  'worship.html':     { ar:['جدول','العبادات'], en:['Worship','Tracker'], fr:['Suivi des','adorations'], ur:['عبادات', 'شیڈول'], id:['Jadwal', 'Ibadah'], tr:['İbadet', 'Takvimi'], bn:['ইবাদতের', 'সূচি'] },
+  'adhkar.html':      { ar:['الأذكار','والدعاء'], en:['Dhikr &','Supplications'], fr:['Dhikr et','invocations'], ur:['اذکار', 'و دعا'], id:['Zikir &', 'Doa'], tr:['Zikir ve', 'Dua'], bn:['জিকির ও', 'দুআ'] },
+  'fadael.html':      { ar:['فضائل','العشر'], en:['Virtues of the','10 Days'], fr:['Mérites des','10 jours'], ur:['عشرہ کے', 'فضائل'], id:['Keutamaan', '10 Hari'], tr:['On Günün', 'Fazileti'], bn:['দশ দিনের', 'ফজিলত'] },
+  'hasad.html':       { ar:['حصاد','العبادات'], en:['Worship','Harvest'], fr:['Bilan des','adorations'], ur:['عبادات کی', 'کٹائی'], id:['Panen', 'Ibadah'], tr:['İbadet', 'Hasadı'], bn:['ইবাদতের', 'ফসল'] },
+  'summary.html':     { ar:['ملخص','العبادات'], en:['Worship','Summary'], fr:['Récapitulatif','adorations'], ur:['عبادات کا', 'خلاصہ'], id:['Ringkasan', 'Ibadah'], tr:['İbadet', 'Özeti'], bn:['ইবাদতের', 'সারসংক্ষেপ'] },
+  'badges.html':      { ar:['أوسمتي',''], en:['My','Badges'], fr:['Mes','badges'], ur:['', 'میرے تمغے'], id:['', 'Lencanaku'], tr:['', 'Rozetlerim'], bn:['', 'আমার ব্যাজ'] },
+  'ai.html':          { ar:['تدبّر','بالذكاء'], en:['AI','Reflection'], fr:['Réflexion','par IA'], ur:['ذہانت سے', 'تدبر'], id:['Tadabur', 'AI'], tr:['Yapay Zekâ', 'Tefekkür'], bn:['এআই', 'তাদাব্বুর'] },
+  'videos.html':      { ar:['المرئيات','والمحاضرات'], en:['Islamic','Lectures'], fr:['Conférences','islamiques'], ur:['ویڈیوز', 'و لیکچر'], id:['Video &', 'Ceramah'], tr:['Videolar ve', 'Sohbetler'], bn:['ভিডিও ও', 'বক্তৃতা'] },
+  'settings.html':    { ar:['الإعدادات',''], en:['','Settings'], fr:['','Paramètres'], ur:['', 'ترتیبات'], id:['', 'Pengaturan'], tr:['', 'Ayarlar'], bn:['', 'সেটিংস'] },
+  'about.html':       { ar:['عن','التطبيق'], en:['About','the App'], fr:['À propos de','l’app'], ur:['ایپ کے', 'بارے میں'], id:['Tentang', 'Aplikasi'], tr:['Uygulama', 'Hakkında'], bn:['অ্যাপ', 'সম্পর্কে'] },
+  'mushaf.html':      { ar:['الورد','القرآني'], en:['Daily','Wird'], fr:['Wird','quotidien'], ur:['روزانہ', 'ورد'], id:['Wird', 'Harian'], tr:['Günlük', 'Vird'], bn:['দৈনিক', 'ওয়ারদ'] },
+  'takbeer.html':     { ar:['المسبحة',''], en:['','Tasbih'], fr:['','Tasbih'], ur:['', 'تسبیح'], id:['', 'Tasbih'], tr:['', 'Tesbih'], bn:['', 'তাসবিহ'] },
+  'mushaf-quran.html':{ ar:['المصحف','الشريف'], en:['Holy','Quran'], fr:['Saint','Coran'], ur:['قرآن', 'مجید'], id:['Mushaf', 'Suci'], tr:['Kur\'an-ı', 'Kerim'], bn:['পবিত্র', 'মুসহাফ'] },
+  'arafah.html':      { ar:['يوم','عرفة'], en:['Day of','Arafah'], fr:['Jour de','Arafah'], ur:['عرفہ', 'کا دن'], id:['Hari', 'Arafah'], tr:['Arefe', 'Günü'], bn:['আরাফার', 'দিন'] },
+  'odhiya.html':      { ar:['دليل','الأضحية'], en:['Sacrifice','Guide'], fr:['Guide du','sacrifice'], ur:['قربانی کی', 'رہنمائی'], id:['Panduan', 'Kurban'], tr:['Kurban', 'Rehberi'], bn:['কুরবানির', 'নির্দেশিকা'] },
+  'sadaqah.html':     { ar:['الصدقة','والبر'], en:['Charity &','Giving'], fr:['Aumône et','bien'], ur:['صدقہ و', 'نیکی'], id:['Sedekah &', 'Kebaikan'], tr:['Sadaka ve', 'İyilik'], bn:['সদকা ও', 'সৎকর্ম'] },
+  'hijri.html':       { ar:['التقويم','الهجري'], en:['Hijri','Calendar'], fr:['Calendrier','Hégirien'], ur:['ہجری', 'کیلنڈر'], id:['Kalender', 'Hijriah'], tr:['Hicri', 'Takvim'], bn:['হিজরি', 'ক্যালেন্ডার'] },
+  'kids.html':        { ar:['ثُريّا',''], en:['','Thuraya'], fr:['','Thuraya'], ur:['', 'ثریا'], id:['', 'Thuraya'], tr:['', 'Thuraya'], bn:['', 'থুরাইয়া'] },
+  'ghars.html':       { ar:['غرس',''], en:['','Ghars'], fr:['','Ghars'], ur:['', 'غرس'], id:['', 'Ghars'], tr:['', 'Ghars'], bn:['', 'গারস'] },
+  'report.html':      { ar:['بلاغ','مشكلة'], en:['Report','Issue'], fr:['Signaler un','problème'], ur:['مسئلہ کی', 'اطلاع'], id:['Laporkan', 'Masalah'], tr:['Sorun', 'Bildir'], bn:['সমস্যা', 'জানান'] },
+  'profile.html':     { ar:['حسابي','وبياناتي'], en:['My','Account'], fr:['Mon','compte'], ur:['میرا', 'اکاؤنٹ'], id:['Akun', 'Saya'], tr:['', 'Hesabım'], bn:['আমার', 'অ্যাকাউন্ট'] },
+  'tasmee.html': { ar:['تسميع', 'القرآن'], en:['Quran', 'Recitation'], fr:['Quran', 'Recitation'], ur:['قرآن کی', 'تسمیع'], id:['Setoran', 'Hafalan'], tr:['Kur\'an', 'Tilaveti'], bn:['কুরআন', 'তেলাওয়াত'] },
+  'wird.html': { ar:['رفيق', 'الورد'], en:['Wird', 'Companion'], fr:['Wird', 'Companion'], ur:['رفیق', 'ورد'], id:['Sahabat', 'Wird'], tr:['Vird', 'Yoldaşı'], bn:['ওয়ারদ', 'সঙ্গী'] },
+  'zakat.html': { ar:['حاسبة', 'الزكاة'], en:['Zakat', 'Calculator'], fr:['Zakat', 'Calculator'], ur:['زکوٰۃ', 'کیلکولیٹر'], id:['Kalkulator', 'Zakat'], tr:['Zekât', 'Hesaplayıcı'], bn:['যাকাত', 'ক্যালকুলেটর'] },
+  'zakat-2026.html': { ar:['زكاة', 'المال الجديد'], en:['New Wealth', 'Zakat'], fr:['New Wealth', 'Zakat'], ur:['نئی دولت', 'کی زکوٰۃ'], id:['Zakat Harta', 'Baru'], tr:['Yeni Malın', 'Zekâtı'], bn:['নতুন সম্পদের', 'যাকাত'] },
+  'zakat-ahkam.html': { ar:['أحكام', 'الزكاة'], en:['Zakat', 'Rules'], fr:['Zakat', 'Rules'], ur:['زکوٰۃ کے', 'احکام'], id:['Hukum', 'Zakat'], tr:['Zekât', 'Hükümleri'], bn:['যাকাতের', 'বিধান'] },
+  'zakat-anwa.html': { ar:['أنواع الزكاة', 'وحسابها'], en:['Zakat', 'Types'], fr:['Zakat', 'Types'], ur:['زکوٰۃ کی', 'اقسام'], id:['Jenis', 'Zakat'], tr:['Zekât', 'Türleri'], bn:['যাকাতের', 'প্রকার'] },
+  'mirath.html': { ar:['حاسبة', 'الميراث'], en:['Inheritance', 'Calculator'], fr:['Inheritance', 'Calculator'], ur:['میراث', 'کیلکولیٹر'], id:['Kalkulator', 'Warisan'], tr:['Miras', 'Hesaplayıcı'], bn:['উত্তরাধিকার', 'হিসাব'] },
+  'wasiyya.html': { ar:['الوصية', 'والثلث'], en:['Will &', 'One-Third'], fr:['Will &', 'One-Third'], ur:['وصیت', 'و ثلث'], id:['Wasiat', '& Sepertiga'], tr:['Vasiyet', 've Üçte Bir'], bn:['ওয়াসিয়াত', 'ও এক-তৃতীয়াংশ'] },
+  'janaza.html': { ar:['أحكام', 'الجنازة'], en:['Funeral', 'Rulings'], fr:['Funeral', 'Rulings'], ur:['جنازہ کے', 'احکام'], id:['Hukum', 'Jenazah'], tr:['Cenaze', 'Hükümleri'], bn:['জানাজার', 'বিধান'] },
+  'qada.html': { ar:['قضاء', 'الفوائت'], en:['Missed', 'Prayers'], fr:['Missed', 'Prayers'], ur:['قضا', 'فوائت'], id:['Qada', 'Salat'], tr:['Kaza', 'Namaz'], bn:['কাজা', 'নামাজ'] },
+  'musafir.html': { ar:['وضع', 'السفر'], en:['Travel', 'Rulings'], fr:['Travel', 'Rulings'], ur:['سفر کے', 'احکام'], id:['Hukum', 'Safar'], tr:['Yolculuk', 'Hükümleri'], bn:['সফরের', 'বিধান'] },
+  'new-muslim.html': { ar:['المسلم', 'الجديد'], en:['New', 'Muslim'], fr:['New', 'Muslim'], ur:['نیا', 'مسلمان'], id:['Muslim', 'Baru'], tr:['Yeni', 'Müslüman'], bn:['নতুন', 'মুসলিম'] },
+  'groups.html': { ar:['التنافس', 'العائلي'], en:['Groups &', 'Competition'], fr:['Groups &', 'Competition'], ur:['گروپ اور', 'مقابلہ'], id:['Grup &', 'Kompetisi'], tr:['Gruplar ve', 'Yarışma'], bn:['দল ও', 'প্রতিযোগিতা'] },
+  'privacy.html': { ar:['صندوق', 'الخصوصية'], en:['Privacy &', 'How It Works'], fr:['Privacy &', 'How It Works'], ur:['رازداری', 'و طریقہ کار'], id:['Privasi &', 'Cara Kerja'], tr:['Gizlilik', 've İşleyiş'], bn:['গোপনীয়তা', 'ও কার্যপদ্ধতি'] },
+  'du\'a.html': { ar:['الأدعية', 'المأثورة'], en:['', 'Duas'], fr:['', 'Duas'], ur:['', 'دعائیں'], id:['', 'Doa'], tr:['', 'Dualar'], bn:['', 'দুআ'] },
+  'asma.html': { ar:['أسماء الله', 'الحسنى'], en:['99 Names', 'of Allah'], fr:['99 Names', 'of Allah'], ur:['اللہ کے', 'حسین نام'], id:['Asmaul', 'Husna'], tr:['Esmaül', 'Hüsna'], bn:['আল্লাহর', 'সুন্দর নাম'] },
+  'nawawi.html': { ar:['الأربعون', 'النووية'], en:['Forty', 'Hadith'], fr:['Forty', 'Hadith'], ur:['چالیس', 'حدیثیں'], id:['Arbain', 'Nawawi'], tr:['Kırk', 'Hadis'], bn:['চল্লিশ', 'হাদিস'] },
+  'ramadan.html': { ar:['لوحة', 'رمضان'], en:['Ramadan', 'Board'], fr:['Ramadan', 'Board'], ur:['رمضان', 'ڈیش بورڈ'], id:['Papan', 'Ramadan'], tr:['Ramazan', 'Panosu'], bn:['রমজান', 'ড্যাশবোর্ড'] },
+  'taqweem.html': { ar:['التقويم', 'الهجري'], en:['Yearly', 'Calendar'], fr:['Yearly', 'Calendar'], ur:['سالانہ', 'کیلنڈر'], id:['Kalender', 'Tahunan'], tr:['Yıllık', 'Takvim'], bn:['বার্ষিক', 'ক্যালেন্ডার'] },
+  'barnamaj.html': { ar:['برنامج', 'اليوم'], en:['Daily', 'Program'], fr:['Daily', 'Program'], ur:['روز کا', 'پروگرام'], id:['Program', 'Harian'], tr:['Günlük', 'Program'], bn:['দৈনিক', 'কর্মসূচি'] },
+  'qibla.html': { ar:['اتجاه', 'القبلة'], en:['Qibla', 'Direction'], fr:['Qibla', 'Direction'], ur:['قبلہ کی', 'سمت'], id:['Arah', 'Kiblat'], tr:['Kıble', 'Yönü'], bn:['কিবলার', 'দিক'] },
 };
 
 /* ── CSS لتعديلات اتجاه LTR (إنجليزي + فرنسي) ──────────────── */
@@ -934,18 +1299,32 @@ const PAGE_TITLES = {
   const style = document.createElement('style');
   style.id = 'i18n-ltr-css';
   style.textContent = `
-    body[data-lang="en"], body[data-lang="fr"] { direction: ltr; text-align: left; }
+    body[data-lang="en"], body[data-lang="fr"], body[data-lang="id"],
+    body[data-lang="bn"], body[data-lang="tr"] { direction: ltr; text-align: left; }
+    /* الخطوط: بنغالي/أردو/تركي — النظام يرسم العربية تلقائيًا كبديل عند غياب المحرف */
+    body[data-lang="bn"] { font-family:'Noto Sans Bengali','Nirmala UI','Vrinda','SolaimanLipi',system-ui,sans-serif; }
+    body[data-lang="ur"] { font-family:'Noto Naskh Arabic','Noto Nastaliq Urdu','Jameel Noori Nastaleeq',system-ui,sans-serif; }
+    body[data-lang="tr"] { font-family:'Segoe UI','IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif; }
+    body[data-lang="id"] { font-family:'Segoe UI','IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif; }
+    body[data-lang="ur"] .page-title, body[data-lang="bn"] .page-title { font-family:inherit; }
     /* الشريط الجانبي وقائمة الإشعارات بيستخدموا inset-inline-start/الفلكس
        المنطقي فعليًا في css/style.css — كانا هنا بقيم left/right ثابتة من
        زمن direction:rtl كان متجبر على html,body (اتصلح ده مؤخرًا)، فكانا
        بيلغوا التموضع الصحيح ويخفوا الشريط الجانبي تمامًا في وضعي EN/FR على
        الديسكتوب (زر الفتح hamburger نفسه مخفي على الديسكتوب، فمفيش طريقة
        لإرجاعه). شيلتهم بدل ما أعمل patch فوق patch. */
-    body[data-lang="en"] .nav a, body[data-lang="fr"] .nav a { flex-direction: row-reverse; justify-content: flex-end; }
-    body[data-lang="en"] .hijri-bar, body[data-lang="fr"] .hijri-bar { direction: ltr; }
+    body[data-lang="en"] .nav a, body[data-lang="fr"] .nav a,
+    body[data-lang="id"] .nav a, body[data-lang="bn"] .nav a,
+    body[data-lang="tr"] .nav a { flex-direction: row-reverse; justify-content: flex-end; }
+    body[data-lang="en"] .hijri-bar, body[data-lang="fr"] .hijri-bar,
+    body[data-lang="id"] .hijri-bar, body[data-lang="bn"] .hijri-bar,
+    body[data-lang="tr"] .hijri-bar { direction: ltr; }
     body[data-lang="en"] .quran-text, body[data-lang="fr"] .quran-text,
+    body[data-lang="id"] .quran-text, body[data-lang="bn"] .quran-text, body[data-lang="tr"] .quran-text,
     body[data-lang="en"] .ts-ayah-text, body[data-lang="fr"] .ts-ayah-text,
-    body[data-lang="en"] .basmala-txt, body[data-lang="fr"] .basmala-txt { direction: rtl !important; }
+    body[data-lang="id"] .ts-ayah-text, body[data-lang="bn"] .ts-ayah-text, body[data-lang="tr"] .ts-ayah-text,
+    body[data-lang="en"] .basmala-txt, body[data-lang="fr"] .basmala-txt,
+    body[data-lang="id"] .basmala-txt, body[data-lang="bn"] .basmala-txt, body[data-lang="tr"] .basmala-txt { direction: rtl !important; }
     .i18n-translit { margin-top:4px; line-height:1.5 }
     .i18n-translit .az-translit { display:block; font-style:italic; color:var(--gold-dark,#9a7b2e); font-size:.92em }
     .i18n-translit .az-meaning  { display:block; color:var(--muted); font-size:.9em }

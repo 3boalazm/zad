@@ -743,10 +743,11 @@
   const ZAD_LANGS = [
     { code:'ar', flag:'🇸🇦', name:'العربية' },
     { code:'en', flag:'🇬🇧', name:'English' },
-    { code:'fr', flag:'🇫🇷', name:'Français' },
+    { code:'id', flag:'🇮🇩', name:'Bahasa Indonesia' },
     { code:'ur', flag:'🇵🇰', name:'اردو' },
-    { code:'id', flag:'🇮🇩', name:'Indonesia' },
+    { code:'bn', flag:'🇧🇩', name:'বাংলা' },
     { code:'tr', flag:'🇹🇷', name:'Türkçe' },
+    { code:'fr', flag:'🇫🇷', name:'Français' },
   ];
 
   function buildLangSwitcher(targetEl) {
@@ -794,7 +795,7 @@
 
   window._zadSetLang = function(lang) {
     /* اللغات المترجمة فعلاً (LANG_CYCLE في lang.js) — الباقي «قريباً» ولا نحفظه */
-    const SUPPORTED = ['ar', 'en', 'fr'];
+    const SUPPORTED = ['ar', 'en', 'id', 'ur', 'bn', 'tr', 'fr'];
     if (SUPPORTED.indexOf(lang) === -1) {
       if (typeof showToast === 'function') showToast('🌐 الترجمة إلى هذه اللغة قيد الإضافة قريباً');
       return;
@@ -1072,7 +1073,8 @@
       requestAnimationFrame(() => revealActive(sidebar));
       /* محوّل اللغة — يستبدل زر sidebar-lang-btn، وينشئه لو الصفحة مفيهاش زر لغة */
       let langBtn = sidebar.querySelector('.sidebar-lang-btn');
-      if (!langBtn && window.I18N && !document.getElementById('topbar-lang-btn')) {
+      /* أنشئه دائمًا: المستخدم طلب سويتش ظاهر في السايد منيو */
+      if (!langBtn && window.I18N) {
         langBtn = document.createElement('button');
         langBtn.type = 'button';
         langBtn.className = 'sidebar-lang-btn';
