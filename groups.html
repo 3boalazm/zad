@@ -213,6 +213,10 @@ html[data-theme="dark"] .gp-gpct b,html[data-theme="oled"] .gp-gpct b{color:var(
     </a>
     <div id="zad-wird-mini"></div>
 
+    <!-- الختمة العائلية -->
+    <div class="gp-sec-title">📖 ختمة العائلة</div>
+    <div id="zad-khatma-mount"></div>
+
     <!-- Create / Join -->
     <div class="gp-sec-title">➕ أنشئ أو انضمّ</div>
     <div class="gp-card" style="margin-bottom:12px">
@@ -375,6 +379,16 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script src="js/wird-companion.js" defer></script>
+<script src="js/khatma-share.js" defer></script>
+<script>
+(function(){
+  function boot(){
+    var el = document.getElementById('zad-khatma-mount');
+    if (el && window.ZadKhatma) window.ZadKhatma.mount(el, { withGroup: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
 <script>
 (function(){
   function boot(){

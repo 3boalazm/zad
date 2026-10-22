@@ -173,9 +173,18 @@
       };
       var pull = el.querySelector('#kh-pull');
       if (pull) pull.onclick = function () {
+        if (!(window.ZadGroups || window.Groups)) {
+          pull.textContent = '…';
+          var sc = document.createElement('script');
+          sc.src = 'js/groups.js';
+          sc.onload = function () { pull.click(); };
+          sc.onerror = function () { pull.textContent = 'مجموعتك في groups.html'; };
+          document.body.appendChild(sc);
+          return;
+        }
         pullFromGroups().then(function (res) {
           if (!res || !res.members.length) {
-            pull.textContent = 'لا توجد مجموعة';
+            pull.innerHTML = '<a href="groups.html" style="color:inherit;text-decoration:none">لا توجد مجموعة — أنشئ واحدة ←</a>';
             return;
           }
           var s2 = read();

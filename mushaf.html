@@ -1015,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', () => {
 (function(){
   function boot(){
     var el = document.getElementById('zad-khatma-mount');
-    if (el && window.ZadKhatma) window.ZadKhatma.mount(el, { withGroup: true });
+    if (el && window.ZadKhatma) window.ZadKhatma.mount(el, { withGroup: false });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
