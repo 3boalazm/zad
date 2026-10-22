@@ -489,6 +489,7 @@ html[data-theme="oled"] .az-card:hover {
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>
@@ -632,6 +633,17 @@ window.resetOne = function(sec, id){
 window.shareAz = function(sec, id){
   let d=null; for(const s of window.AZ_SECTIONS){ const it=s.items.find(x=>x.id===id); if(it){d=it;break;} }
   if(!d) return;
+  /* بطاقة مصمّمة بهوية المستخدم */
+  if (window.ZadStudio) {
+    return window.ZadStudio.open({
+      kind: 'dhikr',
+      eyebrow: 'ذكر',
+      title: d.label,
+      body: d.ar,
+      source: d.src,
+      share: { title: d.label, text: `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}` }
+    });
+  }
   const txt = `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}\n\nمن تطبيق زاد`;
   if(navigator.share) navigator.share({title:'ذكر', text:txt});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('📋 تم النسخ'); }

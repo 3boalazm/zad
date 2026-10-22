@@ -788,6 +788,17 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
     if (!S.current) return;
     var h = S.current;
     var text = (h.text || '') + '\n\n' + (h.attribution ? h.attribution + '\n' : '') + '— من المكتبة النصية في «زاد»';
+    /* بطاقة حديث بالهوية */
+    if (window.ZadStudio) {
+      return window.ZadStudio.open({
+        kind: 'hadith',
+        eyebrow: 'المكتبة النصية',
+        title: h.title || 'حديث',
+        body: h.text || '',
+        source: h.attribution || 'صحيح',
+        share: { title: h.title || 'حديث', text: text + '\n' + location.href }
+      });
+    }
     if (navigator.share) {
       navigator.share({ title: h.title || 'حديث', text: text, url: location.href }).catch(function () {});
     } else if (navigator.clipboard) {
@@ -825,5 +836,6 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
   }
 })();
 </script>
+<script src="js/ui/share-studio.js" defer></script>
 </body>
 </html>

@@ -431,6 +431,7 @@ html[data-theme="oled"] .pl-card.playing .pl-title{color:var(--sys-green,#4ade80
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/audio-manager.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>
@@ -755,7 +756,17 @@ window.mpMute = function() {
 window.mpShare = function() {
   if (CUR === -1) return;
   const t = ALL[CUR];
-  const txt = `🎵 ${t.title}\n\nمن قائمة العظماء — زاد\n${t.permalink}`;
+  const txt = `🎵 ${t.title}\n\nمن ${activePlaylist ? activePlaylist.name : 'قائمة صوتية'} — زاد\n${t.permalink}`;
+  if (window.ZadStudio) {
+    return window.ZadStudio.open({
+      kind: 'audio', emoji: '🎧',
+      eyebrow: activePlaylist ? activePlaylist.name : 'قائمة صوتية',
+      title: t.title,
+      body: '',
+      source: 'SoundCloud · زاد',
+      share: { title: t.title, text: txt }
+    });
+  }
   if (navigator.share) navigator.share({title:t.title, text:txt, url:t.permalink});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('📋 تم نسخ الرابط'); }
 };
@@ -864,6 +875,16 @@ function updateLikesStat() {
 window.plShareTrack = function(idx) {
   const t = ALL[idx]; if(!t) return;
   const txt = `🎵 ${t.title}\n${t.permalink}`;
+  if (window.ZadStudio) {
+    return window.ZadStudio.open({
+      kind: 'audio', emoji: '🎧',
+      eyebrow: activePlaylist ? activePlaylist.name : 'قائمة صوتية',
+      title: t.title,
+      body: '',
+      source: 'SoundCloud · زاد',
+      share: { title: t.title, text: txt }
+    });
+  }
   if(navigator.share) navigator.share({title:t.title, text:txt, url:t.permalink});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('📋 تم نسخ الرابط'); }
 };

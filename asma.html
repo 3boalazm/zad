@@ -416,6 +416,7 @@ html[data-theme="oled"] .cat-kamal{color:var(--sys-blue,#5aabff)}
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>
@@ -590,6 +591,19 @@ window.randomName = function() {
 };
 window.shareHero = function() {
   const n = NAMES[currentHeroIdx];
+  const meaning = n.m.split('<br>')[0].replace(/<[^>]+>/g, '');
+  /* بطاقة الاسم بهوية المستخدم */
+  if (window.ZadStudio) {
+    return window.ZadStudio.open({
+      kind: 'name',
+      eyebrow: 'أسماء الله الحسنى',
+      title: n.ar,
+      body: meaning,
+      note: n.en ? n.en : '',
+      source: 'زاد · أسماء الله الحسنى',
+      share: { title: n.ar, text: `🌺 "${n.ar}" — ${n.en}\n\n${meaning}` }
+    });
+  }
   const txt = `🌺 "${n.ar}" — ${n.en}\n\n${n.m.split('<br>').slice(0,2).join('\n')}\n\nمن تطبيق زاد: zad.codeandcanvas.net`;
   if (navigator.share) navigator.share({title:'أسماء الله الحسنى',text:txt});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('✅ تم نسخ الاسم'); }

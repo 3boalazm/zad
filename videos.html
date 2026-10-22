@@ -3399,6 +3399,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/audio-manager.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>
@@ -3552,6 +3553,17 @@ function filterVids(tag, btn) {
 function shareVid(id, title, url) {
   const link = url || `https://youtu.be/${id}`;
   const text = `🕋 ${title}\n${link}`;
+  /* بطاقة مصمّمة بالهوية (كانت بتشارك الرابط بس) */
+  if (window.ZadStudio) {
+    return window.ZadStudio.open({
+      kind: 'video', emoji: '🎬',
+      eyebrow: 'محاضرات مرئية',
+      title: title,
+      body: '',
+      source: 'يوتيوب · زاد',
+      share: { title: title, text: text }
+    });
+  }
   if (navigator.share) {
     navigator.share({ title, url: link }).catch(() => {});
   } else {

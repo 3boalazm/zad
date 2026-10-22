@@ -978,7 +978,14 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
   window.shareKidsVid=function(id,title,isList){
     var url=isList?('https://www.youtube.com/playlist?list='+id):('https://www.youtube.com/watch?v='+id);
     var txt='🎬 '+title+' — شاشة المرح | زاد';
-    if(navigator.share)navigator.share({title:title,text:txt,url:url}).catch(function(){});
+    /* بطاقة بالهوية — الأطفال يشاركون صورة لطيفة مش رابط */
+    if(window.ZadStudio){
+      window.ZadStudio.open({
+        kind:'video', emoji:'🎬', eyebrow:'شاشة المرح',
+        title:title, source:'زاد · شاشة المرح',
+        share:{title:title, text:txt+'\n'+url}
+      });
+    } else if(navigator.share)navigator.share({title:title,text:txt,url:url}).catch(function(){});
     else if(navigator.clipboard)navigator.clipboard.writeText(url).then(function(){if(window.showToast)window.showToast('🔗 تم نسخ الرابط');});
     if(navigator.vibrate)navigator.vibrate(15);
   };
@@ -991,6 +998,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>

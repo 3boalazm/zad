@@ -16,7 +16,31 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&display=swap"></noscript>
 <link rel="stylesheet" href="css/style.min.css">
 <link rel="stylesheet" href="css/premium-ui.min.css">
-<script>(function(){var s=localStorage.getItem('zad_v2');var t='light',fs=24;try{var p=JSON.parse(s);t=p.theme||'light';fs=p.quranFontSize||24}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){};document.documentElement.style.setProperty('--qf-size',fs+'px')})();</script>
+<script>
+/* بطاقة إنجاز يوم عرفة */
+window.shareArafah = function () {
+  if (window.ZadStudio) {
+    var st = {};
+    try { st = (JSON.parse(localStorage.getItem('zad_v2') || '{}').arafah) || {}; } catch (e) {}
+    var done = Object.keys(st.milestones || {}).length;
+    var dhikr = st.dhikrCount || 0;
+    var num = function (v) { return Number(v).toLocaleString('ar-EG'); };
+    return window.ZadStudio.open({
+      kind: 'achievement', emoji: '🌟',
+      title: 'يوم عرفة',
+      body: 'أنهيت برنامج يوم عرفة — اللهم تقبّل منا ومنكم',
+      stats: [
+        { value: num(done), label: 'محطة مكتملة' },
+        { value: num(dhikr), label: 'ذكر' }
+      ],
+      source: 'زاد · برنامج عرفة',
+      share: { title: 'يوم عرفة', text: 'أنهيت برنامج يوم عرفة ✅ — اللهم اقبل منا ومنكم' }
+    });
+  }
+  if (navigator.share) navigator.share({ title: 'يوم عرفة', text: 'أنهيت برنامج يوم عرفة ✅ — اللهم اقبل منا ومنكم', url: location.href });
+  else if (window.showToast) showToast('انسخ الرابط وشاركه');
+};
+(function(){var s=localStorage.getItem('zad_v2');var t='light',fs=24;try{var p=JSON.parse(s);t=p.theme||'light';fs=p.quranFontSize||24}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){};document.documentElement.style.setProperty('--qf-size',fs+'px')})();</script>
 <style>
 .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
 
@@ -401,7 +425,7 @@
     <!-- ════ Share ════ -->
     <div style="margin-top:24px;text-align:center;padding-bottom:32px">
       <button class="btn btn-gold" style="font-size:15px;padding:14px 28px"
-        onclick="if(navigator.share){navigator.share({title:'يوم عرفة',text:'أنهيت برنامج يوم عرفة ✅ — اللهم اقبل منا ومنكم',url:window.location.href})}else{showToast?.('انسخ الرابط وشاركه')}">
+        onclick="shareArafah()">
         🌟 مشاركة إنجاز يوم عرفة
       </button>
     </div>
@@ -424,6 +448,7 @@
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/audio-manager.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/ui/hajj-now.js" defer></script>
