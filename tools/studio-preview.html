@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0e3b2e">
+<title>مختبر واجهة الاستوديو — زاد</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .lab{max-width:760px;margin:0 auto;padding:28px 18px 60px}
+  .lab-top{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .lab-logo{width:52px;height:52px;border-radius:15px;flex:0 0 auto;box-shadow:var(--shadow-sm)}
+  .lab-top h1{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif;font-size:21px;font-weight:900;color:var(--ink);line-height:1.35}
+  .lab-top p{font-size:12px;color:var(--muted);margin-top:3px}
+  .lab-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;box-shadow:var(--shadow-sm)}
+  .lab-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--border)}
+  .lab-row:last-of-type{border-bottom:none}
+  .lab-row>span{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.3px}
+  .lab-seg{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--sand);border:1px solid var(--border)}
+  .lab-seg button{padding:7px 13px;border-radius:9px;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:.16s}
+  .lab-seg button.on{background:var(--card);color:var(--green-deep);box-shadow:var(--shadow-sm)}
+  .lab-go{width:100%;margin-top:16px;padding:14px;border-radius:14px;border:none;cursor:pointer;font-family:'ThmanyahSans','Tajawal',sans-serif;font-size:14px;font-weight:700;color:#fdfaf2;
+    background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));box-shadow:0 14px 28px -14px rgba(14,59,46,.8);transition:transform .15s}
+  .lab-go:active{transform:scale(.98)}
+  .lab-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .lab-links a{font-size:12px;font-weight:700;color:var(--green-deep);background:var(--card);border:1px solid var(--border);border-radius:99px;padding:8px 14px;transition:.16s}
+  .lab-links a:hover{border-color:var(--gold);box-shadow:var(--shadow-sm)}
+  .lab-hint{margin-top:16px;font-size:12px;line-height:1.9;color:var(--muted)}
+  .lab-hint b{color:var(--green-deep)}
+  .lab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:8px;margin-top:14px}
+  .lab-sw{height:58px;border-radius:12px;border:2px solid transparent;cursor:pointer;position:relative;overflow:hidden;padding:0}
+  .lab-sw.on{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,161,74,.2)}
+  .lab-sw span{position:absolute;inset-inline:0;bottom:0;padding:7px 2px 4px;font-size:9px;font-weight:800;color:#fff;background:linear-gradient(to top,rgba(0,0,0,.55),transparent);text-align:center}
+</style>
+</head>
+<body>
+<main class="lab">
+  <header class="lab-top">
+    <img class="lab-logo" src="../icons/icon-512.svg" alt="زاد">
+    <div>
+      <h1>مختبر استوديو المشاركة</h1>
+      <p>صفحة أدوات للمعاينة فقط — غير مربوطة بأي صفحة في التطبيق.</p>
+    </div>
+  </header>
+
+  <section class="lab-card">
+    <div class="lab-row">
+      <span>الثيم</span>
+      <div class="lab-seg" id="themes">
+        <button type="button" data-theme="light" class="on">فاتح</button>
+        <button type="button" data-theme="dark">داكن</button>
+        <button type="button" data-theme="oled">أسود</button>
+      </div>
+    </div>
+    <div class="lab-row">
+      <span>المحتوى</span>
+      <div class="lab-seg" id="kinds">
+        <button type="button" data-kind="verse" class="on">آية</button>
+        <button type="button" data-kind="dua">دعاء</button>
+        <button type="button" data-kind="achievement">إنجاز</button>
+      </div>
+    </div>
+    <div class="lab-row" style="align-items:flex-start">
+      <span>اللوحة</span>
+      <div class="lab-grid" id="palettes" style="flex:1"></div>
+    </div>
+    <button type="button" class="lab-go" id="open">افتح الاستوديو 👀</button>
+  </section>
+
+  <p class="lab-links">
+    <a href="../index.html">فتح التطبيق ›</a>
+    <a href="../du%27a.html">صفحة دعاء عليها زرار مشاركة ›</a>
+  </p>
+
+  <p class="lab-hint">
+    جرّب <b>تبويب «الثيم»</b> جوّه البانل: ٦ مصغّرات حقيقية للنقش —
+    <b>نجوم إسلامية</b> + أربعة نقوش حديثة (نقاط · أقواس · موج · شبكة) + «بدون».
+    غيّر اللوحة وشوف المعاينة بتتحدّث قبل الحفظ.
+  </p>
+</main>
+
+<script src="../js/ui/share-studio.js" defer></script>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  var SAMPLES = {
+    verse: {
+      kind: 'verse', eyebrow: 'آية اليوم',
+      body: 'وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ',
+      source: 'سورة الطلاق · ٢–٣'
+    },
+    dua: {
+      kind: 'dua', eyebrow: 'دعاء اليوم',
+      body: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا',
+      source: 'دعاء مأثور'
+    },
+    achievement: {
+      kind: 'achievement', eyebrow: 'إنجاز اليوم',
+      body: 'أتممت وردك اليوم كاملًا — استمرّ على هذا النور',
+      source: 'زاد · متابعة الورد',
+      stats: [{ value: '٣٠', label: 'يوم متتابع' }, { value: '١٢٠', label: 'آية' }]
+    }
+  };
+  var current = 'verse';
+  var studio = null;
+
+  function pickPalette(id) {
+    try {
+      var p = JSON.parse(localStorage.getItem('zad_share_prefs') || '{}');
+      p.palette = id;
+      localStorage.setItem('zad_share_prefs', JSON.stringify(p));
+    } catch (e) {}
+  }
+
+  function openStudio() {
+    if (!window.ZadStudio) return;
+    if (studio) window.ZadStudio.close();
+    var s = SAMPLES[current];
+    var patch = {};
+    if (s.stats) patch.stats = s.stats;
+    studio = window.ZadStudio.open(Object.assign({}, s, patch));
+  }
+
+  /* الثيم */
+  document.getElementById('themes').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    document.documentElement.setAttribute('data-theme', b.dataset.theme);
+    [].forEach.call(this.querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); });
+    if (studio) { window.ZadStudio.close(); openStudio(); }
+  });
+
+  /* المحتوى */
+  document.getElementById('kinds').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    current = b.dataset.kind;
+    [].forEach.call(this.querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); });
+    if (studio) { window.ZadStudio.close(); openStudio(); }
+  });
+
+  /* اللوحات */
+  var PAL = [
+    ['emerald', 'زمردي', '#072019', '#0f3d2d'],
+    ['midnight', 'ليلي', '#050b16', '#0d2038'],
+    ['ivory', 'ورقي', '#fdfaf2', '#f4ecd9'],
+    ['rose', 'وردي', '#2c0d1e', '#5b1f3c'],
+    ['sand', 'رملي', '#241a0f', '#443120'],
+    ['ink', 'حِبري', '#0a0a0a', '#171717']
+  ];
+  var palWrap = document.getElementById('palettes');
+  PAL.forEach(function (p, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'lab-sw' + (i === 0 ? ' on' : '');
+    b.dataset.id = p[0];
+    b.style.background = 'linear-gradient(135deg,' + p[2] + ',' + p[3] + ')';
+    var sp = document.createElement('span'); sp.textContent = p[1];
+    b.appendChild(sp);
+    b.onclick = function () {
+      [].forEach.call(palWrap.children, function (x) { x.classList.toggle('on', x === b); });
+      pickPalette(p[0]);
+      if (studio) { window.ZadStudio.close(); openStudio(); }
+    };
+    palWrap.appendChild(b);
+  });
+
+  document.getElementById('open').onclick = openStudio;
+
+  /* افتح تلقائيًا عشان البانل يبقى قدامك */
+  setTimeout(openStudio, 350);
+});
+</script>
+</body>
+</html>

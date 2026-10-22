@@ -13,6 +13,7 @@
      ZadStudio.close()
 
    • كل الحالة تُحفظ محليًا: zad_share_prefs (التصميم) + zad_share_identity (الهوية).
+   • نقش الخلفية: prefs.pattern = none | stars (إسلامي) | dots | arcs | waves | grid.
    • صفر اعتماد على شبكة أو مكتبات خارجية — الخطوط والأيقونات من داخل التطبيق.
    • يتدهور بأمان: لو Canvas غير مدعوم، يرجّع للمشاركة النصية القديمة.
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -39,6 +40,17 @@
   var APP_DOMAIN = 'zad.codeandcanvas.net';
   var BRAND = 'زاد';
   var TAGLINE = 'رفيق العبادة والخير';
+
+  /* شعار التطبيق الحقيقي (icons/icon-512.svg) مضمَّنًا كـ SVG لا كـ <img>:
+     الصفحات الثلاث عشرة تحمّل الاستوديو بمسارات نسبية مختلفة، وصورة
+     بمسار «icons/…» كانت تتكسّر في كل صفحة داخل مجلد فرعي. */
+  var LOGO_SVG = '<svg class="zst-logo" viewBox="0 0 512 512" role="img" aria-label="زاد" xmlns="http://www.w3.org/2000/svg">' +
+    '<rect width="512" height="512" rx="171.82" ry="171.82" fill="#09231b"/>' +
+    '<path fill="#fff" d="m153.92,331.54c14.52,0,40.42-4.55,58.64-13.38l11.39-25.05c16.22-35.86,9.68-58.35-5.98-79.41l5.98-11.1-40.99-27.33h-5.69l-14.52,50.95c31.31,15.66,54.65,31.31,63.19,48.96-16.22,1.14-48.67,2.56-62.62,2.56-34.44,0-32.16-8.54-36.43-23.63h-5.69c-1.14,15.09-2.28,33.87-2.28,41.27,0,25.05,12.52,36.15,35.01,36.15Z"/>' +
+    '<path fill="#fff" d="m278.31,336.09l15.09-46.68c3.42-10.82,5.12-21.92,5.12-33.3v-72.3l9.96-11.67-15.37-56.93h-5.69l-24.48,30.17,9.68,190.71h5.69Z"/>' +
+    '<path fill="#e8c274" d="m383.63,151.65c.28-.28.28-4.55,0-4.84l-27.61-27.61-27.89,27.89v4.27l27.89,27.89,27.61-27.61Z"/>' +
+    '<path fill="#fff" d="m358.86,201.74h-5.69l-19.36,46.11c14.52,14.52,33.59,31.88,45.54,51.24-9.11,31.31-50.95,51.81-103.61,61.2v5.69l61.2,31.03c28.18-32.73,48.39-75.71,48.39-117.84,0-4.55-.28-9.39-1.14-14.23l9.11-20.78-34.44-42.41Z"/>' +
+    '</svg>';
 
   /* ══ ١ · لوحات الألوان ═════════════════════════════════════════════════ */
   var PALETTES = {
@@ -159,7 +171,7 @@
   }
 
   var DEFAULT_PREFS = {
-    template: 'auto', palette: 'emerald', format: 'portrait',
+    template: 'auto', palette: 'emerald', format: 'portrait', pattern: 'stars',
     size: 1, align: 'center',
     showIdentity: true, showLogo: true, showSource: true, showDate: true,
     showFrame: true
@@ -175,6 +187,7 @@
     } catch (e) {}
     if (!FORMATS[p.format]) p.format = 'portrait';
     if (!PALETTES[p.palette]) p.palette = 'emerald';
+    if (!hasPattern(p.pattern)) p.pattern = 'stars';
     return p;
   }
   function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
@@ -209,26 +222,145 @@
     ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
   }
 
-  /* نمط هندسي إسلامي: شبكة نجوم ثمانية خفيفة جدًا */
-  function pattern(ctx, W, H, color, step) {
-    step = step || 74;
+  /* ══ نقوش الخلفية: ٤ حديثة بسيطة + ١ إسلامي ══════════════════════════════
+     كلها تُرسم بأشكال أوليّة (خطوط/دوائر) لا بـ createPattern(canvas) —
+     @napi-rs/canvas (المستخدم في توليد العيّنات) لا يدعمها، وكذلك بعض
+     المتصفحات القديمة. الشفافية منخفضة جدًا حتى يبقى النص هو البطل. */
+  var PATTERNS = [
+    { id: 'none',  label: 'بدون' },
+    { id: 'stars', label: 'نجوم إسلامية' },
+    { id: 'dots',  label: 'نقاط' },
+    { id: 'arcs',  label: 'أقواس' },
+    { id: 'waves', label: 'موج' },
+    { id: 'grid',  label: 'شبكة' }
+  ];
+  function hasPattern(id) {
+    for (var i = 0; i < PATTERNS.length; i++) if (PATTERNS[i].id === id) return true;
+    return false;
+  }
+  function patInk(P, a) {
+    return P.dark ? 'rgba(255,255,255,' + a + ')' : 'rgba(21,42,33,' + a + ')';
+  }
+
+  /* إسلامي: شبكة نجوم ثمانية + معيّن صغير في القلب */
+  function patStars(ctx, W, H, P, u) {
+    var step = Math.round(78 * u);
     ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = P.accent;
+    ctx.globalAlpha = P.dark ? 0.085 : 0.13;
+    ctx.lineWidth = Math.max(1, 1.05 * u);
+    ctx.lineJoin = 'round';
     for (var y = -step; y < H + step; y += step) {
       for (var x = -step; x < W + step; x += step) {
         var cx = x + (Math.floor(y / step) % 2 ? step / 2 : 0), cy = y;
         ctx.beginPath();
         for (var i = 0; i < 8; i++) {
           var a = (Math.PI / 4) * i - Math.PI / 2;
-          var r = i % 2 ? step * 0.16 : step * 0.30;
+          var r = i % 2 ? step * 0.17 : step * 0.31;
           var px = cx + Math.cos(a) * r, py = cy + Math.sin(a) * r;
           i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
         }
         ctx.closePath(); ctx.stroke();
+
+        ctx.beginPath();
+        var d = step * 0.075;
+        ctx.moveTo(cx, cy - d); ctx.lineTo(cx + d, cy); ctx.lineTo(cx, cy + d); ctx.lineTo(cx - d, cy);
+        ctx.closePath(); ctx.stroke();
       }
     }
     ctx.restore();
+  }
+
+  /* حديث ١: نقاط متبادلة الإزاحة */
+  function patDots(ctx, W, H, P, u) {
+    var step = Math.round(46 * u), r = Math.max(1.3, 2.1 * u);
+    ctx.save();
+    ctx.fillStyle = patInk(P, P.dark ? 0.09 : 0.11);
+    for (var row = 0, y = step * 0.5; y < H + step; row++, y += step) {
+      var off = row % 2 ? step / 2 : 0;
+      for (var x = step * 0.5; x < W + step; x += step) {
+        ctx.beginPath(); ctx.arc(x + off, y, r, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  /* حديث ٢: أقواس متراكزة تنبت من أسفل اللوحة */
+  function patArcs(ctx, W, H, P, u) {
+    var gap = Math.round(98 * u), maxR = Math.sqrt(W * W + H * H);
+    ctx.save();
+    ctx.lineWidth = Math.max(1, 1.25 * u);
+    for (var i = 1, r = gap; r < maxR; i++, r += gap) {
+      if (i % 4 === 0) { ctx.strokeStyle = P.accent; ctx.globalAlpha = P.dark ? 0.10 : 0.15; }
+      else { ctx.strokeStyle = patInk(P, 1); ctx.globalAlpha = P.dark ? 0.06 : 0.075; }
+      ctx.beginPath();
+      ctx.arc(W * 0.5, H * 1.06, r, Math.PI * 1.02, Math.PI * 1.98);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /* حديث ٣: موجات أفقية هادئة */
+  function patWaves(ctx, W, H, P, u) {
+    var gap = Math.round(60 * u), amp = 24 * u, len = Math.max(1, 330 * u),
+        stepX = Math.max(4, 7 * u);
+    ctx.save();
+    ctx.strokeStyle = patInk(P, P.dark ? 0.065 : 0.08);
+    ctx.lineWidth = Math.max(1, 1.2 * u);
+    for (var y = gap * 0.5; y < H + gap; y += gap) {
+      ctx.beginPath();
+      for (var x = 0; x <= W + stepX; x += stepX) {
+        var yy = y + Math.sin((x / len) * Math.PI * 2) * amp;
+        x ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /* حديث ٤: شبكة معمارية + مربّعات ذهبية متباعدة */
+  function patGrid(ctx, W, H, P, u) {
+    var step = Math.round(90 * u), k = 5 * u;
+    ctx.save();
+    ctx.strokeStyle = patInk(P, P.dark ? 0.055 : 0.07);
+    ctx.lineWidth = Math.max(1, 1 * u);
+    ctx.beginPath();
+    for (var x = step; x < W; x += step) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+    for (var y = step; y < H; y += step) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+    ctx.stroke();
+    ctx.fillStyle = P.accent;
+    ctx.globalAlpha = P.dark ? 0.11 : 0.15;
+    for (var gy = step; gy < H; gy += step * 4) {
+      for (var gx = step; gx < W; gx += step * 4) ctx.fillRect(gx - k, gy - k, k * 2, k * 2);
+    }
+    ctx.restore();
+  }
+
+  var PAT_DRAW = { stars: patStars, dots: patDots, arcs: patArcs, waves: patWaves, grid: patGrid };
+
+  function pattern(ctx, W, H, P, u, id) {
+    if (id === 'none') return;
+    var fn = PAT_DRAW[id] || PAT_DRAW.stars;
+    fn(ctx, W, H, P, u || 1);
+  }
+
+  /* مصغّرة النقش داخل البانل — نفس دالة الرسم حتى لا تختلف عن البطاقة */
+  function paintPatternPreview(canvas, P, id) {
+    var w = 240, h = 168, dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    var ctx = canvas.getContext && canvas.getContext('2d');
+    if (!ctx) return canvas;
+    ctx.scale(dpr, dpr);
+    var g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, P.bg[0]); g.addColorStop(0.55, P.bg[1]); g.addColorStop(1, P.bg[2]);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    if (id !== 'none') pattern(ctx, w, h, P, w / 340, id);
+    else {
+      ctx.strokeStyle = patInk(P, 0.18);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(w * 0.30, h * 0.62); ctx.lineTo(w * 0.70, h * 0.38); ctx.stroke();
+    }
+    return canvas;
   }
 
   /* ۞ مَصحفية متجهية — خطوط التطبيق لا تحتوي الرمز، فكان يُرسم مربعًا فارغًا */
@@ -329,7 +461,67 @@
     } catch (e) { return null; }
   }
 
-  /* شعار التطبيق: مربّع بحواف دائرية + هلال + نجمة */
+  /* ── الشعار الحقيقي للتطبيق (icons/icon-512.svg) كمسارات متجهية ────────
+     بدل صورة: نفس الخطوط تُرسم على Canvas فتكبر مع أي مقاس بلا فقد جودة،
+     وتشتغل في المتصفح وفي @napi-rs/canvas (توليد العيّنات) سواء. */
+  var LOGO_PATHS = [
+    { f: '#fdfaf2', d: 'm153.92,331.54c14.52,0,40.42-4.55,58.64-13.38l11.39-25.05c16.22-35.86,9.68-58.35-5.98-79.41l5.98-11.1-40.99-27.33h-5.69l-14.52,50.95c31.31,15.66,54.65,31.31,63.19,48.96-16.22,1.14-48.67,2.56-62.62,2.56-34.44,0-32.16-8.54-36.43-23.63h-5.69c-1.14,15.09-2.28,33.87-2.28,41.27,0,25.05,12.52,36.15,35.01,36.15Z' },
+    { f: '#fdfaf2', d: 'm278.31,336.09l15.09-46.68c3.42-10.82,5.12-21.92,5.12-33.3v-72.3l9.96-11.67-15.37-56.93h-5.69l-24.48,30.17,9.68,190.71h5.69Z' },
+    { f: '#e8c274', d: 'm383.63,151.65c.28-.28.28-4.55,0-4.84l-27.61-27.61-27.89,27.89v4.27l27.89,27.89,27.61-27.61Z' },
+    { f: '#fdfaf2', d: 'm358.86,201.74h-5.69l-19.36,46.11c14.52,14.52,33.59,31.88,45.54,51.24-9.11,31.31-50.95,51.81-103.61,61.2v5.69l61.2,31.03c28.18-32.73,48.39-75.71,48.39-117.84,0-4.55-.28-9.39-1.14-14.23l9.11-20.78-34.44-42.41Z' }
+  ];
+  var LOGO_BOX = { x0: 153.9, y0: 151.6, x1: 383.7, y1: 336.2 };  /* حدود الحروف داخل viewBox ٥١٢ */
+
+  /* مفسّر مسارات مبسّط: M/m · L/l · H/h · V/v · C/c · Z — كافي لشعار زاد */
+  function tracePath(ctx, d, k, ox, oy) {
+    var tk = d.match(/[MmLlHhVvCcZz]|-?(?:\d+\.?\d*|\.\d+)/g) || [];
+    var i = 0, cmd = '', cx = 0, cy = 0, sx = 0, sy = 0;
+    function n() { return parseFloat(tk[i++]); }
+    function X(v) { return ox + v * k; }
+    function Y(v) { return oy + v * k; }
+    while (i < tk.length) {
+      if (!/^-?(?:\d)/.test(tk[i])) cmd = tk[i++];
+      if (!/[MmLlHhVvCcZz]/.test(cmd)) break;
+      if (cmd === 'Z' || cmd === 'z') { ctx.closePath(); cx = sx; cy = sy; continue; }
+      if (cmd === 'M' || cmd === 'm') {
+        if (cmd === 'm') { cx += n(); cy += n(); } else { cx = n(); cy = n(); }
+        sx = cx; sy = cy; ctx.moveTo(X(cx), Y(cy));
+        cmd = cmd === 'm' ? 'l' : 'L'; continue;
+      }
+      if (cmd === 'L' || cmd === 'l') {
+        if (cmd === 'l') { cx += n(); cy += n(); } else { cx = n(); cy = n(); }
+        ctx.lineTo(X(cx), Y(cy)); continue;
+      }
+      if (cmd === 'H' || cmd === 'h') { cx = cmd === 'h' ? cx + n() : n(); ctx.lineTo(X(cx), Y(cy)); continue; }
+      if (cmd === 'V' || cmd === 'v') { cy = cmd === 'v' ? cy + n() : n(); ctx.lineTo(X(cx), Y(cy)); continue; }
+      if (cmd === 'C' || cmd === 'c') {
+        var rel = cmd === 'c';
+        var x1 = (rel ? cx : 0) + n(), y1 = (rel ? cy : 0) + n();
+        var x2 = (rel ? cx : 0) + n(), y2 = (rel ? cy : 0) + n();
+        var x3 = (rel ? cx : 0) + n(), y3 = (rel ? cy : 0) + n();
+        ctx.bezierCurveTo(X(x1), Y(y1), X(x2), Y(y2), X(x3), Y(y3));
+        cx = x3; cy = y3; continue;
+      }
+    }
+  }
+
+  /* يرسم حروف «زاد» داخل مستطيل (بلا خلفية) مع ملء الأكبر مساحة ممكنة */
+  function drawAppGlyph(ctx, bx, by, bw, bh) {
+    var gw = LOGO_BOX.x1 - LOGO_BOX.x0, gh = LOGO_BOX.y1 - LOGO_BOX.y0;
+    var k = Math.min(bw / gw, bh / gh);
+    var ox = bx + (bw - gw * k) / 2 - LOGO_BOX.x0 * k;
+    var oy = by + (bh - gh * k) / 2 - LOGO_BOX.y0 * k;
+    ctx.save();
+    LOGO_PATHS.forEach(function (p) {
+      ctx.beginPath();
+      tracePath(ctx, p.d, k, ox, oy);
+      ctx.fillStyle = p.f;
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  /* شعار التطبيق: مربّع بحواف دائرية + حروف «زاد» الحقيقية */
   function drawMark(ctx, x, y, size, P, opts) {
     opts = opts || {};
     var r = size * 0.30;
@@ -343,25 +535,8 @@
     ctx.strokeStyle = P.accent; ctx.globalAlpha = 0.55; ctx.stroke();
     ctx.globalAlpha = 1;
 
-    /* هلال حقيقي: قوسان باتجاهين متعاكسين = شكل مقصوص فعليًا
-       (الطريقة القديمة كانت ترسم قرصًا بلون الخلفية فتبقى دائرة غريبة
-        على اللوحات الفاتحة) */
-    var cx = x + size / 2, cy = y + size * 0.46, cr = size * 0.235;
-    ctx.beginPath();
-    ctx.arc(cx, cy, cr, 0, Math.PI * 2, false);
-    ctx.arc(cx + cr * 0.44, cy - cr * 0.16, cr * 0.86, 0, Math.PI * 2, true);
-    ctx.fillStyle = P.accent; ctx.fill();
-
-    /* نجمة رباعية أعلى الهلال */
-    var sx = cx + cr * 0.60, sy = cy - cr * 1.10, sr = size * 0.055;
-    ctx.fillStyle = P.accent;
-    ctx.beginPath();
-    ctx.moveTo(sx, sy - sr);
-    ctx.quadraticCurveTo(sx + sr * 0.22, sy - sr * 0.22, sx + sr, sy);
-    ctx.quadraticCurveTo(sx + sr * 0.22, sy + sr * 0.22, sx, sy + sr);
-    ctx.quadraticCurveTo(sx - sr * 0.22, sy + sr * 0.22, sx - sr, sy);
-    ctx.quadraticCurveTo(sx - sr * 0.22, sy - sr * 0.22, sx, sy - sr);
-    ctx.fill();
+    /* حروف الشعار داخل المربّع — الرمز بقى شعار التطبيق نفسه لا هلالًا عامًا */
+    drawAppGlyph(ctx, x + size * 0.175, y + size * 0.175, size * 0.65, size * 0.65);
     ctx.restore();
   }
 
@@ -482,7 +657,7 @@
 
     glow(ctx, W * 0.86, H * 0.08, W * (P.dark ? 0.55 : 0.42), P.glow);
     if (P.dark) glow(ctx, W * 0.08, H * 0.94, W * 0.45, 'rgba(30,107,82,.30)');
-    pattern(ctx, W, H, P.dark ? 'rgba(255,255,255,.035)' : 'rgba(21,42,33,.05)', Math.round(78 * u));
+    pattern(ctx, W, H, P, u, p.pattern);
 
     if (p.showFrame) {
       frame(ctx, W, H, pad, P, u);
@@ -1031,59 +1206,139 @@
 
   /* ══ ٧ · الواجهة ════════════════════════════════════════════════════════ */
   var CSS = '' +
-  '.zst-ov{position:fixed;inset:0;z-index:9800;background:rgba(4,10,8,.72);backdrop-filter:blur(6px);' +
-  '-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:14px;opacity:0;transition:opacity .2s}' +
+  /* ── الغلاف ── */
+  '.zst-ov{position:fixed;inset:0;z-index:9800;display:flex;align-items:center;justify-content:center;padding:14px;' +
+  'background:rgba(4,14,11,.74);backdrop-filter:blur(8px) saturate(1.08);-webkit-backdrop-filter:blur(8px) saturate(1.08);' +
+  'opacity:0;transition:opacity .22s ease}' +
   '.zst-ov.on{opacity:1}' +
-  '.zst-panel{width:100%;max-width:560px;max-height:94vh;display:flex;flex-direction:column;overflow:hidden;' +
-  'background:var(--card,#fff);border:1px solid var(--border,rgba(0,0,0,.08));border-radius:26px;' +
-  'box-shadow:0 30px 80px -20px rgba(0,0,0,.55);font-family:inherit;transform:translateY(14px) scale(.99);transition:transform .22s}' +
+  '.zst-panel{position:relative;width:100%;max-width:566px;max-height:min(94vh,880px);display:flex;flex-direction:column;' +
+  'overflow:hidden;background:var(--card,#fff);border:1px solid var(--border,#e5e4de);border-radius:24px;color:var(--ink,#1a1a18);' +
+  'font-family:\'Tajawal\',\'Segoe UI\',system-ui,sans-serif;' +
+  'box-shadow:0 34px 90px -26px rgba(4,14,11,.62);transform:translateY(16px) scale(.985);' +
+  'transition:transform .24s cubic-bezier(.2,.8,.25,1)}' +
   '.zst-ov.on .zst-panel{transform:none}' +
-  '.zst-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border,rgba(0,0,0,.07))}' +
-  '.zst-head b{font-size:15.5px;color:var(--ink,#122)}' +
-  '.zst-x{width:34px;height:34px;border-radius:12px;border:none;background:var(--sand,#f2f1ec);color:var(--ink,#122);cursor:pointer;font-size:16px}' +
-  '.zst-stage{background:linear-gradient(160deg,#0b1a15,#10261d);padding:14px;display:flex;justify-content:center;align-items:center;min-height:190px}' +
-  '.zst-canvas{max-width:100%;max-height:38vh;border-radius:12px;box-shadow:0 14px 40px -12px rgba(0,0,0,.6);display:block}' +
-  '.zst-tabs{display:flex;gap:6px;padding:10px 14px 0;overflow-x:auto;scrollbar-width:none}' +
-  '.zst-tabs::-webkit-scrollbar{display:none}' +
-  '.zst-tab{flex:0 0 auto;padding:8px 14px;border-radius:999px;border:1px solid var(--border,rgba(0,0,0,.08));background:transparent;' +
-  'color:var(--muted,#777);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}' +
-  '.zst-tab.on{background:var(--green-deep,#0e3b2e);color:#fff;border-color:transparent}' +
-  '.zst-body{padding:12px 16px;overflow-y:auto;flex:1;min-height:120px}' +
+  /* ── الترويسة: أخضر زاد الثابت + اللوجو الحقيقي ── */
+  '.zst-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;' +
+  'background:linear-gradient(135deg,var(--primitive-green-900,#0e3b2e) 0%,var(--primitive-green-700,#1a5d47) 62%,var(--primitive-green-500,#2a7a5f) 130%);' +
+  'border-bottom:1px solid rgba(201,161,74,.34)}' +
+  '.zst-brand{display:flex;align-items:center;gap:11px;min-width:0}' +
+  '.zst-logo{display:block;width:38px;height:38px;flex:0 0 auto;border-radius:11px;' +
+  'box-shadow:0 0 0 1px rgba(232,194,116,.45),0 7px 16px -8px rgba(0,0,0,.75)}' +
+  '.zst-brand-t{display:flex;flex-direction:column;min-width:0;line-height:1.3}' +
+  '.zst-brand-t b{font-family:\'ThmanyahSans\',\'IBM Plex Sans Arabic\',\'Tajawal\',sans-serif;font-size:15px;font-weight:900;' +
+  'color:#fdfaf2;letter-spacing:.1px;white-space:nowrap}' +
+  '.zst-brand-t span{font-size:10.5px;font-weight:500;color:rgba(253,250,242,.66);margin-top:1px;white-space:nowrap;' +
+  'overflow:hidden;text-overflow:ellipsis}' +
+  '.zst-x{width:34px;height:34px;flex:0 0 auto;display:grid;place-items:center;border-radius:11px;font-size:15px;line-height:1;' +
+  'border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.09);color:#f4efe2;cursor:pointer;' +
+  'transition:background .18s,border-color .18s,transform .15s}' +
+  '.zst-x:hover{background:rgba(232,194,116,.22);border-color:rgba(232,194,116,.55)}' +
+  '.zst-x:active{transform:scale(.94)}' +
+  /* ── منطقة المعاينة ── */
+  '.zst-stage{position:relative;flex:0 1 auto;min-height:0;padding:14px 14px 10px;display:flex;align-items:center;' +
+  'justify-content:center;overflow:hidden;background:linear-gradient(160deg,var(--green-pale,#e8f4ef) 0%,var(--sand,#faf9f6) 62%,var(--card,#fff) 100%)}' +
+  '.zst-stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.55;' +
+  'background-image:linear-gradient(45deg,rgba(14,59,46,.045) 25%,transparent 25%,transparent 75%,rgba(14,59,46,.045) 75%),' +
+  'linear-gradient(45deg,rgba(14,59,46,.045) 25%,transparent 25%,transparent 75%,rgba(14,59,46,.045) 75%);' +
+  'background-size:18px 18px;background-position:0 0,9px 9px}' +
+  '.zst-canvas{position:relative;z-index:1;display:block;max-width:100%;max-height:min(34vh,330px);border-radius:14px;' +
+  'box-shadow:0 20px 46px -18px rgba(4,14,11,.55),0 0 0 1px rgba(14,59,46,.09)}' +
+  /* ── التبويبات: سيجمنت iOS ── */
+  '.zst-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:12px 16px 0;padding:4px;' +
+  'background:var(--sand,#faf9f6);border:1px solid var(--border,#e5e4de);border-radius:14px}' +
+  '.zst-tab{min-width:0;padding:9px 4px;border-radius:10px;border:none;background:transparent;color:var(--muted,#757570);' +
+  'font-family:\'ThmanyahSans\',\'Tajawal\',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;' +
+  'transition:background .18s,color .18s,box-shadow .18s}' +
+  '.zst-tab:hover{color:var(--ink,#1a1a18)}' +
+  '.zst-tab.on{background:var(--card,#fff);color:var(--green-deep,#0e3b2e);box-shadow:var(--shadow-sm,0 4px 14px -6px rgba(14,59,46,.16))}' +
+  /* ── المحتوى ── */
+  '.zst-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:12px 16px 8px;scrollbar-width:thin}' +
+  '.zst-body::-webkit-scrollbar{width:6px}' +
+  '.zst-body::-webkit-scrollbar-thumb{background:var(--border,#e5e4de);border-radius:99px}' +
   '.zst-row{margin-bottom:14px}' +
-  '.zst-row>label{display:block;font-size:11.5px;font-weight:800;color:var(--muted,#777);margin-bottom:7px;letter-spacing:.2px}' +
+  '.zst-body label{display:block;font-size:11px;font-weight:800;color:var(--muted,#757570);margin-bottom:7px;letter-spacing:.3px}' +
   '.zst-chips{display:flex;flex-wrap:wrap;gap:7px}' +
-  '.zst-chip{padding:8px 12px;border-radius:12px;border:1px solid var(--border,rgba(0,0,0,.09));background:var(--sand,#f7f6f1);' +
-  'color:var(--ink,#122);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}' +
-  '.zst-chip.on{background:var(--green-deep,#0e3b2e);color:#fff;border-color:transparent}' +
-  '.zst-swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}' +
-  '.zst-sw{height:46px;border-radius:12px;border:2px solid transparent;cursor:pointer;position:relative;overflow:hidden}' +
-  '.zst-sw.on{border-color:var(--gold,#c9a14a);box-shadow:0 0 0 3px rgba(201,161,74,.18)}' +
-  '.zst-sw span{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8.5px;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}' +
-  '.zst-field{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border,rgba(0,0,0,.1));' +
-  'background:var(--bg,#fff);color:var(--ink,#122);font-family:inherit;font-size:13px;box-sizing:border-box}' +
-  '.zst-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}' +
-  '.zst-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;font-size:13px;color:var(--ink,#122);font-weight:600}' +
-  '.zst-sw2{width:44px;height:26px;border-radius:99px;background:var(--border,#ddd);border:none;position:relative;cursor:pointer;flex:0 0 auto;transition:background .18s}' +
-  '.zst-sw2.on{background:var(--green-deep,#0e3b2e)}' +
-  '.zst-sw2::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .18s}' +
+  '.zst-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:11px;' +
+  'border:1px solid var(--border,#e5e4de);background:var(--card,#fff);color:var(--ink,#1a1a18);font-family:inherit;' +
+  'font-size:12px;font-weight:700;cursor:pointer;transition:background .16s,border-color .16s,color .16s,box-shadow .16s}' +
+  '.zst-chip.on{background:var(--green-pale,#e8f4ef);color:var(--green-deep,#0e3b2e);border-color:var(--gold,#c9a14a);' +
+  'box-shadow:0 0 0 3px rgba(201,161,74,.13)}' +
+  /* لوحات الألوان */
+  '.zst-swatches{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}' +
+  '.zst-sw{position:relative;height:54px;padding:0;border-radius:11px;overflow:hidden;cursor:pointer;' +
+  'border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}' +
+  '.zst-sw.on{border-color:var(--gold,#c9a14a);box-shadow:0 0 0 3px rgba(201,161,74,.24)}' +
+  '.zst-sw.on::after{content:"✓";position:absolute;top:4px;left:5px;font-size:10px;font-weight:900;color:#fff;' +
+  'text-shadow:0 1px 3px rgba(0,0,0,.75)}' +
+  '.zst-sw span{position:absolute;inset-inline:0;bottom:0;padding:8px 2px 4px;text-align:center;font-size:9px;' +
+  'font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55);background:linear-gradient(to top,rgba(0,0,0,.55),transparent)}' +
+  /* النقوش */
+  '.zst-pats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}' +
+  '.zst-pat{display:flex;flex-direction:column;gap:4px;min-width:0;padding:4px 4px 5px;border-radius:11px;cursor:pointer;' +
+  'border:1px solid var(--border,#e5e4de);background:var(--card,#fff);font-family:inherit;' +
+  'transition:border-color .16s,box-shadow .16s,transform .15s}' +
+  '.zst-pat:active{transform:scale(.97)}' +
+  '.zst-pat canvas{display:block;width:100%;height:auto;border-radius:7px;background:var(--sand,#faf9f6)}' +
+  '.zst-pat span{font-size:9px;font-weight:800;line-height:1.45;text-align:center;color:var(--muted,#757570);' +
+  'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+  '.zst-pat.on{border-color:var(--gold,#c9a14a);box-shadow:0 0 0 3px rgba(201,161,74,.16)}' +
+  '.zst-pat.on span{color:var(--green-deep,#0e3b2e)}' +
+  /* الحقول والمفاتيح */
+  '.zst-field{width:100%;min-width:0;padding:10px 12px;border-radius:11px;border:1px solid var(--border,#e5e4de);' +
+  'background:var(--card,#fff);color:var(--ink,#1a1a18);font-family:inherit;font-size:13px;box-sizing:border-box;' +
+  'transition:border-color .16s,box-shadow .16s}' +
+  '.zst-field::placeholder{color:var(--muted,#757570);opacity:.8}' +
+  '.zst-field:focus{outline:none;border-color:var(--gold,#c9a14a);box-shadow:0 0 0 3px rgba(201,161,74,.16)}' +
+  '.zst-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}' +
+  '.zst-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;' +
+  'font-size:12.5px;color:var(--ink,#1a1a18);font-weight:600;border-bottom:1px solid var(--border,#e5e4de)}' +
+  '.zst-toggle:last-child{border-bottom:none;padding-bottom:2px}' +
+  '.zst-sw2{position:relative;flex:0 0 auto;width:42px;height:24px;border-radius:99px;border:none;cursor:pointer;' +
+  'background:var(--border,#e5e4de);transition:background .18s}' +
+  '.zst-sw2.on{background:linear-gradient(135deg,var(--primitive-green-500,#2a7a5f),var(--primitive-green-700,#1a5d47))}' +
+  '.zst-sw2::after{content:"";position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;' +
+  'box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .18s}' +
   '.zst-sw2.on::after{transform:translateX(-18px)}' +
-  '.zst-range{width:100%;accent-color:var(--green-deep,#0e3b2e)}' +
+  '.zst-range{width:100%;accent-color:var(--primitive-green-500,#2a7a5f);cursor:pointer}' +
   '.zst-avatars{display:flex;flex-wrap:wrap;gap:6px}' +
-  '.zst-av{width:36px;height:36px;border-radius:11px;border:1px solid var(--border,rgba(0,0,0,.1));background:var(--sand,#f7f6f1);cursor:pointer;font-size:18px;line-height:1}' +
-  '.zst-av.on{border-color:var(--gold,#c9a14a);background:var(--gold-pale,#fbf5e4)}' +
-  '.zst-note{font-size:11px;color:var(--muted,#888);line-height:1.6;margin-top:6px}' +
-  '.zst-actions{display:flex;gap:8px;padding:12px 16px 16px;border-top:1px solid var(--border,rgba(0,0,0,.07));flex-wrap:wrap}' +
-  '.zst-btn{flex:1 1 auto;min-width:110px;padding:13px 16px;border-radius:14px;border:1px solid var(--border,rgba(0,0,0,.1));' +
-  'background:var(--sand,#f7f6f1);color:var(--ink,#122);font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;' +
-  'display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s,background .18s}' +
+  '.zst-av{width:36px;height:36px;border-radius:11px;border:1px solid var(--border,#e5e4de);background:var(--sand,#faf9f6);' +
+  'color:var(--ink,#1a1a18);cursor:pointer;font-size:18px;line-height:1;transition:border-color .16s,box-shadow .16s,background .16s}' +
+  '.zst-av.on{border-color:var(--gold,#c9a14a);background:var(--gold-pale,#fdf5e0);box-shadow:0 0 0 3px rgba(201,161,74,.16)}' +
+  '.zst-note{font-size:11px;color:var(--muted,#757570);line-height:1.7;margin-top:6px}' +
+  /* ── شريط الإجراءات: شبكة ٤ خلايا لا تتزاحم ── */
+  '.zst-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:12px 16px;' +
+  'padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--border,#e5e4de);background:var(--card,#fff)}' +
+  '.zst-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:0;padding:12px 8px;' +
+  'border-radius:12px;border:1px solid var(--border,#e5e4de);background:var(--sand,#faf9f6);color:var(--ink,#1a1a18);' +
+  'font-family:\'ThmanyahSans\',\'Tajawal\',sans-serif;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;' +
+  'cursor:pointer;transition:transform .14s,box-shadow .18s,background .18s}' +
   '.zst-btn:active{transform:scale(.97)}' +
-  '.zst-btn.pri{background:linear-gradient(135deg,#0e3b2e,#1a5d47);color:#fff;border-color:transparent;' +
-  'box-shadow:0 10px 24px -10px rgba(14,59,46,.6)}' +
-  '.zst-btn.gold{background:linear-gradient(135deg,#dcb96f,#c9a14a);color:#241c08;border-color:transparent}' +
-  '.zst-btn:disabled{opacity:.55;cursor:not-allowed}' +
-  '.zst-flash{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#0e3b2e;color:#fff;padding:11px 20px;' +
-  'border-radius:999px;font-size:13px;font-weight:700;z-index:9900;box-shadow:0 14px 30px -10px rgba(0,0,0,.5)}' +
-  '@media (max-width:420px){.zst-swatches{grid-template-columns:repeat(3,1fr)}.zst-canvas{max-height:30vh}}';
+  '.zst-btn.pri{background:linear-gradient(135deg,var(--primitive-green-900,#0e3b2e),var(--primitive-green-700,#1a5d47));' +
+  'color:#fdfaf2;border-color:transparent;box-shadow:0 10px 22px -12px rgba(14,59,46,.8)}' +
+  '.zst-btn.pri:hover{background:linear-gradient(135deg,var(--primitive-green-700,#1a5d47),var(--primitive-green-500,#2a7a5f))}' +
+  '.zst-btn.gold{background:linear-gradient(135deg,var(--brand-gold-lt,#e6c97a),var(--brand-gold,#c9a14a));' +
+  'color:#2b2108;border-color:transparent;box-shadow:0 10px 22px -12px rgba(201,161,74,.75)}' +
+  '.zst-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}' +
+  /* ── التوست: فوق منطقة المعاينة، بعيدًا عن الأزرار ── */
+  '.zst-flash{position:absolute;z-index:5;left:50%;bottom:12px;max-width:calc(100% - 28px);' +
+  'transform:translateX(-50%) translateY(7px);background:linear-gradient(135deg,var(--primitive-green-900,#0e3b2e),var(--primitive-green-700,#1a5d47));' +
+  'color:#fdfaf2;padding:9px 16px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;' +
+  'text-overflow:ellipsis;box-shadow:0 12px 26px -10px rgba(0,0,0,.6),0 0 0 1px rgba(232,194,116,.32);' +
+  'opacity:0;pointer-events:none;transition:opacity .22s,transform .22s}' +
+  '.zst-flash.on{opacity:1;transform:translateX(-50%) translateY(0)}' +
+  '.zst-flash.fix{position:fixed;bottom:24px;z-index:9900}' +
+  /* ── الشاشات الصغيرة ── */
+  '@media (max-width:430px){' +
+  '.zst-panel{max-height:96dvh;border-radius:20px}' +
+  '.zst-swatches{grid-template-columns:repeat(3,minmax(0,1fr))}' +
+  '.zst-pats{grid-template-columns:repeat(3,minmax(0,1fr))}' +
+  '.zst-canvas{max-height:30vh}' +
+  '.zst-actions{grid-template-columns:repeat(2,minmax(0,1fr))}' +
+  '.zst-brand-t span{display:none}' +
+  '.zst-stage{padding:10px 10px 8px}' +
+  '}' +
+  '@media (max-width:360px){.zst-tab{font-size:11.5px}.zst-body{padding:10px 12px 6px}}' +
+  '@media (prefers-reduced-motion:reduce){.zst-ov,.zst-panel,.zst-flash{transition:none}}';
 
   function injectCSS() {
     if (document.getElementById('zst-css')) return;
@@ -1099,11 +1354,16 @@
     return e;
   }
 
+  /* التوست لازم يظهر فوق منطقة المعاينة داخل البانل — النسخة القديمة
+     كانت fixed أسفل الشاشة فوق شريط الأزرار وتغطّي «حفظ/مشاركة». */
+  var flashHost = null;
   function flash(msg) {
-    var t = el('div', 'zst-flash', msg);
-    document.body.appendChild(t);
-    setTimeout(function () { t.style.opacity = '0'; }, 1600);
-    setTimeout(function () { t.remove(); }, 2100);
+    var fixed = !flashHost;
+    var t = el('div', 'zst-flash' + (fixed ? ' fix' : ''), msg);
+    (flashHost || document.body).appendChild(t);
+    requestAnimationFrame(function () { t.classList.add('on'); });
+    setTimeout(function () { t.classList.remove('on'); }, 1750);
+    setTimeout(function () { t.remove(); }, 2200);
   }
 
   var photoCache = { src: null, img: null };
@@ -1163,12 +1423,16 @@
 
     var ov = el('div', 'zst-ov');
     var panel = el('div', 'zst-panel');
-    var head = el('div', 'zst-head',
-      '<b>🎨 استوديو المشاركة</b>' +
-      '<button class="zst-x" type="button" aria-label="إغلاق">✕</button>');
+    var head = el('div', 'zst-head');
+    head.innerHTML =
+      '<div class="zst-brand">' + LOGO_SVG +
+        '<div class="zst-brand-t"><b>استوديو المشاركة</b><span>بطاقات جاهزة بهوية زاد</span></div>' +
+      '</div>' +
+      '<button class="zst-x" type="button" aria-label="إغلاق">✕</button>';
     var stage = el('div', 'zst-stage');
     var canvas = el('canvas', 'zst-canvas');
     stage.appendChild(canvas);
+    flashHost = stage;
     var tabs = el('div', 'zst-tabs');
     var body = el('div', 'zst-body');
     var actions = el('div', 'zst-actions');
@@ -1287,10 +1551,29 @@
           wrap.appendChild(b);
         });
         body.appendChild(row('لوحة الألوان', wrap));
+
+        /* النقوش: معاينة حقيقية لكل نقش بنفس دالة رسم البطاقة */
+        var curP = PALETTES[prefs.palette] || PALETTES.emerald;
+        var pats = el('div', 'zst-pats');
+        PATTERNS.forEach(function (pt) {
+          var pb = el('button', 'zst-pat' + (prefs.pattern === pt.id ? ' on' : ''));
+          pb.type = 'button';
+          pb.title = pt.label;
+          pb.setAttribute('aria-label', 'نقش ' + pt.label);
+          pb.setAttribute('aria-pressed', prefs.pattern === pt.id ? 'true' : 'false');
+          pb.appendChild(paintPatternPreview(document.createElement('canvas'), curP, pt.id));
+          pb.appendChild(el('span', null, pt.label));
+          pb.onclick = function () { prefs.pattern = pt.id; renderBody(); update(); };
+          pats.appendChild(pb);
+        });
+        body.appendChild(row('النقش الخلفي', pats));
+
         body.appendChild(row('المقاس', chips(Object.keys(FORMATS).map(function (k) {
           return { id: k, label: FORMATS[k].label };
         }), prefs.format, function (id) { prefs.format = id; renderBody(); update(); })));
-        body.appendChild(el('p', 'zst-note', 'الألوان مأخوذة من هوية زاد — الأخضر العميق والذهبي — مع بدائل هادئة تناسب كل ذوق.'));
+        body.appendChild(el('p', 'zst-note',
+          'النقش الإسلامي هو «نجوم إسلامية»، ومعه أربعة نقوش حديثة بسيطة — ' +
+          'كلها بشفافية خفيفة تفضل ورا النص. والألوان من هوية زاد: الأخضر العميق والذهبي.'));
       }
 
       if (tab === 'photo') {
@@ -1507,6 +1790,7 @@
 
     function close() {
       clearTimeout(idTimer);
+      flashHost = null;
       saveIdentity(identity);        /* لا تفقد الهوية عند الإغلاق بالزر أو Escape */
       document.documentElement.style.overflow = '';
       ov.classList.remove('on');
@@ -1532,13 +1816,14 @@
 
   /* ══ ٩ · واجهة برمجية عامة ══════════════════════════════════════════════ */
   var ZadStudio = {
-    version: '1.0.0',
+    version: '1.1.0',
     __ready: true,
     open: open,
     close: close,
     palettes: Object.keys(PALETTES),
     formats: Object.keys(FORMATS),
     templates: TEMPLATES.map(function (t) { return t.id; }),
+    patterns: PATTERNS.map(function (p) { return p.id; }),
 
     /** يرسم بطاقة ويعيد canvas (بلا واجهة) */
     render: function (opts) {
