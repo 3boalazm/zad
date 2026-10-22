@@ -61,7 +61,7 @@
       soft: 'rgba(244,247,255,.68)', accent: '#e3c37c', accent2: '#8fb7e8',
       line: 'rgba(227,195,124,.38)', chip: 'rgba(143,183,232,.13)', glow: 'rgba(80,130,220,.24)', dark: true },
     ivory: { label: 'ورقي', bg: ['#fdfaf2', '#f4ecd9', '#efe4cd'], ink: '#152a21',
-      soft: 'rgba(21,42,33,.62)', accent: '#a47c2a', accent2: '#2f6b52',
+      soft: 'rgba(21,42,33,.74)', accent: '#a47c2a', accent2: '#2f6b52',
       line: 'rgba(164,124,42,.35)', chip: 'rgba(164,124,42,.10)', glow: 'rgba(201,161,74,.20)', dark: false },
     rose: { label: 'وردي', bg: ['#2c0d1e', '#5b1f3c', '#240a18'], ink: '#fff3f7',
       soft: 'rgba(255,243,247,.70)', accent: '#f2c6a0', accent2: '#e79ac2',
@@ -551,7 +551,7 @@
     ctx.font = F('display', size * 0.56, 700);
     ctx.fillText(BRAND, right, y + size * 0.55);
     ctx.fillStyle = P.soft;
-    ctx.font = F('sans', size * 0.20, 500);
+    ctx.font = F('sans', size * 0.22, 500);
     ctx.fillText(TAGLINE, right, y + size * 0.92);
     ctx.restore();
   }
@@ -607,9 +607,11 @@
 
   function hijriToday() {
     try {
-      return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+      var s = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
         day: 'numeric', month: 'long', year: 'numeric'
-      }).format(new Date()) + ' هـ';
+      }).format(new Date());
+      /* بعض إصدارات ICU بتضيف «هـ» بنفسها — منع التكرار */
+      return /ه(\u0640)?\s*$/.test(s) ? s : s + ' هـ';
     } catch (e) { return ''; }
   }
 
@@ -663,8 +665,8 @@
       frame(ctx, W, H, pad, P, u);
     }
 
-    /* ── الترويسة ── */
-    var headY = pad + Math.round(30 * u);
+    /* ── الترويسة ── (تبدأ تحت زخرفة الزاوية 46u حتى لا تتراكب معها) */
+    var headY = pad + Math.round(58 * u);
     var headSize = Math.round(56 * u);
     if (p.showLogo) {
       drawLockup(ctx, W - pad - Math.round(16 * u) - headSize, headY, headSize, P);
@@ -716,7 +718,7 @@
     ctx.font = F('sans', Math.round(19 * u), 500);
     ctx.fillStyle = P.soft;
     ctx.direction = 'ltr'; ctx.textAlign = 'left';
-    ctx.fillText(APP_DOMAIN, pad + Math.round(46 * u), urlY);
+    ctx.fillText(APP_DOMAIN, pad + Math.round(58 * u), urlY);
     ctx.restore();
 
     if (p.showDate) {
@@ -726,7 +728,7 @@
         ctx.font = F('sans', Math.round(19 * u), 500);
         ctx.fillStyle = P.soft;
         ctx.direction = 'rtl'; ctx.textAlign = 'right';
-        ctx.fillText(hj, W - pad - Math.round(46 * u), urlY);
+        ctx.fillText(hj, W - pad - Math.round(58 * u), urlY);
         ctx.restore();
       }
     }
@@ -864,14 +866,14 @@
     var total = titleH + blockH + tailH + srcH;
     var top = blockTop(B, total);
 
-    /* علامة اقتباس شفافة أعلى اليمين */
+    /* علامة اقتباس شفافة فوق العنوان — كانت على يمين النص المتمركز فبتتراكب معه */
     ctx.save();
     ctx.globalAlpha = 0.22;
     ctx.fillStyle = P.accent;
-    roundRect(ctx, W - B.pad - Math.round(70 * u), top + Math.round(6 * u), Math.round(6 * u), Math.round(64 * u), 3 * u);
+    roundRect(ctx, W - B.pad - Math.round(84 * u), top - Math.round(58 * u), Math.round(6 * u), Math.round(48 * u), 3 * u);
     ctx.fill();
     ctx.globalAlpha = 0.10;
-    ctx.beginPath(); ctx.arc(W - B.pad - Math.round(26 * u), top + Math.round(38 * u), Math.round(16 * u), 0, Math.PI * 2);
+    ctx.beginPath(); ctx.arc(W - B.pad - Math.round(40 * u), top - Math.round(30 * u), Math.round(12 * u), 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
@@ -963,6 +965,8 @@
     var cols = stats.length > 2 ? 2 : Math.max(1, stats.length);
     var gap = Math.round(22 * u);
     var cw = (W - B.pad * 2 - gap * (cols - 1)) / cols;
+    /* إحصائية واحدة أو اتنين كانت بتاخد عرض البطاقة كله كصندوق فاضي */
+    cw = Math.min(cw, Math.round(420 * u));
     var ch = Math.round(150 * u);
     var gridH = stats.length ? Math.ceil(stats.length / cols) * (ch + gap) - gap + Math.round(40 * u) : 0;
 
@@ -1009,10 +1013,10 @@
         ctx.textAlign = 'center';
         ctx.font = F('display', Math.round(52 * u), 700);
         ctx.fillStyle = P.accent;
-        ctx.fillText(String(s.value), cx + cw / 2, cy + ch * 0.50);
+        ctx.fillText(s && s.value != null ? String(s.value) : '—', cx + cw / 2, cy + ch * 0.50);
         ctx.font = F('sans', Math.round(21 * u), 500);
         ctx.fillStyle = P.soft;
-        ctx.fillText(String(s.label), cx + cw / 2, cy + ch * 0.80);
+        if (s && s.label) ctx.fillText(String(s.label), cx + cw / 2, cy + ch * 0.80);
       });
       y += gridH;
     }
