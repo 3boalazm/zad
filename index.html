@@ -147,6 +147,7 @@
   .zh-cta-t{font-size:15px;font-weight:900;line-height:1.35}
   .zh-cta-s{font-size:11px;color:rgba(255,255,255,.75);line-height:1.5}
   .zh-cta-go{font-size:17px;opacity:.75;flex-shrink:0}
+  html[dir="ltr"] .zh-cta-go{display:inline-block;transform:scaleX(-1)}
   .zh-now-alt{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
   .zh-now-alt a{
     font-size:11.5px;font-weight:800;color:var(--ink);text-decoration:none;background:var(--sand);
@@ -942,6 +943,34 @@ async function zhComputeTimes() {
 }
 
 /* ── «الآن»: خطوة واحدة ──────────────────────────────────────── */
+function zhT(key, vars) {
+  let v = '';
+  try { v = (window.I18N && I18N.current !== 'ar' && I18N.t(key)) || ''; } catch (e) {}
+  if (!v || v === key) v = '';
+  if (!v) v = (ZH_AR[key] || '');
+  if (vars) for (const k in vars) v = v.split('{' + k + '}').join(vars[k]);
+  return v;
+}
+function zhUI(ar, fallback) {
+  try {
+    if (window.I18N && I18N.current !== 'ar' && window.ZAD_UI_MAP) {
+      const e = ZAD_UI_MAP[ar];
+      if (e && e[I18N.current]) return e[I18N.current];
+    }
+  } catch (e) {}
+  return fallback || ar;
+}
+/* نصوص عربية احتياطية — تُستخدم فقط إن غابت الترجمة */
+const ZH_AR = {
+  'zh.afterTpl':'بعد {n} دقيقة · {t}','zh.now':'الآن — الله أكبر','zh.nextPrayerTpl':'صلاة {p}',
+  'zh.special':'وضعك الخاص مُفعَّل','zh.specialSub':'الصلاة والصيام معذورة، وِردك باقٍ',
+  'zh.specialDayTpl':'اليوم {d} — الصلاة والصيام معذورة، وِردك باقٍ',
+  'zh.morningSub':'دقيقتان تحفظان يومك','zh.eveningSub':'قبل أن يغيب النهار',
+  'zh.streak':'ابدأ سلسلتك','zh.streakSub':'تسليمة واحدة تكفي لتبدأ',
+  'zh.complete':'أكمل صلواتك','zh.completeSubTpl':'{n} من ٥ حتى الآن',
+  'zh.wird':'وردك القرآني','zh.wirdSub':'صفحة واحدة اليوم تُنير غدك'
+};
+
 function zhNowCard() {
   const cta = document.getElementById('zh-cta');
   const ico = document.getElementById('zh-cta-ico');
@@ -962,8 +991,8 @@ function zhNowCard() {
     if (mins >= 0 && mins <= 60) {
       pick = {
         ico: '🕌',
-        t: 'صلاة ' + ZH_NAMES[nk],
-        s: mins <= 1 ? 'الآن — الله أكبر' : 'بعد ' + zhNum(mins) + ' دقيقة · ' + zhHm(ZH.dates[nk]),
+        t: zhT('zh.nextPrayerTpl', { p: zhUI(ZH_NAMES[nk], ZH_NAMES[nk]) }),
+        s: mins <= 1 ? zhT('zh.now') : zhT('zh.afterTpl', { n: zhNum(mins), t: zhHm(ZH.dates[nk]) }),
         href: 'prayers.html'
       };
     }
@@ -972,25 +1001,25 @@ function zhNowCard() {
   /* الوضع الخاص: بعد بطاقة الصلاة القادمة (لو فيه صلاة قريبة) وقبل باقي المقترحات */
   if (!pick && window.ZadSpecial && window.ZadSpecial.isOn()) {
     const spd = window.ZadSpecial.days();
-    pick = { ico:'🌸', t:'وضعك الخاص مُفعَّل', s:(spd>1?'اليوم '+spd+' — ':'')+'الصلاة والصيام معذورة، ووِردك باقٍ', href:'zahra.html' };
+    pick = { ico:'🌸', t: zhT('zh.special'), s: spd > 1 ? zhT('zh.specialDayTpl', { d: spd }) : zhT('zh.specialSub'), href:'zahra.html' };
   }
 
   if (!pick && h >= 4 && h < 11 && !w.morning_dhikr) {
-    pick = { ico:'🌅', t:'أذكار الصباح', s:'دقيقتان تحفظان يومك', href:'adhkar.html' };
+    pick = { ico:'🌅', t: zhUI('أذكار الصباح', 'أذكار الصباح'), s: zhT('zh.morningSub'), href:'adhkar.html' };
   } else if (!pick && h >= 15 && h < 20 && !w.evening_dhikr) {
-    pick = { ico:'🌇', t:'أذكار المساء', s:'قبل أن يغيب النهار', href:'adhkar.html' };
+    pick = { ico:'🌇', t: zhUI('أذكار المساء', 'أذكار المساء'), s: zhT('zh.eveningSub'), href:'adhkar.html' };
   }
 
   if (!pick && streak === 0) {
-    pick = { ico:'📿', t:'ابدأ سلسلتك', s:'تسليمة واحدة تكفي لتبدأ', href:'takbeer.html' };
+    pick = { ico:'📿', t: zhT('zh.streak'), s: zhT('zh.streakSub'), href:'takbeer.html' };
   }
 
   if (!pick) {
     const done = ['fajr','zuhr','asr','maghrib','isha'].filter(k => w[k]).length;
     if (done < 5 && h >= 12 && h < 23) {
-      pick = { ico:'🕌', t:'أكمل صلواتك', s: zhNum(done) + ' من ٥ حتى الآن', href:'barnamaj.html' };
+      pick = { ico:'🕌', t: zhT('zh.complete'), s: zhT('zh.completeSubTpl', { n: zhNum(done) }), href:'barnamaj.html' };
     } else {
-      pick = { ico:'📖', t:'وردك القرآني', s:'صفحة واحدة اليوم تُنير غدك', href:'mushaf.html' };
+      pick = { ico:'📖', t: zhT('zh.wird'), s: zhT('zh.wirdSub'), href:'mushaf.html' };
     }
   }
 
