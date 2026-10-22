@@ -19,11 +19,11 @@
 /* ══ Tabs ═══════════════════════════════════════════════════ */
 .az-tabs{display:flex;background:var(--sand);border-radius:99px;padding:4px;margin-bottom:22px;width:fit-content;gap:0}
 .az-tab{padding:8px 22px;border-radius:99px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .25s;display:flex;align-items:center;gap:6px}
-.az-tab.active{background:var(--green-deep);color:#fff;box-shadow:0 2px 10px rgba(14,59,46,.3)}
+.az-tab.active{background:var(--primitive-green-700);color:#fff;box-shadow:0 2px 10px rgba(14,59,46,.3)}
 html[data-theme="dark"] .az-tab.active,html[data-theme="oled"] .az-tab.active{background:var(--sys-green);color:#001a08}
 
 /* ══ App tab ════════════════════════════════════════════════ */
-.app-hero{background:linear-gradient(135deg,#0e3b2e,#1a5d47 60%,#c9a14a 160%);border-radius:22px;padding:28px 22px;color:#fff;text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
+.app-hero{background:linear-gradient(135deg,#0e3b2e,#1a5d47 60%,#8a6a1f 160%);border-radius:22px;padding:28px 22px;color:#fff;text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
 .app-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
 
 /* ══ Dev tab hero ════════════════════════════════════════════ */
@@ -207,7 +207,7 @@ html[data-theme="dark"] .cc-desc,html[data-theme="oled"] .cc-desc{color:rgba(255
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
-  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--green-deep);color:#fff}
+  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--primitive-green-700);color:#fff}
   .fs-btn[data-size="small"]  span:first-child{font-size:14px;display:block;margin-bottom:4px}
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}

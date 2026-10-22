@@ -22,7 +22,7 @@
 .page-title,.section-title,h1,h2,h3,.brand-name{font-family:'ThmanyahSans','Tajawal',sans-serif}
 
 /* ── Today banner ─────────────────────────────────────────── */
-.today-banner{background:linear-gradient(135deg,var(--green-deep),var(--green-mid));border-radius:20px;padding:24px;margin-bottom:18px;color:#fff;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.today-banner{background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));border-radius:20px;padding:24px;margin-bottom:18px;color:#fff;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
 .today-banner::after{content:'📅';position:absolute;left:16px;bottom:8px;font-size:60px;opacity:.1}
 .tb-date{flex:1}
 .tb-hijri{font-size:26px;font-weight:900;font-family:'ThmanyahSans','Tajawal',sans-serif;line-height:1.2}
@@ -51,7 +51,7 @@ html[data-theme="dark"] .cal-month-lbl,html[data-theme="oled"] .cal-month-lbl{co
 .cal-day.other-month{opacity:.35}
 .cal-day.today-day{border-color:var(--gold);background:linear-gradient(135deg,var(--green-deep),var(--green-mid));box-shadow:0 0 0 3px var(--gold),0 6px 22px rgba(14,59,46,.5);transform:scale(1.14);z-index:3;position:relative;animation:todayPulse 2.6s ease-in-out infinite}
 @keyframes todayPulse{0%,100%{box-shadow:0 0 0 3px var(--gold),0 6px 22px rgba(14,59,46,.5)}50%{box-shadow:0 0 0 5px var(--gold),0 8px 28px rgba(201,161,74,.55)}}
-.cal-day.today-day::before{content:"اليوم";position:absolute;top:-9px;right:50%;transform:translateX(50%);background:var(--gold);color:#3a2e10;font-size:8.5px;font-weight:800;padding:1px 7px;border-radius:999px;white-space:nowrap;font-family:'IBM Plex Sans Arabic',sans-serif}
+.cal-day.today-day::before{content:"اليوم";position:absolute;top:-9px;right:50%;transform:translateX(50%);background:var(--gold);color:#2b2108;font-size:8.5px;font-weight:800;padding:1px 7px;border-radius:999px;white-space:nowrap;font-family:'IBM Plex Sans Arabic',sans-serif}
 .cal-day.special-day{border-color:var(--gold);background:rgba(201,161,74,.1)}
 .cal-day.arafah-day{border-color:#ff9500;background:rgba(255,149,0,.1)}
 .cal-day.eid-day{border-color:#ff3b30;background:rgba(255,59,48,.1)}
@@ -79,15 +79,15 @@ body[data-caltype="greg"] .cal-day.today-day .cd-primary{color:rgba(255,255,255,
 /* Keep old class names working */
 .cd-greg{} .cd-hijri{}
 .cd-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:99px;margin-top:1px;font-family:'ThmanyahSans','Tajawal',sans-serif}
-.cd-badge.arafah{background:#ff9500;color:#fff}
-.cd-badge.eid{background:#ff3b30;color:#fff}
+.cd-badge.arafah{background:#ff9500;color:#3a2600}
+.cd-badge.eid{background:#d02b21;color:#fff}
 .cd-badge.special{background:var(--gold);color:#3a2a08}
 .friday-col .cd-greg{color:var(--gold-dark)}
 
 /* Month/year switch */
 .type-tabs{display:flex;background:var(--sand);border-radius:99px;padding:3px;margin-bottom:12px;width:fit-content}
 .type-tab{padding:6px 16px;border-radius:99px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .2s}
-.type-tab.active{background:var(--green-deep);color:#fff}
+.type-tab.active{background:var(--primitive-green-700);color:#fff}
 html[data-theme="dark"] .type-tab.active,html[data-theme="oled"] .type-tab.active{background:var(--sys-green);color:#001a08}
 
 /* Legend */
@@ -115,7 +115,7 @@ html[data-theme="dark"] .type-tab.active,html[data-theme="oled"] .type-tab.activ
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
-  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--green-deep);color:#fff}
+  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--primitive-green-700);color:#fff}
   .fs-btn[data-size="small"]  span:first-child{font-size:14px;display:block;margin-bottom:4px}
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}

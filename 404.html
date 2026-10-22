@@ -4,10 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0e3b2e">
+<meta name="robots" content="noindex,follow">
 <title>الصفحة غير موجودة — زاد</title>
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
 <link rel="manifest" href="manifest.json">
+<link rel="preload" href="fonts/thmanyahserifdisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/thmanyahsans-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* ── خطوط ثمنية (محلية) — نفس هوية التطبيق ───────────────── */
+@font-face{font-family:'ThmanyahSerifDisplay';src:url('fonts/thmanyahserifdisplay-Bold.woff2') format('woff2'),url('fonts/thmanyahserifdisplay-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'ThmanyahSerifDisplay';src:url('fonts/thmanyahserifdisplay-Black.woff2') format('woff2'),url('fonts/thmanyahserifdisplay-Black.otf') format('opentype');font-weight:900;font-style:normal;font-display:swap}
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2'),url('fonts/thmanyahsans-Bold.otf') format('opentype');font-weight:700;font-display:swap}
 @font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2'),url('fonts/thmanyahsans-Black.otf') format('opentype');font-weight:900;font-display:swap}
 </style>
@@ -16,62 +22,159 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Tajawal:wght@400;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/style.min.css">
 <link rel="stylesheet" href="css/premium-ui.min.css">
-<script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
+<script>
+/* قبل الرسم: طبّق الثيم ووضع العذر من تخزين التطبيق */
+(function(){
+  var t='light',e=false;
+  try{var p=JSON.parse(localStorage.getItem('zad_v2')||'{}');t=p.theme||'light';e=!!p.excuseMode;}catch(err){}
+  document.documentElement.setAttribute('data-theme',t);
+  if(e)document.documentElement.setAttribute('data-excuse','on');
+})();
+</script>
 <style>
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-       padding:24px;font-family:'Tajawal','IBM Plex Sans Arabic',sans-serif;
-       background:
-         radial-gradient(circle 400px at 80% 10%, rgba(201,161,74,.14), transparent 60%),
-         radial-gradient(circle 460px at 10% 95%, rgba(42,122,95,.18), transparent 60%),
-         var(--bg, #f7f4ec);
-       color:var(--ink);position:relative;overflow:hidden}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;min-height:100vh;min-height:100dvh;
+    display:flex;align-items:center;justify-content:center;
+    padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));
+    font-family:'Tajawal','IBM Plex Sans Arabic',system-ui,sans-serif;
+    background:
+      radial-gradient(circle 380px at 82% 8%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 62%),
+      radial-gradient(circle 440px at 8% 96%, color-mix(in srgb, var(--green-mid) 18%, transparent), transparent 62%),
+      var(--bg,#f7f4ec);
+    color:var(--ink,#1a1a18);
+    position:relative;overflow-x:hidden;
+  }
 
-  /* فليرز متحركة في الخلفية */
-  .e-orb{position:fixed;border-radius:50%;filter:blur(40px);opacity:.5;pointer-events:none;z-index:0}
-  .e-orb.a{width:240px;height:240px;background:radial-gradient(circle,rgba(201,161,74,.5),transparent 70%);top:-40px;right:-40px;animation:eFloat1 16s ease-in-out infinite}
-  .e-orb.b{width:300px;height:300px;background:radial-gradient(circle,rgba(42,122,95,.45),transparent 70%);bottom:-60px;left:-60px;animation:eFloat2 20s ease-in-out infinite}
-  @keyframes eFloat1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,40px) scale(1.15)}}
-  @keyframes eFloat2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.2)}}
+  /* ─── هالات خفيفة في الخلفية ─── */
+  .e-orb{position:fixed;border-radius:50%;filter:blur(44px);opacity:.5;pointer-events:none;z-index:0}
+  .e-orb.a{width:240px;height:240px;background:radial-gradient(circle,rgba(201,161,74,.45),transparent 70%);top:-50px;right:-50px;animation:eFloat1 16s ease-in-out infinite}
+  .e-orb.b{width:300px;height:300px;background:radial-gradient(circle,rgba(42,122,95,.42),transparent 70%);bottom:-70px;left:-70px;animation:eFloat2 21s ease-in-out infinite}
+  @keyframes eFloat1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-26px,38px) scale(1.14)}}
+  @keyframes eFloat2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(38px,-26px) scale(1.18)}}
 
-  .err-card{position:relative;z-index:1;max-width:460px;width:100%;text-align:center;
-            background:var(--card);border:1.5px solid var(--border);border-radius:26px;
-            padding:40px 28px;box-shadow:0 24px 64px rgba(14,59,46,.18)}
+  main{position:relative;z-index:1;width:100%;max-width:496px;display:flex;flex-direction:column;align-items:center;gap:14px}
 
-  .err-num{font-family:'ThmanyahSans','Tajawal',sans-serif;font-size:84px;font-weight:900;
-           line-height:1;background:linear-gradient(135deg,var(--green-deep),var(--gold,#c9a14a));
-           -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-           margin-bottom:6px}
-  .err-ico{font-size:46px;margin-bottom:14px;animation:eBob 3s ease-in-out infinite}
-  @keyframes eBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-  .err-title{font-family:'ThmanyahSans','Tajawal',sans-serif;font-size:22px;font-weight:800;
-             color:var(--ink);margin:0 0 10px}
-  .err-sub{font-size:14px;color:var(--muted);line-height:1.7;margin:0 0 26px}
+  .err-card{
+    width:100%;text-align:center;
+    background:var(--card,#fff);
+    border:1.5px solid var(--border,#e5e4de);
+    border-radius:28px;
+    padding:30px 26px 26px;
+    box-shadow:0 26px 70px -28px rgba(14,59,46,.42),0 2px 0 rgba(255,255,255,.04) inset;
+    position:relative;
+    overflow:hidden;
+  }
+  /* خيط ذهبي رفيع أعلى الكارت */
+  .err-card::before{
+    content:'';position:absolute;inset-inline:0;top:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold,#c9a14a) 18%,var(--green-mid,#2a7a5f) 52%,transparent 92%);
+    opacity:.85;
+  }
 
-  .err-home{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:14px;
-            background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;
-            text-decoration:none;font-size:15px;font-weight:800;font-family:inherit;
-            box-shadow:0 8px 22px rgba(14,59,46,.25);transition:transform .2s,box-shadow .2s;margin-bottom:26px}
-  .err-home:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(14,59,46,.32)}
+  /* ─── صف الهوية: اللوجو + الاسم ─── */
+  .err-brand{display:inline-flex;align-items:center;gap:9px;margin-bottom:14px}
+  .err-brand svg{width:34px;height:34px;border-radius:11px;display:block;box-shadow:0 0 0 1px rgba(201,161,74,.35),0 6px 16px -8px rgba(14,59,46,.6)}
+  .err-brand b{font-family:'ThmanyahSerifDisplay','ThmanyahSans',serif;font-size:19px;font-weight:900;letter-spacing:.4px;color:var(--ink,#1a1a18)}
 
-  .err-shortcuts-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:12px;
-                       display:flex;align-items:center;gap:8px;justify-content:center}
-  .err-shortcuts-label::before,.err-shortcuts-label::after{content:'';flex:1;max-width:50px;height:1px;background:var(--border)}
+  /* ─── الرقم 404 بخط العرض العربي ─── */
+  .err-num{
+    font-family:'ThmanyahSans','Tajawal',sans-serif;
+    font-size:clamp(64px,19vw,92px);font-weight:900;line-height:.95;
+    letter-spacing:-1px;margin:0 0 2px;
+    background:linear-gradient(135deg,var(--green-deep,#0e3b2e) 8%,var(--green-mid,#2a7a5f) 46%,var(--gold,#c9a14a) 96%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  html[data-excuse="on"] .err-num{
+    background:linear-gradient(135deg,var(--brand-deep,#a84d77) 6%,var(--brand-mid,#b86397) 52%,var(--gold,#d4789f) 96%);
+    -webkit-background-clip:text;background-clip:text;
+  }
 
-  .err-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .err-link{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;
-            border:1.5px solid var(--border);border-radius:14px;background:var(--sand);
-            text-decoration:none;color:var(--ink);transition:all .2s}
-  .err-link:hover{border-color:var(--gold);background:var(--gold-pale);transform:translateY(-2px);
-                  box-shadow:0 6px 16px rgba(14,59,46,.1)}
-  .err-link .el-ico{font-size:24px}
-  .err-link .el-txt{font-size:11px;font-weight:700}
-  html[data-theme="dark"] .err-link,html[data-theme="oled"] .err-link{background:var(--sand-2)}
+  .err-ico{font-size:34px;line-height:1;margin:6px 0 12px;animation:eBob 3.4s ease-in-out infinite;filter:saturate(.9)}
+  @keyframes eBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+  .err-title{
+    font-family:'ThmanyahSerifDisplay','ThmanyahSans',serif;
+    font-size:23px;font-weight:800;line-height:1.45;
+    color:var(--ink,#1a1a18);margin:0 0 8px;
+  }
+  .err-sub{font-size:13.5px;line-height:1.85;color:var(--muted,#5f5f57);margin:0 auto 22px;max-width:34ch}
+
+  /* ─── الزر الأساسي: يستخدم توكنات أزرار التطبيق (تتكيّف مع الثيم والعذر) ─── */
+  .err-home{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 30px;border-radius:14px;
+    background:var(--button-primary-bg,#1a5d47);
+    color:var(--button-primary-text,#fff);
+    text-decoration:none;font-size:15px;font-weight:800;font-family:'ThmanyahSans','Tajawal',sans-serif;
+    box-shadow:0 10px 26px -12px rgba(14,59,46,.6);
+    transition:transform .18s,box-shadow .18s,filter .18s;
+    margin-bottom:22px;
+  }
+  .err-home:hover{transform:translateY(-2px);box-shadow:0 14px 32px -12px rgba(14,59,46,.65);filter:brightness(1.05)}
+  .err-home:active{transform:translateY(0)}
+  .err-home:focus-visible,.err-link:focus-visible,.err-search input:focus-visible,.theme-btn:focus-visible{
+    outline:none;box-shadow:0 0 0 3px var(--card,#fff),0 0 0 5.5px var(--gold,#c9a14a);
+  }
+
+  /* ─── بحث بسيط داخل الصفحة ─── */
+  .err-search{position:relative;margin-bottom:20px}
+  .err-search input{
+    width:100%;padding:11px 40px 11px 14px;border-radius:12px;
+    border:1.5px solid var(--border,#e5e4de);background:var(--sand,#faf9f6);
+    color:var(--ink,#1a1a18);font-family:inherit;font-size:13px;font-weight:600;
+    transition:border-color .18s,background .18s;
+  }
+  .err-search input::placeholder{color:var(--muted,#5f5f57);font-weight:500}
+  .err-search input:focus{border-color:var(--gold,#c9a14a);background:var(--card,#fff)}
+  .err-search .si{position:absolute;top:50%;transform:translateY(-50%);right:13px;font-size:14px;opacity:.65;pointer-events:none}
+
+  .err-shortcuts-label{
+    font-size:11.5px;font-weight:800;letter-spacing:.4px;color:var(--muted,#5f5f57);
+    margin-bottom:11px;display:flex;align-items:center;gap:10px;justify-content:center;
+  }
+  .err-shortcuts-label::before,.err-shortcuts-label::after{content:'';flex:1;max-width:58px;height:1px;background:var(--border,#e5e4de)}
+
+  .err-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .err-link{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    padding:13px 6px;border:1.5px solid var(--border,#e5e4de);border-radius:14px;
+    background:var(--sand,#faf9f6);text-decoration:none;color:var(--ink,#1a1a18);
+    transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;
+  }
+  .err-link:hover{transform:translateY(-2px);border-color:var(--gold,#c9a14a);background:var(--gold-pale,#fdf5e0);box-shadow:0 8px 18px -10px rgba(14,59,46,.35)}
+  .err-link .el-ico{font-size:21px;line-height:1}
+  .err-link .el-txt{font-size:10.5px;font-weight:800;line-height:1.35}
+  .err-link[hidden]{display:none}
+
+  .err-empty{font-size:12.5px;font-weight:700;color:var(--muted,#5f5f57);margin:14px 0 0;line-height:1.7}
+
+  .err-foot{font-size:11.5px;font-weight:700;color:var(--muted,#5f5f57);letter-spacing:.3px;opacity:.9}
+  .err-foot b{font-family:'ThmanyahSerifDisplay',serif;font-weight:900;color:var(--green-deep,#0e3b2e)}
+  html[data-theme="dark"] .err-foot b,html[data-theme="oled"] .err-foot b{color:var(--gold,#e6c97a)}
+
+  /* ─── زر تبديل الثيم في الزاوية ─── */
+  .theme-btn{
+    position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:12px;z-index:3;
+    width:38px;height:38px;border-radius:12px;cursor:pointer;
+    display:grid;place-items:center;font-size:16px;line-height:1;
+    background:var(--card,#fff);color:var(--ink,#1a1a18);
+    border:1.5px solid var(--border,#e5e4de);
+    box-shadow:0 8px 20px -12px rgba(14,59,46,.5);
+    transition:transform .16s,border-color .16s;
+  }
+  .theme-btn:hover{transform:translateY(-1px);border-color:var(--gold,#c9a14a)}
 
   @media(max-width:420px){
-    .err-card{padding:32px 20px}
-    .err-num{font-size:68px}
-    .err-grid{grid-template-columns:repeat(2,1fr)}
+    .err-card{padding:26px 18px 22px;border-radius:24px}
+    .err-title{font-size:20px}
+    .err-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .err-home{width:100%}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .e-orb,.err-ico{animation:none}
+    .err-home,.err-link,.theme-btn{transition:none}
   }
 </style>
 <script src="js/font-scale.js"></script>
@@ -80,23 +183,99 @@
   <span class="e-orb a" aria-hidden="true"></span>
   <span class="e-orb b" aria-hidden="true"></span>
 
-  <div class="err-card">
-    <div class="err-ico">🧭</div>
-    <div class="err-num">404</div>
-    <h1 class="err-title">يبدو أنك ضللت الطريق</h1>
-    <p class="err-sub">الصفحة التي تبحث عنها غير موجودة أو تم نقلها.<br>لا بأس — هذه أبرز الوجهات لتعود إلى رحلتك في العشر المباركة.</p>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الثيم: فاتح / داكن / أسود" title="تبديل الثيم">🌙</button>
 
-    <a href="index.html" class="err-home">🏠 العودة للوحة التحكم</a>
+  <main>
+    <div class="err-card">
+      <div class="err-brand">
+        <svg viewBox="0 0 512 512" role="img" aria-label="زاد" xmlns="http://www.w3.org/2000/svg"><rect width="512" height="512" rx="171.82" ry="171.82" fill="#09231b"/><path fill="#fff" d="m153.92,331.54c14.52,0,40.42-4.55,58.64-13.38l11.39-25.05c16.22-35.86,9.68-58.35-5.98-79.41l5.98-11.1-40.99-27.33h-5.69l-14.52,50.95c31.31,15.66,54.65,31.31,63.19,48.96-16.22,1.14-48.67,2.56-62.62,2.56-34.44,0-32.16-8.54-36.43-23.63h-5.69c-1.14,15.09-2.28,33.87-2.28,41.27,0,25.05,12.52,36.15,35.01,36.15Z"/><path fill="#fff" d="m278.31,336.09l15.09-46.68c3.42-10.82,5.12-21.92,5.12-33.3v-72.3l9.96-11.67-15.37-56.93h-5.69l-24.48,30.17,9.68,190.71h5.69Z"/><path fill="#e8c274" d="m383.63,151.65c.28-.28.28-4.55,0-4.84l-27.61-27.61-27.89,27.89v4.27l27.89,27.89,27.61-27.61Z"/><path fill="#fff" d="m358.86,201.74h-5.69l-19.36,46.11c14.52,14.52,33.59,31.88,45.54,51.24-9.11,31.31-50.95,51.81-103.61,61.2v5.69l61.2,31.03c28.18-32.73,48.39-75.71,48.39-117.84,0-4.55-.28-9.39-1.14-14.23l9.11-20.78-34.44-42.41Z"/></svg>
+        <b>زاد</b>
+      </div>
 
-    <div class="err-shortcuts-label">اختصارات سريعة</div>
-    <div class="err-grid">
-      <a href="prayers.html" class="err-link"><span class="el-ico">🕌</span><span class="el-txt">مواقيت الصلاة</span></a>
-      <a href="mushaf.html" class="err-link"><span class="el-ico">📖</span><span class="el-txt">الورد القرآني</span></a>
-      <a href="takbeer.html" class="err-link"><span class="el-ico">📿</span><span class="el-txt">المسبحة</span></a>
-      <a href="fadael.html" class="err-link"><span class="el-ico">✨</span><span class="el-txt">فضائل العشر</span></a>
-      <a href="arafah.html" class="err-link"><span class="el-ico">🌄</span><span class="el-txt">يوم عرفة</span></a>
-      <a href="hasad.html" class="err-link"><span class="el-ico">📊</span><span class="el-txt">حصاد العشر</span></a>
+      <div class="err-num">404</div>
+      <div class="err-ico" aria-hidden="true">🧭</div>
+
+      <h1 class="err-title">الصفحة دي مش موجودة</h1>
+      <p class="err-sub">يمكن الرابط قديم أو مكتوب غلط، أو الصفحة اتنقلت. من هنا تقدر ترجع على طول لأي حتة في زاد.</p>
+
+      <a href="index.html" class="err-home">🏠 رجوع للوحة التحكم</a>
+
+      <div class="err-search">
+        <input id="q" type="search" autocomplete="off" placeholder="دوّر على صفحة… مواقيت، مصحف، أذكار" aria-label="ابحث عن صفحة">
+        <span class="si" aria-hidden="true">🔍</span>
+      </div>
+
+      <div class="err-shortcuts-label">وجهات سريعة</div>
+      <nav class="err-grid" id="grid" aria-label="روابط سريعة">
+        <a href="prayers.html" class="err-link" data-k="مواقيت الصلاة وقت صلاة prayers"><span class="el-ico">🕌</span><span class="el-txt">مواقيت الصلاة</span></a>
+        <a href="mushaf.html" class="err-link" data-k="المصحف القرآن ورد mushaf quran"><span class="el-ico">📖</span><span class="el-txt">الورد القرآني</span></a>
+        <a href="adhkar.html" class="err-link" data-k="أذكار اذكار أذكار الصباح والمساء adhkar"><span class="el-ico">📿</span><span class="el-txt">الأذكار</span></a>
+        <a href="takbeer.html" class="err-link" data-k="مسبحة تسبيح سبحة tasbih"><span class="el-ico">🌙</span><span class="el-txt">المسبحة</span></a>
+        <a href="qibla.html" class="err-link" data-k="قبلة اتجاه القبلة بوصلة qibla"><span class="el-ico">🧭</span><span class="el-txt">القبلة</span></a>
+        <a href="kids.html" class="err-link" data-k="أطفال اطفال kids ألعاب"><span class="el-ico">🧸</span><span class="el-txt">عالم الأطفال</span></a>
+      </nav>
+      <p class="err-empty" id="empty" hidden>مفيش صفحة بالاسم ده — جرّب «مصحف» أو «أذكار» أو «صلاة».</p>
     </div>
-  </div>
+
+    <p class="err-foot"><b>زاد</b> · رفيقك في العبادة</p>
+  </main>
+
+<script>
+(function(){
+  /* ── بحث فوري في الاختصارات ── */
+  var q = document.getElementById('q'),
+      grid = document.getElementById('grid'),
+      empty = document.getElementById('empty'),
+      links = [].slice.call(grid.querySelectorAll('.err-link'));
+
+  function norm(s){ return (s || '').toLowerCase().replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[\u064B-\u0652]/g,''); }
+
+  if (q) {
+    q.addEventListener('input', function(){
+      var term = norm(q.value.trim());
+      var shown = 0;
+      links.forEach(function(a){
+        var hay = norm(a.textContent + ' ' + (a.getAttribute('data-k') || ''));
+        var hit = !term || hay.indexOf(term) !== -1;
+        a.hidden = !hit;
+        if (hit) shown++;
+      });
+      empty.hidden = shown !== 0;
+    });
+    q.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        var first = links.filter(function(a){ return !a.hidden; })[0];
+        if (first) window.location.href = first.getAttribute('href');
+      }
+    });
+  }
+
+  /* ── تبديل الثيم: فاتح → داكن → أسود (يُحفظ في نفس مفتاح التطبيق) ── */
+  var btn = document.getElementById('themeBtn');
+  var order = ['light','dark','oled'],
+      icon = { light:'🌙', dark:'🖤', oled:'☀️' },
+      meta = document.querySelector('meta[name="theme-color"]'),
+      shade = { light:'#f5f4f0', dark:'#0a1410', oled:'#000000' };
+
+  function readStore(){
+    try { return JSON.parse(localStorage.getItem('zad_v2') || '{}') || {}; } catch(e){ return {}; }
+  }
+  function apply(t){
+    document.documentElement.setAttribute('data-theme', t);
+    if (btn) { btn.textContent = icon[t] || '🌙'; btn.setAttribute('aria-label', 'الثيم الحالي: ' + t + ' — اضغط للتغيير'); }
+    if (meta) meta.setAttribute('content', shade[t] || '#0e3b2e');
+  }
+  apply(document.documentElement.getAttribute('data-theme') || 'light');
+
+  if (btn) btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme') || 'light';
+    var next = order[(order.indexOf(cur) + 1) % order.length];
+    apply(next);
+    var store = readStore();
+    store.theme = next;
+    try { localStorage.setItem('zad_v2', JSON.stringify(store)); } catch(e){}
+  });
+})();
+</script>
 </body>
 </html>

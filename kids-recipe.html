@@ -21,7 +21,7 @@ html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
 h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
 
 /* ══ هيكل مشترك ══ */
-.kx-hero{background:linear-gradient(135deg,#5a3a12 0%,#8a6a1f 55%,#e8c46a 140%);border-radius:24px;padding:24px 22px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -14px rgba(90,58,18,.5)}
+.kx-hero{background:linear-gradient(135deg,#5a3a12 0%,#8a6a1f 55%,#8a6a1f 140%);border-radius:24px;padding:24px 22px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px;box-shadow:0 16px 48px -14px rgba(90,58,18,.5)}
 .kx-hero::after{content:'📐';position:absolute;top:6px;left:16px;font-size:60px;opacity:.16;line-height:1}
 .kx-eyebrow{font-size:11px;color:#ffe9a8;letter-spacing:2px;font-weight:700;margin-bottom:8px}
 .kx-title{font-size:26px;font-weight:900;margin-bottom:8px}
@@ -34,11 +34,11 @@ h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabi
 .kx-panel p:last-child{margin-bottom:0}
 .kx-panel b{color:var(--ink)}
 
-.kx-btn{width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6);margin-top:12px;transition:transform .15s,opacity .15s}
+.kx-btn{width:100%;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));color:#fff;font-family:inherit;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px -10px rgba(14,59,46,.6);margin-top:12px;transition:transform .15s,opacity .15s}
 .kx-btn:hover:not(:disabled){transform:translateY(-1px)}
 .kx-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
 .kx-btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
-.kx-btn.gold{background:linear-gradient(135deg,#8a6a1f,#c9a14a);color:#fff}
+.kx-btn.gold{background:linear-gradient(135deg,#7d5f1c,#8a6a1f);color:#fdfaf2}
 .kx-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
 .kx-row .kx-btn{width:auto;flex:1;min-width:118px;margin-top:0}
 
@@ -53,7 +53,7 @@ h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabi
 .kx-end{text-align:center;background:linear-gradient(160deg,var(--card),var(--sand));border:2px solid var(--gold);border-radius:24px;padding:26px 22px;box-shadow:0 18px 50px -20px rgba(201,161,74,.6);animation:kxIn .4s ease both}
 @keyframes kxIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .kx-end .em{font-size:52px;line-height:1;margin-bottom:8px}
-.kx-end .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--green-deep);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
+.kx-end .tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;background:var(--primitive-green-700);color:#ffe9a8;padding:5px 13px;border-radius:999px;margin-bottom:10px}
 .kx-end h2{font-size:22px;font-weight:900;color:var(--green-deep);margin:0 0 10px}
 html[data-theme="dark"] .kx-end h2,html[data-theme="oled"] .kx-end h2{color:var(--sys-green,var(--green-deep))}
 .kx-end p{font-size:14px;line-height:2.1;color:var(--ink);margin:0 auto 12px;max-width:560px}
@@ -239,7 +239,7 @@ html[data-theme="dark"] .rc-tray,html[data-theme="oled"] .rc-tray{background:lin
         + '<span class="ic" style="font-size:28px">' + d.em + '</span>'
         + '<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:900">' + esc(d.title) + '</span>'
         + '<span style="display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:3px">وصفةُ ' + d.base + ' · والمطلوب ' + d.serve + '</span></span>'
-        + (done ? '<span class="kx-pill" style="background:#ffe9a8;color:#3a2e10;border-color:#e6c97a">✅ أُتقنت</span>' : '')
+        + (done ? '<span class="kx-pill" style="background:#ffe9a8;color:#2b2108;border-color:#e6c97a">✅ أُتقنت</span>' : '')
         + '<span style="font-size:17px;opacity:.45">←</span></button>';
     }).join('');
 

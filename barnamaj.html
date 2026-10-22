@@ -19,7 +19,7 @@
 html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
 h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
 
-.bz-hero{background:linear-gradient(135deg,#1a5d47,#2a7a5f 60%,#c9a14a 150%);border-radius:22px;padding:26px 22px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden}
+.bz-hero{background:linear-gradient(135deg,#1a5d47,#2a7a5f 60%,#8a6a1f 150%);border-radius:22px;padding:26px 22px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden}
 .bz-hero::after{content:'🕌';position:absolute;top:14px;left:18px;font-size:54px;opacity:.15}
 .bz-hero h1{font-size:23px;font-weight:900;margin-bottom:8px}
 .bz-hero p{font-size:13px;color:rgba(255,255,255,.85);line-height:1.9;max-width:560px}
@@ -32,7 +32,7 @@ html[data-theme="dark"] .bz-now,html[data-theme="oled"] .bz-now{color:var(--sys-
 .bz-win .nm{font-size:15px;font-weight:800;color:var(--green-deep);display:flex;align-items:center;gap:8px}
 html[data-theme="dark"] .bz-win .nm,html[data-theme="oled"] .bz-win .nm{color:var(--sys-green)}
 .bz-win .dur{font-size:10.5px;font-weight:700;color:var(--muted);background:var(--sand);border-radius:99px;padding:4px 10px;white-space:nowrap}
-.bz-win .now-tag{font-size:10px;font-weight:800;color:#fff;background:var(--gold);border-radius:99px;padding:3px 9px}
+.bz-win .now-tag{font-size:10px;font-weight:800;color:#2b2108;background:var(--gold);border-radius:99px;padding:3px 9px}
 .bz-win .tasks{font-size:12.5px;color:var(--ink);line-height:1.9;margin-bottom:8px}
 .bz-win .scr{font-size:11px;color:var(--muted);background:var(--green-pale);border-radius:9px;padding:7px 10px;line-height:1.7;margin-bottom:9px}
 html[data-theme="dark"] .bz-win .scr,html[data-theme="oled"] .bz-win .scr{background:rgba(77,216,102,.07)}
@@ -60,7 +60,7 @@ html[data-theme="dark"] .bz-act-hadith,html[data-theme="oled"] .bz-act-hadith{co
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
-  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--green-deep);color:#fff}
+  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--primitive-green-700);color:#fff}
   .fs-btn[data-size="small"]  span:first-child{font-size:14px;display:block;margin-bottom:4px}
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
@@ -74,7 +74,7 @@ html[data-theme="dark"] .bz-act-hadith,html[data-theme="oled"] .bz-act-hadith{co
 .check .meta{font-size:11px;font-weight:700;color:var(--muted);background:var(--sand);padding:3px 10px;border-radius:99px;flex-shrink:0}
 /* الحالة المكتملة */
 .check.done{background:linear-gradient(135deg,var(--green-pale),var(--card));border-color:var(--green-soft);animation:checkDone .45s cubic-bezier(.34,1.56,.64,1)}
-.check.done .box{background:var(--green-deep);border-color:var(--green-deep);color:#fff;animation:boxPop .4s cubic-bezier(.34,1.56,.64,1)}
+.check.done .box{background:var(--primitive-green-700);border-color:var(--green-deep);color:#fff;animation:boxPop .4s cubic-bezier(.34,1.56,.64,1)}
 .check.done .label{color:var(--green-deep)}
 html[data-theme="dark"] .check.done .label,html[data-theme="oled"] .check.done .label{color:var(--sys-green)}
 html[data-theme="dark"] .check.done .box,html[data-theme="oled"] .check.done .box{background:var(--sys-green);border-color:var(--sys-green);color:#001a08}
@@ -153,7 +153,7 @@ html[data-theme="dark"] .occasion-banner .occ-row,html[data-theme="oled"] .occas
     </div>
 
     <!-- ══ 1. HERO: ترحيب يومي ══════════════ -->
-    <div style="background:linear-gradient(135deg,#0e3b2e,#1a5d47,#c9a14a 180%);border-radius:20px;padding:22px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden">
+    <div style="background:linear-gradient(135deg,#0e3b2e,#1a5d47,#8a6a1f 180%);border-radius:20px;padding:22px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden">
       <div style="position:absolute;top:-20px;left:-20px;font-size:120px;opacity:.06;line-height:1">✅</div>
       <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:4px">وردك اليومي</div>
       <div style="font-size:18px;font-weight:900;font-family:'ThmanyahSans',sans-serif;margin-bottom:10px" id="w-hero-label">جدول العبادات اليومي</div>
@@ -200,9 +200,9 @@ html[data-theme="dark"] .occasion-banner .occ-row,html[data-theme="oled"] .occas
       <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:10px">🌿 التوبة الجراحية</div>
       <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:12px">لا تسمح لذنوبك أن تعيق انطلاقتك — طبّق شروط التوبة الثلاثة:</div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)"><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>الإقلاع الفوري عن الذنب</div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)"><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>الندم القلبي الصادق على ما فات</div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)"><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span>العزم الجازم على عدم العودة</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)"><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>الإقلاع الفوري عن الذنب</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)"><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>الندم القلبي الصادق على ما فات</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)"><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span>العزم الجازم على عدم العودة</div>
       </div>
       <div id="tawbah-check" onclick="toggleTawbah()" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--sand);border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s">
         <div id="tawbah-box" style="width:24px;height:24px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;flex-shrink:0"></div>
@@ -239,7 +239,7 @@ html[data-theme="dark"] .occasion-banner .occ-row,html[data-theme="oled"] .occas
     <!-- ══ 6. خطة الختمة القرآنية ═══════════════════════════ -->
     <div class="section-title">📖 خطة الختمة — 10 أيام</div>
     <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
-      <div style="background:linear-gradient(135deg,var(--green-deep),var(--green-mid));padding:14px 18px;color:#fff;display:flex;align-items:center;gap:10px">
+      <div style="background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));padding:14px 18px;color:#fff;display:flex;align-items:center;gap:10px">
         <span style="font-size:24px">📖</span>
         <div>
           <div style="font-size:14px;font-weight:800;font-family:'ThmanyahSans',sans-serif">خطة ختمة القرآن</div>
@@ -262,7 +262,7 @@ html[data-theme="dark"] .occasion-banner .occ-row,html[data-theme="oled"] .occas
         <div style="display:flex;align-items:center;gap:8px">
           <button onclick="adjustDua(-1)" style="width:28px;height:28px;border-radius:8px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:16px;font-weight:700;color:var(--muted)">−</button>
           <span id="dua-count" style="font-size:20px;font-weight:900;font-family:'ThmanyahSans',monospace;color:var(--green-deep);min-width:30px;text-align:center">0</span>
-          <button onclick="adjustDua(1)" style="width:28px;height:28px;border-radius:8px;border:1.5px solid var(--green-deep);background:var(--green-deep);cursor:pointer;font-size:16px;font-weight:700;color:#fff">+</button>
+          <button onclick="adjustDua(1)" style="width:28px;height:28px;border-radius:8px;border:1.5px solid var(--green-deep);background:var(--primitive-green-700);cursor:pointer;font-size:16px;font-weight:700;color:#fff">+</button>
         </div>
       </div>
     </div>
