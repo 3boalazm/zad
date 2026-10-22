@@ -69,7 +69,7 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
-  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--green-deep);color:#fff}
+  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--primitive-green-700);color:#fff}
   .fs-btn[data-size="small"]  span:first-child{font-size:14px;display:block;margin-bottom:4px}
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
@@ -156,7 +156,7 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
     <div class="section-title">👤 الملف الشخصي</div>
     <div class="card" style="margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px">
-        <div id="av-preview" style="width:64px;height:64px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--green-deep),var(--gold));display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;background-size:cover;background-position:center">🙂</div>
+        <div id="av-preview" style="width:64px;height:64px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--primitive-green-900),#8a6a1f);display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;background-size:cover;background-position:center">🙂</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:13.5px;font-weight:800;color:var(--ink)">صورة الحساب</div>
           <div style="font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.6">محفوظة على جهازك فقط — لا تُرفع لأيِّ خادم.</div>
@@ -221,7 +221,7 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
       <div class="settings-row" style="padding-bottom:14px;border-bottom:1px solid var(--border)">
         <div class="ic">🔔</div>
         <div class="lbl"><b>تفعيل الإشعارات</b><small>لتلقي التذكيرات</small></div>
-        <button id="notif-toggle-btn" onclick="toggleNotifications()" style="padding:9px 16px;border-radius:10px;border:none;background:var(--green-deep);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .25s">تفعيل</button>
+        <button id="notif-toggle-btn" onclick="toggleNotifications()" style="padding:9px 16px;border-radius:10px;border:none;background:var(--primitive-green-700);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .25s">تفعيل</button>
       </div>
       <div style="padding-top:10px">
         <div class="reminder-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">📿 ورد الصباح</div><div style="font-size:11px;color:var(--muted)">5:30 صباحاً</div></div><label class="toggle-pill"><input type="checkbox" class="reminder-switch" data-key="wird_morning" aria-label="ورد الصباح — 5:30 صباحاً" checked><span class="tgl-sl"></span></label></div>
@@ -273,7 +273,7 @@ localStorage.setItem('zad_vapid', 'BB1zUZMWooPF2AtSMAy2UwJf-fMFO8PbYlrHSJ6u5rm_H
       <div class="settings-row" style="padding-bottom:14px;border-bottom:1px solid var(--border)">
         <div class="ic">📲</div>
         <div class="lbl"><b>تثبيت التطبيق</b><small>يعمل بدون إنترنت</small></div>
-        <button id="install-pwa-btn" onclick="installPWA()" style="padding:9px 16px;border-radius:10px;border:none;background:var(--green-deep);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .25s">تثبيت</button>
+        <button id="install-pwa-btn" onclick="installPWA()" style="padding:9px 16px;border-radius:10px;border:none;background:var(--primitive-green-700);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .25s">تثبيت</button>
       </div>
       <div class="settings-row" style="padding-bottom:14px;border-bottom:1px solid var(--border)">
         <div class="ic">🔗</div>
@@ -674,7 +674,7 @@ function downloadApp(){
   const ua=navigator.userAgent.toLowerCase();
   const msg=ua.includes('android')?'📱 Android: قائمة المتصفح (⋮) ← "إضافة للشاشة الرئيسية"':ua.includes('iphone')||ua.includes('ipad')?'📱 iPhone: زر المشاركة (⬆) ← "إضافة للشاشة الرئيسية"':'💻 Desktop: أيقونة التثبيت في شريط العنوان';
   const p=document.createElement('div');p.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)';
-  p.innerHTML=`<div style="background:var(--card);border-radius:20px;padding:26px;max-width:320px;width:100%;text-align:center"><div style="font-size:40px;margin-bottom:12px">📲</div><div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:10px">تثبيت زاد</div><div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">${msg}</div><button onclick="shareApp();this.closest('div[style]').remove()" style="width:100%;padding:12px;border-radius:12px;border:none;background:var(--green-deep);color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">🔗 مشاركة الرابط</button><button onclick="this.closest('div[style]').remove()" style="width:100%;padding:10px;border:none;background:none;font-family:inherit;font-size:13px;cursor:pointer;color:var(--muted)">إغلاق</button></div>`;
+  p.innerHTML=`<div style="background:var(--card);border-radius:20px;padding:26px;max-width:320px;width:100%;text-align:center"><div style="font-size:40px;margin-bottom:12px">📲</div><div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:10px">تثبيت زاد</div><div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">${msg}</div><button onclick="shareApp();this.closest('div[style]').remove()" style="width:100%;padding:12px;border-radius:12px;border:none;background:var(--primitive-green-700);color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">🔗 مشاركة الرابط</button><button onclick="this.closest('div[style]').remove()" style="width:100%;padding:10px;border:none;background:none;font-family:inherit;font-size:13px;cursor:pointer;color:var(--muted)">إغلاق</button></div>`;
   document.body.appendChild(p);
 }
 

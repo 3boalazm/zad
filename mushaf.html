@@ -21,7 +21,7 @@ h1,h2,h3,.page-title,.section-title,.brand-name{font-family:'ThmanyahSans','IBM 
 
 /* ══ Hero CTA ══════════════════════════════════════════════ */
 .mushaf-hero{
-  background:linear-gradient(135deg,#0e3b2e 0%,#1a5d47 60%,#c9a14a 160%);
+  background:linear-gradient(135deg,#0e3b2e 0%,#1a5d47 60%,#8a6a1f 160%);
   border-radius:20px;padding:26px 22px;color:#fff;
   position:relative;overflow:hidden;margin-bottom:20px;
   display:flex;align-items:center;gap:18px;
@@ -42,7 +42,7 @@ h1,h2,h3,.page-title,.section-title,.brand-name{font-family:'ThmanyahSans','IBM 
 #quran-preview{display:none!important}
 .hifz30{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow-sm);margin-bottom:20px}
 .hifz30-top{display:flex;align-items:center;gap:16px;margin-bottom:16px}
-.hifz30-ring{width:74px;height:74px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;font-family:'ThmanyahSans',sans-serif;background:conic-gradient(var(--gold) 0deg,var(--green-deep) 0deg);position:relative}
+.hifz30-ring{width:74px;height:74px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;font-family:'ThmanyahSans',sans-serif;background:conic-gradient(#8a6a1f 0deg,var(--primitive-green-900) 0deg);position:relative}
 .hifz30-ring::after{content:'';position:absolute;inset:7px;border-radius:50%;background:var(--card)}
 .hifz30-ring span,.hifz30-ring{z-index:1}
 .hifz30-ring b{position:relative;z-index:2;color:var(--green-deep)}
@@ -58,8 +58,8 @@ html[data-theme="dark"] .hifz30-t,html[data-theme="oled"] .hifz30-t{color:var(--
 @media(max-width:380px){.hifz30-track{grid-template-columns:repeat(5,1fr)}}
 .h30-cell{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:all .18s;font-family:inherit;position:relative}
 .h30-cell:hover{border-color:var(--gold);transform:translateY(-2px)}
-.h30-cell.done{background:var(--green-deep);border-color:var(--green-deep);color:#fff;box-shadow:0 4px 12px -4px rgba(14,59,46,.5)}
-.h30-cell.done::after{content:'✓';position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:var(--gold);color:#3a2e10;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:900}
+.h30-cell.done{background:var(--primitive-green-700);border-color:var(--green-deep);color:#fff;box-shadow:0 4px 12px -4px rgba(14,59,46,.5)}
+.h30-cell.done::after{content:'✓';position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:var(--gold);color:#2b2108;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:900}
 .hifz30-hint{font-size:11.5px;color:var(--muted);text-align:center;margin:13px 0 0;line-height:1.7}
 
 .plan-card{
@@ -110,7 +110,7 @@ html[data-theme="dark"] .wr-val,html[data-theme="oled"] .wr-val{color:var(--sys-
 .wird-read-btn{
   display:flex;align-items:center;justify-content:center;gap:10px;
   width:100%;padding:14px;border-radius:12px;border:none;
-  background:linear-gradient(135deg,var(--green-deep),var(--green-mid));
+  background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));
   color:#fff;font-family:'ThmanyahSans',inherit;font-size:15px;font-weight:700;
   cursor:pointer;transition:all .2s;margin-bottom:10px;text-decoration:none
 }
@@ -159,7 +159,7 @@ html[data-theme="dark"] .tmr-b .v,html[data-theme="oled"] .tmr-b .v{color:var(--
 }
 .ph-ring{
   width:72px;height:72px;border-radius:50%;flex-shrink:0;
-  background:conic-gradient(#c9a14a 0%,rgba(255,255,255,.1) 0%);
+  background:conic-gradient(#8a6a1f 0%,rgba(255,255,255,.1) 0%);
   display:flex;align-items:center;justify-content:center;font-size:11px;
   font-weight:900;color:#fff;transition:background .5s;font-family:'ThmanyahSans',monospace
 }
@@ -216,7 +216,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
   .quran-text,.quran,[data-quran],.mushaf,.ayah,.ts-ayah-text,.basmala-txt,.surah-title-box{font-size:revert!important}
   .font-size-options{display:flex;gap:8px}
   .font-size-options .fs-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink)}
-  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--green-deep);color:#fff}
+  .font-size-options .fs-btn.active{border-color:var(--green-deep);background:var(--primitive-green-700);color:#fff}
   .fs-btn[data-size="small"]  span:first-child{font-size:14px;display:block;margin-bottom:4px}
   .fs-btn[data-size="medium"] span:first-child{font-size:19px;display:block;margin-bottom:4px}
   .fs-btn[data-size="large"]  span:first-child{font-size:24px;display:block;margin-bottom:4px}
@@ -452,7 +452,7 @@ html[data-theme="oled"] .quran-preview{background:linear-gradient(180deg,#0c0900
           <label for="custom-to" style="display:block;font-size:11px;color:var(--muted);margin-bottom:4px">إلى صفحة</label>
           <input id="custom-to" type="number" min="1" max="604" value="20" style="width:80px;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--sand);font-family:'ThmanyahSans',monospace;font-size:16px;font-weight:700;text-align:center;outline:none;direction:ltr">
         </div>
-        <button onclick="applyCustomPlan()" style="margin-top:16px;padding:9px 18px;border-radius:10px;border:none;background:var(--green-deep);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">تطبيق</button>
+        <button onclick="applyCustomPlan()" style="margin-top:16px;padding:9px 18px;border-radius:10px;border:none;background:var(--primitive-green-700);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">تطبيق</button>
       </div>
     </div>
 
@@ -910,7 +910,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'فاتك وردُ <b style="color:var(--sys-orange)">'+missed+'</b> '+(missed===1?'يوم':'أيام')+'. '+
             'اقسِم الفائت على اليومين القادمين — <b>وردُ يومٍ ونحو '+perDay+' من الفائت</b> كل يوم — وتعود لختمتك دون انقطاع.'+
           '</div>'+
-          '<button id="wird-recover-ok" style="margin-top:12px;padding:9px 18px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">بدأتُ الاسترداد ✋</button>'+
+          '<button id="wird-recover-ok" style="margin-top:12px;padding:9px 18px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer">بدأتُ الاسترداد ✋</button>'+
         '</div>'+
       '</div>';
     anchor.parentNode.insertBefore(card, anchor);

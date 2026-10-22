@@ -22,7 +22,7 @@
   .page-title,.section-title,h1,h2,h3,.brand-name{font-family:'Tajawal',sans-serif}
 
   /* بطاقة الهوية */
-  .pf-hero{background:linear-gradient(135deg,var(--green-deep),var(--green-mid));border-radius:22px;
+  .pf-hero{background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));border-radius:22px;
            padding:26px 22px;color:#fff;display:flex;align-items:center;gap:16px;margin-bottom:18px;
            position:relative;overflow:hidden}
   .pf-hero::before{content:'🌙';position:absolute;left:-10px;bottom:-14px;font-size:90px;opacity:.1}
@@ -62,13 +62,13 @@
   .pf-toggle input{opacity:0;width:0;height:0}
   .pf-toggle .sl{position:absolute;inset:0;background:var(--border);border-radius:99px;transition:.25s;cursor:pointer}
   .pf-toggle .sl::before{content:'';position:absolute;width:20px;height:20px;right:3px;top:3px;background:#fff;border-radius:50%;transition:.25s}
-  .pf-toggle input:checked + .sl{background:var(--green-deep)}
+  .pf-toggle input:checked + .sl{background:var(--primitive-green-700)}
   html[data-theme="dark"] .pf-toggle input:checked + .sl,html[data-theme="oled"] .pf-toggle input:checked + .sl{background:var(--sys-green)}
   .pf-toggle input:checked + .sl::before{transform:translateX(-20px)}
 
   .pf-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;
           border-radius:13px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;border:none;transition:all .2s;width:100%}
-  .pf-btn-primary{background:linear-gradient(135deg,var(--green-deep),var(--green-mid));color:#fff}
+  .pf-btn-primary{background:linear-gradient(135deg,var(--primitive-green-900),var(--primitive-green-700));color:#fff}
   .pf-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(14,59,46,.25)}
   .pf-btn-ghost{background:var(--sand);color:var(--ink);border:1.5px solid var(--border)}
   .pf-btn-ghost:hover{border-color:var(--gold)}
@@ -158,7 +158,7 @@
       <h2 class="pf-section-title">🌙 الرفيق الروحي</h2>
       <div class="pf-row">
         <div class="pf-row-label">آخر موضع قراءة<small id="pf-last-read">لم تبدأ القراءة بعد</small></div>
-        <a href="mushaf.html" class="pf-edit-btn" style="background:var(--green-deep);text-decoration:none;white-space:nowrap">▶️ أكمل</a>
+        <a href="mushaf.html" class="pf-edit-btn" style="background:var(--primitive-green-700);text-decoration:none;white-space:nowrap">▶️ أكمل</a>
       </div>
     </div>
 
