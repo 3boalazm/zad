@@ -412,7 +412,7 @@ html[data-theme="dark"] .hc-vow .n,html[data-theme="oled"] .hc-vow .n{background
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))close();});
   $('hs-like').addEventListener('click',function(){var s=likes();s.kidsHeroes.likes[cur]=!s.kidsHeroes.likes[cur];if(!s.kidsHeroes.likes[cur])delete s.kidsHeroes.likes[cur];write(s);paintLike();if(navigator.vibrate)navigator.vibrate(15);});
   $('hs-link').addEventListener('click',function(){
-    var st=STORIES[cur];
+    var st=STORIES[cur]; if(!st) return;   /* مفيش قصة مفتوحة — مفيش حاجة تُشارَك */
     var fullText='✨ '+st.e+' '+st.n+'\n\n'+st.story.join('\n\n')+'\n\n💡 '+st.lesson+'\n\nعرين الأبطال | زاد';
     if(window.ZadShare&&window.ZadShare.text){
       window.ZadShare.text(st.e+' '+st.n, st.story.join(' '), 'عرين الأبطال — قصص للصغار', 'زاد');
@@ -424,9 +424,16 @@ html[data-theme="dark"] .hc-vow .n,html[data-theme="oled"] .hc-vow .n{background
     if(navigator.vibrate)navigator.vibrate(15);
   });
   $('hs-png').addEventListener('click',function(){
-    var st=STORIES[cur];
+    var st=STORIES[cur]; if(!st) return;   /* مفيش قصة مفتوحة — مفيش حاجة تُشارَك */
     /* نظام المشاركة العالمي ZadShare (من menu.js) */
-    if(window.ZadShare&&window.ZadShare.png){
+    if(window.ZadStudio){
+      window.ZadStudio.open({
+        kind: 'quote', eyebrow: 'عرين الأبطال',
+        title: st.e + ' ' + st.n, body: st.share,
+        source: 'قصص الأبطال · زاد',
+        share: { title: st.n, text: '✨ ' + st.e + ' ' + st.n + '\n\n' + st.share + '\n\nعرين الأبطال | زاد' }
+      });
+    } else if(window.ZadShare&&window.ZadShare.png){
       window.ZadShare.png(st.e+' '+st.n, st.share, 'عرين الأبطال — قصص للصغار', 'زاد');
     } else if(window.ZadShareCard){
       window.ZadShareCard({title:st.e+' '+st.n,body:st.share,source:'عرين الأبطال — قصص للصغار',tag:'زاد · قصص الأبطال'});
@@ -482,6 +489,7 @@ html[data-theme="dark"] .hc-vow .n,html[data-theme="oled"] .hc-vow .n{background
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>

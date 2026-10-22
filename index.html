@@ -703,6 +703,7 @@
 <script src="js/fixes-module.min.js" defer></script>
 <script src="js/goals-module.min.js" defer></script>
 <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
 <script src="js/gps-fix.min.js" defer></script>
 <script src="js/nav-accordion.min.js" defer></script>
 <script src="js/data/verses.js" defer></script>
@@ -1145,6 +1146,20 @@ function zhInitVerse() {
   const shareBtn = document.getElementById('dvc-share');
   if (shareBtn) {
     shareBtn.onclick = () => {
+      /* بطاقة الآية بهوية المستخدم — بدل نص خام.
+         v.text = نص الآية، v.source = «﴿ السورة: الآية ﴾»، v.eyebrow = صباح/مساء */
+      if (window.ZadStudio) {
+        const clean = t => String(t || '').replace(/[﴿﴾]/g, '').replace(/\s+/g, ' ').trim();
+        return window.ZadStudio.open({
+          kind: 'verse',
+          eyebrow: clean(v.eyebrow) || (isMorning ? 'آية الصباح' : 'آية المساء'),
+          body: clean(v.text || v.share),
+          source: (clean(v.source) || 'القرآن الكريم')
+            .replace(/\d+/g, d => Number(d).toLocaleString('ar-EG'))       /* أرقام عربية */
+            .replace(/:(?=\s*[\u0660-\u0669])/g, ' ·'),                   /* «آل عمران: 97» ← «آل عمران · ٩٧» */
+          share: { title: 'آية اليوم — زاد', text: v.share }
+        });
+      }
       if (navigator.share) navigator.share({ text: v.share }).catch(() => {});
       else if (navigator.clipboard) navigator.clipboard.writeText(v.share).catch(() => {});
     };

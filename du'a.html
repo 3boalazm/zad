@@ -872,6 +872,18 @@ window.duCopy = function(id) {
 
 window.duShare = function(id) {
   const d = _findDua(id); if (!d) return;
+  /* صورة بالهوية بدل نص خام — مع رجوع للمشاركة النصية */
+  if (window.ZadStudio) {
+    return window.ZadStudio.open({
+      kind: 'dua',
+      eyebrow: 'دعاء مأثور',
+      title: d.label,
+      body: d.ar,
+      source: d.src,
+      note: d.note || '',
+      share: { title: d.label, text: `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}` }
+    });
+  }
   const txt = `🤲 ${d.label}\n\n${d.ar}\n\n📖 ${d.src}`;
   if (navigator.share) navigator.share({title:'دعاء مأثور', text:txt});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('✅ تم النسخ'); }
@@ -917,6 +929,7 @@ document.addEventListener('DOMContentLoaded', () => { duSwitch('jawami'); });
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>

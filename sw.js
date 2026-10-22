@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261021-audio-r21';
+const CACHE_STATIC = 'zad-20261022-share-r22';
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
 /* ── أصول تُخزَّن مسبقاً عند التثبيت ── */
@@ -69,6 +69,7 @@ const PRECACHE = [
      فيسقط كل الأنيميشن أوفلاين) + وحدة الوضع الخاص المشتركة. */
   './js/vendor/gsap.min.js', './js/vendor/ScrollTrigger.min.js', './js/ui/special-mode.min.js',
   './js/data/audio.js', './js/data/maktaba-index.js', './js/ui/media-random.js',
+  './js/ui/share-studio.js',
   './menu.min.js', './command-palette.min.js', './js/ui/bottom-nav.min.js', './js/ui/progress-rollup.min.js',
   './js/design-system.min.js', './js/fixes-module.min.js',
   './js/utils/helpers.min.js', './js/core/state-manager.min.js', './js/core/router.min.js',

@@ -576,6 +576,23 @@ function shareProgress(){
   const done=keys.filter(k=>worship[k]).length;
   const pct=Math.round(done/keys.length*100);
   const text=`🌙 زاد\n📊 إنجازي اليوم: ${pct}%\n✅ ${done} عبادة مكتملة\n🔗 zad.codeandcanvas.net`;
+  /* بطاقة إنجاز بالهوية — بدل نص خام */
+  if (window.ZadStudio) {
+    const num = v => Number(v).toLocaleString('ar-EG');
+    return window.ZadStudio.open({
+      kind: 'achievement', emoji: '🌙',
+      title: 'إنجازي اليوم',
+      body: 'برنامج اليوم — العبادات المكتملة',
+      stats: [
+        { value: pct + '٪', label: 'الالتزام' },
+        { value: num(done) + '/' + num(keys.length), label: 'عبادات' },
+        { value: num(s.streak || 0), label: 'يوم متتابع' },
+        { value: num(s.takbeer?.total || 0), label: 'تكبيرة' }
+      ],
+      source: 'زاد · برنامج اليوم',
+      share: { title: 'إنجازي اليوم — زاد', text: text }
+    });
+  }
   if(navigator.share){navigator.share({title:'زاد',text});}
   else{navigator.clipboard?.writeText(text);if(typeof showToast==='function')showToast('✅ تم نسخ التقدم');}
 }
@@ -644,6 +661,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>

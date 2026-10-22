@@ -239,6 +239,7 @@ html[data-theme="dark"] .nw-apply-list li{ background:rgba(74,222,128,.04);borde
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
   <script src="js/share-button.min.js" defer></script>
+<script src="js/ui/share-studio.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>
@@ -824,6 +825,17 @@ window.nwCopy = function(n) {
 window.nwShare = function(n) {
   const h = HADITHS.find(x => x.n === n);
   if (!h) return;
+  /* بطاقة حديث مصمّمة — كان زر المشاركة يبعت نصًا خامًا فقط */
+  if (window.ZadStudio) {
+    return window.ZadStudio.open({
+      kind: 'hadith',
+      eyebrow: 'الحديث ' + h.n,
+      title: h.title,
+      body: h.matn,
+      source: h.src,
+      share: { title: h.title, text: `📜 الحديث ${h.n}: ${h.title}\n\n${h.matn}\n\n📖 ${h.src}` }
+    });
+  }
   const txt = `📜 الحديث ${h.n}: ${h.title}\n\n${h.matn}\n\n📖 ${h.src}`;
   if (navigator.share) navigator.share({title:'حديث نبوي', text:txt});
   else { navigator.clipboard?.writeText(txt); if(typeof showToast==='function') showToast('✅ تم النسخ'); }
