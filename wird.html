@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e3b2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<title>رفيق الورد والحلقة — زاد</title>
+<meta name="description" content="رفيق ورد لشخصين، أو حلقة بين معلّم وطالب — بلا شبكة اجتماعية ولا فيد عام. البطاقة تنتقل بينكما أنتما، ولا يرى أحد غيركما.">
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&display=swap"></noscript>
+<link rel="stylesheet" href="css/style.min.css">
+<link rel="stylesheet" href="css/premium-ui.min.css">
+<link rel="stylesheet" href="css/fiqh.css">
+<style>
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'ThmanyahSans';src:url('fonts/thmanyahsans-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+html,body{font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif}
+h1,h2,h3,.page-title,.brand-name{font-family:'ThmanyahSans','IBM Plex Sans Arabic',sans-serif}
+.wrd-wrap{max-width:900px;margin:0 auto;padding:0 14px 40px}
+</style>
+</head>
+<body>
+<div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<script src="js/net-ledger.js" defer></script>
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">
+      <div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>
+      <div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>
+    </a>
+    <div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>
+    <div class="theme-seg" id="theme-seg">
+      <button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme('light')">☀️ فاتح</button>
+      <button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme('dark')">🌙 داكن</button>
+      <button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme('oled')">⚫ OLED</button>
+    </div>
+    <button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>
+    <nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>
+    <div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>
+  </aside>
+
+  <main class="main">
+    <h1 class="sr-only">رفيق الورد والحلقة</h1>
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
+        <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
+      </div>
+      <div class="tb-center"><div class="page-title">رفيق <span>الورد</span></div></div>
+      <div class="tb-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrd-wrap">
+      <section class="fq-hero" data-icon="🤝">
+        <div class="fq-eyebrow">شخصٌ واحد يعرف وردك</div>
+        <h2 class="fq-title">لا متابعين… رفيقٌ واحد</h2>
+        <p class="fq-sub">كل التطبيقات تجعل عبادتك فيدًا يُتصفَّح. هنا العكس: <b>شخصان فقط</b> — رفيق ورد يتذاكر معك، أو معلّمٌ يوجّه طالبًا. لا خادم يقرأ شيئًا، ولا أحد يعرف أنك هنا.</p>
+        <div class="fq-chips"><span class="fq-chip">شخصان لا أكثر</span><span class="fq-chip">بلا حساب</span><span class="fq-chip">البطاقة بيدك</span></div>
+      </section>
+
+      <div id="zad-wird-mount"></div>
+
+      <section class="fq-sec">
+        <h2>كيف تعمل؟</h2>
+        <ol class="fq-steps">
+          <li data-n="١"><b>اختر الشكل</b><span>«رفيق ورد» لشخصين متساويين، أو «حلقة» لمعلّمٍ وطالب.</span></li>
+          <li data-n="٢"><b>حدّد الورد</b><span>آياتٌ أو صفحاتٌ أو دقائق — واحدة للطرفين في الرفقة، ويحدّدها المعلّم في الحلقة.</span></li>
+          <li data-n="٣"><b>أرسل بطاقتك</b><span>زر «📤 بطاقتي» ينسخ نصًا قصيرًا تبعثه بالواتساب أو أي رسالة. لا يمرّ على خادمٍ لنا.</span></li>
+          <li data-n="٤"><b>الصق بطاقته</b><span>«📥 استقبل بطاقة» ثم الصق ما أرسله، فتعرف آخر وردٍ له وسلسلته.</span></li>
+        </ol>
+        <div class="fq-note">🔒 البطاقة تحمل: اسمًا مستعارًا، هدفًا، عدد أيام الالتزام، وملاحظة اختيارية. <b>لا</b> تحمل: آياتك، صفحاتك، مواعيد صلاتك، أو أي رقم تعريف.</div>
+      </section>
+
+      <section class="fq-sec">
+        <h2>آداب الرفقة</h2>
+        <div class="fq-grid">
+          <div class="fq-card"><b>لا تُثقِل</b><small>وردٌ صغير يُداوم عليه خيرٌ من جزءٍ يُميت الرفقة بعد أسبوع.</small></div>
+          <div class="fq-card"><b>لا تُراقِب</b><small>البطاقة خبرٌ لا محاسبة. من تأخّر يُذكَّر بالرفق لا باللوم.</small></div>
+          <div class="fq-card"><b>لا تُفشِ</b><small>ما يرسله لك رفيقك أمانة؛ لا تنشره ولا تذكره في مجلس.</small></div>
+          <div class="fq-card"><b>في الحلقة</b><small>المعلّم يوجّه ولا يُحرِج، والطالب يصدُق ولو قصّر — الصدق أول الدرس.</small></div>
+        </div>
+        <div class="fq-warn">هذا ليس بديلًا عن الحلقة في المسجد ولا عن الشيخ؛ إنما رفيقٌ يُعينك على الدوام حين لا تجد من يذاكرك.</div>
+      </section>
+
+      <section class="fq-sec">
+        <h2>لماذا بلا خادم؟</h2>
+        <p>أي مزامنة لحظية تعني خادمًا يرى اسمك ووردك. اخترنا العكس: <b>البطاقة تنتقل بيدك</b>، فالثمن أنك لا ترى تحديث رفيقك حتى يرسله. وهذا ثمنٌ رخيص مقابل أن لا يعلم أحدٌ بصلاتك.</p>
+        <div class="fq-actions">
+          <a class="fq-btn solid" href="groups.html">👨‍👩‍👧 مجموعات العائلة</a>
+          <a class="fq-btn" href="mushaf.html">🕋 المصحف والورد الذكي</a>
+          <a class="fq-btn" href="tasmee.html">🎙️ التسميع</a>
+        </div>
+      </section>
+
+      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:22px">
+        كل شيء يبقى في جهازك. <button id="wrd-reset" style="background:none;border:none;color:var(--sys-red);font:inherit;font-size:11px;cursor:pointer;text-decoration:underline">امسح بيانات الرفقة</button>
+      </p>
+    </div>
+  </main>
+</div>
+
+<script src="lang.min.js" defer></script>
+<script src="js/storage.min.js" defer></script>
+<script src="js/calendar.min.js" defer></script>
+<script src="js/design-system.min.js" defer></script>
+<script src="js/seasons-module.min.js" defer></script>
+<script src="js/fixes-module.min.js" defer></script>
+<script src="js/share-button.min.js" defer></script>
+<script src="js/gps-fix.min.js" defer></script>
+<script src="js/nav-accordion.min.js" defer></script>
+<script src="js/utils/helpers.min.js" defer></script>
+<script src="js/core/state-manager.min.js" defer></script>
+<script src="js/core/router.min.js" defer></script>
+<script src="js/ui/design-tokens.min.js" defer></script>
+<script src="js/ui/feedback.min.js" defer></script>
+<script src="js/ui/offline-ui.min.js" defer></script>
+<script src="js/ui/micro-interactions.min.js" defer></script>
+<script src="js/diagnostics.min.js" defer></script>
+<script src="js/app.min.js" defer></script>
+<script src="js/pwa-install-fab.min.js" defer></script>
+<script src="menu.min.js" defer></script>
+<script src="command-palette.min.js" defer></script>
+<script src="js/wird-companion.js"></script>
+<script>
+(function () {
+  function boot() {
+    var el = document.getElementById('zad-wird-mount');
+    if (!el || !window.ZadWird) return;
+
+    /* استقبال دعوة من رابط: wird.html?w=ZADW1.... */
+    try {
+      var q = new URLSearchParams(location.search).get('w');
+      if (q) {
+        window.ZadWird.accept(q);
+        history.replaceState(null, '', location.pathname);
+      }
+    } catch (e) {}
+
+    window.ZadWird.mount(el);
+    document.addEventListener('zad:wird', function () { /* إعادة الرسم يديرها mount */ });
+
+    var rst = document.getElementById('wrd-reset');
+    if (rst) rst.addEventListener('click', function () {
+      if (confirm('سيُمحى اسم رفيقك وسجلّ آخر ٧ أيام من هذا الجهاز. متابعة؟')) {
+        window.ZadWird.reset();
+        window.ZadWird.mount(el);
+      }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+</body>
+</html>

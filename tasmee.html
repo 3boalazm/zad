@@ -8,9 +8,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
 <title>تسميع القرآن — زاد</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
 <link rel="stylesheet" href="css/style.min.css">
 <link rel="stylesheet" href="css/premium-ui.min.css">
 <style>
@@ -206,6 +205,26 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
   display:none
 }
 .ts-not-supported.show{display:block}
+
+/* ── موقف صادق + تقييم يدوي ─────────────────────────────── */
+.ts-honest{background:linear-gradient(135deg,rgba(201,161,74,.10),rgba(201,161,74,.03));border:1.5px solid rgba(201,161,74,.35);border-radius:16px;padding:14px 16px;margin:0 0 16px}
+.ts-honest-h{font-size:13.5px;font-weight:900;color:var(--ink);margin-bottom:6px}
+.ts-honest-b{font-size:12px;color:var(--muted);line-height:1.9}
+.ts-honest-b b{color:var(--ink);font-weight:800}
+.ts-honest-a{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.ts-honest-btn{border:1.5px solid var(--border);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 13px;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
+.ts-honest-btn.primary{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+html[data-theme="dark"] .ts-honest-btn.primary,html[data-theme="oled"] .ts-honest-btn.primary{background:var(--sys-green);border-color:var(--sys-green);color:#06251b}
+.ts-grade{margin-top:16px;border-top:1px solid var(--border);padding-top:13px}
+.ts-grade-t{font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.ts-grade-row{display:flex;gap:7px;flex-wrap:wrap}
+.ts-g-btn{flex:1;min-width:120px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);border-radius:10px;padding:9px 10px;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
+.ts-g-btn.ok{border-color:rgba(42,122,95,.4);color:var(--green-deep)}
+.ts-g-btn.bad{border-color:rgba(168,68,47,.35);color:#8f3a27}
+html[data-theme="dark"] .ts-g-btn.ok,html[data-theme="oled"] .ts-g-btn.ok{color:var(--sys-green);border-color:#1e4433}
+html[data-theme="dark"] .ts-g-btn.bad,html[data-theme="oled"] .ts-g-btn.bad{color:#ff9a80;border-color:#5c2e26}
+.ts-grade-note{margin-top:8px;font-size:11px;color:var(--muted);line-height:1.7}
+
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
 <style>
@@ -243,6 +262,7 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
       (window.vaq = window.vaq || []).push(arguments);
     };
   </script>
+<script src="js/net-ledger.js" defer></script>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -289,6 +309,23 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
       <div style="font-size:32px;margin-bottom:8px">🎙️</div>
       <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px">التعرف على الصوت غير مدعوم</div>
       <div style="font-size:13px;color:var(--muted)">استخدم Chrome أو Edge على الكمبيوتر للحصول على أفضل تجربة</div>
+    </div>
+
+    <!-- ══ موقف صادق من التسميع الصوتي ══════════════════════════
+         المتصفح لا يملك محرّك تعرّف صوتي محلي؛ Chrome/Edge يرسلون الصوت
+         إلى خوادمهم. فنقولها بوضوح، ونعطي بديلًا لا يخرج منه شيء. -->
+    <div class="ts-honest" id="ts-honest">
+      <div class="ts-honest-h">🎙️ عن التسميع الصوتي — بصراحة</div>
+      <div class="ts-honest-b">
+        التسميع هنا يستخدم <b>محرّك التعرّف على الكلام في المتصفح</b> (Chrome/Edge يرسلان الصوت إلى خوادمهما لتحويله نصًّا).
+        لذلك لا نسمّيه «محليًا»، ولا نعِد بما لا نملكه.
+        ونتحقق منه في <b>الحفظ وترتيب الآيات</b> — <b>لا التجويد ولا مخارج الحروف</b>؛ لا يوجد محرّك تجويد موثوق بعد.
+        وتستطيع تمامًا أن تعمل <b>بلا ميكروفون</b>: اقرأ الآية بعينك، ثم «أتقنت» أو «تعثّرت» — والورد الذكي هو من يرتّب المراجعة.
+      </div>
+      <div class="ts-honest-a">
+        <button class="ts-honest-btn" id="ts-honest-toggle">فهمت — أخفِ هذا التنبيه</button>
+        <button class="ts-honest-btn primary" id="ts-manual-mode">استخدم التسميع بلا ميكروفون</button>
+      </div>
     </div>
 
     <!-- ══ Selection Bar ══════════════════════════════════════ -->
@@ -350,7 +387,7 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
       <div class="ts-score-ring" id="ts-score-ring">
         <div class="ts-score-inner">
           <div class="ts-score-pct" id="ts-score-pct">0%</div>
-          <div class="ts-score-lbl">دقة</div>
+          <div class="ts-score-lbl">دقة الحفظ</div>
         </div>
       </div>
       <div class="ts-result-label" id="ts-result-label">نتيجة التسميع</div>
@@ -362,6 +399,15 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
         <button class="ts-action-btn" onclick="resetCurrentAyah()">↺ أعد هذه الآية</button>
         <button class="ts-action-btn primary" onclick="nextAyah()">التالية ›</button>
       </div>
+      <div class="ts-grade" id="ts-grade">
+        <div class="ts-grade-t">🗓️ أضِفها لجدول المراجعة</div>
+        <div class="ts-grade-row">
+          <button class="ts-g-btn bad" onclick="gradeCurrent(2)">تعثّرت — تعود غدًا</button>
+          <button class="ts-g-btn ok" onclick="gradeCurrent(4)">أتقنت — تعود بعد أيام</button>
+          <button class="ts-g-btn" onclick="gradeCurrent(5)">سهلة — قفزة أطول</button>
+        </div>
+        <div class="ts-grade-note" id="ts-grade-note"></div>
+      </div>
     </div>
 
     <!-- ══ Session Summary ════════════════════════════════════ -->
@@ -370,7 +416,7 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
       <div class="card" style="text-align:center;padding:24px">
         <div style="font-size:48px;margin-bottom:12px">🏆</div>
         <div style="font-size:22px;font-weight:900;color:var(--green-deep);margin-bottom:4px" id="ts-final-score">—</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:18px">متوسط دقة التلاوة</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:18px">متوسط دقة الحفظ</div>
         <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
           <div style="text-align:center"><div style="font-size:24px;font-weight:900;color:var(--green-deep)" id="ts-total-ayahs">0</div><div style="font-size:11px;color:var(--muted)">آيات مسمَّعة</div></div>
           <div style="text-align:center"><div style="font-size:24px;font-weight:900;color:var(--sys-green)" id="ts-correct-ayahs">0</div><div style="font-size:11px;color:var(--muted)">آيات صحيحة</div></div>
@@ -398,7 +444,7 @@ html[data-theme="dark"] .ts-hist-score{color:var(--sys-green)}
   <script src="js/quran-module.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
-  <script src="js/share-button.min.js" defer></script>
+    <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>
@@ -727,6 +773,22 @@ function checkRecitation() {
   _sessionTotal++;
   _sessionScores.push(score);
   if (score >= 80) _sessionCorrect++;
+
+  /* الورد الذكي: كل آية مُسمَّعة تدخل جدول التكرار المتباعد.
+     95+ = سهلة · 80+ = أتقنت · 50+ = تعثّرت جزئيًا · أقل = تعثّرت. */
+  try {
+    if (window.ZadSRS) {
+      var sNo = (ayah.surah && (ayah.surah.number || ayah.surah.no)) || 0;
+      var aNo = ayah.numberInSurah || 0;
+      if (sNo && aNo) {
+        var nm = 'سورة ' + ((ayah.surah && ayah.surah.name) || '') + ' — آية ' + aNo;
+        window.ZadSRS.add(sNo, aNo, nm);
+        window.ZadSRS.grade(sNo + ':' + aNo, score >= 95 ? 5 : score >= 80 ? 4 : score >= 50 ? 3 : 2, nm);
+        var note = document.getElementById('ts-grade-note');
+        if (note) note.textContent = '🗓️ أُضيفت للتكرار المتباعد بدرجة ' + score + '٪ — راجعها من «الورد الذكي».';
+      }
+    }
+  } catch (e) {}
 }
 
 function showResults(score, errors, srcLabel, ayah) {
@@ -896,6 +958,48 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Sidebar */
   if (typeof initSidebar === 'function') initSidebar();
 });
+</script>
+
+<script src="js/hifz-srs.js" defer></script>
+<script>
+(function(){
+  'use strict';
+  var HIDE_KEY = 'zad_tasmee_notice_hidden';
+  document.addEventListener('DOMContentLoaded', function(){
+    var box = document.getElementById('ts-honest');
+    if (box && localStorage.getItem(HIDE_KEY) === '1') box.remove();
+    var t = document.getElementById('ts-honest-toggle');
+    if (t) t.onclick = function(){ try{localStorage.setItem(HIDE_KEY,'1');}catch(e){} box.remove(); };
+    var m = document.getElementById('ts-manual-mode');
+    if (m) m.onclick = function(){
+      var rec = document.getElementById('ts-recorder');
+      if (rec) rec.style.display = 'none';
+      var q = document.getElementById('ts-quran-card');
+      if (q) q.style.display = '';
+      var res = document.getElementById('ts-results');
+      if (res) res.classList.add('show');
+      var g = document.getElementById('ts-grade');
+      if (g) g.style.display = 'block';
+      if (typeof showToast === 'function') showToast('وضع بلا ميكروفون — اقرأ الآية ثم قيّم نفسك');
+      this.textContent = 'أنت الآن بلا ميكروفون ✓';
+      this.disabled = true;
+    };
+  });
+  /* التقييم اليدوي: يضيف الآية الحالية لجدول المراجعة */
+  window.gradeCurrent = function(q){
+    var ayah = (typeof _ayahs !== 'undefined' && _ayahs && _ayahs[_curIdx]) ? _ayahs[_curIdx] : null;
+    if (!ayah || !window.ZadSRS) return;
+    var surahNo = (ayah.surah && (ayah.surah.number || ayah.surah.no)) || (window._tsSurahNo || 0);
+    var aNo = ayah.numberInSurah || ayah.n || 0;
+    if (!surahNo || !aNo) return;
+    var name = 'سورة ' + ((ayah.surah && ayah.surah.name) || '') + ' — آية ' + aNo;
+    window.ZadSRS.add(surahNo, aNo, name);
+    var it = window.ZadSRS.grade(surahNo + ':' + aNo, q, name);
+    var note = document.getElementById('ts-grade-note');
+    if (note) note.textContent = '✓ أُضيفت للمراجعة — تعود في ' + it.due + ' (فاصل ' + it.ivl + ' يوم).';
+    if (navigator.vibrate) navigator.vibrate(18);
+  };
+})();
 </script>
 </body>
 </html>

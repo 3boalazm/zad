@@ -9,11 +9,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
 <!-- Async font loading — eliminates render-blocking -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" id="google-fonts"
-  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&display=swap"
-  media="print" onload="this.media='all'">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
 <noscript>
   
 </noscript>
@@ -123,6 +120,7 @@ html[data-theme="dark"] .ad-link-card .alc-t,html[data-theme="oled"] .ad-link-ca
 .ad-link-card .alc-s{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.6}
 </style>
 
+<script src="js/net-ledger.js" defer></script>
 </head>
 <body>
 <div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
@@ -266,7 +264,7 @@ html[data-theme="dark"] .ad-link-card .alc-t,html[data-theme="oled"] .ad-link-ca
   <script src="js/design-system.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
-  <script src="js/share-button.min.js" defer></script>
+    <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/utils/helpers.min.js" defer></script>

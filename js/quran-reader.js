@@ -1137,6 +1137,7 @@
     var params = new URLSearchParams(location.search);
     var pageParam = parseInt(params.get('page') || '0', 10);
     var surahParam = parseInt(params.get('surah') || '0', 10);
+    var ayahParam = parseInt(params.get('ayah') || '0', 10);   /* فتح آية بعينها (من الورد الذكي) */
     var to = parseInt(params.get('to') || '0', 10);
     if (pageParam && to) state.wird = { from: pageParam, to: to };
 
@@ -1150,6 +1151,9 @@
       goPage(start, { initial: true }).then(function () {
         if (!pageParam) showResume();
         syncBmBtn();
+        if (surahParam >= 1 && ayahParam >= 1) {
+          setTimeout(function () { flashAyah(surahParam, ayahParam); }, 260);
+        }
       });
     }).catch(function (e) {
       renderError(e);

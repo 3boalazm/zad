@@ -8,9 +8,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
 <title>الزكاة — نصاب وحول وحاسبة | زاد</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
 <link rel="stylesheet" href="css/style.min.css">
 <link rel="stylesheet" href="css/premium-ui.min.css">
 <style>
@@ -188,6 +187,7 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
 </style>
 <script>(function(){var s=localStorage.getItem('zad_v2');var t='light';try{var p=JSON.parse(s);t=p.theme||'light';}catch(e){}document.documentElement.setAttribute('data-theme',t);try{if(p.excuseMode)document.documentElement.setAttribute('data-excuse','on')}catch(e){}})();</script>
 <script src="js/font-scale.js"></script>
+<script src="js/net-ledger.js" defer></script>
 </head>
 <body>
 <div class="reading-progress-bar"><div class="reading-progress-fill" id="rpb"></div></div>
@@ -321,12 +321,38 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
         <div class="zk-meta"><div class="zk-name">عروض التجارة</div><div class="zk-hint">بضاعةٌ بنيّة البيع بسعر السوق</div></div>
         <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-trade" placeholder="القيمة" min="0" aria-label="عروض التجارة"></div>
       </div>
+      <div class="zk-row">
+        <span class="zk-ico">🪙</span>
+        <div class="zk-meta"><div class="zk-name">العملات الرقمية</div><div class="zk-hint">قيمة المحفظة بسعر السوق يوم الحول</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-crypto" placeholder="القيمة" min="0" aria-label="العملات الرقمية"></div>
+      </div>
+      <div class="zk-row">
+        <span class="zk-ico">🏠</span>
+        <div class="zk-meta"><div class="zk-name">دخل الإيجار المُدَّخر</div><div class="zk-hint">المُستلَم والباقي معك — العقار نفسه لا يُزكى</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-rent" placeholder="القيمة" min="0" aria-label="دخل الإيجار"></div>
+      </div>
+      <div class="zk-row">
+        <span class="zk-ico">📥</span>
+        <div class="zk-meta"><div class="zk-name">ديونٌ لك (مرجوّة)</div><div class="zk-hint">تُضاف إن كانت على مُوسِر؛ وتُزكى عند القبض إن كانت على مُعسِر</div></div>
+        <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-receivable" placeholder="القيمة" min="0" aria-label="ديون لك"></div>
+      </div>
       <div class="zk-row liab">
         <span class="zk-ico">➖</span>
         <div class="zk-meta"><div class="zk-name">ديونٌ حالّة عليك</div><div class="zk-hint">تُطرح من الوعاء قبل الحساب</div></div>
         <div class="zk-inputs"><input class="zk-inp" type="number" inputmode="decimal" id="z-debts" placeholder="القيمة" min="0" aria-label="الديون"></div>
       </div>
     </div>
+
+    <details class="zk-note-sm" style="background:var(--sand);border:1px solid var(--border);border-radius:12px;padding:11px 14px;line-height:1.9">
+      <summary style="cursor:pointer;font-weight:800;font-size:12.5px;color:var(--ink)">🆕 أسئلة المال الجديدة (٢٠٢٦)</summary>
+      <div style="margin-top:8px;font-size:11.5px;color:var(--muted)">
+        <b style="color:var(--ink)">الأسهم:</b> تُزكى القيمة السوقية للأسهم المُعدّة للتداول، فإن كانت لشركةٍ أنشطتها حلال اختيرت قيمتها؛ ومن يقول بزكاة حصة الربح فقط فله وجه عند بعض المعاصرين.<br>
+        <b style="color:var(--ink)">الصناديق:</b> قيمة الوحدات لا رأس المال المدفوع.<br>
+        <b style="color:var(--ink)">العملات الرقمية:</b> تُقوَّم بسعر صرفها يوم الحول وتُزكى ٢٫٥٪ كعروض تجارة، ولا زكاة على معدِّنٍ قبل استقرار ملكه.<br>
+        <b style="color:var(--ink)">العقار:</b> المستغلّ بالسكنى أو الإيجار لا زكاة في قيمته، وإنما في <b style="color:var(--ink)">الإيجار المُدَّخر</b> إن بلغ النصاب وحال عليه الحول. والعقار المُعدّ للبيع «عرض تجارة» تُزكى قيمته.<br>
+        <b style="color:var(--ink)">الديون:</b> ما لك على مُوسِر يُضاف ويُزكى؛ وما على مُعسِر تُؤجّل زكاته حتى القبض عند الجمهور.
+      </div>
+    </details>
 
     <!-- ══ 3. النتيجة ══ -->
     <div class="zk-result">
@@ -407,7 +433,7 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
         <tbody>
           <tr><td>الذهب</td><td>85 جم خالص (عيار 24)</td><td>2.5%</td></tr>
           <tr><td>الفضة</td><td>595 جم</td><td>2.5%</td></tr>
-          <tr><td>النقود والأسهم والتجارة</td><td>ما يعادل 85 جم ذهب أو 595 جم فضة</td><td>2.5%</td></tr>
+          <tr><td>النقود والأسهم والتجارة والعملات الرقمية</td><td>ما يعادل 85 جم ذهب أو 595 جم فضة</td><td>2.5%</td></tr>
           <tr><td>الزروع والثمار</td><td>653 كجم (5 أوسق)</td><td>10% بلا كلفة سقي · 5% بكلفة</td></tr>
           <tr><td>الأنعام</td><td>40 شاة · 30 بقرة · 5 إبل</td><td>حسب الجدول أدناه</td></tr>
         </tbody>
@@ -443,6 +469,11 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
       <a class="zk-ud-link" href="zakat-anwa.html">
         <span class="i">📊</span>
         <div class="t"><b>أنواع الزكاة وحسابها</b><small>الزروع والشركات والأسهم والعملات</small></div>
+        <span class="arr">←</span>
+      </a>
+      <a class="zk-ud-link" href="zakat-2026.html">
+        <span class="i">🪙</span>
+        <div class="t"><b>زكاة المال الجديد</b><small>الأسهم والصناديق والكريبتو والإيجار والديون — بأمثلة محسوبة</small></div>
         <span class="arr">←</span>
       </a>
       <a class="zk-ud-link" href="sadaqah.html">
@@ -483,7 +514,8 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
   const FIELDS = [
     ['z-gold-g', 'goldG'], ['z-silver-g', 'silverG'],
     ['z-cash', 'cash'], ['z-stocks', 'stocks'], ['z-funds', 'funds'],
-    ['z-trade', 'trade'], ['z-debts', 'debts'],
+    ['z-trade', 'trade'], ['z-crypto', 'crypto'], ['z-rent', 'rent'],
+    ['z-receivable', 'receivable'], ['z-debts', 'debts'],
   ];
   const PRICES = [['z-gold-price', 'goldP'], ['z-silver-price', 'silverP']];
   const $ = id => document.getElementById(id);
@@ -805,6 +837,9 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
     $('z-stocks').value = a.stocks || '';
     $('z-funds').value = a.funds || '';
     $('z-trade').value = a.trade || '';
+    $('z-crypto').value = a.crypto || '';
+    $('z-rent').value = a.rent || '';
+    $('z-receivable').value = a.receivable || '';
     $('z-debts').value = a.debts || '';
     if (a.goldP) $('z-gold-price').value = a.goldP;
     if (a.silverP) $('z-silver-price').value = a.silverP;
@@ -843,7 +878,7 @@ html[data-theme="dark"] .zk-table td:nth-child(3),html[data-theme="oled"] .zk-ta
   <script src="js/design-system.min.js" defer></script>
   <script src="js/seasons-module.min.js" defer></script>
   <script src="js/fixes-module.min.js" defer></script>
-  <script src="js/share-button.min.js" defer></script>
+    <script src="js/share-button.min.js" defer></script>
   <script src="js/gps-fix.min.js" defer></script>
   <script src="js/nav-accordion.min.js" defer></script>
     <script src="js/ui/zakat-engine.js" defer></script>

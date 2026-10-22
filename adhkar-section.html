@@ -9,11 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <title>الأذكار والدعاء — زاد</title>
 <!-- Async font loading — eliminates render-blocking -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" id="google-fonts"
-  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&display=swap"
-  media="print" onload="this.media='all'">
+
+<script src="js/web-fonts.js" data-f="IBM+Plex+Sans+Arabic:wght@300;400;500;700"></script>
 <noscript>
   
 </noscript>
@@ -335,6 +332,7 @@ html[data-theme="oled"] .az-card:hover {
 .az-btn-count:active { animation: btnTap .2s ease; }
 </style>
 
+<script src="js/net-ledger.js" defer></script>
 </head>
 <body>
   <main class="main" id="main-content">

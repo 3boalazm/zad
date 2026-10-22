@@ -36,7 +36,10 @@ const FALLBACK_CITIES = {
 
 const SAVED_LOCATION_KEY = 'zad_saved_location';
 
-/* احصل على الموقع: محفوظ → GPS → IP → يدوي */
+/* احصل على الموقع: محفوظ → GPS → اختيار يدوي.
+   ملاحظة صريحة (٢٠٢٦-١٠): كان هنا تقدير المدينة من عنوان IP عبر ipapi.co.
+   ذلك يعني أن فشل GPS وحده يكفي لإرسال IP المستخدم لطرف ثالث بلا إذن.
+   أُزيلت الخطوة بالكامل: إن لم يتيسّر GPS نطلب المدينة يدويًا. */
 async function getLocationWithFallback() {
   /* 1. موقع محفوظ سابقاً */
   const saved = getSavedLocation();
@@ -49,18 +52,10 @@ async function getLocationWithFallback() {
     saveLocation(loc);
     return loc;
   } catch (gpsErr) {
-    console.log('[Location] GPS فشل، نجرّب IP...');
+    console.log('[Location] GPS غير متاح — اختيار المدينة يدويًا (بلا أي طلب شبكة)');
   }
 
-  /* 3. جرّب IP geolocation */
-  try {
-    const loc = await getLocationByIP();
-    if (loc) { saveLocation(loc); return loc; }
-  } catch (ipErr) {
-    console.log('[Location] IP فشل، نطلب اختيار يدوي');
-  }
-
-  /* 4. اختيار يدوي */
+  /* 3. اختيار يدوي */
   return null; /* يستدعي showCityPicker */
 }
 window.getLocationWithFallback = getLocationWithFallback;
@@ -74,18 +69,6 @@ function getSavedLocation() {
 
 function saveLocation(loc) {
   try { localStorage.setItem(SAVED_LOCATION_KEY, JSON.stringify({ ...loc, ts: Date.now() })); } catch {}
-}
-
-/* IP geolocation عبر خدمة مجانية */
-async function getLocationByIP() {
-  try {
-    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
-    const data = await res.json();
-    if (data.latitude && data.longitude) {
-      return { lat: data.latitude, lng: data.longitude, city: data.city, source: 'ip' };
-    }
-  } catch {}
-  return null;
 }
 
 /* نافذة اختيار المدينة يدوياً */
@@ -143,7 +126,27 @@ window.selectCity = selectCity;
    ═══════════════════════════════════════════════════════════════════════════ */
 let _serverTimeOffset = 0; /* الفارق بين السيرفر والجهاز (ms) */
 
+const CLOCK_CACHE_KEY = 'zad_clock_sync_v1';
+const CLOCK_TTL = 6 * 60 * 60 * 1000;   /* ٦ ساعات: كان يُطلب في كل صفحة */
+
+function applyCachedClock() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CLOCK_CACHE_KEY) || 'null');
+    if (c && typeof c.off === 'number' && Math.abs(c.off) < 12 * 3600 * 1000) _serverTimeOffset = c.off;
+  } catch (e) {}
+}
+
 async function syncServerTime() {
+  applyCachedClock();
+  /* سياسة المستخدم: أوقف مقارنة الساعة ⇒ لا طلب شبكة إطلاقًا */
+  let policy = {};
+  try { policy = JSON.parse(localStorage.getItem('zad_net_policy') || '{}') || {}; } catch (e) {}
+  if (policy.clockSync === false) return;
+  /* لا تُكرّر الطلب قبل مرور ست ساعات */
+  try {
+    const c = JSON.parse(localStorage.getItem(CLOCK_CACHE_KEY) || 'null');
+    if (c && Date.now() - c.ts < CLOCK_TTL) return;
+  } catch (e) {}
   try {
     const before = Date.now();
     /* المصدر الأدق: ترويسة Date في استجابة HTTP — تأتي مع أي طلب،
@@ -188,6 +191,7 @@ async function syncServerTime() {
     }
 
     _serverTimeOffset = serverMs - after;
+    try { localStorage.setItem(CLOCK_CACHE_KEY, JSON.stringify({ off: _serverTimeOffset, ts: Date.now() })); } catch (e) {}
     console.log(`[Time] الفارق مع السيرفر: ${Math.round(_serverTimeOffset / 1000)} ثانية`);
 
     /* الضبط يتم تلقائياً في الخلفية — لا حاجة لإزعاج المستخدم بإشعار */
@@ -317,6 +321,20 @@ function replaceZeroStates() {
    الحل: loading="lazy" + تحميل المشغلات عند الحاجة
    ═══════════════════════════════════════════════════════════════════════════ */
 function applyLazyLoading() {
+  /* سياسة المستخدم: صور يوتيوب المصغّرة تُستبدل بمربع محلي بلا أي طلب */
+  let noThumbs = false;
+  try { noThumbs = (JSON.parse(localStorage.getItem('zad_net_policy') || '{}') || {}).youtubeThumbs === false; } catch (e) {}
+  if (noThumbs) {
+    document.querySelectorAll('img[src*="ytimg.com"], img[src*="youtube.com/vi"]').forEach(img => {
+      if (img.dataset.zadThumb) return;
+      img.dataset.zadThumb = '1';
+      img.removeAttribute('src');
+      img.removeAttribute('srcset');
+      img.style.background = 'linear-gradient(135deg,var(--green-deep),var(--green-soft))';
+      img.style.minHeight = img.style.minHeight || '96px';
+      img.alt = (img.alt || 'فيديو') + ' — الصورة موقوفة من إعداداتك';
+    });
+  }
   /* صور */
   document.querySelectorAll('img:not([loading])').forEach(img => {
     img.setAttribute('loading', 'lazy');
