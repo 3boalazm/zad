@@ -350,7 +350,7 @@ html[data-theme="oled"] .cat-kamal{color:var(--sys-blue,#5aabff)}
       </div>
       <div class="asma-hero-name" id="heroName">الله</div>
       <div class="asma-hero-trans" id="heroTrans">Allāh</div>
-      <div class="asma-meaning" id="heroMeaning"></div>
+      <div class="asma-meaning" id="heroMeaning" lang="ar" dir="rtl"></div>
       <div class="asma-hero-actions">
         <button class="asma-btn asma-btn-primary" id="btnReflect" onclick="event.stopPropagation();toggleReflectHero()">
           🤲 تم التدبر
@@ -392,7 +392,7 @@ html[data-theme="oled"] .cat-kamal{color:var(--sys-blue,#5aabff)}
   <div class="asma-sheet-handle"></div>
   <div class="asma-sheet-name" id="sheetName"></div>
   <div class="asma-sheet-trans" id="sheetTrans"></div>
-  <div class="asma-meaning" id="sheetMeaning"></div>
+  <div class="asma-meaning" id="sheetMeaning" lang="ar" dir="rtl"></div>
   <div class="asma-sheet-actions">
     <button class="asma-btn asma-btn-primary" onclick="reflectFromSheet()">🤲 تم التدبر</button>
     <button class="asma-btn asma-btn-ghost" onclick="promoteFromSheet()">⬆️ ترقية لاسم اليوم</button>
@@ -563,11 +563,28 @@ function formatMeaning(m) {
 }
 
 /* ── Hero ─────────────────────────────────────────────────── */
+/* الاسم الظاهر عربي (اسم عَلَم)، والمعنى يُعرَض بلغة الواجهة */
+function asmaGloss(n) {
+  try {
+    const L = (window.I18N && window.I18N.current) || 'ar';
+    if (L === 'ar') return n.en;
+    const rec = (window.ZAD_UI_MAP || {})[n.ar] || (typeof UI_MAP !== 'undefined' ? UI_MAP[n.ar] : null);
+    return (rec && (rec[L] || rec.en)) || n.en;
+  } catch (e) { return n.en; }
+}
+function refreshHeroText() {
+  const n = NAMES[currentHeroIdx];
+  if (!n) return;
+  const ht = document.getElementById('heroTrans'); if (ht) ht.textContent = n.tr + ' — ' + asmaGloss(n);
+  const st = document.getElementById('sheetTrans'); if (st) st.textContent = n.tr + ' — ' + asmaGloss(n);
+}
+document.addEventListener('zad:lang', refreshHeroText);
+
 function setHero(idx) {
   currentHeroIdx = idx;
   const n = NAMES[idx];
   document.getElementById('heroName').textContent  = n.ar;
-  document.getElementById('heroTrans').textContent = n.tr + ' — ' + n.en;
+  document.getElementById('heroTrans').textContent = n.tr + ' — ' + asmaGloss(n);
   document.getElementById('heroMeaning').innerHTML = formatMeaning(n.m);
   const reflected = getReflected();
   const btn = document.getElementById('btnReflect');
@@ -718,7 +735,7 @@ function openSheet(idx) {
   currentSheetIdx = idx;
   const n = NAMES[idx];
   document.getElementById('sheetName').textContent  = n.ar;
-  document.getElementById('sheetTrans').textContent = n.tr + ' — ' + n.en;
+  document.getElementById('sheetTrans').textContent = n.tr + ' — ' + asmaGloss(n);
   document.getElementById('sheetMeaning').innerHTML = formatMeaning(n.m);
   document.getElementById('asmaSheet').classList.add('open');
   document.getElementById('asmaOverlay').classList.add('open');

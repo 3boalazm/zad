@@ -1175,6 +1175,8 @@ const I18N = {
           if (pe.closest('script,style,textarea,[data-i18n],[lang="ar"],.zad-src')) return NodeFilter.FILTER_REJECT;
           if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
+          /* نصٌّ عربي مُقطَّع الحروف (حركات متبوعة بمسافة) — عنوانُ ذكرٍ لا يُفتَرى له مفتاح */
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t)) return NodeFilter.FILTER_REJECT;
           /* المحتوى الحر (وصف الحلقة) أطول من سقف الواجهة القصير */
           const cap = pe.closest('.vid-desc,.vid-sum,p.vid-desc') ? 600 : 400;
           if (t.length < 2 || t.length > cap) return NodeFilter.FILTER_REJECT;
@@ -1208,8 +1210,8 @@ const I18N = {
     }
 
     /* 3.6) سمات يقرأها المستخدم وقارئ الشاشة: alt / aria-label / title */
-    document.querySelectorAll('img[alt],[aria-label],[title]').forEach(el => {
-      ['alt', 'aria-label', 'title'].forEach(attr => {
+    document.querySelectorAll('img[alt],[aria-label],[title],[placeholder]').forEach(el => {
+      ['alt', 'aria-label', 'title', 'placeholder'].forEach(attr => {
         const v = el.getAttribute(attr);
         if (!v) return;
         if (!el.__zadArAttr) el.__zadArAttr = {};
@@ -1236,6 +1238,26 @@ const I18N = {
         return d;
       });
       const PATTERNS = [
+        /* عدّادات عربية خالصة: «13 أذكار» · «5 أيام ✓» · «3 جلسات» */
+        [/^([\u0660-\u0669\d]+)\s*(أذكار|آيات|أحاديث|أيام|مرات|جلسات)\s*(✓)?$/, (n, unit, tick) => {
+          const U = { 'أذكار':{en:'adhkar',fr:'adhkar',id:'zikir',ur:'اذکار',bn:'আযকার',tr:'zikir'},
+                      'آيات':{en:'verses',fr:'versets',id:'ayat',ur:'آیات',bn:'আয়াত',tr:'ayet'},
+                      'أحاديث':{en:'hadiths',fr:'hadiths',id:'hadis',ur:'حدیثیں',bn:'হাদিস',tr:'hadis'},
+                      'أيام':{en:'days',fr:'jours',id:'hari',ur:'دن',bn:'দিন',tr:'gün'},
+                      'مرات':{en:'times',fr:'fois',id:'kali',ur:'بار',bn:'বার',tr:'kez'},
+                      'جلسات':{en:'sessions',fr:'séances',id:'sesi',ur:'نشستیں',bn:'সেশন',tr:'oturum'} }[unit];
+          if (!U) return '';
+          return n + ' ' + (U[lang] || U.en) + (tick ? ' ✓' : '');
+        }],
+        /* «اليوم 3 من 10» · «3 / 30 جزء» · «جزء 3» (خطة الختمة والعشر) */
+        [/^اليوم ([\u0660-\u0669\d]+) من ([\u0660-\u0669\d]+)$/, (a,b) => ({
+          en:`Day ${a} of ${b}`, fr:`Jour ${a} sur ${b}`, id:`Hari ${a} dari ${b}`,
+          ur:`${b} میں سے دن ${a}`, bn:`${b}-এর মধ্যে ${a} নম্বর দিন`, tr:`${b} günün ${a}. günü` }[lang])],
+        [/^([\u0660-\u0669\d]+) \/ ([\u0660-\u0669\d]+) جزء$/, (a,b) => ({
+          en:`${a} / ${b} Juz`, fr:`${a} / ${b} juz`, id:`${a} / ${b} juz`,
+          ur:`${a} / ${b} پارہ`, bn:`${a} / ${b} জুজ`, tr:`${a} / ${b} cüz` }[lang])],
+        [/^جزء ([\u0660-\u0669\d]+)$/, (n) => ({
+          en:`Juz ${n}`, fr:`Juz ${n}`, id:`Juz ${n}`, ur:`پارہ ${n}`, bn:`জুজ ${n}`, tr:`Cüz ${n}` }[lang])],
         [/^📚\s*([\u0660-\u0669\d]+)\s*حديثًا$/, (n) => ({
           en:`📚 ${n} hadiths`, fr:`📚 ${n} hadiths`, id:`📚 ${n} hadis`,
           ur:`📚 ${n} حدیثیں`, bn:`📚 ${n} হাদিস`, tr:`📚 ${n} hadis` }[lang])],
@@ -1327,6 +1349,7 @@ const I18N = {
           if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
           if (!t || t.length > 90) return NodeFilter.FILTER_REJECT;
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t)) return NodeFilter.FILTER_REJECT;
           if (/^[\u0660-\u0669\d]{1,3}٪?$/.test(t)) return NodeFilter.FILTER_ACCEPT;
           if (!isAr && /^← /.test(t) && t.length < 40 && !/[\u0600-\u06FF]/.test(t.replace(/^← /, ''))) return NodeFilter.FILTER_ACCEPT;
           /* «🕐 نص عربي» — نترجم الباقي إن كان في القاموس */
@@ -1341,6 +1364,8 @@ const I18N = {
         const raw = n.nodeValue.trim();
         const lead = n.nodeValue.match(/^\s*/)[0];
         const trail = n.nodeValue.match(/\s*$/)[0];
+        /* نحفظ الأصل مرة واحدة حتى يعود النص عربيًا عند تبديل اللغة */
+        if (n.__zadAr == null) n.__zadAr = n.nodeValue;
         if (/^[\u0660-\u0669\d]{1,3}٪?$/.test(raw)) { n.nodeValue = lead + loc(raw) + trail; return; }
         if (/^[←→] /.test(raw)) { n.nodeValue = lead + flipArrow(raw) + trail; return; }
         const em2 = raw.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
@@ -1352,7 +1377,7 @@ const I18N = {
         for (const [re, make] of PATTERNS) {
           const m = raw.match(re);
           if (!m) continue;
-          const args = m.slice(1).map(x => loc(x));
+          const args = m.slice(1).map(x => (x == null ? x : loc(x)));
           const out = make.apply(null, args);
           if (out) { n.nodeValue = lead + out + trail; }
           break;
@@ -2490,6 +2515,23 @@ const UI_MAP = {
   "مصطلح الحديث": {en:"Hadith Terminology", fr:"Terminologie du hadith", id:"Ilmu Mustalah Hadis", ur:"مصطلح الحدیث", bn:"হাদিস পরিভাষা", tr:"Hadis Istılahı"},
 };
 
+/* فهرس عكسي: النص العربي من قاموس الواجهة الدلالي → ترجمته.
+   أي عنصر يعرض النص العربي نفسه (نص حرّ · title · placeholder · aria-label)
+   يُترجم تلقائيًا دون إضافة مفتاح جديد. */
+(function buildReverseIndex() {
+  const src = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS.ar) || {};
+  for (const k in src) {
+    const v = src[k];
+    if (typeof v !== 'string' || v.length < 3 || UI_MAP[v]) continue;
+    const rec = {};
+    for (const L in TRANSLATIONS) {
+      const t = TRANSLATIONS[L] && TRANSLATIONS[L][k];
+      if (typeof t === 'string' && t) rec[L] = t;
+    }
+    if (rec.en || rec.fr || rec.id) UI_MAP[v] = rec;
+  }
+})();
+
 /* ── خريطة عناوين الصفحات (عربي/إنجليزي/فرنسي) ─────────────── */
 const PAGE_TITLES = {
   'index.html':       { ar:['زاد','اليومي'], en:['Daily','Zad'], fr:['Zad','Quotidien'], ur:['روزانہ', 'زاد'], id:['Harian', 'Zad'], tr:['Günlük', 'Zad'], bn:['দৈনিক', 'যাদ'] },
@@ -2787,6 +2829,9 @@ const ZT_PARTS = {
   'السابقة': { en:'Streaker', fr:'Série', id:'Rentetan', ur:'لگاتار', bn:'ধারাবাহিক', tr:'Seri' },
   'عرفة': { en:'Arafah', fr:'Arafah', id:'Arafah', ur:'عرفہ', bn:'আরাফাহ', tr:'Arefe' }
 };
+/* ألقاب لوحة الصدارة وغيرها → تُدمَج في الخريطة العامة */
+for (const _zk in ZT_PARTS) if (!UI_MAP[_zk]) UI_MAP[_zk] = ZT_PARTS[_zk];
+
 function ztPart(v, lang) {
   const hit = ZT_PARTS[v] || (window.ZAD_UI_MAP && window.ZAD_UI_MAP[v]);
   if (!hit) return v;
