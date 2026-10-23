@@ -314,6 +314,16 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
 (function(){
   'use strict';
 
+  /* ترجمة نصوص الحروف المولّدة (JS): قراءة الخريطة مباشرة بلغة الواجهة */
+  function LT(ar){
+    try {
+      var M = window.ZAD_UI_MAP || {}, lg = document.documentElement.lang || 'ar';
+      if (lg === 'ar') return ar;
+      var rec = M[ar];
+      return (rec && rec[lg]) ? rec[lg] : ar;
+    } catch (e) { return ar; }
+  }
+
   var LETTERS = [
     {l:'ا',n:'الألف',w:[['أَسَد','🦁'],['أَرنب','🐰'],['أُمّ','🤱']]},
     {l:'ب',n:'الباء',w:[['بَطة','🦆'],['بَيت','🏠'],['بُرتُقال','🍊']]},
@@ -408,7 +418,7 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
     box.innerHTML = LETTERS.map(function(x, i){
       var done = a.letters.indexOf(x.l) > -1;
       return '<button type="button" class="ac-lbtn' + (done ? ' done' : '') + (i === curL ? ' sel' : '') +
-             '" data-i="' + i + '" aria-label="حرف ' + x.n + '">' + x.l + '</button>';
+             '" data-i="' + i + '" aria-label="' + LT('حرف ' + x.n) + '">' + x.l + '</button>';
     }).join('');
     box.querySelectorAll('.ac-lbtn').forEach(function(b){
       b.addEventListener('click', function(){ showLetter(parseInt(b.getAttribute('data-i'), 10)); });
@@ -421,10 +431,10 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
     curL = (i + LETTERS.length) % LETTERS.length;
     var x = LETTERS[curL], a = getAcad();
     document.getElementById('ac-l-big').textContent = x.l;
-    document.getElementById('ac-l-title').textContent = 'حرف ' + x.n;
-    document.getElementById('ac-l-sub').textContent = 'كلماته: ' + x.w.map(function(w){ return w[0]; }).join(' · ');
+    document.getElementById('ac-l-title').textContent = LT('حرف ' + x.n);
+    document.getElementById('ac-l-sub').textContent = LT('كلماته: ' + x.w.map(function(w){ return w[0]; }).join(' · '));
     document.getElementById('ac-l-words').innerHTML = x.w.map(function(w){
-      return '<div class="ac-word"><span class="e">' + w[1] + '</span><b>' + w[0] + '</b></div>';
+      return '<div class="ac-word"><span class="e">' + w[1] + '</span><b>' + LT(w[0]) + '</b></div>';
     }).join('');
     var btn = document.getElementById('ac-l-star');
     var on = a.letters.indexOf(x.l) > -1;
@@ -442,7 +452,7 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
   window.acLearnLetter = function(){
     var a = getAcad(), x = LETTERS[curL], i = a.letters.indexOf(x.l);
     if (i > -1) { a.letters.splice(i, 1); a.stars = Math.max(0, a.stars - 1); toast('أزلنا العلامة'); }
-    else { a.letters.push(x.l); a.stars++; toast('⭐ أحسنت! تعلّمت حرف ' + x.n); }
+    else { a.letters.push(x.l); a.stars++; toast('⭐ ' + LT('أحسنت!') + ' — ' + LT('حرف ' + x.n)); }
     setAcad(a); renderLetters(); showLetter(curL);
   };
 
