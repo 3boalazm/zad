@@ -517,9 +517,9 @@ function cardHTML(s, i){
       <h3 class="sn-title">${s.title}</h3>
       <button class="sn-toggle" data-id="${id}" title="علِّمها كأنك أحييتها" aria-label="إحياء السُّنّة">✓</button>
     </div>
-    <p class="sn-hadith">«${s.hadith}»</p>
+    <p class="sn-hadith" lang="ar" dir="rtl">«${s.hadith}»</p>
     <div><span class="sn-src">📖 ${s.src}</span>${gradeChip(s.grade)}</div>
-    <div class="sn-notes">
+    <div class="sn-notes" lang="ar" dir="rtl">
       <div class="sn-note apply"><b>🌿 كيف تطبّقها اليوم:</b> ${s.apply}</div>
       <div class="sn-note fruit"><b>🎁 الثمرة:</b> ${s.fruit}</div>
     </div>
@@ -620,6 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
