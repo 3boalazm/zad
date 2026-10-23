@@ -1977,7 +1977,7 @@ function initAdhkarPage() {
       card.className = `adhkar-card${done ? ' adhkar-card-done' : ''}`;
       card.id = 'adhk-' + item.id;
       card.innerHTML = `
-        <div class="adhkar-arabic">${item.arabic}</div>
+        <div class="adhkar-arabic" lang="ar" dir="rtl">${item.arabic}</div>
         <div class="adhkar-meta">
           <span class="adhkar-label">${item.label}</span>
           <span class="adhkar-source tag">${item.source}</span>

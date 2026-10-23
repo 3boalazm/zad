@@ -1229,6 +1229,16 @@ function zadPatterns(lang) {
           return { en:`Day ${i+1}: ${pct}%`, fr:`Jour ${i+1} : ${pct}%`, id:`Hari ke-${i+1}: ${pct}%`,
                    ur:`دن ${i+1}: ${pct}%`, bn:`${i+1} নম্বর দিন: ${pct}%`, tr:`${i+1}. gün: ${pct}%` }[lang];
         }],
+        /* «يبدأ موسم العشر بعد 196 يومًا — استعدّ الآن…» */
+        [/^يبدأ موسم العشر بعد ([\u0660-\u0669\d]+) يومًا — استعدّ الآن: راجع مناسكك، واحفظ أدعيتك\.$/, (d) => {
+          const T = { en:`The ten days begin in ${d} days — get ready now: review your rites and memorise your supplications.`,
+            fr:`Les dix jours commencent dans ${d} jours — préparez-vous : révisez vos rites et mémorisez vos invocations.`,
+            id:`Musim sepuluh hari dimulai dalam ${d} hari — bersiaplah: tinjau manasikmu dan hafalkan doamu.`,
+            ur:`عشرے کا موسم ${d} دن میں شروع ہوگا — ابھی تیاری کریں: مناسک دہرائیں اور دعائیں یاد کریں۔`,
+            bn:`দশ দিনের মৌসুম ${d} দিন পরে শুরু — এখনই প্রস্তুতি নিন: বিধানগুলো ঝালিয়ে নিন, দুআ মুখস্থ করুন।`,
+            tr:`On gün ${d} gün sonra başlıyor — şimdi hazırlan: menâsikini gözden geçir, dualarını ezberle.` };
+          return T[lang] || T.en;
+        }],
         /* «سورة الحج 27» · «سورة الكوثر 1-2» · «﴿ الحديد: 20 ﴾» */
         [/^سورة ([\u0600-\u06FF ]+?) ([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
           const nm0 = name.trim();
@@ -1633,7 +1643,8 @@ const I18N = {
           if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
           if (!t || t.length > 90) return NodeFilter.FILTER_REJECT;
-          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t) && !UI_MAP[t] && !zadTpl(t, lang)) return NodeFilter.FILTER_REJECT;
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t) && !UI_MAP[t] && !zadTpl(t, lang) &&
+              !PATTERNS.some(([re]) => re.test(t))) return NodeFilter.FILTER_REJECT;
           if (/^[\u0660-\u0669\d]{1,3}٪?$/.test(t)) return NodeFilter.FILTER_ACCEPT;
           if (!isAr && /^← /.test(t) && t.length < 40 && !/[\u0600-\u06FF]/.test(t.replace(/^← /, ''))) return NodeFilter.FILTER_ACCEPT;
           /* «🕐 نص عربي» — نترجم الباقي إن كان في القاموس */
@@ -1669,6 +1680,29 @@ const I18N = {
           break;
         }
       });
+    }
+
+    /* 3.95) وسم النص الشرعي المشكول: نصٌّ عربي كثيف الحركات ليس له مدخل في القاموس
+       ولا يطابق نمطًا ⇒ قرآن/ذكر/متن. نوسمه lang="ar" dir="rtl" ليُعامل كعربية
+       (اتجاه، قارئ شاشة، واستثناء صريح من الترجمة) بدل أن يبدو «نصًّا ناقص الترجمة». */
+    if (!isAr && document.body) {
+      const wv = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode(n) {
+          const pe = n.parentElement;
+          if (!pe) return NodeFilter.FILTER_REJECT;
+          if (pe.closest('script,style,textarea,[lang="ar"],.zad-src')) return NodeFilter.FILTER_REJECT;
+          if (pe.children.length) return NodeFilter.FILTER_REJECT;
+          const t = n.nodeValue.trim();
+          if (!t || t.length > 300) return NodeFilter.FILTER_REJECT;
+          const marks = (t.match(/[\u064B-\u0652\u0670]/g) || []).length;
+          if (marks < 3) return NodeFilter.FILTER_REJECT;
+          if (zadRec(t) || zadTpl(t, lang)) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const verse = []; let vn;
+      while ((vn = wv.nextNode())) verse.push(vn.parentElement);
+      verse.forEach(pe => { try { pe.setAttribute('lang', 'ar'); pe.setAttribute('dir', 'rtl'); } catch (e) {} });
     }
 
     /* 4) عنوان الصفحة (وسط الشريط العلوي) */
