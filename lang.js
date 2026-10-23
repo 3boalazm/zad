@@ -1172,7 +1172,7 @@ const I18N = {
         acceptNode(n) {
           const pe = n.parentElement;
           if (!pe) return NodeFilter.FILTER_REJECT;
-          if (pe.closest('script,style,textarea,[data-i18n]')) return NodeFilter.FILTER_REJECT;
+          if (pe.closest('script,style,textarea,[data-i18n],[lang="ar"],.zad-src')) return NodeFilter.FILTER_REJECT;
           if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
           /* المحتوى الحر (وصف الحلقة) أطول من سقف الواجهة القصير */
