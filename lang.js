@@ -1085,6 +1085,39 @@ function zadNum(t, lang) {
     return String(n);
   });
 }
+/* ── مطابقة متسامحة مع التشكيل والمسافات ───────────────────────
+   بعض العناوين تأتي من ملفات البيانات مُشكَّلة ومسافاتها مكسورة
+   («الذِّكْرُ قَبْ لَ الْوُضُ وءِ»)؛ نُطبّع المفتاح والمدخل معًا فنلتقي. */
+function zadNorm(s) {
+  return String(s).replace(/[\u064B-\u0652\u0670\u0640\u0671]/g, '').replace(/\s+/g, ' ').trim();
+}
+let ZAD_NORM_IDX = null, ZAD_NORM_SIZE = -1;
+function zadRec(t) {
+  if (t == null) return null;
+  const k = String(t).trim();
+  if (UI_MAP[k]) return UI_MAP[k];
+  const n = zadNorm(k);
+  if (!n) return null;
+  if (ZAD_NORM_IDX === null || ZAD_NORM_SIZE !== Object.keys(UI_MAP).length) {
+    ZAD_NORM_IDX = {};
+    for (const kk in UI_MAP) { const nn = zadNorm(kk); if (nn && !ZAD_NORM_IDX[nn]) ZAD_NORM_IDX[nn] = kk; }
+    ZAD_NORM_SIZE = Object.keys(UI_MAP).length;
+  }
+  const hit = ZAD_NORM_IDX[n];
+  if (hit) return UI_MAP[hit];
+  /* مسافاتٌ مقحومة داخل الكلمة («الاسْ تِيقَاظِ») — نقارن بلا أي مسافة */
+  const n2 = n.replace(/\s+/g, '');
+  if (n2) {
+    if (!ZAD_NORM_IDX.__n2 || ZAD_NORM_IDX.__n2len !== Object.keys(UI_MAP).length) {
+      const idx2 = {};
+      for (const kk in UI_MAP) { const k2 = zadNorm(kk).replace(/\s+/g, ''); if (k2 && !idx2[k2]) idx2[k2] = kk; }
+      ZAD_NORM_IDX.__n2 = idx2; ZAD_NORM_IDX.__n2len = Object.keys(UI_MAP).length;
+    }
+    const hit2 = ZAD_NORM_IDX.__n2[n2];
+    if (hit2) return UI_MAP[hit2];
+  }
+  return null;
+}
 function zadTpl(t, lang) {
   if (t.length < 3) return null;
   /* «سورة الحج 27»: القالب «سورة {name}» يلتهم الرقم مع الاسم، فنتركها للأنماط
@@ -1500,15 +1533,16 @@ const I18N = {
           if (pe.closest('script,style,textarea,[data-i18n],[lang="ar"],.zad-src')) return NodeFilter.FILTER_REJECT;
           if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
-          /* نصٌّ عربي مُقطَّع الحروف (حركات متبوعة بمسافة) — عنوانُ ذكرٍ لا يُفتَرى له مفتاح */
-          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t)) return NodeFilter.FILTER_REJECT;
+          /* نصٌّ عربي مُقطَّع الحروف (حركات متبوعة بمسافة) — عنوانُ ذكرٍ لا يُفتَرى له مفتاح.
+             لكن إن كان له مدخل صريح في القاموس (شعار/مقدّمة مشكولة) فليُترجم. */
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t) && !zadRec(t)) return NodeFilter.FILTER_REJECT;
           /* المحتوى الحر (وصف الحلقة) أطول من سقف الواجهة القصير */
           const cap = pe.closest('.vid-desc,.vid-sum,p.vid-desc') ? 600 : 400;
           if (t.length < 2 || t.length > cap) return NodeFilter.FILTER_REJECT;
           /* نصٌّ لاتيني أصلاً («The letter Fa (ف) — episode 20») لا يُترجم */
           const latinChars = (t.match(/[A-Za-z]/g) || []).length;
           if (latinChars > t.length * 0.4) return NodeFilter.FILTER_REJECT;
-          if (UI_MAP[t]) return NodeFilter.FILTER_ACCEPT;
+          if (zadRec(t)) return NodeFilter.FILTER_ACCEPT;
           if (zadTpl(t, lang)) return NodeFilter.FILTER_ACCEPT;
           /* «💡 نص» — أيقونة في أوّل النص: نطابق الباقي ونُبقي الأيقونة */
           if (t.length <= cap + 8) {
@@ -1524,11 +1558,11 @@ const I18N = {
       hits.forEach(n => {
         let key = n.nodeValue.trim();
         let icon = '';
-        if (!UI_MAP[key]) {
+        if (!zadRec(key)) {
           const em = key.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
-          if (em && UI_MAP[em[2].trim()]) { icon = em[1]; key = em[2].trim(); }
+          if (em && zadRec(em[2].trim())) { icon = em[1]; key = em[2].trim(); }
         }
-        if (!UI_MAP[key]) {
+        if (!zadRec(key)) {
           const tv = zadTpl(key, lang);
           if (!tv) return;
           if (!n.__zadAr) n.__zadAr = n.nodeValue;
@@ -1536,7 +1570,8 @@ const I18N = {
           n.nodeValue = ld + icon + tv + tr2;
           return;
         }
-        const v = UI_MAP[key][lang] || UI_MAP[key].en;
+        const _rec = zadRec(key);
+        const v = _rec && (_rec[lang] || _rec.en);
         if (!v) return;
         if (!n.__zadAr) n.__zadAr = n.nodeValue;
         const lead = n.nodeValue.match(/^\s*/)[0];
@@ -1598,7 +1633,7 @@ const I18N = {
           if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
           if (!t || t.length > 90) return NodeFilter.FILTER_REJECT;
-          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t)) return NodeFilter.FILTER_REJECT;
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t) && !UI_MAP[t] && !zadTpl(t, lang)) return NodeFilter.FILTER_REJECT;
           if (/^[\u0660-\u0669\d]{1,3}٪?$/.test(t)) return NodeFilter.FILTER_ACCEPT;
           if (!isAr && /^← /.test(t) && t.length < 40 && !/[\u0600-\u06FF]/.test(t.replace(/^← /, ''))) return NodeFilter.FILTER_ACCEPT;
           /* «🕐 نص عربي» — نترجم الباقي إن كان في القاموس */
