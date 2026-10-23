@@ -1188,6 +1188,8 @@ const I18N = {
 
     /* 3.9) أنماط عددية (جلسات/أحاديث/عبادات) + تحويل الأرقام لغير العربية */
     if (!isAr) {
+      /* اتجاه السهم: «←» تعني «رجوع» في RTL فتصير «→» في LTR */
+      const flipArrow = t => t.replace(/^←\s+/, '→ ').replace(/^→\s+/, '← ');
       const latin = t => t.replace(/[\u0660-\u0669]/g, c => String(c.charCodeAt(0) - 0x0660));
       const loc = t => latin(t).replace(/[0-9]/g, d => {
         if (lang === 'ur') return String.fromCharCode(0x06F0 + (+d));
@@ -1205,6 +1207,29 @@ const I18N = {
           const R = UI_MAP[rest.trim()] ? (UI_MAP[rest.trim()][lang] || UI_MAP[rest.trim()].en) : rest;
           return { en:`${n} adhkar · ${R}`, fr:`${n} adhkar · ${R}`, id:`${n} zikir · ${R}`,
                    ur:`${n} اذکار · ${R}`, bn:`${n} আযকার · ${R}`, tr:`${n} zikir · ${R}` }[lang];
+        }],
+        /* «المصحف المرتل/المجود — <اسم القارئ>» */
+        [/^(المصحف المرتل|المصحف المجود|🎙️ مصحف مُجوَّد|📖 مصحف مُرتَّل)\s*—\s*(.+)$/, (kind, name) => {
+          const isMuj = kind.indexOf('مجود') !== -1;
+          const K = { en: isMuj ? 'Mujawwad mushaf' : 'Recited mushaf',
+                      fr: isMuj ? 'Moushaf moujawwad' : 'Moushaf récité',
+                      id: isMuj ? 'Mushaf mujawwad' : 'Mushaf murattal',
+                      ur: isMuj ? 'مجود مصحف' : 'ترتیل مصحف',
+                      bn: isMuj ? 'মুজাওয়াদ মুসহাফ' : 'তারতিল মুসহাফ',
+                      tr: isMuj ? 'Mücevved mushaf' : 'Tertil mushaf' }[lang];
+          return K ? (K + ' — ' + name) : '';
+        }],
+        /* «٤٢٧٣ حديثًا مشروحًا في ٧ أبواب و٤١ بابًا فرعيًا — بحث يعمل بلا إنترنت» */
+        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في ([\u0660-\u0669\d]+) (?:أبواب|أبوابًا) و([\u0660-\u0669\d]+) بابًا فرعيًا(.*)$/, (n,sec,sub,tail) => {
+          const T = {
+            en:`${n} explained hadiths across ${sec} sections and ${sub} subsections — search works offline`,
+            fr:`${n} hadiths expliqués en ${sec} sections et ${sub} sous-sections — recherche hors ligne`,
+            id:`${n} hadis berpenjelasan dalam ${sec} bagian dan ${sub} subbagian — pencarian tanpa internet`,
+            ur:`${n} تشریح شدہ احادیث، ${sec} ابواب اور ${sub} ذیلی ابواب میں — تلاش انٹرنیٹ کے بغیر`,
+            bn:`${sec} বিভাগ ও ${sub} উপবিভাগে ${n} ব্যাখ্যাকৃত হাদিস — ইন্টারনেট ছাড়াই খোঁজ`,
+            tr:`${sec} bölüm ve ${sub} alt bölümde ${n} şerhli hadis — arama internetsiz çalışır`
+          }[lang];
+          return T || '';
         }],
         [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في (.+)$/, (n,rest) => ({
           en:`${n} explained hadiths in ${rest}`, fr:`${n} hadiths expliqués en ${rest}`, id:`${n} hadis berpenjelasan dalam ${rest}`,
@@ -1229,6 +1254,10 @@ const I18N = {
           const t = n.nodeValue.trim();
           if (!t || t.length > 90) return NodeFilter.FILTER_REJECT;
           if (/^[\u0660-\u0669\d]{1,3}$/.test(t)) return NodeFilter.FILTER_ACCEPT;
+          if (!isAr && /^← /.test(t) && t.length < 40 && !/[\u0600-\u06FF]/.test(t.replace(/^← /, ''))) return NodeFilter.FILTER_ACCEPT;
+          /* «🕐 نص عربي» — نترجم الباقي إن كان في القاموس */
+          const em = t.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
+          if (!isAr && em && UI_MAP[em[2].trim()]) return NodeFilter.FILTER_ACCEPT;
           return PATTERNS.some(([re]) => re.test(t)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
         }
       });
@@ -1239,6 +1268,13 @@ const I18N = {
         const lead = n.nodeValue.match(/^\s*/)[0];
         const trail = n.nodeValue.match(/\s*$/)[0];
         if (/^[\u0660-\u0669\d]{1,3}$/.test(raw)) { n.nodeValue = lead + loc(raw) + trail; return; }
+        if (/^[←→] /.test(raw)) { n.nodeValue = lead + flipArrow(raw) + trail; return; }
+        const em2 = raw.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
+        if (em2 && UI_MAP[em2[2].trim()]) {
+          const e = UI_MAP[em2[2].trim()];
+          const v = e[lang] || e.en;
+          if (v) { n.nodeValue = lead + em2[1] + v + trail; return; }
+        }
         for (const [re, make] of PATTERNS) {
           const m = raw.match(re);
           if (!m) continue;
@@ -1770,6 +1806,117 @@ const UI_MAP = {
   'حب الظهور': { en:'seeking attention', fr:'la recherche de visibilité', id:'mencari perhatian', ur:'شہرت کی چاہت', bn:'প্রদর্শনেচ্ছা', tr:'gösteriş sevdası' },
   'السوشيال ميديا': { en:'social media', fr:'les réseaux sociaux', id:'media sosial', ur:'سوشل میڈیا', bn:'সোশ্যাল মিডিয়া', tr:'sosyal medya' },
   'الصحاب': { en:'choosing friends', fr:'le choix des amis', id:'memilih teman', ur:'سنگت کا انتخاب', bn:'বন্ধু নির্বাচন', tr:'arkadaş seçimi' },
+  'القرآن الكريم وعلومه': { en:'The Quran and its sciences', fr:'Le Coran et ses sciences', id:'Al-Qur’an dan ilmunya', ur:'قرآن مجید اور اس کے علوم', bn:'কুরআন ও তার বিজ্ঞান', tr:'Kur’an ve ilimleri' },
+  'نزول القرآن وجمعه': { en:'Revelation and compilation of the Quran', fr:'Révélation et compilation du Coran', id:'Turunnya Al-Qur’an dan pengumpulannya', ur:'قرآن کے نزول اور جمع', bn:'কুরআনের অবতরণ ও সংকলন', tr:'Kur’an’ın nüzulü ve cem‘i' },
+  'القراءات والتجويد': { en:'Recitations and tajweed', fr:'Lectures et tajwid', id:'Qira’at dan tajwid', ur:'قراءات اور تجوید', bn:'কারাআত ও তাজবিদ', tr:'Kıraatler ve tecvid' },
+  'تفسير القرآن': { en:'Quranic exegesis', fr:'Exégèse du Coran', id:'Tafsir Al-Qur’an', ur:'تفسیرِ قرآن', bn:'কুরআনের তাফসির', tr:'Kur’an tefsiri' },
+  'مباحث قرآنية عامة': { en:'General Quranic topics', fr:'Thèmes coraniques généraux', id:'Topik umum Al-Qur’an', ur:'عمومی قرآنی مباحث', bn:'সাধারণ কুরআনিক বিষয়', tr:'Genel Kur’an konuları' },
+  'فضائل القرآن': { en:'Virtues of the Quran', fr:'Mérites du Coran', id:'Keutamaan Al-Qur’an', ur:'فضائلِ قرآن', bn:'কুরআনের ফজিলত', tr:'Kur’an’ın faziletleri' },
+  'الإيمان بالله عز وجل': { en:'Belief in Allah, Mighty and Majestic', fr:'Foi en Allah, puissant et majestueux', id:'Iman kepada Allah Azza wa Jalla', ur:'اللہ عزوجل پر ایمان', bn:'আল্লাহ তা‘আলার প্রতি ঈমান', tr:'Allah’a (cc) iman' },
+  'الإيمان بالملائكة': { en:'Belief in the angels', fr:'Foi aux anges', id:'Iman kepada malaikat', ur:'فرشتوں پر ایمان', bn:'ফেরেশতাদের প্রতি ঈমান', tr:'Meleklere iman' },
+  'الإيمان بالكتب': { en:'Belief in the revealed books', fr:'Foi aux livres révélés', id:'Iman kepada kitab-kitab', ur:'نازل شدہ کتابوں پر ایمان', bn:'আসমানি কিতাবসমূহে ঈমান', tr:'Kitaplara iman' },
+  'الإيمان بالرسل': { en:'Belief in the messengers', fr:'Foi aux messagers', id:'Iman kepada para rasul', ur:'رسولوں پر ایمان', bn:'রাসূলগণের প্রতি ঈমান', tr:'Peygamberlere iman' },
+  'الإيمان باليوم الآخر': { en:'Belief in the Last Day', fr:'Foi au Jour dernier', id:'Iman kepada hari akhir', ur:'آخرت کے دن پر ایمان', bn:'আখিরাতের প্রতি ঈমান', tr:'Ahiret gününe iman' },
+  'الإيمان بالقضاء والقدر': { en:'Belief in divine decree', fr:'Foi au décret divin', id:'Iman kepada qada dan qadar', ur:'تقدیر پر ایمان', bn:'তাকদিরে ঈমান', tr:'Kader ve kazaya iman' },
+  'الأسماء والأحكام': { en:'Names and rulings', fr:'Noms et jugements', id:'Nama dan hukum', ur:'اسماء و احکام', bn:'নাম ও বিধান', tr:'İsimler ve hükümler' },
+  'الصحابة': { en:'The Companions', fr:'Les Compagnons', id:'Para sahabat', ur:'صحابہ کرام', bn:'সাহাবিগণ', tr:'Sahabeler' },
+  'الولاء والبراء': { en:'Loyalty and disavowal', fr:'Alliance et désaveu', id:'Loyalitas dan berlepas diri', ur:'الولاء والبراء', bn:'আনুগত্য ও মুক্তির সম্পর্ক', tr:'Velâ ve berâ' },
+  'الملل والأديان': { en:'Religions and creeds', fr:'Religions et croyances', id:'Agama dan keyakinan', ur:'ملل و ادیان', bn:'ধর্ম ও মতবাদ', tr:'Dinler ve inançlar' },
+  'الفرق والمذاهب': { en:'Sects and schools', fr:'Sectes et écoles', id:'Sekte dan mazhab', ur:'فرقے اور مذاہب', bn:'বিভিন্ন দল ও মাজহাব', tr:'Fırkalar ve mezhepler' },
+  'فقه العبادات': { en:'Fiqh of worship', fr:'Fiqh de l’adoration', id:'Fikih ibadah', ur:'فقہِ عبادات', bn:'ইবাদতের ফিকহ', tr:'İbadet fıkhı' },
+  'فقه المعاملات': { en:'Fiqh of transactions', fr:'Fiqh des transactions', id:'Fikih muamalah', ur:'فقہِ معاملات', bn:'লেনদেনের ফিকহ', tr:'Muamelat fıkhı' },
+  'الفرائض': { en:'Inheritance shares', fr:'Parts successorales', id:'Faraid (warisan)', ur:'فرائض (وراثت)', bn:'ফরায়েজ (উত্তরাধিকার)', tr:'Ferâiz (miras)' },
+  'الأطعمة والأشربة': { en:'Food and drink', fr:'Aliments et boissons', id:'Makanan dan minuman', ur:'کھانے پینے کے احکام', bn:'খাদ্য ও পানীয়', tr:'Yiyecek ve içecekler' },
+  'الجنايات': { en:'Criminal offences', fr:'Infractions pénales', id:'Jinayah (tindak pidana)', ur:'جنایات', bn:'অপরাধ', tr:'Cinayetler' },
+  'الحدود': { en:'Prescribed punishments', fr:'Peines légales', id:'Hudud', ur:'حدود', bn:'হুদুদ', tr:'Hudud' },
+  'القضاء': { en:'Judiciary', fr:'Justice', id:'Peradilan', ur:'قضاء (فیصلے)', bn:'বিচারব্যবস্থা', tr:'Kaza (yargı)' },
+  'الفضائل': { en:'Virtues', fr:'Mérites', id:'Keutamaan', ur:'فضائل', bn:'ফজিলত', tr:'Faziletler' },
+  'فقه الأخلاق': { en:'Fiqh of character', fr:'Fiqh du comportement', id:'Fikih akhlak', ur:'فقہِ اخلاق', bn:'নৈতিকতার ফিকহ', tr:'Ahlak fıkhı' },
+  'فقه الأدعية والأذكار': { en:'Fiqh of dua and adhkar', fr:'Fiqh des invocations et adhkar', id:'Fikih doa dan zikir', ur:'دعا و اذکار کی فقہ', bn:'দুআ ও আযকারের ফিকহ', tr:'Dua ve zikir fıkhı' },
+  'الرقائق والمواعظ': { en:'Heart-softeners and admonitions', fr:'Attendrissements et exhortations', id:'Pelembut hati dan nasihat', ur:'رقائق و مواعظ', bn:'হৃদয়কোমলকারী নসিহত', tr:'Rikâk ve nasihatler' },
+  'الدعوة إلى الله': { en:'Calling to Allah', fr:'Appel à Allah', id:'Dakwah kepada Allah', ur:'اللہ کی طرف دعوت', bn:'আল্লাহর পথে দাওয়াত', tr:'Allah’a davet' },
+  'السياسة الشرعية': { en:'Islamic governance', fr:'Gouvernance islamique', id:'Siyasah syar‘iyyah', ur:'سیاستِ شرعیہ', bn:'শরিয়তসম্মত শাসনব্যবস্থা', tr:'Şer‘î siyaset' },
+  'الثقافة الإسلامية': { en:'Islamic culture', fr:'Culture islamique', id:'Budaya Islam', ur:'اسلامی ثقافت', bn:'ইসলামি সংস্কৃতি', tr:'İslam kültürü' },
+  'التاريخ': { en:'History', fr:'Histoire', id:'Sejarah', ur:'تاریخ', bn:'ইতিহাস', tr:'Tarih' },
+  'دنيا': { en:'Worldly life', fr:'La vie d’ici-bas', id:'Kehidupan dunia', ur:'دنیا', bn:'দুনিয়া', tr:'Dünya' },
+  '📡 إذاعة': { en:'📡 Radio', fr:'📡 Radio', id:'📡 Radio', ur:'📡 ریڈیو', bn:'📡 রেডিও', tr:'📡 Radyo' },
+  '🎙️ مصحف مُجوَّد': { en:'🎙️ Mujawwad mushaf', fr:'🎙️ Moushaf moujawwad', id:'🎙️ Mushaf mujawwad', ur:'🎙️ مجود مصحف', bn:'🎙️ মুজাওয়াদ মুসহাফ', tr:'🎙️ Mücevved mushaf' },
+  'إذاعة تفسير القرآن': { en:'Quran tafsir radio', fr:'Radio du tafsir', id:'Radio tafsir Al-Qur’an', ur:'تفسیرِ قرآن ریڈیو', bn:'কুরআন তাফসির রেডিও', tr:'Kur’an tefsiri radyosu' },
+  'تفسير وخواطر حول آيات القرآن الكريم على مدار الساعة.': { en:'Tafsir and reflections on the verses of the Quran, around the clock.', fr:'Tafsir et réflexions sur les versets du Coran, en continu.', id:'Tafsir dan renungan atas ayat Al-Qur’an, sepanjang waktu.', ur:'قرآن کریم کی آیات کی تفسیر اور خواطر، چوبیس گھنٹے۔', bn:'কুরআনের আয়াতের তাফসির ও অনুভূতি, দিনরাত।', tr:'Kur’an ayetlerinin tefsiri ve tefekkürü, gün boyu.' },
+  'البث المباشر الرسمي لإذاعة القرآن الكريم من جمهورية مصر العربية منذ 1964.': { en:'The official live stream of the Holy Quran Radio of Egypt, on air since 1964.', fr:'Le direct officiel de la Radio du Saint Coran d’Égypte, depuis 1964.', id:'Siaran langsung resmi Radio Al-Qur’an Mesir sejak 1964.', ur:'مصر کی قرآن ریڈیو کی سرکاری براہِ راست نشریات، 1964 سے۔', bn:'মিশরের কুরআন রেডিওর সরকারি লাইভ সম্প্রচার, ১৯৬৪ থেকে।', tr:'Mısır Kur’an Radyosu’nun 1964’ten beri resmî canlı yayını.' },
+  'تلاوات خاشعة بصوت الشيخ ناصر القطامي.': { en:'Humble recitations by Sheikh Nasser Al-Qatami.', fr:'Récitations recueillies du cheikh Nasser al-Qatami.', id:'Tilawah khusyuk Syaikh Nasser Al-Qathami.', ur:'شیخ ناصر القطامی کی خشوع بھری تلاوتیں۔', bn:'শায়খ নাসির আল-কাতামির বিনীত তিলাওয়াত।', tr:'Şeyh Nasır el-Katamî’den huşulu tilavetler.' },
+  'المصحف المجود — عبد الباسط عبد الصمد': { en:'Mujawwad mushaf — Abdulbasit Abdulsamad', fr:'Moushaf moujawwad — Abdelbasset Abdessamad', id:'Mushaf mujawwad — Abdulbasit Abdussamad', ur:'مجود مصحف — عبدالباسط عبدالصمد', bn:'মুজাওয়াদ মুসহাফ — আবদুল বাসিত আবদুস সামাদ', tr:'Mücevved mushaf — Abdülbasit Abdüssamed' },
+  'التلاوة المجودة الكاملة بصوت الشيخ عبد الباسط عبد الصمد.': { en:'The complete mujawwad recitation by Sheikh Abdulbasit Abdulsamad.', fr:'La récitation moujawwad complète du cheikh Abdelbasset Abdessamad.', id:'Tilawah mujawwad lengkap oleh Syaikh Abdulbasit Abdussamad.', ur:'شیخ عبدالباسط عبدالصمد کی مکمل مجود تلاوت۔', bn:'শায়খ আবদুল বাসিত আবদুস সামাদের সম্পূর্ণ মুজাওয়াদ তিলাওয়াত।', tr:'Şeyh Abdülbasit Abdüssamed’den tam mücevved tilavet.' },
+  'المصحف المجود — محمود خليل الحصري': { en:'Mujawwad mushaf — Mahmoud Khalil Al-Husary', fr:'Moushaf moujawwad — Mahmoud Khalil al-Housari', id:'Mushaf mujawwad — Mahmoud Khalil Al-Hushari', ur:'مجود مصحف — محمود خلیل الحصری', bn:'মুজাওয়াদ মুসহাফ — মাহমুদ খলিল আল-হুসারি', tr:'Mücevved mushaf — Mahmud Halil el-Husarî' },
+  'التلاوة المجودة المتقنة بصوت الشيخ محمود خليل الحصري.': { en:'The masterful mujawwad recitation by Sheikh Mahmoud Khalil Al-Husary.', fr:'La récitation moujawwad maîtrisée du cheikh Mahmoud Khalil al-Housari.', id:'Tilawah mujawwad yang sangat baik oleh Syaikh Mahmoud Khalil Al-Hushari.', ur:'شیخ محمود خلیل الحصری کی بہترین مجود تلاوت۔', bn:'শায়খ মাহমুদ খলিল আল-হুসারির নিখুঁত মুজাওয়াদ তিলাওয়াত।', tr:'Şeyh Mahmud Halil el-Husarî’den ustaca mücevved tilavet.' },
+  'تلاوات مرتلة هادئة بصوت الشيخ سعد الغامدي.': { en:'Calm, measured recitations by Sheikh Saad Al-Ghamdi.', fr:'Récitations posées et apaisées du cheikh Saad al-Ghamdi.', id:'Tilawah tartil tenang Syaikh Saad Al-Ghamdi.', ur:'شیخ سعد الغامدی کی پرسکون ترتیل تلاوتیں۔', bn:'শায়খ সাদ আল-গামদির শান্ত তারতিল তিলাওয়াত।', tr:'Şeyh Saad el-Gamdi’den sakin tertil tilavetler.' },
+  'المصحف المرتل — محمود خليل الحصري': { en:'Recited mushaf — Mahmoud Khalil Al-Husary', fr:'Moushaf récité — Mahmoud Khalil al-Housari', id:'Mushaf murattal — Mahmoud Khalil Al-Hushari', ur:'ترتیل مصحف — محمود خلیل الحصری', bn:'তারতিল মুসহাফ — মাহমুদ খলিল আল-হুসারি', tr:'Tertil mushaf — Mahmud Halil el-Husarî' },
+  'التلاوة المتقنة المجودة لشيخ عموم المقارئ المصرية — الحصري.': { en:'The masterful mujawwad recitation by the head of Egypt’s Quran reciters — Al-Husary.', fr:'La récitation moujawwad maîtrisée du chef des récitateurs d’Égypte — al-Housari.', id:'Tilawah mujawwad yang sangat baik dari syaikh qurra Mesir — Al-Hushari.', ur:'مصر کے شیخ العموم القراء کی بہترین مجود تلاوت — الحصری۔', bn:'মিশরের প্রধান কারিদের মুজাওয়াদ তিলাওয়াত — আল-হুসারি।', tr:'Mısır kurrâsının reisinden ustaca mücevved tilavet — el-Husarî.' },
+  'بثٌّ متواصل لتفسير آيات القرآن الكريم وبيان معانيها.': { en:'Continuous tafsir of the Quran’s verses and their meanings.', fr:'Tafsir continu des versets du Coran et de leurs sens.', id:'Tafsir berkelanjutan atas ayat Al-Qur’an dan maknanya.', ur:'قرآن کریم کی آیات کی مسلسل تفسیر اور معانی کا بیان۔', bn:'কুরআনের আয়াতের নিরবচ্ছিন্ন তাফসির ও অর্থ।', tr:'Kur’an ayetlerinin ve anlamlarının kesintisiz tefsiri.' },
+  'المصحف المرتل — ماهر المعيقلي': { en:'Recited mushaf — Maher Al-Muaiqly', fr:'Moushaf récité — Maher al-Mouaiqly', id:'Mushaf murattal — Maher Al-Muaiqly', ur:'ترتیل مصحف — ماہر المعیقلی', bn:'তারতিল মুসহাফ — মাহের আল-মুয়াইকিলি', tr:'Tertil mushaf — Mahir el-Muaykılî' },
+  'تلاوات الحرم المكي بصوت الشيخ ماهر بن حمد المعيقلي.': { en:'Recitations from the Grand Mosque by Sheikh Maher bin Hamad Al-Muaiqly.', fr:'Récitations de la Grande Mosquée par le cheikh Maher ibn Hamad al-Mouaiqly.', id:'Tilawah dari Masjidil Haram oleh Syaikh Maher bin Hamad Al-Muaiqly.', ur:'حرم مکی کی تلاوتیں، شیخ ماہر بن حمد المعیقلی کی آواز میں۔', bn:'মসজিদুল হারামের তিলাওয়াত, শায়খ মাহের বিন হামাদ আল-মুয়াইকিলির কণ্ঠে।', tr:'Mescid-i Haram tilavetleri, Şeyh Mahir b. Hamad el-Muaykılî’den.' },
+  '📤 شارك حصادك': { en:'📤 Share your harvest', fr:'📤 Partagez votre récolte', id:'📤 Bagikan panenmu', ur:'📤 اپنا حاصل شیئر کریں', bn:'📤 আপনার ফসল শেয়ার করুন', tr:'📤 Hasadını paylaş' },
+  'متوسط الالتزام اليومي': { en:'Average daily consistency', fr:'Assiduité quotidienne moyenne', id:'Rata-rata konsistensi harian', ur:'روزانہ اوسط پابندی', bn:'দৈনিক গড় নিষ্ঠা', tr:'Günlük ortalama istikrar' },
+  '0 من 10 أيام مسجّلة': { en:'0 of 10 days logged', fr:'0 jour sur 10 enregistré', id:'0 dari 10 hari tercatat', ur:'10 میں سے 0 دن درج', bn:'১০-এর মধ্যে ০ দিন নথিভুক্ত', tr:'10 günün 0’ı kayıtlı' },
+  'رصيد الزاد': { en:'Zad balance', fr:'Solde Zad', id:'Saldo Zad', ur:'زاد بیلنس', bn:'জাদ ব্যালান্স', tr:'Zad bakiyesi' },
+  'ابدأ شريطاً لزيادة نقاطك!': { en:'Start a streak to raise your points!', fr:'Commencez une série pour gagner des points !', id:'Mulai runtutan untuk menambah poin!', ur:'پوائنٹس بڑھانے کے لیے سلسلہ شروع کریں!', bn:'পয়েন্ট বাড়াতে ধারা শুরু করুন!', tr:'Puanını artırmak için seriye başla!' },
+  'أيام متتالية': { en:'Consecutive days', fr:'Jours consécutifs', id:'Hari berturut-turut', ur:'مسلسل دن', bn:'টানা দিন', tr:'Ardışık günler' },
+  '📅 سجل الأيام ومتابعة الأداء': { en:'📅 Day log and performance tracking', fr:'📅 Journal des jours et suivi', id:'📅 Catatan hari dan pemantauan', ur:'📅 دنوں کا ریکارڈ اور کارکردگی', bn:'📅 দিনের লগ ও অগ্রগতি', tr:'📅 Gün kaydı ve takip' },
+  'التروية': { en:'Tarwiyah', fr:'Tarwiya', id:'Tarwiyah', ur:'ترویہ', bn:'তারবিয়া', tr:'Tarviye' },
+  'عرفة ⭐': { en:'Arafah ⭐', fr:'Arafat ⭐', id:'Arafah ⭐', ur:'عرفہ ⭐', bn:'আরাফাহ ⭐', tr:'Arefe ⭐' },
+  'العيد 🎉': { en:'Eid 🎉', fr:'Aïd 🎉', id:'Idul Adha 🎉', ur:'عید 🎉', bn:'ঈদ 🎉', tr:'Bayram 🎉' },
+  'لم يُسجل': { en:'Not logged', fr:'Non enregistré', id:'Belum tercatat', ur:'درج نہیں', bn:'নথিভুক্ত নয়', tr:'Kayıtlı değil' },
+  'مكتمل 🏆': { en:'Complete 🏆', fr:'Terminé 🏆', id:'Selesai 🏆', ur:'مکمل 🏆', bn:'সম্পূর্ণ 🏆', tr:'Tamamlandı 🏆' },
+  '🏆 إجمالي الطاعات': { en:'🏆 Total acts of worship', fr:'🏆 Total des adorations', id:'🏆 Total ibadah', ur:'🏆 کل عبادات', bn:'🏆 মোট ইবাদত', tr:'🏆 Toplam ibadet' },
+  'جزء قرآن': { en:'Quran juz', fr:'Juz du Coran', id:'Juz Al-Qur’an', ur:'قرآن کا پارہ', bn:'কুরআনের জুজ', tr:'Kur’an cüzü' },
+  'يوم صيام': { en:'Fasting day', fr:'Jour de jeûne', id:'Hari puasa', ur:'روزے کا دن', bn:'রোজার দিন', tr:'Oruç günü' },
+  'أطول شريط': { en:'Longest streak', fr:'Plus longue série', id:'Runtutan terpanjang', ur:'طویل ترین سلسلہ', bn:'দীর্ঘতম ধারা', tr:'En uzun seri' },
+  'صلاة جماعة': { en:'Congregational prayer', fr:'Prière en groupe', id:'Salat berjamaah', ur:'نماز باجماعت', bn:'জামাতে নামাজ', tr:'Cemaatle namaz' },
+  'وسام مكتسب': { en:'Badges earned', fr:'Badges obtenus', id:'Lencana diraih', ur:'حاصل شدہ بیجز', bn:'অর্জিত ব্যাজ', tr:'Kazanılan rozetler' },
+  '📋 تفصيل الأداء': { en:'📋 Performance breakdown', fr:'📋 Détail des performances', id:'📋 Rincian kinerja', ur:'📋 کارکردگی کی تفصیل', bn:'📋 পারফরম্যান্সের বিবরণ', tr:'📋 Performans dökümü' },
+  'الصلوات': { en:'Prayers', fr:'Prières', id:'Salat', ur:'نمازیں', bn:'নামাজ', tr:'Namazlar' },
+  'الصيام': { en:'Fasting', fr:'Jeûne', id:'Puasa', ur:'روزے', bn:'রোজা', tr:'Oruç' },
+  'التكبير': { en:'Takbeer', fr:'Takbir', id:'Takbir', ur:'تکبیر', bn:'তাকবির', tr:'Tekbir' },
+  '📊 منحنى الأداء والالتزام': { en:'📊 Performance and consistency curve', fr:'📊 Courbe de performance et d’assiduité', id:'📊 Kurva kinerja dan konsistensi', ur:'📊 کارکردگی اور پابندی کا منحنی', bn:'📊 পারফরম্যান্স ও নিষ্ঠার রেখাচিত্র', tr:'📊 Performans ve istikrar eğrisi' },
+  '🕸️ مؤشر التوازن الإيماني': { en:'🕸️ Faith balance index', fr:'🕸️ Indice d’équilibre de la foi', id:'🕸️ Indeks keseimbangan iman', ur:'🕸️ ایمانی توازن کا اشاریہ', bn:'🕸️ ঈমানি ভারসাম্যের সূচক', tr:'🕸️ İman dengesi göstergesi' },
+  'يوضّح توازن عباداتك بين المحاور الخمسة — كلما اتّسعت الشبكة كان أداؤك أكثر توازناً 🌿': { en:'Shows how your worship balances across the five axes — the wider the web, the more balanced you are 🌿', fr:'Montre l’équilibre de vos adorations sur les cinq axes — plus la toile s’élargit, plus vous êtes équilibré 🌿', id:'Menunjukkan keseimbangan ibadahmu pada lima poros — makin lebar jaringnya, makin seimbang 🌿', ur:'آپ کی عبادات کا پانچ محوروں پر توازن دکھاتا ہے — جال جتنا پھیلے گا، توازن اتنا بہتر 🌿', bn:'পাঁচ অক্ষে আপনার ইবাদতের ভারসাম্য দেখায় — জাল যত প্রশস্ত, ভারসাম্য তত ভালো 🌿', tr:'İbadetlerinin beş eksende dengesini gösterir — ağ genişledikçe denge artar 🌿' },
+  '✨ أقوى محاورك:': { en:'✨ Your strongest axes:', fr:'✨ Vos axes les plus forts :', id:'✨ Poros terkuatmu:', ur:'✨ آپ کے مضبوط ترین محور:', bn:'✨ আপনার সবচেয়ে শক্তিশালী অক্ষ:', tr:'✨ En güçlü eksenlerin:' },
+  '— وأكثرها حاجةً لعنايتك:': { en:'— and the ones needing your care most:', fr:'— et ceux qui ont le plus besoin de vous :', id:'— dan yang paling perlu perhatianmu:', ur:'— اور جنہیں آپ کی توجہ سب سے زیادہ چاہیے:', bn:'— এবং যেগুলোর যত্ন সবচেয়ে বেশি দরকার:', tr:'— ve en çok ilgi isteyenler:' },
+  '💡 رؤى مخصصة لأدائك': { en:'💡 Insights tailored to you', fr:'💡 Aperçus adaptés à vous', id:'💡 Wawasan khusus untukmu', ur:'💡 آپ کی کارکردگی کے لیے خاص بصیرت', bn:'💡 আপনার জন্য বিশেষ অন্তর্দৃষ্টি', tr:'💡 Sana özel içgörüler' },
+  '💡 فرص التحسين': { en:'💡 Room to improve', fr:'💡 Pistes d’amélioration', id:'💡 Peluang perbaikan', ur:'💡 بہتری کے مواقع', bn:'💡 উন্নতির সুযোগ', tr:'💡 İyileştirme fırsatları' },
+  '🌙 قيام الليل لم يُسجل — استثمره الليلة': { en:'🌙 Night prayer isn’t logged — make it count tonight', fr:'🌙 La prière de nuit n’est pas enregistrée — rattrapez-la ce soir', id:'🌙 Salat malam belum tercatat — manfaatkan malam ini', ur:'🌙 تہجد درج نہیں — آج رات اسے غنیمت جانیں', bn:'🌙 তাহাজ্জুদ নথিভুক্ত নয় — আজ রাতে কাজে লাগান', tr:'🌙 Gece namazı kayıtlı değil — bu gece değerlendir' },
+  '📿 التكبير قليل — أكثر منه في كل لحظة': { en:'📿 Takbeer is low — say more of it every moment', fr:'📿 Le takbir est faible — multipliez-le à chaque instant', id:'📿 Takbir masih sedikit — perbanyak setiap saat', ur:'📿 تکبیر کم ہے — ہر لمحہ زیادہ کریں', bn:'📿 তাকবির কম — প্রতিটি মুহূর্তে বাড়ান', tr:'📿 Tekbir az — her an çoğalt' },
+  '📖 تقدم القراءة بطيء — ابدأ بنصف جزء يومياً': { en:'📖 Reading is slow — start with half a juz a day', fr:'📖 La lecture avance lentement — commencez par un demi-juz par jour', id:'📖 Bacaan lambat — mulai setengah juz sehari', ur:'📖 پڑھائی سست ہے — روزانہ آدھا پارہ شروع کریں', bn:'📖 পাঠ ধীর — দিনে আধা জুজ দিয়ে শুরু করুন', tr:'📖 Okuma yavaş — günde yarım cüzle başla' },
+  '🌙 الصيام فرصتك في العشر — لا تفوّتها': { en:'🌙 Fasting is your chance in these ten days — don’t miss it', fr:'🌙 Le jeûne est votre chance ces dix jours — ne la manquez pas', id:'🌙 Puasa adalah peluangmu di sepuluh hari ini — jangan lewatkan', ur:'🌙 روزہ ان دس دنوں میں آپ کا موقع ہے — مت چھوڑیں', bn:'🌙 এই দশকে রোজা আপনার সুযোগ — হাতছাড়া করবেন না', tr:'🌙 Bu on günde oruç fırsatın — kaçırma' },
+  '🌅 أذكار الصباح لم تُسجل اليوم': { en:'🌅 Morning adhkar aren’t logged today', fr:'🌅 Les adhkar du matin ne sont pas enregistrés aujourd’hui', id:'🌅 Zikir pagi belum tercatat hari ini', ur:'🌅 آج صبح کے اذکار درج نہیں', bn:'🌅 আজ সকালের আযকার নথিভুক্ত নয়', tr:'🌅 Sabah zikirleri bugün kayıtlı değil' },
+  '🏅 خزانة الأوسمة': { en:'🏅 Badge cabinet', fr:'🏅 Vitrine des badges', id:'🏅 Lemari lencana', ur:'🏅 بیجز کی الماری', bn:'🏅 ব্যাজের আলমারি', tr:'🏅 Rozet dolabı' },
+  'الفجر في جماعة': { en:'Fajr in congregation', fr:'Fajr en groupe', id:'Subuh berjamaah', ur:'فجر باجماعت', bn:'ফজরে জামাত', tr:'Sabah cemaatle' },
+  '100 تكبيرة': { en:'100 takbeers', fr:'100 takbirs', id:'100 takbir', ur:'100 تکبیریں', bn:'১০০ তাকবির', tr:'100 tekbir' },
+  'صيام 3 أيام': { en:'3 days of fasting', fr:'3 jours de jeûne', id:'Puasa 3 hari', ur:'3 دن کے روزے', bn:'৩ দিন রোজা', tr:'3 gün oruç' },
+  'ختمة كاملة': { en:'A full khatma', fr:'Une khatma complète', id:'Khatam penuh', ur:'مکمل ختم', bn:'পূর্ণ খতম', tr:'Tam hatim' },
+  'الصلوات الخمس جماعة': { en:'The five prayers in congregation', fr:'Les cinq prières en groupe', id:'Lima salat berjamaah', ur:'پانچوں نمازیں باجماعت', bn:'পাঁচ ওয়াক্ত জামাতে', tr:'Beş vakit cemaatle' },
+  'المُكبِّرون': { en:'The Takbeer keepers', fr:'Ceux du takbir', id:'Para pembaca takbir', ur:'تکبیر کہنے والے', bn:'তাকবিরকারীরা', tr:'Tekbir ehli' },
+  '1000 تكبيرة': { en:'1000 takbeers', fr:'1000 takbirs', id:'1000 takbir', ur:'1000 تکبیریں', bn:'১০০০ তাকবির', tr:'1000 tekbir' },
+  '3 أعمال بر': { en:'3 acts of kindness', fr:'3 actes de bonté', id:'3 amal kebaikan', ur:'3 نیکی کے کام', bn:'৩টি সৎকর্ম', tr:'3 iyilik' },
+  'جامع الخير': { en:'Gatherer of good', fr:'Rassembleur de bien', id:'Pengumpul kebaikan', ur:'خیر جمع کرنے والا', bn:'কল্যাণ সংগ্রাহক', tr:'Hayır toplayıcı' },
+  '5 أيام متتالية': { en:'5 consecutive days', fr:'5 jours consécutifs', id:'5 hari berturut-turut', ur:'5 مسلسل دن', bn:'৫ টানা দিন', tr:'5 ardışık gün' },
+  'فجر العشر': { en:'Fajr of the ten days', fr:'Le Fajr des dix jours', id:'Subuh sepuluh hari', ur:'عشرے کی فجر', bn:'দশকের ফজর', tr:'On günün sabahı' },
+  '5 أيام Streak': { en:'5-day streak', fr:'Série de 5 jours', id:'Runtutan 5 hari', ur:'5 دن کا سلسلہ', bn:'৫ দিনের ধারা', tr:'5 günlük seri' },
+  'السابق': { en:'Previous', fr:'Précédent', id:'Sebelumnya', ur:'پچھلا', bn:'পূর্ববর্তী', tr:'Önceki' },
+  'جدول عرفة كاملاً': { en:'The full Arafah schedule', fr:'Le programme complet d’Arafat', id:'Jadwal Arafah lengkap', ur:'عرفہ کا مکمل شیڈول', bn:'আরাফার সম্পূর্ণ সময়সূচি', tr:'Tam Arefe programı' },
+  'لسان ذاكر': { en:'A remembering tongue', fr:'Une langue qui évoque', id:'Lisan yang berzikir', ur:'ذکر کرنے والی زبان', bn:'যিকিরকারী জিহ্বা', tr:'Zikreden dil' },
+  '1000 تسبيحة': { en:'1000 tasbihs', fr:'1000 tasbih', id:'1000 tasbih', ur:'1000 تسبیحات', bn:'১০০০ তাসবিহ', tr:'1000 tesbih' },
+  'الراسخون': { en:'The firmly grounded', fr:'Les bien ancrés', id:'Yang kokoh', ur:'ثابت قدم', bn:'দৃঢ়প্রতিষ্ঠ', tr:'Sağlam duranlar' },
+  '15 جزء قرآن': { en:'15 juz of Quran', fr:'15 juz du Coran', id:'15 juz Al-Qur’an', ur:'15 پارے قرآن', bn:'১৫ জুজ কুরআন', tr:'15 cüz Kur’an' },
+  'الواصلون': { en:'Those who arrive', fr:'Ceux qui parviennent', id:'Yang sampai', ur:'منزل تک پہنچنے والے', bn:'যাঁরা পৌঁছেছেন', tr:'Ulaşanlar' },
+  '5 أعمال خير': { en:'5 good deeds', fr:'5 bonnes actions', id:'5 amal kebaikan', ur:'5 نیک کام', bn:'৫টি সৎকর্ম', tr:'5 hayır işi' },
+  '🌟 شارك حصادك': { en:'🌟 Share your harvest', fr:'🌟 Partagez votre récolte', id:'🌟 Bagikan panenmu', ur:'🌟 اپنا حاصل شیئر کریں', bn:'🌟 আপনার ফসল শেয়ার করুন', tr:'🌟 Hasadını paylaş' },
+  'ألهم أحبابك بمسيرتك في طاعة الله وذكره': { en:'Inspire your loved ones with your journey in obeying and remembering Allah', fr:'Inspirez vos proches avec votre parcours dans l’obéissance et l’évocation d’Allah', id:'Inspirasi orang tercinta dengan perjalananmu dalam taat dan zikir kepada Allah', ur:'اللہ کی اطاعت و ذکر میں اپنے سفر سے اپنوں کو تحریک دیں', bn:'আল্লাহর আনুগত্য ও যিকিরে আপনার পথচলা দিয়ে প্রিয়জনকে অনুপ্রাণিত করুন', tr:'Allah’a kulluk ve zikir yolculuğunla sevdiklerine ilham ver' },
+  '📤 مشاركة الحصاد': { en:'📤 Share harvest', fr:'📤 Partager la récolte', id:'📤 Bagikan panen', ur:'📤 حاصل شیئر کریں', bn:'📤 ফসল শেয়ার', tr:'📤 Hasadı paylaş' },
+  'رصيد الزاد = الأعمال الصالحة × مضاعف الشريط · الأجر الحقيقي عند الله وحده ❤️': { en:'Zad balance = good deeds × streak multiplier · the real reward is with Allah alone ❤️', fr:'Solde Zad = bonnes actions × multiplicateur de série · la vraie récompense est auprès d’Allah seul ❤️', id:'Saldo Zad = amal saleh × pengali runtutan · pahala sejati hanya di sisi Allah ❤️', ur:'زاد بیلنس = نیک اعمال × سلسلہ ضرب · حقیقی اجر صرف اللہ کے پاس ہے ❤️', bn:'জাদ ব্যালান্স = সৎকর্ম × ধারা গুণক · প্রকৃত প্রতিদান কেবল আল্লাহর কাছে ❤️', tr:'Zad bakiyesi = salih ameller × seri çarpanı · gerçek karşılık yalnız Allah katında ❤️' },
+  'عدّ': { en:'Count', fr:'Compter', id:'Hitung', ur:'گنیں', bn:'গণনা', tr:'Say' },
+  '← كل الأذكار': { en:'← All adhkar', fr:'← Tous les adhkar', id:'← Semua zikir', ur:'← تمام اذکار', bn:'← সব আযকার', tr:'← Tüm zikirler' },
+  'من طلوع الفجر إلى طلوع الشمس': { en:'From dawn to sunrise', fr:'De l’aube au lever du soleil', id:'Dari fajar sampai terbit matahari', ur:'فجر سے طلوعِ آفتاب تک', bn:'ভোর থেকে সূর্যোদয়', tr:'Fecirden güneş doğana dek' },
   'انشر التطبيق': { en:'Share the app', fr:'Partager l’app', id:'Bagikan aplikasi', ur:'ایپ شیئر کریں', bn:'অ্যাপ শেয়ার করুন', tr:'Uygulamayı paylaş' },
 };
 

@@ -67,17 +67,53 @@
       '</label>';
   }
 
+  /* الترجمة: نقرأ من UI_MAP إن حُمّل محرّك اللغة، وإلا نبقى عربًا */
+  function tr(ar) {
+    var L = 'ar';
+    try { L = (g.I18N && g.I18N.current) || localStorage.getItem('zad_lang') || 'ar'; } catch (e) {}
+    if (L === 'ar') return ar;
+    var map = g.ZAD_UI_MAP;
+    var e = map && map[ar];
+    return (e && (e[L] || e.en)) || ar;
+  }
+
+  /* نصوص لوحة الوصول حين لا توجد في القاموس (احتياط مباشر) */
+  var A11Y_FALLBACK = {
+    saved: {
+      en: 'This preference is saved on this device and applies to every page; you can turn it off at any time.',
+      fr: 'Cette préférence est enregistrée sur cet appareil et s’applique à toutes les pages ; vous pouvez la désactiver à tout moment.',
+      id: 'Preferensi ini disimpan di perangkat ini dan berlaku di semua halaman; bisa dimatikan kapan saja.',
+      ur: 'یہ ترجیح اسی ڈیوائس پر محفوظ ہوتی ہے اور ہر صفحے پر لاگو ہوتی ہے؛ آپ اسے کسی بھی وقت بند کر سکتے ہیں۔',
+      bn: 'এই পছন্দটি এই ডিভাইসে সংরক্ষিত থাকে এবং সব পৃষ্ঠায় কাজ করে; যেকোনো সময় বন্ধ করা যায়।',
+      tr: 'Bu tercih bu cihazda saklanır ve tüm sayfalarda geçerlidir; istediğin zaman kapatabilirsin.'
+    },
+    mushaf: {
+      en: 'Mushaf text does not grow in “Larger interface”, so the page stays intact.',
+      fr: 'Le texte du moushaf ne grossit pas en « interface agrandie », pour ne pas casser la page.',
+      id: 'Teks mushaf tidak membesar di “Antarmuka lebih besar”, agar halaman tetap rapi.',
+      ur: '«بڑا انٹرفیس» میں مصحف کا متن نہیں بڑھتا تاکہ صفحہ بگڑے نہیں۔',
+      bn: '“বড় ইন্টারফেস”-এ মুসহাফের লেখা বড় হয় না, যাতে পৃষ্ঠা ঠিক থাকে।',
+      tr: '“Daha büyük arayüz”de mushaf metni büyümez, böylece sayfa bozulmaz.'
+    }
+  };
+  function trF(key, ar) {
+    var L = 'ar';
+    try { L = (g.I18N && g.I18N.current) || localStorage.getItem('zad_lang') || 'ar'; } catch (e) {}
+    var v = A11Y_FALLBACK[key];
+    return (v && L !== 'ar' && (v[L] || v.en)) || tr(ar);
+  }
+
   function mount(el) {
     if (!el) return;
     var o = read();
     el.innerHTML =
-      row('zad-a11y-large', o.large, '🔎 واجهة أكبر',
-          'تكبير النصوص والأزرار والمسافات — مفيد على الشاشات الصغيرة وفي الشمس', '🔎') +
-      row('zad-a11y-easy', o.easy, '📖 قراءة ميسّرة',
-          'تباعد أوسع بين الأسطر والحروف، وأسطر أقصر — مساعدة لعسر القراءة', '📖') +
+      row('zad-a11y-large', o.large, tr('🔎 واجهة أكبر'),
+          tr('تكبير النصوص والأزرار والمسافات — مفيد على الشاشات الصغيرة وفي الشمس'), '🔎') +
+      row('zad-a11y-easy', o.easy, tr('📖 قراءة ميسّرة'),
+          tr('تباعد أوسع بين الأسطر والحروف، وأسطر أقصر — مساعدة لعسر القراءة'), '📖') +
       '<div style="font-size:11px;color:var(--muted);line-height:1.8;border-top:1px solid var(--border);padding-top:10px;margin-top:4px">' +
-      'التفضيل يُحفظ في هذا الجهاز ويعمل في كل الصفحات، ويمكن إطفاؤه في أي وقت.<br>' +
-      'نصّ المصحف لا يتغيّر حجمه في «واجهة أكبر» حتى لا تختلّ الصفحة.' +
+      trF('saved', 'التفضيل يُحفظ في هذا الجهاز ويعمل في كل الصفحات، ويمكن إطفاؤه في أي وقت.') + '<br>' +
+      trF('mushaf', 'نصّ المصحف لا يتغيّر حجمه في «واجهة أكبر» حتى لا تختلّ الصفحة.') +
       '</div>';
     var L = el.querySelector('#zad-a11y-large');
     var E = el.querySelector('#zad-a11y-easy');
@@ -87,6 +123,12 @@
 
   /* التطبيق فورًا — السكربت في نهاية الصفحة لكن قبل الرسم الكامل */
   apply(read());
+
+  /* أعد بناء اللوحة عند تبديل اللغة */
+  g.addEventListener('zad:lang', function () {
+    var el = document.getElementById('zad-a11y-mount') || document.getElementById('zad-a11y-panel');
+    if (el) mount(el);
+  });
 
   g.ZadA11y = {
     read: read,
