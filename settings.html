@@ -837,7 +837,7 @@ function importData(input) {
       Object.entries(data).forEach(([k, v]) => {
         if (k.startsWith('zad_')) { localStorage.setItem(k, v); count++; }
       });
-      if (typeof showToast === 'function') showToast(`✅ تم استيراد ${count} عنصر — جارٍ التحديث`);
+      if (typeof showToast === 'function') showToast(ztr('✅ تم استيراد {n} عنصر — جارٍ التحديث', {n: count}));
       setTimeout(() => location.reload(), 1200);
     } catch(err) {
       if (typeof showToast === 'function') showToast('❌ الملف غير صحيح — تأكد أنه ملف JSON من زاد');

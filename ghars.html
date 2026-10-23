@@ -700,7 +700,7 @@ function renderNasheeds(){
 }
 
 function playNasheed(title){
-  if (typeof showToast==='function') showToast(`🎵 قريباً: "${title}"`);
+  if (typeof showToast==='function') showToast(ztr('🎵 قريباً: «{title}»', {title: title}));
 }
 
 /* ─ Quiz ──────────────────────────────────────────────── */
@@ -751,7 +751,7 @@ function renderQuiz(){
 function answerQuiz(i){
   const q = QUIZ_Q[quizIdx];
   if (i === q.ans) { quizScore++; if(typeof showToast==='function') showToast('✅ صحيح! أحسنت'); }
-  else { if(typeof showToast==='function') showToast(`❌ الإجابة: ${q.opts[q.ans]}`); }
+  else { if(typeof showToast==='function') showToast(ztr('❌ الإجابة: {answer}', {answer: q.opts[q.ans]})); }
   quizIdx++;
   setTimeout(renderQuiz, 800);
 }
@@ -814,7 +814,7 @@ function addTakbeer(){
   localStorage.setItem('ghars_takbeer', takbeerCount);
   updateTakbeer();
   if (typeof showToast==='function' && takbeerCount % 10 === 0)
-    showToast(`🔊 ${takbeerCount} تكبيرة — ما شاء الله!`);
+    showToast(ztr('🔊 {n} تكبيرة — ما شاء الله!', {n: takbeerCount}));
   if (takbeerCount === 100 && typeof showToast==='function')
     showToast('🎉 أنجزت 100 تكبيرة! ما شاء الله عليك!');
 }

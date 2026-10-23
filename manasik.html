@@ -676,7 +676,7 @@ function setNusuk(type){
   updateProgress();
   renderNowBanner();
   if (navigator.vibrate) navigator.vibrate(15);
-  toast('🧭 المسار الآن لنُسك ' + NUSUK_META[type].label);
+  toast(ztr('🧭 المسار الآن لنُسك {n}', {n: NUSUK_META[type].label}));
 }
 
 function renderTimeline(){

@@ -203,7 +203,7 @@ html[data-theme="dark"] .charity-act.act-done,html[data-theme="oled"] .charity-a
     write(s);
     if(navigator.vibrate)navigator.vibrate(18);
     try{if(window.triggerConfetti)window.triggerConfetti();}catch(_){}
-    toast('💝 بارك الله فيك — '+(card.querySelector('h3')?card.querySelector('h3').textContent:''));
+    toast(ztr('💝 بارك الله فيك — {text}', {text: (card.querySelector('h3')?card.querySelector('h3').textContent:'')}));
     refreshCards(); renderDash();
   }
 

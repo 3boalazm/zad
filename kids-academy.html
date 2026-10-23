@@ -200,7 +200,7 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
       <div class="ac-grid" id="ac-letters"></div>
       <div class="ac-detail" id="ac-letter-card">
         <div class="ac-dhead">
-          <div class="ac-big" id="ac-l-big">ا</div>
+          <div class="ac-big" id="ac-l-big" lang="ar">ا</div>
           <div><div class="ac-dtitle" id="ac-l-title">حرف الألف</div><div class="ac-dsub" id="ac-l-sub">اضغط 🔊 لتسمع الحرف</div></div>
         </div>
         <div class="ac-words" id="ac-l-words"></div>
@@ -497,7 +497,7 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
   window.acLearnNumber = function(){
     var a = getAcad(), i = a.numbers.indexOf(curN);
     if (i > -1) { a.numbers.splice(i, 1); a.stars = Math.max(0, a.stars - 1); toast('أزلنا العلامة'); }
-    else { a.numbers.push(curN); a.stars++; toast('⭐ أحسنت! تعلّمت الرقم ' + NUM_NAMES[curN]); }
+    else { a.numbers.push(curN); a.stars++; toast(ztr('⭐ أحسنت! تعلّمت الرقم {n}', {n: NUM_NAMES[curN]})); }
     setAcad(a); renderNumbers(); showNumber(curN);
   };
 
@@ -549,7 +549,7 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
       if (b.getAttribute('data-v') === answer) b.classList.add('ok');
     });
     if (ok){ opp.score++; document.getElementById('ac-opp-score').textContent = opp.score; toast('✅ صح!'); }
-    else toast('❌ عكسها: ' + answer);
+    else toast(ztr('❌ عكسها: {answer}', {answer: answer}));
     setTimeout(function(){
       opp.i++;
       if (opp.i >= opp.pool.length) oppFinish(); else oppRender();

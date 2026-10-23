@@ -805,7 +805,7 @@ window.nwToggleRead = function(n) {
     if (btn) { btn.textContent = '✅ قرأت'; btn.classList.add('done'); }
     card?.classList.add('read');
     if (check) check.textContent = '✅';
-    if (typeof showToast === 'function') showToast(`✅ الحديث ${n} — تم التعليم`);
+    if (typeof showToast === 'function') showToast(ztr('✅ الحديث {n} — تم التعليم', {n: n}));
     if (typeof confetti !== 'undefined' && read.length % 10 === 0) {
       confetti({particleCount:60,spread:60,origin:{y:.6},colors:['#0e3b2e','#c9a14a','#fff']});
     }

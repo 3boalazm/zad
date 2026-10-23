@@ -2867,3 +2867,26 @@ window.ZadFmtHijri = ZadFmtHijri;
 window.ZadFmtGreg = ZadFmtGreg;
 
 window.ZAD_UI_MAP = UI_MAP;
+
+/* ── ترجمة نوافذ المتصفح (alert/confirm/prompt) عبر نفس القاموس ── */
+(function () {
+  try {
+    var _a = window.alert, _c = window.confirm, _p = window.prompt;
+    window.alert   = function (m) { return _a.call(window, ztr(m)); };
+    window.confirm = function (m) { return _c.call(window, ztr(m)); };
+    window.prompt  = function (m, d) { return _p.call(window, ztr(m), d); };
+  } catch (e) {}
+})();
+
+/* ── ztr: ترجمة القوالب التي تبنيها الجافاسكربت (عدّادات، شارات، رسائل) ──
+   ztr('اليوم {n} من 10', {n: 3}) — يقرأ من قاموس الواجهة ويملأ المتغيّرات. */
+window.ztr = function (tpl, vars) {
+  var lang = 'ar';
+  try { lang = (window.I18N && window.I18N.current) || 'ar'; } catch (e) {}
+  var map = window.ZAD_UI_MAP || {};
+  var hit = map[tpl];
+  var out = (lang && lang !== 'ar' && hit) ? (hit[lang] || hit.en || tpl) : tpl;
+  if (vars) for (var k in vars) out = out.split('{' + k + '}').join(vars[k] == null ? '' : vars[k]);
+  return out;
+};
+
