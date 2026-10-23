@@ -184,16 +184,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const months = ['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
     const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const now = new Date();
-    const dayName = days[now.getDay()];
-    const miladiStr = now.toLocaleDateString('ar-SA-u-nu-arab', {day:'numeric',month:'long',year:'numeric'});
+    const L = (function(){ try { return localStorage.getItem('zad_lang') || 'ar'; } catch(e){ return 'ar'; } })();
+    const isAr = L === 'ar';
+    const dayName = isAr ? days[now.getDay()] : new Intl.DateTimeFormat(L, {weekday:'long'}).format(now);
+    const miladiStr = now.toLocaleDateString(isAr ? 'ar-SA-u-nu-arab' : L, {day:'numeric',month:'long',year:'numeric'});
     
     if (h) {
       const numEl = document.getElementById('today-hijri-num');
       const monEl = document.getElementById('today-hijri-month');
       const yrEl  = document.getElementById('today-hijri-year');
       if (numEl) numEl.textContent = h.day;
-      if (monEl) monEl.textContent = months[h.month - 1] || '';
-      if (yrEl)  yrEl.textContent  = h.year + ' هـ';
+      if (monEl) monEl.textContent = isAr ? (months[h.month - 1] || '')
+        : (new Intl.DateTimeFormat(L, {month:'long', calendar:'islamic-umalqura'}).format(now) || '');
+      if (yrEl)  yrEl.textContent  = h.year + (isAr ? ' هـ' : ' AH');
     }
     const mil = document.getElementById('today-miladi');
     if (mil) mil.textContent = dayName + ' — ' + miladiStr;
@@ -207,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
 <script src="js/a11y-mode.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 </body>
 </html>

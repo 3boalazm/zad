@@ -124,6 +124,26 @@ function getNextSeason() {
 }
 
 /* ── 3. عرض لوحة المواسم ─────────────────────────────────────────────────── */
+/* ── تسمية التاريخ الهجري بلغة الواجهة (Intl) بدل العربية الثابتة ───────── */
+function _zadLang(){ try { return localStorage.getItem('zad_lang') || 'ar'; } catch(e){ return 'ar'; } }
+function _zadHijriMonth(m, months){
+  const L = _zadLang();
+  if (L === 'ar') return months[m-1];
+  try { return new Intl.DateTimeFormat(L, {month:'long', calendar:'islamic-umalqura'}).format(new Date()); }
+  catch(e){ return months[m-1]; }
+}
+const _ZAD_TODAY = {ar:'📅 اليوم:', en:'📅 Today:', fr:"📅 Aujourd'hui :", id:'📅 Hari ini:', ur:'📅 آج:', bn:'📅 আজ:', tr:'📅 Bugün:'};
+const _ZAD_ERA   = {ar:'هـ', en:'AH', fr:'H', id:'H', ur:'ھ', bn:'হিজরি', tr:'H'};
+const _ZAD_UNIT  = {ar:['شهر','أشهر'], en:['month','months'], fr:['mois','mois'], id:['bulan','bulan'], ur:['ماہ','ماہ'], bn:['মাস','মাস'], tr:['ay','ay']};
+function _zadAway(n){
+  const L = _zadLang(); const u = (_ZAD_UNIT[L] || _ZAD_UNIT.ar)[n === 1 ? 0 : 1];
+  const T = {
+    ar: `بعد ${n} ${u} تقريباً`, en: `About ${n} ${u} away`, fr: `Dans environ ${n} ${u}`,
+    id: `Sekitar ${n} ${u} lagi`, ur: `تقریباً ${n} ${u} بعد`, bn: `প্রায় ${n} ${u} পরে`, tr: `Yaklaşık ${n} ${u} sonra`
+  };
+  return T[L] || T.ar;
+}
+
 function renderSeasonsHub() {
   const container = document.getElementById('seasons-hub');
   if (!container) return;
@@ -137,7 +157,7 @@ function renderSeasonsHub() {
 
   /* التاريخ الحالي */
   if (h) {
-    html += `<div class="season-today">📅 اليوم: ${h.day} ${HIJRI_MONTHS[h.month-1]} ${h.year} هـ</div>`;
+    html += `<div class="season-today">${_ZAD_TODAY[_zadLang()]||_ZAD_TODAY.ar} ${h.day} ${_zadHijriMonth(h.month, HIJRI_MONTHS)} ${h.year} ${_ZAD_ERA[_zadLang()]||_ZAD_ERA.ar}</div>`;
   }
 
   /* الموسم الحالي (إن وُجد) */
@@ -163,7 +183,7 @@ function renderSeasonsHub() {
       <div class="season-next-card">
         <div class="season-next-label">الموسم القادم</div>
         <div class="season-next-name">${next.icon} ${next.name}</div>
-        <div class="season-next-away">بعد ${next.monthsAway} ${next.monthsAway === 1 ? 'شهر' : 'أشهر'} تقريباً</div>
+        <div class="season-next-away">${_zadAway(next.monthsAway)}</div>
       </div>`;
   }
 
@@ -190,7 +210,7 @@ function renderSeasonsHub() {
       <div class="year-season ${isCurrent ? 'is-current' : ''} ${s.isMajor ? 'is-major' : ''}" style="--sc:${s.color}">
         <span class="ys-icon">${s.icon}</span>
         <span class="ys-name">${s.name}</span>
-        <span class="ys-month">${HIJRI_MONTHS[s.month-1]}</span>
+        <span class="ys-month">${_zadHijriMonth(s.month, HIJRI_MONTHS)}</span>
       </div>`;
   });
   html += `</div>`;
