@@ -1075,7 +1075,9 @@ function zadTplList() {
 }
 function zadNum(t, lang) {
   /* أرقام موحّدة حسب لغة الواجهة: لاتينية، أو عربية/أردية/بنغالية */
-  return String(t).replace(/[0-9\u0660-\u0669]/g, d => {
+  /* فاصل الآلاف العربي «٬» يصير فاصلة في غير العربية */
+  const norm = lang === 'ar' ? String(t) : String(t).replace(/\u066C/g, ',');
+  return norm.replace(/[0-9\u0660-\u0669]/g, d => {
     const n = d >= '0' && d <= '9' ? +d : d.charCodeAt(0) - 0x0660;
     if (lang === 'ar') return String.fromCharCode(0x0660 + n);
     if (lang === 'ur') return String.fromCharCode(0x06F0 + n);
@@ -1367,6 +1369,8 @@ const ZAD_ORD_W = {
   en:['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'],
   fr:['premier','deuxième','troisième','quatrième','cinquième','sixième','septième','huitième','neuvième','dixième'],
   id:['pertama','kedua','ketiga','keempat','kelima','keenam','ketujuh','kedelapan','kesembilan','kesepuluh'],
+  ur:['پہلا','دوسرا','تیسرا','چوتھا','پانچواں','چھٹا','ساتواں','آٹھواں','نواں','دسواں'],
+  bn:['প্রথম','দ্বিতীয়','তৃতীয়','চতুর্থ','পঞ্চম','ষষ্ঠ','সপ্তম','অষ্টম','নবম','দশম'],
   tr:['birinci','ikinci','üçüncü','dördüncü','beşinci','altıncı','yedinci','sekizinci','dokuzuncu','onuncu']
 };
 const ZAD_HIJ_KEYS = Object.keys(ZAD_HIJ_M).sort((a,b) => b.length - a.length);

@@ -66,6 +66,7 @@ html[data-theme="dark"] .ac-bar .ac-stars,html[data-theme="oled"] .ac-bar .ac-st
 .ac-word{background:var(--sand);border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center}
 .ac-word .e{display:block;font-size:27px;line-height:1.2;margin-bottom:5px}
 .ac-word b{font-family:'Amiri',serif;font-size:18px;color:var(--ink)}
+.ac-word-mean{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:3px}
 .ac-dnum{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;background:var(--sand);border:1px dashed var(--border);border-radius:14px;padding:12px;margin-bottom:14px;min-height:56px}
 .ac-dnum span{font-size:23px;line-height:1}
 .ac-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -435,7 +436,12 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
     document.getElementById('ac-l-title').textContent = LT('حرف ' + x.n);
     document.getElementById('ac-l-sub').textContent = LT('كلماته: ' + x.w.map(function(w){ return w[0]; }).join(' · '));
     document.getElementById('ac-l-words').innerHTML = x.w.map(function(w){
-      return '<div class="ac-word"><span class="e">' + w[1] + '</span><b>' + LT(w[0]) + '</b></div>';
+      /* الكلمة العربية نفسها هي الدرس: تبقى عربية داخل lang="ar" (لا تُترجم)،
+         ويظهر معناها بلغة الواجهة تحتها. */
+      var mean = LT(w[0]);
+      var isArUi = (document.documentElement.lang || 'ar') === 'ar';
+      return '<div class="ac-word"><span class="e">' + w[1] + '</span><b lang="ar" dir="rtl">' + w[0] + '</b>' +
+             (isArUi || mean === w[0] ? '' : '<i class="ac-word-mean">' + mean + '</i>') + '</div>';
     }).join('');
     var btn = document.getElementById('ac-l-star');
     var on = a.letters.indexOf(x.l) > -1;
