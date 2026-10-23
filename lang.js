@@ -1061,7 +1061,11 @@ function zadTplList() {
   _zadTplCache = keys.map(k => {
     const names = [];
     const src = k.replace(/[.*+?^$()|[\]\\]/g, '\\$&')
-                 .replace(/\{([a-z]+)\}/gi, (m, nm) => { names.push(nm); return '([0-9\\u0660-\\u0669]+)'; });
+                 .replace(/\{([a-z]+)\}/gi, (m, nm) => {
+                   names.push(nm);
+                   /* {n} أرقام فقط · {name} قد يكون كلمة عربية («الرقم صِفر») */
+                   return /^(n|m|d|y|p|s|o)$/i.test(nm) ? '([0-9\\u0660-\\u0669]+)' : '([^\\s][^·—]{0,30}?)';
+                 });
     let re = null;
     try { re = new RegExp('^' + src + '$'); } catch (e) { re = null; }
     return re ? [re, k, names] : null;
@@ -1080,14 +1084,23 @@ function zadNum(t, lang) {
   });
 }
 function zadTpl(t, lang) {
-  if (!/[0-9\u0660-\u0669]/.test(t)) return null;
+  if (t.length < 3) return null;
   for (const [re, key, names] of zadTplList()) {
     const m = re.exec(t);
     if (!m) continue;
     const rec = UI_MAP[key];
     let out = rec && (rec[lang] || rec.en);
     if (!out) continue;
-    names.forEach((nm, i) => { out = out.split('{' + nm + '}').join(zadNum(m[i + 1], lang)); });
+    names.forEach((nm, i) => {
+      const cap = m[i + 1];
+      /* الكلمة الملتقطة قد تكون عربية: تُترجم أيضًا إن كان لها مدخل («الرقم صِفر») */
+      let val = cap;
+      if (!/^[0-9\u0660-\u0669]+$/.test(cap)) {
+        const cr = UI_MAP[cap];
+        if (cr) val = cr[lang] || cr.en || cap;
+      }
+      out = out.split('{' + nm + '}').join(zadNum(val, lang));
+    });
     return out;
   }
   return null;
@@ -1127,6 +1140,34 @@ function zadPatterns(lang) {
                       ur:`${a}/${b}/${c}`, bn:`${a}/${b}/${c}`, tr:`${a}.${b}.${c}` }[lang];
           return L || (a + '/' + b + '/' + c);
         }],
+        /* «قيمة الوصية: ١٦٥٬٠٠٠ ج.م» — مبالغ بعنوان عربي */
+        [/^(قيمة الوصية|الباقي للميراث|النصاب|الزكاة المستحقة|الإجمالي):\s*([\u0660-\u0669\d٬,\.]+)\s*ج\.م(.*)$/, (label, num, tail) => {
+          const rec = UI_MAP[label] || UI_MAP[label + ':'];
+          const nm = rec ? (rec[lang] || rec.en) : label;
+          return nm + ': ' + zadNum(num.replace(/٬/g, ','), lang) + ' EGP' + (tail || '').replace(/—\s*وهذا سقف الثلث المأذون به\.?/, (UI_MAP['وهذا سقف الثلث المأذون به.'] || {})[lang] || '');
+        }],
+        /* «سورة البقرة: 197» · «﴿ سورة الفيل ﴾» */
+        [/^سورة ([\u0600-\u06FF ]+?):\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          return (rec ? (rec[lang] || rec.en) : name) + ': ' + ref;
+        }],
+        [/^﴿\s*سورة\s+([\u0600-\u06FF ]+?)\s*﴾$/, (name) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : ('سورة ' + name);
+          return '﴿ ' + nm + ' ﴾';
+        }],
+        /* «📅 9 ذو الحجة · 15 مايو 2027» */
+        [/^([^\u0600-\u06FF\w]{0,3}\s*)([\u0660-\u0669\d]+)\s+(ذو الحجة|محرم|صفر|رجب|شعبان|رمضان|شوال|ذو القعدة|جمادى الأولى|جمادى الآخرة|ربيع الأول|ربيع الآخر)\s*·\s*([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+([\u0660-\u0669\d]+)$/, (emo, hd, hm, gd, gm, gy) => {
+          const H = (ZAD_HIJ_M[hm] || {})[lang] || hm, G = (ZAD_GREG_M[gm] || {})[lang] || gm;
+          return (emo || '') + hd + ' ' + H + ' · ' + gd + ' ' + G + ' ' + gy;
+        }],
+        /* تاريخ مختصر بفواصل RTL: «٢٣‏/١٠‏/٢٠٢٦» */
+        [/^([\u0660-\u0669\d]{1,4})\s*[\u200e\u200f]?\s*[\/\u2044-]\s*[\u200e\u200f]?\s*([\u0660-\u0669\d]{1,2})\s*[\u200e\u200f]?\s*[\/\u2044-]\s*[\u200e\u200f]?\s*([\u0660-\u0669\d]{2,4})$/, (a, b, c) => {
+          const sep = lang === 'tr' ? '.' : '/';
+          return [a, b, c].map(x => zadNum(x, lang)).join(sep);
+        }],
+        /* رقم مجرد: يُكتب بأرقام اللغة */
+        [/^([\u0660-\u0669\d]+)$/, (n) => zadNum(n, lang)],
         /* «٧ فبراير» · «9 ذو الحجة» — يوم + شهر */
         [/^([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)$/, (n, m) => n + ' ' + ((ZAD_GREG_M[m] || {})[lang] || m)],
         [/^([\u0660-\u0669\d]+)\s+(محرم|صفر|ربيع الأول|ربيع الآخر|جمادى الأولى|جمادى الآخرة|رجب|شعبان|رمضان|شوال|ذو القعدة|ذو الحجة)$/, (n, m) => n + ' ' + ((ZAD_HIJ_M[m] || {})[lang] || m)],
@@ -1449,6 +1490,9 @@ const I18N = {
           /* المحتوى الحر (وصف الحلقة) أطول من سقف الواجهة القصير */
           const cap = pe.closest('.vid-desc,.vid-sum,p.vid-desc') ? 600 : 400;
           if (t.length < 2 || t.length > cap) return NodeFilter.FILTER_REJECT;
+          /* نصٌّ لاتيني أصلاً («The letter Fa (ف) — episode 20») لا يُترجم */
+          const latinChars = (t.match(/[A-Za-z]/g) || []).length;
+          if (latinChars > t.length * 0.4) return NodeFilter.FILTER_REJECT;
           if (UI_MAP[t]) return NodeFilter.FILTER_ACCEPT;
           if (zadTpl(t, lang)) return NodeFilter.FILTER_ACCEPT;
           /* «💡 نص» — أيقونة في أوّل النص: نطابق الباقي ونُبقي الأيقونة */
