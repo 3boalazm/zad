@@ -1151,7 +1151,7 @@ const I18N = {
     document.querySelectorAll('button:not([data-i18n]):not(.hamburger):not(.notif-btn):not(.btn-theme):not(.zad-lang-trigger):not(.zad-lang-opt)').forEach(swap);
 
     /* 3.5) تعميم على عُقد النصوص داخل المحتوى (مطابقة تامة، بلا لمس النص الشرعي) */
-    const SKIP = /(quran|ayah|dhikr|dua|hadith|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
+    const SKIP = /(quran|ayah|dhikr|dua|hadith|verse|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
     const mainEl = document.querySelector('.main') || document.querySelector('main') || document.getElementById('main-content') || document.body;
     if (mainEl) {
       /* استعادة أي نص عُرِّب سابقًا قبل تطبيق اللغة الجديدة */
