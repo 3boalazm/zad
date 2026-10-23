@@ -1085,6 +1085,10 @@ function zadNum(t, lang) {
 }
 function zadTpl(t, lang) {
   if (t.length < 3) return null;
+  /* «سورة الحج 27»: القالب «سورة {name}» يلتهم الرقم مع الاسم، فنتركها للأنماط
+     التي تعرف اسم السورة ورقم الآية كلًّا على حدة. */
+  if (/^\s*سورة\s/.test(t) && !/—/.test(t) && !/آية/.test(t) &&
+      /[0-9\u0660-\u0669]+(?:-[0-9\u0660-\u0669]+)?\s*$/.test(t)) return null;
   for (const [re, key, names] of zadTplList()) {
     const m = re.exec(t);
     if (!m) continue;
@@ -1144,12 +1148,17 @@ function zadPatterns(lang) {
         [/^(قيمة الوصية|الباقي للميراث|النصاب|الزكاة المستحقة|الإجمالي):\s*([\u0660-\u0669\d٬,\.]+)\s*ج\.م(.*)$/, (label, num, tail) => {
           const rec = UI_MAP[label] || UI_MAP[label + ':'];
           const nm = rec ? (rec[lang] || rec.en) : label;
-          return nm + ': ' + zadNum(num.replace(/٬/g, ','), lang) + ' EGP' + (tail || '').replace(/—\s*وهذا سقف الثلث المأذون به\.?/, (UI_MAP['وهذا سقف الثلث المأذون به.'] || {})[lang] || '');
+          let rest = tail || '';
+          const capRec = UI_MAP['وهذا سقف الثلث المأذون به.'];
+          if (capRec) rest = rest.replace(/—\s*وهذا سقف الثلث المأذون به\.?/, '— ' + (capRec[lang] || capRec.en));
+          return nm + ': ' + zadNum(num.replace(/٬/g, ','), lang) + ' EGP' + rest;
         }],
         /* «سورة البقرة: 197» · «﴿ سورة الفيل ﴾» */
         [/^سورة ([\u0600-\u06FF ]+?):\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
-          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
-          return (rec ? (rec[lang] || rec.en) : name) + ': ' + ref;
+          const nm0 = name.trim();
+          const rec = UI_MAP['سورة ' + nm0] || UI_MAP[nm0];
+          if (!rec) return null;
+          return (rec[lang] || rec.en) + ': ' + ref;
         }],
         [/^﴿\s*سورة\s+([\u0600-\u06FF ]+?)\s*﴾$/, (name) => {
           const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
@@ -1187,9 +1196,11 @@ function zadPatterns(lang) {
         }],
         /* «سورة الحج 27» · «سورة الكوثر 1-2» · «﴿ الحديد: 20 ﴾» */
         [/^سورة ([\u0600-\u06FF ]+?) ([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
-          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
-          const nm = rec ? (rec[lang] || rec.en) : name;
-          return (nm || name) + ' ' + ref;
+          const nm0 = name.trim();
+          const rec = UI_MAP['سورة ' + nm0] || UI_MAP[nm0] || UI_MAP['سورة ' + nm0.replace(/^ال/, '')];
+          if (!rec) return null;
+          const nm = rec[lang] || rec.en || ('سورة ' + nm0);
+          return nm + ' ' + ref;
         }],
         [/^﴿\s*([\u0600-\u06FF ]+?)\s*[:·]\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)\s*﴾$/, (name, ref) => {
           const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
