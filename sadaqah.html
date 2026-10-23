@@ -125,7 +125,7 @@ html[data-theme="dark"] .charity-act.act-done,html[data-theme="oled"] .charity-a
       <div class="card charity-act" data-act="water"><div class="ico-lg">💧</div><h3>سقيا الماء</h3><p>من أعظم الصدقات الجارية.</p><button class="btn btn-primary" style="margin-top:10px">✅ سجّل</button></div>
       <div class="card charity-act" data-act="sheep"><div class="ico-lg">🐑</div><h3>أضحية للفقراء</h3><p>وكّل جمعية موثوقة.</p><button class="btn btn-gold" style="margin-top:10px">احجز أضحية</button></div>
       <div class="card charity-act" data-act="quran"><div class="ico-lg">📖</div><h3>طباعة مصاحف</h3><p>صدقة جارية ما قُرئت.</p><button class="btn btn-primary" style="margin-top:10px">✅ سجّل</button></div>
-      <div class="card charity-act" data-act="orphan"><div class="ico-lg">👨‍👩‍👧</div><h3>كفالة يتيم</h3><p>«أنا وكافل اليتيم في الجنة هكذا» ﷺ.</p><button class="btn btn-primary" style="margin-top:10px">✅ سجّل</button></div>
+      <div class="card charity-act" data-act="orphan"><div class="ico-lg">👨‍👩‍👧</div><h3>كفالة يتيم</h3><p class="hadith">«أنا وكافل اليتيم في الجنة هكذا» ﷺ.</p><button class="btn btn-primary" style="margin-top:10px">✅ سجّل</button></div>
       <div class="card charity-act" data-act="kin"><div class="ico-lg">🤝</div><h3>صلة الرحم</h3><p>اتصل بقريب لم تره منذ زمن.</p><button class="btn btn-ghost" style="margin-top:10px">✅ سجّل</button></div>
     </div>
     <div class="section-title">اقتراح لكل يوم</div>
@@ -228,7 +228,8 @@ html[data-theme="dark"] .charity-act.act-done,html[data-theme="oled"] .charity-a
   window.addEventListener('focus',function(){refreshCards();renderDash();});
 })();
 </script>
-  <script src="lang.min.js" defer></script>
+  <script src="i18n/content-pages.js" defer></script>
+<script src="lang.min.js" defer></script>
   <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
   <script src="js/design-system.min.js" defer></script>
