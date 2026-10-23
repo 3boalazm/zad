@@ -531,10 +531,10 @@ function cardHTML(d, sec){
   const lap = cur % tgt, laps = Math.floor(cur/tgt);
   const pct = Math.min(Math.round(((lap||(cur>0?tgt:0))/tgt)*100),100);
   const done = cur >= tgt;
-  const virtue = d.virtue ? `<div class="afs-virtue">⭐ ${esc(d.virtue)}</div>` : '';
+  const virtue = d.virtue ? `<div class="afs-virtue" lang="ar" dir="rtl">⭐ ${esc(d.virtue)}</div>` : '';
   return `<div class="afs-card${done?' afs-done':''}" id="az-card-${d.id}">
     <div class="afs-label">${esc(d.label)}</div>
-    <div class="afs-arabic">${esc(d.ar)}</div>
+    <div class="afs-arabic" lang="ar" dir="rtl">${esc(d.ar)}</div>
     ${virtue}
     <div class="afs-footer">
       <span class="afs-source">📖 ${esc(d.src)}</span>

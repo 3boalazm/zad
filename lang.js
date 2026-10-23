@@ -1051,6 +1051,77 @@ const LANG_INSTALL = {
   id: '📲 Pasang Aplikasi', ur: '📲 ایپ انسٹال کریں', bn: '📲 অ্যাপ ইনস্টল করুন', tr: '📲 Uygulamayı Yükle'
 };
 
+/* ── قوالب رقمية: مفتاح «الجزء {n}» يطابق «الجزء 3» في الصفحة تلقائيًا ──
+   تُبنى التعابير مرة واحدة وتُخزَّن، فلا كلفة على كل تطبيق لغة. */
+let _zadTplCache = null, _zadTplSize = -1;
+function zadTplList() {
+  const size = Object.keys(UI_MAP).length;
+  if (_zadTplCache && _zadTplSize === size) return _zadTplCache;
+  const keys = Object.keys(UI_MAP).filter(k => /\{[a-z]+\}/i.test(k)).sort((a, b) => b.length - a.length);
+  _zadTplCache = keys.map(k => {
+    const names = [];
+    const src = k.replace(/[.*+?^$()|[\]\\]/g, '\\$&')
+                 .replace(/\{([a-z]+)\}/gi, (m, nm) => { names.push(nm); return '([0-9\\u0660-\\u0669]+)'; });
+    let re = null;
+    try { re = new RegExp('^' + src + '$'); } catch (e) { re = null; }
+    return re ? [re, k, names] : null;
+  }).filter(Boolean);
+  _zadTplSize = size;
+  return _zadTplCache;
+}
+function zadTpl(t, lang) {
+  if (!/[0-9\u0660-\u0669]/.test(t)) return null;
+  for (const [re, key, names] of zadTplList()) {
+    const m = re.exec(t);
+    if (!m) continue;
+    const rec = UI_MAP[key];
+    let out = rec && (rec[lang] || rec.en);
+    if (!out) continue;
+    names.forEach((nm, i) => { out = out.split('{' + nm + '}').join(m[i + 1]); });
+    return out;
+  }
+  return null;
+}
+
+/* أسماء الشهور: ميلادية (عربية) وهجرية — للترجمة داخل الأنماط الرقمية */
+const ZAD_GREG_M = {
+  'يناير':{en:'January',fr:'janvier',id:'Januari',ur:'جنوری',bn:'জানুয়ারি',tr:'Ocak'},
+  'فبراير':{en:'February',fr:'février',id:'Februari',ur:'فروری',bn:'ফেব্রুয়ারি',tr:'Şubat'},
+  'مارس':{en:'March',fr:'mars',id:'Maret',ur:'مارچ',bn:'মার্চ',tr:'Mart'},
+  'أبريل':{en:'April',fr:'avril',id:'April',ur:'اپریل',bn:'এপ্রিল',tr:'Nisan'},
+  'مايو':{en:'May',fr:'mai',id:'Mei',ur:'مئی',bn:'মে',tr:'Mayıs'},
+  'يونيو':{en:'June',fr:'juin',id:'Juni',ur:'جون',bn:'জুন',tr:'Haziran'},
+  'يوليو':{en:'July',fr:'juillet',id:'Juli',ur:'جولائی',bn:'জুলাই',tr:'Temmuz'},
+  'أغسطس':{en:'August',fr:'août',id:'Agustus',ur:'اگست',bn:'আগস্ট',tr:'Ağustos'},
+  'سبتمبر':{en:'September',fr:'septembre',id:'September',ur:'ستمبر',bn:'সেপ্টেম্বর',tr:'Eylül'},
+  'أكتوبر':{en:'October',fr:'octobre',id:'Oktober',ur:'اکتوبر',bn:'অক্টোবর',tr:'Ekim'},
+  'نوفمبر':{en:'November',fr:'novembre',id:'November',ur:'نومبر',bn:'নভেম্বর',tr:'Kasım'},
+  'ديسمبر':{en:'December',fr:'décembre',id:'Desember',ur:'دسمبر',bn:'ডিসেম্বর',tr:'Aralık'}
+};
+const ZAD_HIJ_M = {
+  'محرم':{en:'Muharram',fr:'Mouharram',id:'Muharram',ur:'محرم',bn:'মুহাররম',tr:'Muharrem'},
+  'صفر':{en:'Safar',fr:'Safar',id:'Safar',ur:'صفر',bn:'সফর',tr:'Safer'},
+  'ربيع الأول':{en:'Rabi al-Awwal',fr:'Rabî‘ al-Awwal',id:'Rabiul Awal',ur:'ربیع الاول',bn:'রবিউল আউয়াল',tr:'Rebîülevvel'},
+  'ربيع الآخر':{en:'Rabi al-Thani',fr:'Rabî‘ ath-Thânî',id:'Rabiul Akhir',ur:'ربیع الثانی',bn:'রবিউস সানি',tr:'Rebîülâhir'},
+  'جمادى الأولى':{en:'Jumada al-Ula',fr:'Joumâdâ al-Oulâ',id:'Jumadil Awal',ur:'جمادی الاول',bn:'জুমাদাল উলা',tr:'Cemâziyelevvel'},
+  'جمادى الآخرة':{en:'Jumada al-Akhirah',fr:'Joumâdâ al-Âkhira',id:'Jumadil Akhir',ur:'جمادی الثانی',bn:'জুমাদাল আখিরাহ',tr:'Cemâziyelâhir'},
+  'رجب':{en:'Rajab',fr:'Rajab',id:'Rajab',ur:'رجب',bn:'রজব',tr:'Recep'},
+  'شعبان':{en:'Shaban',fr:'Cha‘bân',id:'Syaban',ur:'شعبان',bn:'শাবান',tr:'Şaban'},
+  'رمضان':{en:'Ramadan',fr:'Ramadân',id:'Ramadhan',ur:'رمضان',bn:'রমজান',tr:'Ramazan'},
+  'شوال':{en:'Shawwal',fr:'Chawwâl',id:'Syawal',ur:'شوال',bn:'শাওয়াল',tr:'Şevval'},
+  'ذو القعدة':{en:'Dhul-Qadah',fr:'Dhoul-Qa‘da',id:'Dzulqadah',ur:'ذوالقعدہ',bn:'জিলকদ',tr:'Zilkade'},
+  'ذو الحجة':{en:'Dhul-Hijjah',fr:'Dhoul-Hijja',id:'Dzulhijjah',ur:'ذوالحجہ',bn:'জিলহজ',tr:'Zilhicce'}
+};
+const ZAD_ERA = { en:'AH', fr:'H', id:'H', ur:'ہجری', bn:'হিজরি', tr:'H' };
+const ZAD_ORD = ['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر'];
+const ZAD_ORD_W = {
+  en:['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'],
+  fr:['premier','deuxième','troisième','quatrième','cinquième','sixième','septième','huitième','neuvième','dixième'],
+  id:['pertama','kedua','ketiga','keempat','kelima','keenam','ketujuh','kedelapan','kesembilan','kesepuluh'],
+  tr:['birinci','ikinci','üçüncü','dördüncü','beşinci','altıncı','yedinci','sekizinci','dokuzuncu','onuncu']
+};
+const ZAD_HIJ_KEYS = Object.keys(ZAD_HIJ_M).sort((a,b) => b.length - a.length);
+
 /* ── i18n Engine ─────────────────────────────────────────────── */
 const I18N = {
   current: localStorage.getItem('zad_lang') || 'ar',
@@ -1182,6 +1253,7 @@ const I18N = {
           const cap = pe.closest('.vid-desc,.vid-sum,p.vid-desc') ? 600 : 400;
           if (t.length < 2 || t.length > cap) return NodeFilter.FILTER_REJECT;
           if (UI_MAP[t]) return NodeFilter.FILTER_ACCEPT;
+          if (zadTpl(t, lang)) return NodeFilter.FILTER_ACCEPT;
           /* «💡 نص» — أيقونة في أوّل النص: نطابق الباقي ونُبقي الأيقونة */
           if (t.length <= cap + 8) {
             const em = t.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
@@ -1200,7 +1272,14 @@ const I18N = {
           const em = key.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
           if (em && UI_MAP[em[2].trim()]) { icon = em[1]; key = em[2].trim(); }
         }
-        if (!UI_MAP[key]) return;
+        if (!UI_MAP[key]) {
+          const tv = zadTpl(key, lang);
+          if (!tv) return;
+          if (!n.__zadAr) n.__zadAr = n.nodeValue;
+          const ld = n.nodeValue.match(/^\s*/)[0], tr2 = n.nodeValue.match(/\s*$/)[0];
+          n.nodeValue = ld + icon + tv + tr2;
+          return;
+        }
         const v = UI_MAP[key][lang] || UI_MAP[key].en;
         if (!v) return;
         if (!n.__zadAr) n.__zadAr = n.nodeValue;
@@ -1241,6 +1320,56 @@ const I18N = {
         return d;
       });
       const PATTERNS = [
+
+        /* «٧ فبراير» · «9 ذو الحجة» — يوم + شهر */
+        [/^([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)$/, (n, m) => n + ' ' + ((ZAD_GREG_M[m] || {})[lang] || m)],
+        [/^([\u0660-\u0669\d]+)\s+(محرم|صفر|ربيع الأول|ربيع الآخر|جمادى الأولى|جمادى الآخرة|رجب|شعبان|رمضان|شوال|ذو القعدة|ذو الحجة)$/, (n, m) => n + ' ' + ((ZAD_HIJ_M[m] || {})[lang] || m)],
+        /* «١٢ جمادى الأولى ١٤٤٨ هـ» · «1448 هـ» */
+        [/^([\u0660-\u0669\d]+)\s+([\u0600-\u06FF ]+?)\s+([\u0660-\u0669\d]+)\s*هـ$/, (d, m, y) => {
+          const M2 = ZAD_HIJ_M[m] || ZAD_GREG_M[m];
+          return d + ' ' + ((M2 || {})[lang] || m) + ' ' + y + ' ' + (ZAD_ERA[lang] || 'AH');
+        }],
+        [/^([\u0660-\u0669\d]+)\s*هـ$/, (y) => y + ' ' + (ZAD_ERA[lang] || 'AH')],
+        /* «اليوم الثالث: 40%» — ترتيب + نسبة */
+        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر):\s*([\u0660-\u0669\d]+)%$/, (ord, pct) => {
+          const i = ZAD_ORD.indexOf(ord);
+          const W = ZAD_ORD_W[lang];
+          if (!W) return '';
+          return { en:`Day ${i+1}: ${pct}%`, fr:`Jour ${i+1} : ${pct}%`, id:`Hari ke-${i+1}: ${pct}%`,
+                   ur:`دن ${i+1}: ${pct}%`, bn:`${i+1} নম্বর দিন: ${pct}%`, tr:`${i+1}. gün: ${pct}%` }[lang];
+        }],
+        /* «سورة الحج 27» · «سورة الكوثر 1-2» · «﴿ الحديد: 20 ﴾» */
+        [/^سورة ([\u0600-\u06FF ]+?) ([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : name;
+          return (nm || name) + ' ' + ref;
+        }],
+        [/^﴿\s*([\u0600-\u06FF ]+?)\s*[:·]\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)\s*﴾$/, (name, ref) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : name;
+          return '﴿ ' + (nm || name) + ': ' + ref + ' ﴾';
+        }],
+        /* «إنقاص عدد الزوج» · «عدد الأبناء» — واجهة المواريث */
+        [/^(إنقاص|زيادة) عدد (.+)$/, (verb, who) => {
+          const rec = UI_MAP[who.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : who.trim();
+          const V = { en: verb === 'إنقاص' ? 'Decrease' : 'Increase',
+                      fr: verb === 'إنقاص' ? 'Diminuer' : 'Augmenter',
+                      id: verb === 'إنقاص' ? 'Kurangi' : 'Tambah',
+                      ur: verb === 'إنقاص' ? 'کم کریں' : 'بڑھائیں',
+                      bn: verb === 'إنقاص' ? 'কমান' : 'বাড়াও',
+                      tr: verb === 'إنقاص' ? 'Azalt' : 'Artır' }[lang];
+          return nm ? (V + ' — ' + nm) : '';
+        }],
+        /* «الفائت من الفجر» · «قضيت واحدة من الفجر» — قضاء الفوائت */
+        [/^(الفائت|قضيت واحدة) من (.+)$/, (kind, prayer) => {
+          const rec = UI_MAP[prayer.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : prayer.trim();
+          if (!nm) return '';
+          return kind === 'الفائت'
+            ? { en:`Missed from ${nm}`, fr:`Manquée de ${nm}`, id:`Terlewat dari ${nm}`, ur:`${nm} سے فوت`, bn:`${nm} থেকে ছুটে যাওয়া`, tr:`${nm} kaçırılan` }[lang]
+            : { en:`Made up one from ${nm}`, fr:`Rattrapée une de ${nm}`, id:`Diqadha satu dari ${nm}`, ur:`${nm} سے ایک ادا کی`, bn:`${nm} থেকে একটি আদায় করেছি`, tr:`${nm} için bir kaza` }[lang];
+        }],
         /* عدّادات عربية خالصة: «13 أذكار» · «5 أيام ✓» · «3 جلسات» */
         [/^([\u0660-\u0669\d]+)\s*(أذكار|آيات|أحاديث|أيام|مرات|جلسات)\s*(✓)?$/, (n, unit, tick) => {
           const U = { 'أذكار':{en:'adhkar',fr:'adhkar',id:'zikir',ur:'اذکار',bn:'আযকার',tr:'zikir'},
@@ -1377,6 +1506,8 @@ const I18N = {
           const v = e[lang] || e.en;
           if (v) { n.nodeValue = lead + em2[1] + v + trail; return; }
         }
+        const tplOut = zadTpl(raw, lang);
+        if (tplOut) { n.nodeValue = lead + tplOut + trail; return; }
         for (const [re, make] of PATTERNS) {
           const m = raw.match(re);
           if (!m) continue;
