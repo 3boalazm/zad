@@ -112,6 +112,25 @@ const ZadShare = {
   injectButton() {
     if (document.getElementById('zad-share-section')) return;
 
+    /* نصوص زر المشاركة حسب اللغة */
+    const ZS_D = {
+      zss_text: { ar:'شارك هذه الصفحة مع أحبابك — الدالّ على الخير كفاعله',
+        en:'Share this page with your loved ones — whoever guides to good has the reward of the doer',
+        fr:'Partagez cette page avec vos proches — celui qui guide vers le bien a la récompense de celui qui le fait',
+        id:'Bagikan halaman ini kepada orang tercinta — yang menunjukkan kebaikan mendapat pahala seperti pelakunya',
+        ur:'یہ صفحہ اپنوں سے شیئر کریں — نیکی کی راہ دکھانے والے کو کرنے والے جیسا اجر ملتا ہے',
+        bn:'এই পৃষ্ঠাটি প্রিয়জনদের সঙ্গে শেয়ার করুন — ভালোর পথ দেখানো ব্যক্তি করার সমান প্রতিদান পান',
+        tr:'Bu sayfayı sevdiklerinle paylaş — hayra vesile olan, yapan gibi sevap kazanır' },
+      share_page: { ar:'مشاركة الصفحة', en:'Share page', fr:'Partager la page', id:'Bagikan halaman',
+        ur:'صفحہ شیئر کریں', bn:'পৃষ্ঠা শেয়ার করুন', tr:'Sayfayı paylaş' }
+    };
+    const ZS = (k) => {
+      let L = 'ar';
+      try { L = (window.I18N && I18N.current) || localStorage.getItem('zad_lang') || 'ar'; } catch (e) {}
+      const e = ZS_D[k];
+      return (e && (e[L] || e.en)) || (e && e.ar) || '';
+    };
+
     /* قسم مشاركة في نهاية المحتوى الرئيسي */
     const main = document.querySelector('main.main, #main-content, main, .main');
     if (!main) return;
@@ -121,9 +140,9 @@ const ZadShare = {
     section.className = 'zad-share-section';
     section.innerHTML = `
       <div class="zss-divider"></div>
-      <div class="zss-text">شارك هذه الصفحة مع أحبابك — الدالّ على الخير كفاعله</div>
-      <button id="zad-share-btn" class="zad-share-btn-full" aria-label="مشاركة الصفحة">
-        <span>📤</span><span>مشاركة الصفحة</span>
+      <div class="zss-text">${ZS('zss_text')}</div>
+      <button id="zad-share-btn" class="zad-share-btn-full" aria-label="${ZS('share_page')}">
+        <span>📤</span><span>${ZS('share_page')}</span>
       </button>`;
 
     /* أضفه في آخر الـ main */

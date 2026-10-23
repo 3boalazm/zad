@@ -515,7 +515,7 @@ html[data-theme="dark"] .mh-btn.solid,html[data-theme="oled"] .mh-btn.solid{back
     if (navigator.share) navigator.share({ title: 'قسمة الميراث — زاد', text: t }).catch(function () {});
     else copyResult();
   }
-  function toast(m) {
+  function toast(m) { m = (typeof window.ZT === 'function') ? window.ZT(m) : m;
     var t = document.getElementById('mh-toast');
     if (!t) {
       t = document.createElement('div'); t.id = 'mh-toast';

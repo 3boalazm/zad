@@ -84,7 +84,18 @@
   @keyframes zhPulse{0%{r:6;opacity:.55}70%{r:13;opacity:0}100%{r:13;opacity:0}}
   #zh-marker{transition:transform .8s cubic-bezier(.4,0,.2,1)}
   #zh-marker .zh-mcore{filter:drop-shadow(0 0 8px rgba(255,233,168,.95))}
-  .zh-arc.is-approx #zh-dots{display:none}
+  .zh-arc.is-approx #zh-dots,.zh-arc.is-approx #zh-labels{display:none}
+  /* أسماء الصلوات ومواقيتها على القوس */
+  .zh-arc text{font-family:inherit;paint-order:stroke;stroke:rgba(11,50,38,.55);stroke-width:2.4px;stroke-linejoin:round}
+  .zh-lbl .zh-lbl-n{font-size:9.6px;font-weight:900;fill:#fffaf0;letter-spacing:.1px}
+  .zh-lbl .zh-lbl-t{font-size:8.6px;font-weight:700;fill:#ffe9a8;font-variant-numeric:tabular-nums}
+  .zh-lbl .zh-lbl-l{stroke:rgba(255,233,168,.34);stroke-width:.9;stroke-dasharray:2 2.4}
+  .zh-lbl.past .zh-lbl-n{fill:rgba(255,250,240,.72)}
+  .zh-lbl.past .zh-lbl-t{fill:rgba(230,201,122,.72)}
+  .zh-lbl.next .zh-lbl-n{fill:#ffe9a8}
+  .zh-lbl.next .zh-lbl-t{fill:#ffe9a8;font-weight:900}
+  .zh-lbl.sunrise .zh-lbl-n{fill:rgba(255,255,255,.5)}
+  .zh-lbl.sunrise .zh-lbl-t{fill:rgba(255,255,255,.42)}
 
   /* الصلاة القادمة */
   .zh-next{
@@ -425,7 +436,7 @@
       </div>
 
       <div class="zh-arcbox">
-        <svg class="zh-arc" id="zh-arc" viewBox="0 0 340 132" role="img" aria-label="قوس اليوم من الفجر إلى العشاء">
+        <svg class="zh-arc" id="zh-arc" viewBox="0 0 340 202" role="img" aria-label="قوس اليوم من الفجر إلى العشاء">
           <defs>
             <linearGradient id="zhArcLine" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#8fd3a8" stop-opacity=".28"/>
@@ -443,13 +454,14 @@
               <stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/>
             </radialGradient>
           </defs>
-          <line class="zh-horizon" x1="6" y1="112" x2="334" y2="112" stroke="url(#zhHorizon)" stroke-width="1.2"/>
-          <path d="M324 112 Q170 -16 16 112" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="9" stroke-linecap="round"/>
-          <path d="M324 112 Q170 -16 16 112" fill="none" stroke="url(#zhArcLine)" stroke-width="2.4" stroke-dasharray="1 8" stroke-linecap="round"/>
-          <path id="zh-arc-done" d="M324 112 Q170 -16 16 112" fill="none" stroke="#ffe9a8" stroke-width="3" stroke-linecap="round" opacity=".92" stroke-dasharray="0 9999"/>
+          <line class="zh-horizon" x1="6" y1="152" x2="334" y2="152" stroke="url(#zhHorizon)" stroke-width="1.2"/>
+          <path d="M322 152 Q170 8 18 152" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="9" stroke-linecap="round"/>
+          <path d="M322 152 Q170 8 18 152" fill="none" stroke="url(#zhArcLine)" stroke-width="2.4" stroke-dasharray="1 8" stroke-linecap="round"/>
+          <path id="zh-arc-done" d="M322 152 Q170 8 18 152" fill="none" stroke="#ffe9a8" stroke-width="3" stroke-linecap="round" opacity=".92" stroke-dasharray="0 9999"/>
           <g id="zh-dots"></g>
-          <circle id="zh-glow" r="26" fill="url(#zhGlow)" cx="324" cy="112"/>
-          <g id="zh-marker" transform="translate(324,112)">
+          <g id="zh-labels"></g>
+          <circle id="zh-glow" r="26" fill="url(#zhGlow)" cx="322" cy="152"/>
+          <g id="zh-marker" transform="translate(322,152)">
             <circle r="12" fill="none" stroke="#ffe9a8" stroke-opacity=".38" stroke-width="1.4"/>
             <circle class="zh-mcore" r="6.5" fill="#fffaf0" stroke="#e6c97a" stroke-width="2"/>
           </g>
@@ -741,7 +753,8 @@ const ZH = { dates: null, day: new Date().toDateString() };
 
 /* ── أدوات ───────────────────────────────────────────────────── */
 const zhPad = n => String(Math.max(0, Math.floor(n))).padStart(2, '0');
-const zhNum = v => Number(v).toLocaleString('ar-EG');
+/* أرقام عربية بلا فاصل آلاف (سنة 1448 لا تُكتب ١٬٤٤٨) */
+const zhNum = v => Number(v).toLocaleString('ar-EG', { useGrouping: false });
 const zhHm = d => (d && typeof d.getHours === 'function' && !isNaN(+d))
   ? zhPad(d.getHours()) + ':' + zhPad(d.getMinutes())
   : '--:--';
@@ -753,15 +766,32 @@ function quickWorship(type) {
 function safeToggleTheme() { if (typeof toggleTheme === 'function') toggleTheme(); }
 window.quickWorship = quickWorship;
 window.safeToggleTheme = safeToggleTheme;
+/* إعادة رسم كل ما تبنيه الصفحة ديناميكيًا عند تبديل اللغة */
+window.addEventListener('load', () => {
+  try { if (typeof zhInitHijri === 'function') zhInitHijri(); } catch (e) {}
+  try { if (typeof zhPaintGreeting === 'function') zhPaintGreeting(); } catch (e) {}
+});
+window.addEventListener('zad:lang', () => {
+  try { if (typeof zhNowCard === 'function') zhNowCard(); } catch (e) {}
+  try { if (typeof zhPaintGreeting === 'function') zhPaintGreeting(); } catch (e) {}
+  try { if (typeof zhInitHijri === 'function') zhInitHijri(); } catch (e) {}
+  try { if (typeof zhDrawArc === 'function') zhDrawArc(); } catch (e) {}
+});
 
 /* ── التحية ─────────────────────────────────────────────────── */
+const ZH_GREET = {
+  night:  { ar:'ليلة مباركة', en:'Blessed night',      fr:'Nuit bénie',        id:'Malam yang berkah', ur:'مبارک رات',       bn:'বরকতময় রাত',   tr:'Mübarek gece',        e:'🌙' },
+  morn:   { ar:'صباح الخير',  en:'Good morning',       fr:'Bonjour',           id:'Selamat pagi',      ur:'صبح بخیر',        bn:'শুভ সকাল',      tr:'Günaydın',            e:'🌅' },
+  noon:   { ar:'نهارك مبارك', en:'Blessed day',        fr:'Journée bénie',     id:'Hari yang berkah',  ur:'مبارک دن',        bn:'বরকতময় দিন',   tr:'Mübarek gün',         e:'☀️' },
+  eve:    { ar:'مساء الخير',  en:'Good evening',       fr:'Bonsoir',           id:'Selamat petang',    ur:'شام بخیر',        bn:'শুভ সন্ধ্যা',   tr:'İyi akşamlar',        e:'🌇' },
+  late:   { ar:'ليلة طيبة',   en:'Peaceful night',     fr:'Nuit paisible',     id:'Malam yang tenang', ur:'پرسکون رات',      bn:'শান্ত রাত',     tr:'Huzurlu gece',        e:'🌙' }
+};
 function zhGreeting() {
   const h = new Date().getHours();
-  if (h < 4)  return { t: 'ليلة مباركة', e: '🌙' };
-  if (h < 12) return { t: 'صباح الخير',  e: '🌅' };
-  if (h < 15) return { t: 'نهارك مبارك', e: '☀️' };
-  if (h < 19) return { t: 'مساء الخير',  e: '🌇' };
-  return { t: 'ليلة طيبة', e: '🌙' };
+  const k = h < 4 ? 'night' : h < 12 ? 'morn' : h < 15 ? 'noon' : h < 19 ? 'eve' : 'late';
+  let t = ZH_GREET[k].ar;
+  try { const L = window.I18N && I18N.current; if (L && L !== 'ar' && ZH_GREET[k][L]) t = ZH_GREET[k][L]; } catch (e) {}
+  return { t, e: ZH_GREET[k].e };
 }
 function zhPaintGreeting() {
   const g = zhGreeting();
@@ -775,10 +805,11 @@ function zhPaintGreeting() {
    المسار: M324 112 Q170 -16 16 112  (الفجر يمينًا، العشاء يسارًا)
    النقطة عند النسبة t:  x = 324 - 308t ,  y = 112 - 256t(1-t)
    ───────────────────────────────────────────────────────────── */
-const ZH_ARC = { x0: 324, dx: -308, y0: 112 };
+const ZH_ARC = { x0: 322, dx: -304, y0: 152, h: 288 };
 function zhArcPoint(t) {
   t = Math.max(0, Math.min(1, t));
-  return { x: ZH_ARC.x0 + ZH_ARC.dx * t, y: ZH_ARC.y0 - 256 * t * (1 - t) };
+  /* منحنى تربيعي: y = y0 - h·t(1−t) — h = 4×(y0 − قمة القوس) */
+  return { x: ZH_ARC.x0 + ZH_ARC.dx * t, y: ZH_ARC.y0 - ZH_ARC.h * t * (1 - t) };
 }
 
 const ZH_ORDER = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -791,6 +822,7 @@ function zhDrawArc() {
   const marker = document.getElementById('zh-marker');
   const glow = document.getElementById('zh-glow');
   const dots = document.getElementById('zh-dots');
+  const labels = document.getElementById('zh-labels');
   if (!arc || !done || !marker) return;
 
   if (_zhDoneLen == null) {
@@ -831,19 +863,69 @@ function zhDrawArc() {
   marker.setAttribute('transform', `translate(${p.x.toFixed(2)},${p.y.toFixed(2)})`);
   if (glow) { glow.setAttribute('cx', p.x.toFixed(2)); glow.setAttribute('cy', p.y.toFixed(2)); }
 
+  const nextKey = zhNextKey();
+  const markOf = (o) => o.k === nextKey ? 'next' : (o.t <= tNow ? 'past' : 'upcoming');
+
   if (dots) {
-    const nextKey = zhNextKey();
     dots.innerHTML = dotsList.map(o => {
       const pt = zhArcPoint(o.t);
-      const cls = o.k === nextKey ? 'next' : (o.t <= tNow ? 'past' : 'upcoming');
-      const label = `${ZH_NAMES[o.k]} ${zhHm(o.time)}`;
+      const cls = markOf(o);
+      const label = `${zhArcName(o.k)} ${zhHm(o.time)}`;
       return `<g class="zh-dot ${cls}" transform="translate(${pt.x.toFixed(2)},${pt.y.toFixed(2)})">`
         + `<title>${label}</title>`
-        + `<circle r="4.4"/>`
+        + (o.k === 'sunrise' ? '<circle r="3" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>'
+                             : '<circle r="4.4"/>')
         + (cls === 'next' ? '<circle class="zh-pulse" r="6" fill="none" stroke="#ffe9a8" stroke-width="1.3"/>' : '')
         + `</g>`;
     }).join('');
   }
+
+  /* أسماء الصلوات ومواقيتها — تُوزّع على شريط أسفل القوس بلا تراكب */
+  if (labels) labels.innerHTML = zhArcLabels(dotsList, markOf);
+}
+
+/* اسم الصلاة مترجمًا (يعود للعربية إن غابت الترجمة) */
+function zhArcName(k) { return zhUI(ZH_NAMES[k], ZH_NAMES[k]); }
+
+/* توزيع التسميات على شريط واحد: نبدأ من موضع النقطة ثم نفصلها بالحد الأدنى
+   من التباعد، ونقصّها داخل حدود اللوحة — فيبقى النص مقروءًا في أي لغة. */
+function zhArcLabels(list, markOf) {
+  const Y_N = 176, Y_T = 188, Y_LEAD = 166;
+  const pad = 16, W = 340;
+  const items = list.filter(o => o.k !== 'sunrise').map(o => {
+    const pt = zhArcPoint(o.t);
+    const name = zhArcName(o.k);
+    const time = zhHm(o.time);
+    const w = Math.min(64, Math.max(34, Math.max(name.length, time.length) * 6));
+    return { k: o.k, x: pt.x, px: pt.x, y: pt.y, name, time, w, cls: markOf(o) };
+  });
+  if (!items.length) return '';
+  items.sort((a, b) => a.x - b.x);
+  const clamp = (it) => { it.x = Math.max(pad + it.w / 2, Math.min(W - pad - it.w / 2, it.x)); };
+  items.forEach(clamp);
+  for (let pass = 0; pass < 12; pass++) {
+    let moved = false;
+    for (let i = 1; i < items.length; i++) {
+      const need = (items[i - 1].w + items[i].w) / 2 + 5;
+      const gap = items[i].x - items[i - 1].x;
+      if (gap < need) {
+        const d = (need - gap) / 2;
+        items[i - 1].x -= d; items[i].x += d;
+        moved = true;
+      }
+    }
+    items.forEach(clamp);
+    if (!moved) break;
+  }
+  const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  return items.map(it => {
+    const x = it.x.toFixed(1);
+    return `<g class="zh-lbl ${it.cls}">`
+      + `<line class="zh-lbl-l" x1="${it.px.toFixed(1)}" y1="${(it.y + 5).toFixed(1)}" x2="${x}" y2="${Y_LEAD}"/>`
+      + `<text x="${x}" y="${Y_N}" text-anchor="middle"><tspan class="zh-lbl-n">${esc(it.name)}</tspan></text>`
+      + `<text x="${x}" y="${Y_T}" text-anchor="middle"><tspan class="zh-lbl-t">${esc(it.time)}</tspan></text>`
+      + `</g>`;
+  }).join('');
 }
 
 function zhNextKey() {
@@ -1062,25 +1144,77 @@ const ZH_WEEK   = ['الأحد','الإثنين','الثلاثاء','الأرب�
 const ZH_MILADI = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const ZH_HIJRI  = ['محرّم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
 
+/* المناسبات — مفاتيح مترجمة بدل نصّ عربي ثابت */
+const ZH_TAGS = {
+  arafah: { ar:'⭐ يوم عرفة', en:'⭐ Day of Arafah', fr:'⭐ Jour d’Arafah', id:'⭐ Hari Arafah', ur:'⭐ عرفہ کا دن', bn:'⭐ আরাফার দিন', tr:'⭐ Arefe Günü' },
+  adha:   { ar:'🎉 عيد الأضحى', en:'🎉 Eid al-Adha', fr:'🎉 Aïd al-Adha', id:'🎉 Idul Adha', ur:'🎉 عید الاضحیٰ', bn:'🎉 ঈদুল আজহা', tr:'🎉 Kurban Bayramı' },
+  tarwiya:{ ar:'يوم التروية', en:'Day of Tarwiyah', fr:'Jour de Tarwiya', id:'Hari Tarwiyah', ur:'یوم ترویہ', bn:'তারবিয়াহর দিন', tr:'Terviye Günü' },
+  ten:    { ar:'عشر ذو الحجة', en:'First Ten of Dhul-Hijjah', fr:'Les dix premiers de Dhoul-Hijja', id:'Sepuluh Hari Dzulhijjah', ur:'ذوالحجہ کے عشرہ', bn:'জিলহজের প্রথম দশক', tr:'Zilhiccenin İlk On Günü' },
+  ramadan:{ ar:'🌙 أول رمضان', en:'🌙 First of Ramadan', fr:'🌙 Premier jour de Ramadan', id:'🌙 Awal Ramadan', ur:'🌙 یکم رمضان', bn:'🌙 রমজানের প্রথম দিন', tr:'🌙 Ramazan’ın İlk Günü' }
+};
+function zhApplyLang() {
+  try {
+    const l = (window.I18N && window.I18N.current) || localStorage.getItem('zad_lang');
+    if (l) return l;
+  } catch (e) {}
+  return 'ar';
+}
+function zhTr(obj) { const L = zhApplyLang(); return (L !== 'ar' && obj[L]) || obj.ar; }
+
 function zhSetSpecialTag(day, month) {
   const el = document.getElementById('special-day-name');
   if (!el) return;
-  let txt = '';
-  if (month === 12 && day === 9)  txt = '⭐ يوم عرفة';
-  else if (month === 12 && day === 10) txt = '🎉 عيد الأضحى';
-  else if (month === 12 && day === 8)  txt = 'يوم التروية';
-  else if (month === 12 && day >= 1 && day <= 13) txt = 'عشر ذو الحجة';
-  else if (month === 9 && day === 1) txt = '🌙 أول رمضان';
-  if (txt) { el.textContent = txt; el.style.display = 'inline-block'; }
+  let key = '';
+  if (month === 12 && day === 9)  key = 'arafah';
+  else if (month === 12 && day === 10) key = 'adha';
+  else if (month === 12 && day === 8)  key = 'tarwiya';
+  else if (month === 12 && day >= 1 && day <= 13) key = 'ten';
+  else if (month === 9 && day === 1) key = 'ramadan';
+  if (key) { el.textContent = zhTr(ZH_TAGS[key]); el.style.display = 'inline-block'; }
+  else { el.style.display = 'none'; }
 }
 
+/* أسماء الشهور وأيام الأسبوع من Intl — بدل تكرار ٧ لغات × ٢٤ شهرًا يدويًا */
+function zhLocale() {
+  const L = zhApplyLang();
+  return { ar:'ar-EG', en:'en-GB', fr:'fr-FR', id:'id-ID', ur:'ur-PK', bn:'bn-BD', tr:'tr-TR' }[L] || 'ar-EG';
+}
+function zhDatePart(now, opts, hijri) {
+  try {
+    const loc = zhLocale() + (hijri ? '-u-ca-islamic-umalqura' : '');
+    return new Intl.DateTimeFormat(loc, opts).format(now);
+  } catch (e) { return ''; }
+}
+/* يوم/شهر/سنة فقط — بلا لاحقة العصر لأن Intl يضيفها بصيغ متفاوتة (AH, যুগ, Hicri) */
+function zhDateParts(now, hijri) {
+  try {
+    const loc = zhLocale() + (hijri ? '-u-ca-islamic-umalqura' : '');
+    const parts = new Intl.DateTimeFormat(loc, { day:'numeric', month:'long', year:'numeric' }).formatToParts(now);
+    const pick = t => (parts.find(p => p.type === t) || {}).value || '';
+    const d = pick('day'), m = pick('month'), y = pick('year');
+    if (!d || !m || !y) return '';
+    /* العربية: اسم الشهر من جدولنا لأن Intl يكتب «جمادى الأولى» بالعامية أحيانًا */
+    return `${d} ${m} ${y}`;
+  } catch (e) { return ''; }
+}
 function zhApplyHijri(day, month, year, now) {
   const hf = document.getElementById('hijri-full');
   const mf = document.getElementById('miladi-full');
   const wd = document.getElementById('zh-weekday');
-  if (wd) wd.textContent = ZH_WEEK[now.getDay()];
-  if (hf) hf.textContent = `${zhNum(day)} ${ZH_HIJRI[month - 1]} ${zhNum(year)} هـ`;
-  if (mf) mf.textContent = `${zhNum(now.getDate())} ${ZH_MILADI[now.getMonth()]} ${zhNum(now.getFullYear())} م`;
+  const L  = zhApplyLang();
+  if (wd) wd.textContent = (L === 'ar')
+    ? ZH_WEEK[now.getDay()]
+    : (zhDatePart(now, { weekday:'long' }) || ZH_WEEK[now.getDay()]);
+  const hSuffix = { ar:'هـ', ur:'ہجری', bn:'হিজরি', en:'AH', fr:'H', id:'H', tr:'H' }[L] || 'AH';
+  const gSuffix = { ar:'م', ur:'عیسوی', bn:'খ্রি.', en:'CE', fr:'apr. J.-C.', id:'M', tr:'M.S.' }[L] || 'CE';
+  const hStr = (typeof window.ZadFmtHijri === 'function')
+    ? window.ZadFmtHijri(day, month, year, now)
+    : `${zhNum(day)} ${ZH_HIJRI[month - 1]} ${zhNum(year)} ${hSuffix}`;
+  const gStr = (typeof window.ZadFmtGreg === 'function')
+    ? window.ZadFmtGreg(now)
+    : `${zhNum(now.getDate())} ${ZH_MILADI[now.getMonth()]} ${zhNum(now.getFullYear())} ${gSuffix}`;
+  if (hf) hf.textContent = hStr;
+  if (mf) mf.textContent = gStr;
   zhSetSpecialTag(day, month);
 }
 
@@ -1422,7 +1556,7 @@ function updateNextPrayerBar(timings) {
   }
   bar.style.display = 'flex';
   const n = document.getElementById('np-name'), i = document.getElementById('np-ico'), t = document.getElementById('np-time');
-  if (n) n.textContent = ZH_NP_NAMES[next] || next;
+  if (n) n.textContent = zhUI(ZH_NP_NAMES[next] || next, ZH_NP_NAMES[next] || next);
   if (i) i.textContent = ZH_NP_ICONS[next] || '🕌';
   if (t) t.textContent = String(timings[next] || '').substring(0, 5) || '--:--';
 
@@ -1431,7 +1565,7 @@ function updateNextPrayerBar(timings) {
     const diff = nextTime - new Date();
     const cd = document.getElementById('np-countdown');
     if (!cd) return;
-    if (diff <= 0) { cd.textContent = 'الآن'; clearInterval(_zhNpTimer); zhDrawArc(); return; }
+    if (diff <= 0) { cd.textContent = zhT('zh.nowLabel') || 'الآن'; clearInterval(_zhNpTimer); zhDrawArc(); return; }
     const hh = Math.floor(diff / 3600000), mm = Math.floor((diff % 3600000) / 60000), ss = Math.floor((diff % 60000) / 1000);
     cd.textContent = hh > 0 ? `${zhPad(hh)}:${zhPad(mm)}:${zhPad(ss)}` : `${zhPad(mm)}:${zhPad(ss)}`;
   };

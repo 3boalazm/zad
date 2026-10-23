@@ -306,7 +306,7 @@ html[data-theme="dark"] .qd-tabs button.on,html[data-theme="oled"] .qd-tabs butt
     document.getElementById('qd-perday').value = S.perDay;
   }
 
-  function toast(m) {
+  function toast(m) { m = (typeof window.ZT === 'function') ? window.ZT(m) : m;
     var t = document.getElementById('qd-toast');
     if (!t) {
       t = document.createElement('div'); t.id = 'qd-toast';

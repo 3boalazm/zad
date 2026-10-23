@@ -301,7 +301,7 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
     if (n == null || isNaN(n)) return '٠';
     return String(n).replace(/[0-9]/g, function (c) { return '٠١٢٣٤٥٦٧٨٩'[+c]; });
   }
-  function toast(msg) {
+  function toast(msg) { msg = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
     var t = document.getElementById('mn-toast');
     t.textContent = msg; t.classList.add('on');
     clearTimeout(toast._t);

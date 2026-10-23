@@ -64,7 +64,7 @@
 
   /* ── أدوات صغيرة ─────────────────────────────────────────────────────── */
   var _toastTimer = null;
-  function toast(msg) {
+  function toast(msg) { msg = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
     if (!els.toast) return;
     els.toast.textContent = msg;
     els.toast.classList.add('on');

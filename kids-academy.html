@@ -366,7 +366,7 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
       if (window.zadPatchState) window.zadPatchState({ academy: a });
     }catch(e){}
   }
-  function toast(msg){
+  function toast(msg){ msg = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
     if (typeof window.showToast === 'function') { window.showToast(msg); return; }
     var t = document.getElementById('ac-toast');
     if (!t){

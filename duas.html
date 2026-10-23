@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
 <title>الأدعية — زاد</title>
+<script>
+/* ── ترجمة صفحة التحويل القصيرة (تعمل قبل تحميل أي ملف آخر) ── */
+(function(){
+  var T = {"docTitle": {"ar": "الأدعية — زاد", "en": "Duas — Zad", "fr": "Invocations — Zad", "id": "Doa — Zad", "ur": "دعائیں — زاد", "bn": "দুআ — জাদ", "tr": "Dualar — Zad"}, "loading": {"ar": "جارٍ تحويلك إلى صفحة الأدعية…", "en": "Taking you to the duas page…", "fr": "Redirection vers la page des invocations…", "id": "Mengalihkan ke halaman doa…", "ur": "آپ کو دعاؤں کے صفحے پر لے جایا جا رہا ہے…", "bn": "আপনাকে দুআ পৃষ্ঠায় নিয়ে যাওয়া হচ্ছে…", "tr": "Dua sayfasına yönlendiriliyorsunuz…"}, "manual": {"ar": "اضغط هنا إن لم يتم التحويل تلقائياً", "en": "Tap here if you are not redirected automatically", "fr": "Appuyez ici si la redirection est automatique", "id": "Ketuk di sini jika tidak dialihkan otomatis", "ur": "اگر خودکار منتقلی نہ ہو تو یہاں دبائیں", "bn": "স্বয়ংক্রিয়ভাবে না গেলে এখানে ট্যাপ করুন", "tr": "Otomatik yönlendirilmezse buraya dokun"}}, NAMES = {"ar": "العربية", "en": "English", "fr": "Français", "id": "Indonesia", "ur": "اردو", "bn": "বাংলা", "tr": "Türkçe"}, LANGS = ['ar','en','fr','id','ur','bn','tr'];
+  var L = 'ar';
+  try { L = localStorage.getItem('zad_lang') || 'ar'; } catch(e){}
+  if (LANGS.indexOf(L) === -1) L = 'ar';
+  function t(k){ var e = T[k]; return (e && (e[L] || e.en)) || (e && e.ar) || ''; }
+  var r = document.documentElement;
+  r.setAttribute('lang', L);
+  r.setAttribute('dir', (L === 'ar' || L === 'ur') ? 'rtl' : 'ltr');
+  document.title = t('docTitle');
+  [].forEach.call(document.querySelectorAll('[data-t]'), function(el){ el.textContent = t(el.getAttribute('data-t')); });
+})();
+</script>
 <link rel="canonical" href="du'a.html">
 <meta http-equiv="refresh" content="0; url=du'a.html">
 <script>location.replace("du'a.html");</script>
@@ -17,8 +32,8 @@
 <body>
   <div>
     <div style="font-size:40px;margin-bottom:12px">🌿</div>
-    <p>جارٍ تحويلك إلى صفحة الأدعية…</p>
-    <p><a href="du'a.html" style="color:#e6c97a">اضغط هنا إن لم يتم التحويل تلقائياً</a></p>
+    <p data-t="loading">جارٍ تحويلك إلى صفحة الأدعية…</p>
+    <p><a href="du'a.html" style="color:#e6c97a" data-t="manual">اضغط هنا إن لم يتم التحويل تلقائياً</a></p>
   </div>
 <script src="js/a11y-mode.js" defer></script>
 </body>

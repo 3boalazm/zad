@@ -217,6 +217,7 @@ ar: {
   'zh.completeSubTpl': '{n} من ٥ حتى الآن',
   'zh.wird': 'وردك القرآني',
   'zh.wirdSub': 'صفحة واحدة اليوم تُنير غدك',
+  'zh.nowLabel': 'الآن',
 },
 en: {
   /* ─ App shell ─────────────────────────────────────────── */
@@ -429,6 +430,7 @@ en: {
   'zh.completeSubTpl': '{n} of 5 so far',
   'zh.wird': 'Your Quran wird',
   'zh.wirdSub': 'One page today lights up tomorrow',
+  'zh.nowLabel': 'Now',
 
 }
 ,
@@ -639,6 +641,8 @@ fr: {
   'zh.completeSubTpl': '{n} sur 5 pour l’instant',
   'zh.wird': 'Votre wird coranique',
   'zh.wirdSub': 'Une page aujourd’hui éclaire demain',
+  'zh.nowLabel': 'Maintenant',
+  'zh.nowLabel': 'Now',
 },
   /* ─ ID ─ */
   id: {
@@ -731,6 +735,7 @@ fr: {
   'zh.completeSubTpl': '{n} dari 5 sejauh ini',
   'zh.wird': 'Wird Al-Qur’anmu',
   'zh.wirdSub': 'Satu halaman hari ini menerangi esokmu',
+    'zh.nowLabel': 'Sekarang',
   },
   /* ─ UR ─ */
   ur: {
@@ -823,6 +828,7 @@ fr: {
   'zh.completeSubTpl': 'اب تک ۵ میں سے {n}',
   'zh.wird': 'آپ کا قرآنی ورد',
   'zh.wirdSub': 'آج کا ایک صفحہ کل کو روشن کرے گا',
+    'zh.nowLabel': 'ابھی',
   },
   /* ─ BN ─ */
   bn: {
@@ -915,6 +921,7 @@ fr: {
   'zh.completeSubTpl': 'এখন পর্যন্ত ৫টির মধ্যে {n}',
   'zh.wird': 'আপনার কুরআন ওয়ারদ',
   'zh.wirdSub': 'আজকের এক পাতা কালকে আলোকিত করে',
+    'zh.nowLabel': 'এখন',
   },
   /* ─ TR ─ */
   tr: {
@@ -1007,6 +1014,7 @@ fr: {
   'zh.completeSubTpl': 'Şu ana kadar 5’te {n}',
   'zh.wird': 'Kur’an virdin',
   'zh.wirdSub': 'Bugün bir sayfa yarını aydınlatır',
+    'zh.nowLabel': 'Şimdi',
   },
 };
 
@@ -1144,7 +1152,7 @@ const I18N = {
 
     /* 3.5) تعميم على عُقد النصوص داخل المحتوى (مطابقة تامة، بلا لمس النص الشرعي) */
     const SKIP = /(quran|ayah|dhikr|dua|hadith|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
-    const mainEl = document.querySelector('.main');
+    const mainEl = document.querySelector('.main') || document.querySelector('main') || document.getElementById('main-content') || document.body;
     if (mainEl) {
       /* استعادة أي نص عُرِّب سابقًا قبل تطبيق اللغة الجديدة */
       const w2 = document.createTreeWalker(mainEl, NodeFilter.SHOW_TEXT, null);
@@ -1160,7 +1168,7 @@ const I18N = {
           if (pe.closest('script,style,textarea,select,option,[data-i18n]')) return NodeFilter.FILTER_REJECT;
           if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
-          if (t.length < 2 || t.length > 60) return NodeFilter.FILTER_REJECT;
+          if (t.length < 2 || t.length > 120) return NodeFilter.FILTER_REJECT;
           return UI_MAP[t] ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
         }
       });
@@ -1175,6 +1183,70 @@ const I18N = {
         const lead = n.nodeValue.match(/^\s*/)[0];
         const trail = n.nodeValue.match(/\s*$/)[0];
         n.nodeValue = lead + v + trail;
+      });
+    }
+
+    /* 3.9) أنماط عددية (جلسات/أحاديث/عبادات) + تحويل الأرقام لغير العربية */
+    if (!isAr) {
+      const latin = t => t.replace(/[\u0660-\u0669]/g, c => String(c.charCodeAt(0) - 0x0660));
+      const loc = t => latin(t).replace(/[0-9]/g, d => {
+        if (lang === 'ur') return String.fromCharCode(0x06F0 + (+d));
+        if (lang === 'bn') return String.fromCharCode(0x09E6 + (+d));
+        return d;
+      });
+      const PATTERNS = [
+        [/^📚\s*([\u0660-\u0669\d]+)\s*حديثًا$/, (n) => ({
+          en:`📚 ${n} hadiths`, fr:`📚 ${n} hadiths`, id:`📚 ${n} hadis`,
+          ur:`📚 ${n} حدیثیں`, bn:`📚 ${n} হাদিস`, tr:`📚 ${n} hadis` }[lang])],
+        [/^([\u0660-\u0669\d]+)\s*من\s*([\u0660-\u0669\d]+)\s*عبادة$/, (a,b) => ({
+          en:`${a} of ${b} acts of worship`, fr:`${a} sur ${b} adorations`, id:`${a} dari ${b} ibadah`,
+          ur:`${a} از ${b} عبادات`, bn:`${b}-এর মধ্যে ${a} ইবাদত`, tr:`${b} ibadetten ${a}` }[lang])],
+        [/^([\u0660-\u0669\d]+)\s*أذكار\s*·\s*(.+)$/, (n,rest) => {
+          const R = UI_MAP[rest.trim()] ? (UI_MAP[rest.trim()][lang] || UI_MAP[rest.trim()].en) : rest;
+          return { en:`${n} adhkar · ${R}`, fr:`${n} adhkar · ${R}`, id:`${n} zikir · ${R}`,
+                   ur:`${n} اذکار · ${R}`, bn:`${n} আযকার · ${R}`, tr:`${n} zikir · ${R}` }[lang];
+        }],
+        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في (.+)$/, (n,rest) => ({
+          en:`${n} explained hadiths in ${rest}`, fr:`${n} hadiths expliqués en ${rest}`, id:`${n} hadis berpenjelasan dalam ${rest}`,
+          ur:`${n} تشریح شدہ احادیث ${rest} میں`, bn:`${n} ব্যাখ্যাকৃত হাদিস ${rest}-এ`, tr:`${rest} içinde ${n} şerhli hadis` }[lang])],
+        /* «إيه المشكلة في X؟» — سلسلة محاضرات */
+        [/^إيه المشكلة في (.+?)\؟(.*)$/, (topic, tail) => {
+          const tp = (UI_MAP[topic] && (UI_MAP[topic][lang] || UI_MAP[topic].en)) || '';
+          if (!tp) return '';
+          const ep = tail.replace(/\(الحلقة (\d+) — الموسم (\d+)\)/, (m, a, b) => ({
+            en:`(Episode ${a} — Season ${b})`, fr:`(Épisode ${a} — Saison ${b})`, id:`(Episode ${a} — Musim ${b})`,
+            ur:`(قسط ${a} — سیزن ${b})`, bn:`(পর্ব ${a} — সিজন ${b})`, tr:`(Bölüm ${a} — Sezon ${b})` }[lang]));
+          return { en:`What’s the problem with ${tp}?`, fr:`Quel est le problème avec ${tp} ?`, id:`Apa masalah dengan ${tp}?`,
+                   ur:`${tp} میں کیا مسئلہ ہے؟`, bn:`${tp} নিয়ে সমস্যা কী?`, tr:`${tp} ile sorun ne?` }[lang] + ep;
+        }],
+      ];
+      const w3 = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode(n) {
+          const pe = n.parentElement;
+          if (!pe) return NodeFilter.FILTER_REJECT;
+          if (pe.closest('script,style,textarea,select,option,[data-l10n],[data-i18n]')) return NodeFilter.FILTER_REJECT;
+          if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
+          const t = n.nodeValue.trim();
+          if (!t || t.length > 90) return NodeFilter.FILTER_REJECT;
+          if (/^[\u0660-\u0669\d]{1,3}$/.test(t)) return NodeFilter.FILTER_ACCEPT;
+          return PATTERNS.some(([re]) => re.test(t)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      });
+      const nodes = []; let t3;
+      while ((t3 = w3.nextNode())) nodes.push(t3);
+      nodes.forEach(n => {
+        const raw = n.nodeValue.trim();
+        const lead = n.nodeValue.match(/^\s*/)[0];
+        const trail = n.nodeValue.match(/\s*$/)[0];
+        if (/^[\u0660-\u0669\d]{1,3}$/.test(raw)) { n.nodeValue = lead + loc(raw) + trail; return; }
+        for (const [re, make] of PATTERNS) {
+          const m = raw.match(re);
+          if (!m) continue;
+          const args = m.slice(1).map(x => loc(x));
+          const out = make.apply(null, args);
+          if (out) { n.nodeValue = lead + out + trail; }
+          break;
+        }
       });
     }
 
@@ -1207,6 +1279,9 @@ const I18N = {
     document.documentElement.lang = lang;
     document.body && document.body.setAttribute('data-lang', lang);
 
+    /* 6.5) إبلاغ بقية الوحدات (menu.js…) لتحديث نصوصها المُولّدة */
+    try { window.dispatchEvent(new CustomEvent('zad:lang', { detail: { lang } })); } catch (e) {}
+
     /* 7) إعادة رسم بطاقة «الآن» الديناميكية باللغة الجديدة */
     try { if (typeof window.zhNowCard === 'function') window.zhNowCard(); } catch (e) {}
   },
@@ -1222,6 +1297,24 @@ const I18N = {
     document.body && document.body.setAttribute('data-lang', this.current);
     this.apply();
     this._updateButtons(this.current);
+    this._watch();
+  },
+
+  /* إعادة الترجمة عند إدخال محتوى جديد في الصفحة (بطاقات تُرسم بالجافاسكربت) */
+  _watch() {
+    if (this._obs || typeof MutationObserver === 'undefined') return;
+    let timer = null;
+    this._obs = new MutationObserver(() => {
+      if (this._applying || this.current === 'ar') return;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        this._applying = true;
+        try { this.apply(); } catch (e) {}
+        this._applying = false;
+      }, 250);
+    });
+    const start = () => { try { this._obs.observe(document.body, { childList: true, subtree: true }); } catch (e) {} };
+    if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
   }
 };
 
@@ -1382,6 +1475,7 @@ const UI_MAP = {
   'التفاصيل ←': { en:'Details →', fr:'Détails →', id:'Detail →', ur:'تفصیلات ←', bn:'বিস্তারিত →', tr:'Detaylar →' },
   'من 12 عبادة': { en:'of 12 acts of worship', fr:'sur 12 actes d’adoration', id:'dari 12 ibadah', ur:'۱۲ عبادات میں سے', bn:'১২ ইবাদতের মধ্যে', tr:'12 ibadetten' },
   'الفجر': { en:'Fajr', fr:'Fajr', id:'Subuh', ur:'فجر', bn:'ফজর', tr:'Sabah' },
+  'الشروق': { en:'Sunrise', fr:'Lever du soleil', id:'Terbit', ur:'طلوعِ آفتاب', bn:'সূর্যোদয়', tr:'Güneş doğumu' },
   'الظهر': { en:'Dhuhr', fr:'Dhohr', id:'Zuhur', ur:'ظہر', bn:'যোহর', tr:'Öğle' },
   'العصر': { en:'Asr', fr:'Asr', id:'Asar', ur:'عصر', bn:'আসর', tr:'İkindi' },
   'المغرب': { en:'Maghrib', fr:'Maghreb', id:'Magrib', ur:'مغرب', bn:'মাগরিব', tr:'Akşam' },
@@ -1413,6 +1507,269 @@ const UI_MAP = {
   'المكتبة الكاملة': { en:'Full library', fr:'Bibliothèque complète', id:'Perpustakaan lengkap', ur:'مکمل کتب خانہ', bn:'সম্পূর্ণ লাইব্রেরি', tr:'Tüm kütüphane' },
   'ثبّت زاد على هاتفك': { en:'Install Zad on your phone', fr:'Installez Zad sur votre téléphone', id:'Pasang Zad di ponselmu', ur:'زاد کو اپنے فون پر نصب کریں', bn:'ফোনে যাদ ইনস্টল করুন', tr:'Zad’ı telefonuna yükle' },
   'يعمل بدون إنترنت — في المصلى والمسجد': { en:'Works offline — in the prayer room and the mosque', fr:'Fonctionne hors ligne — à la salle de prière et à la mosquée', id:'Berjalan tanpa internet — di musala dan masjid', ur:'انٹرنیٹ کے بغیر چلتا ہے — مصلیٰ اور مسجد میں', bn:'ইন্টারনেট ছাড়াই চলে — নামাজের ঘরে ও মসজিদে', tr:'İnternetsiz çalışır — mescit ve camide' },
+  'انتقل للمحتوى الرئيسي': { en:'Skip to main content', fr:'Aller au contenu principal', id:'Lompat ke konten utama', ur:'مرکزی مواد پر جائیں', bn:'মূল কনটেন্টে যান', tr:'Ana içeriğe geç' },
+  'شارك هذه الصفحة مع أحبابك — الدالّ على الخير كفاعله': { en:'Share this page with your loved ones — whoever guides to good has the reward of the doer', fr:'Partagez cette page avec vos proches — celui qui guide vers le bien a la récompense de celui qui le fait', id:'Bagikan halaman ini kepada orang tercinta — yang menunjukkan kebaikan mendapat pahala seperti pelakunya', ur:'یہ صفحہ اپنوں سے شیئر کریں — نیکی کی راہ دکھانے والے کو کرنے والے جیسا اجر ملتا ہے', bn:'এই পৃষ্ঠাটি প্রিয়জনদের সঙ্গে শেয়ার করুন — ভালোর পথ দেখানো ব্যক্তি করার সমান প্রতিদান পান', tr:'Bu sayfayı sevdiklerinle paylaş — hayra vesile olan, yapan gibi sevap kazanır' },
+  'مشاركة الصفحة': { en:'Share page', fr:'Partager la page', id:'Bagikan halaman', ur:'صفحہ شیئر کریں', bn:'পৃষ্ঠা শেয়ার করুন', tr:'Sayfayı paylaş' },
+  'الفقه واللحظات': { en:'Fiqh & Life Moments', fr:'Fiqh et moments de vie', id:'Fikih & Momen Hidup', ur:'فقہ اور مواقع', bn:'ফিকহ ও জীবনের মুহূর্ত', tr:'Fıkıh ve Hayat Anları' },
+  'التقويم السنوي': { en:'Yearly Calendar', fr:'Calendrier annuel', id:'Kalender Tahunan', ur:'سالانہ کیلنڈر', bn:'বার্ষিক ক্যালেন্ডার', tr:'Yıllık Takvim' },
+  'حصن المسلم': { en:'Fortress of the Muslim', fr:'La Citadelle du musulman', id:'Benteng Muslim', ur:'حصن المسلم', bn:'হিসনুল মুসলিম', tr:'Hisnü’l-Müslim' },
+  'رفيق الورد': { en:'Wird Companion', fr:'Compagnon du wird', id:'Sahabat Wird', ur:'ورد کا ساتھی', bn:'ওয়ারদ সঙ্গী', tr:'Vird Arkadaşı' },
+  'القرآن': { en:'Quran', fr:'Coran', id:'Al-Qur’an', ur:'قرآن', bn:'কুরআন', tr:'Kur’an' },
+  'وردك وختمتك': { en:'Your wird and khatma', fr:'Votre wird et khatma', id:'Wird dan khatamamu', ur:'آپ کا ورد اور ختم', bn:'আপনার ওয়ারদ ও খতম', tr:'Virdin ve hatmin' },
+  'المواقيت': { en:'Prayer times', fr:'Horaires de prière', id:'Waktu salat', ur:'اوقاتِ نماز', bn:'নামাজের সময়', tr:'Namaz vakitleri' },
+  'والقبلة': { en:'and Qibla', fr:'et Qibla', id:'dan kiblat', ur:'اور قبلہ', bn:'ও কিবলা', tr:'ve kıble' },
+  'الأطفال': { en:'Kids', fr:'Enfants', id:'Anak', ur:'بچے', bn:'শিশু', tr:'Çocuklar' },
+  'حصادي': { en:'My harvest', fr:'Ma récolte', id:'Panenku', ur:'میرا حاصل', bn:'আমার ফসল', tr:'Hasadım' },
+  'ملخص العبادات': { en:'Worship summary', fr:'Résumé des adorations', id:'Ringkasan ibadah', ur:'عبادات کا خلاصہ', bn:'ইবাদতের সারসংক্ষেপ', tr:'İbadet özeti' },
+  'الميراث': { en:'Inheritance', fr:'Héritage', id:'Warisan', ur:'میراث', bn:'উত্তরাধিকার', tr:'Miras' },
+  'الفوائت': { en:'Missed prayers', fr:'Prières manquées', id:'Salat terlewat', ur:'قضا نمازیں', bn:'কাজা নামাজ', tr:'Kaza namazları' },
+  'زكاة المال الجديد': { en:'Zakat on new wealth', fr:'Zakat sur les nouveaux biens', id:'Zakat harta baru', ur:'نئی دولت کی زکوٰۃ', bn:'নতুন সম্পদের যাকাত', tr:'Yeni malın zekâtı' },
+  '🎬 محاضرات مرئية': { en:'🎬 Video lectures', fr:'🎬 Conférences vidéo', id:'🎬 Ceramah video', ur:'🎬 ویڈیو بیانات', bn:'🎬 ভিডিও বক্তৃতা', tr:'🎬 Video sohbetler' },
+  '🎲 فيديوهات أخرى': { en:'🎲 More videos', fr:'🎲 Autres vidéos', id:'🎲 Video lainnya', ur:'🎲 مزید ویڈیوز', bn:'🎲 আরও ভিডিও', tr:'🎲 Diğer videolar' },
+  '🎧 سلسلة صوتية': { en:'🎧 Audio series', fr:'🎧 Série audio', id:'🎧 Seri audio', ur:'🎧 آڈیو سلسلہ', bn:'🎧 অডিও সিরিজ', tr:'🎧 Sesli seri' },
+  '📻 بث مباشر': { en:'📻 Live stream', fr:'📻 Direct', id:'📻 Siaran langsung', ur:'📻 براہِ راست نشر', bn:'📻 লাইভ স্ট্রিম', tr:'📻 Canlı yayın' },
+  '📖 مصحف مُرتَّل': { en:'📖 Recited mushaf', fr:'📖 Moushaf récité', id:'📖 Mushaf murattal', ur:'📖 ترتیل شدہ مصحف', bn:'📖 তিলাওয়াতকৃত মুসহাফ', tr:'📖 Tilavetli mushaf' },
+  '🎵 بلاي ليست': { en:'🎵 Playlist', fr:'🎵 Liste de lecture', id:'🎵 Daftar putar', ur:'🎵 پلے لسٹ', bn:'🎵 প্লেলিস্ট', tr:'🎵 Çalma listesi' },
+  '🎲 استماع آخر': { en:'🎲 More listening', fr:'🎲 Autres écoutes', id:'🎲 Dengarkan lainnya', ur:'🎲 مزید سماع', bn:'🎲 আরও শুনুন', tr:'🎲 Daha fazla dinle' },
+  'مختارات صوتية': { en:'Audio picks', fr:'Sélection audio', id:'Pilihan audio', ur:'منتخب آڈیو', bn:'নির্বাচিত অডিও', tr:'Seçme sesler' },
+  'مجموعة مسموعة مختارة': { en:'A curated listening set', fr:'Une sélection à écouter', id:'Kumpulan audio pilihan', ur:'منتخب سماعی مجموعہ', bn:'নির্বাচিত শ্রবণসম্ভার', tr:'Seçme dinleme seti' },
+  'العظماء': { en:'The Greats', fr:'Les grands', id:'Para Ulama', ur:'عظیم شخصیات', bn:'মহান ব্যক্তিরা', tr:'Büyükler' },
+  'سلسلة قصص العظماء — مصطفى أبو العزم': { en:'Stories of the Greats — Mustafa Abu Al-Azm', fr:'Récits des grands — Mustafa Abu Al-Azm', id:'Kisah Para Ulama — Mustafa Abu Al-Azm', ur:'عظیم شخصیات کی کہانیاں — مصطفیٰ ابو العزم', bn:'মহানদের গল্প — মুস্তাফা আবু আল-আজম', tr:'Büyüklerin Kıssaları — Mustafa Ebu’l-Azm' },
+  '+ عدّ': { en:'+ Count', fr:'+ Compter', id:'+ Hitung', ur:'+ گنیں', bn:'+ গণনা', tr:'+ Say' },
+  'صار وقت الصلاة': { en:'Prayer time has come', fr:'L’heure de la prière est venue', id:'Waktu salat tiba', ur:'نماز کا وقت آ گیا', bn:'নামাজের সময় হয়েছে', tr:'Namaz vakti geldi' },
+  '🔔 الإشعارات': { en:'🔔 Notifications', fr:'🔔 Notifications', id:'🔔 Notifikasi', ur:'🔔 اطلاعات', bn:'🔔 নোটিফিকেশন', tr:'🔔 Bildirimler' },
+  'لا توجد إشعارات': { en:'No notifications', fr:'Aucune notification', id:'Tidak ada notifikasi', ur:'کوئی اطلاع نہیں', bn:'কোনো নোটিফিকেশন নেই', tr:'Bildirim yok' },
+  'مسح الكل': { en:'Clear all', fr:'Tout effacer', id:'Hapus semua', ur:'سب صاف کریں', bn:'সব মুছুন', tr:'Tümünü temizle' },
+  'تفعيل التنبيهات': { en:'Enable alerts', fr:'Activer les alertes', id:'Aktifkan pengingat', ur:'اطلاعات فعال کریں', bn:'সতর্কতা চালু করুন', tr:'Bildirimleri aç' },
+  'ابدأ يومك': { en:'Start your day', fr:'Commencez votre journée', id:'Mulai harimu', ur:'اپنا دن شروع کریں', bn:'আপনার দিন শুরু করুন', tr:'Gününe başla' },
+  'تحديد الموقع لعرض المواقيت': { en:'Set your location for prayer times', fr:'Définissez votre position pour les horaires', id:'Tetapkan lokasi untuk waktu salat', ur:'مواقیت کے لیے اپنا مقام مقرر کریں', bn:'নামাজের সময়ের জন্য অবস্থান নির্ধারণ করুন', tr:'Namaz vakitleri için konumunu belirle' },
+  'اختر طريقة تحديد موقعك لعرض مواقيت الصلاة الدقيقة لمدينتك': { en:'Choose how to set your location to see accurate prayer times for your city', fr:'Choisissez comment définir votre position pour des horaires précis dans votre ville', id:'Pilih cara menetapkan lokasi untuk waktu salat akurat di kotamu', ur:'اپنے شہر کے درست اوقاتِ نماز کے لیے مقام مقرر کرنے کا طریقہ چنیں', bn:'আপনার শহরের সঠিক নামাজের সময় দেখতে অবস্থান নির্ধারণের পদ্ধতি বাছুন', tr:'Şehrin için doğru namaz vakitlerini görmek üzere konum belirleme yöntemini seç' },
+  'تحديد تلقائي (GPS)': { en:'Automatic (GPS)', fr:'Automatique (GPS)', id:'Otomatis (GPS)', ur:'خودکار (GPS)', bn:'স্বয়ংক্রিয় (GPS)', tr:'Otomatik (GPS)' },
+  'الأدق — يحتاج إذن الموقع': { en:'Most accurate — needs location permission', fr:'Le plus précis — nécessite l’autorisation de localisation', id:'Paling akurat — perlu izin lokasi', ur:'سب سے درست — مقام کی اجازت درکار', bn:'সবচেয়ে নির্ভুল — অবস্থানের অনুমতি লাগে', tr:'En doğru — konum izni gerekir' },
+  'البحث عن مدينة': { en:'Search for a city', fr:'Rechercher une ville', id:'Cari kota', ur:'شہر تلاش کریں', bn:'শহর খুঁজুন', tr:'Şehir ara' },
+  'اكتب اسم مدينتك في أي بلد': { en:'Type your city name in any country', fr:'Saisissez le nom de votre ville, dans n’importe quel pays', id:'Ketik nama kotamu di negara mana pun', ur:'کسی بھی ملک میں اپنے شہر کا نام لکھیں', bn:'যেকোনো দেশে আপনার শহরের নাম লিখুন', tr:'Hangi ülkede olursa olsun şehir adını yaz' },
+  'اختيار من قائمة المدن': { en:'Pick from the city list', fr:'Choisir dans la liste des villes', id:'Pilih dari daftar kota', ur:'شہروں کی فہرست سے چنیں', bn:'শহরের তালিকা থেকে বাছুন', tr:'Şehir listesinden seç' },
+  'أبرز المدن العربية والإسلامية': { en:'Major Arab and Muslim cities', fr:'Principales villes arabes et musulmanes', id:'Kota-kota besar Arab dan Muslim', ur:'نمایاں عرب و اسلامی شہر', bn:'প্রধান আরব ও মুসলিম শহর', tr:'Öne çıkan Arap ve İslam şehirleri' },
+  'إدخال إحداثيات يدوياً': { en:'Enter coordinates manually', fr:'Saisir les coordonnées manuellement', id:'Masukkan koordinat manual', ur:'متناسقات دستی طور پر درج کریں', bn:'স্থানাঙ্ক হাতে লিখুন', tr:'Koordinatları elle gir' },
+  'خط العرض والطول': { en:'Latitude and longitude', fr:'Latitude et longitude', id:'Lintang dan bujur', ur:'عرض بلد اور طول بلد', bn:'অক্ষাংশ ও দ্রাঘিমাংশ', tr:'Enlem ve boylam' },
+  'كل الأذكار': { en:'All adhkar', fr:'Tous les adhkar', id:'Semua zikir', ur:'تمام اذکار', bn:'সব আযকার', tr:'Tüm zikirler' },
+  'أذكار بعد الصلاة المفروضة': { en:'Adhkar after the obligatory prayer', fr:'Adhkar après la prière obligatoire', id:'Zikir setelah salat wajib', ur:'فرض نماز کے بعد کے اذکار', bn:'ফরজ নামাজের পরের আযকার', tr:'Farz namazdan sonraki zikirler' },
+  'أذكار النوم': { en:'Adhkar before sleep', fr:'Adhkar avant de dormir', id:'Zikir sebelum tidur', ur:'سونے کے اذکار', bn:'ঘুমানোর আযকার', tr:'Uyku zikirleri' },
+  'أذكار الاستيقاظ': { en:'Adhkar on waking', fr:'Adhkar au réveil', id:'Zikir saat bangun', ur:'جاگنے کے اذکار', bn:'জাগার আযকার', tr:'Uyanma zikirleri' },
+  'أذكار الصلاة': { en:'Adhkar of the prayer', fr:'Adhkar de la prière', id:'Zikir dalam salat', ur:'نماز کے اذکار', bn:'নামাজের আযকার', tr:'Namaz zikirleri' },
+  'أذكار الوضوء': { en:'Adhkar of wudu', fr:'Adhkar des ablutions', id:'Zikir wudu', ur:'وضو کے اذکار', bn:'ওজুর আযকার', tr:'Abdest zikirleri' },
+  'أذكار المسجد': { en:'Adhkar of the mosque', fr:'Adhkar de la mosquée', id:'Zikir masjid', ur:'مسجد کے اذکار', bn:'মসজিদের আযকার', tr:'Cami zikirleri' },
+  'أذكار الطعام': { en:'Adhkar of food', fr:'Adhkar des repas', id:'Zikir makan', ur:'کھانے کے اذکار', bn:'খাবারের আযকার', tr:'Yemek zikirleri' },
+  'أذكار المنزل': { en:'Adhkar of the home', fr:'Adhkar de la maison', id:'Zikir rumah', ur:'گھر کے اذکار', bn:'ঘরের আযকার', tr:'Ev zikirleri' },
+  'أذكار الخلاء': { en:'Adhkar of the toilet', fr:'Adhkar des toilettes', id:'Zikir toilet', ur:'بیت الخلا کے اذکار', bn:'শৌচাগারের আযকার', tr:'Tuvalet zikirleri' },
+  'أذكار السفر': { en:'Adhkar of travel', fr:'Adhkar du voyage', id:'Zikir perjalanan', ur:'سفر کے اذکار', bn:'ভ্রমণের আযকার', tr:'Yolculuk zikirleri' },
+  'أذكار متفرقة': { en:'Miscellaneous adhkar', fr:'Adhkar divers', id:'Zikir lainnya', ur:'متفرق اذکار', bn:'বিবিধ আযকার', tr:'Muhtelif zikirler' },
+  'تسابيح وأذكار عظيمة': { en:'Tasbih and great adhkar', fr:'Tasbih et adhkar précieux', id:'Tasbih dan zikir agung', ur:'تسبیحات اور عظیم اذکار', bn:'তাসবিহ ও মহান আযকার', tr:'Tesbihler ve büyük zikirler' },
+  'أدعية يوم عرفة المباركة': { en:'Duas of the blessed day of Arafah', fr:'Invocations du jour béni d’Arafat', id:'Doa hari Arafah yang penuh berkah', ur:'یومِ عرفہ مبارک کی دعائیں', bn:'বরকতময় আরাফার দিনের দুআ', tr:'Mübarek Arefe günü duaları' },
+  'آية الكرسي': { en:'Ayat al-Kursi', fr:'Verset du Trône', id:'Ayat Kursi', ur:'آیۃ الکرسی', bn:'আয়াতুল কুরসি', tr:'Ayetel Kürsi' },
+  'سورة الإخلاص': { en:'Surah al-Ikhlas', fr:'Sourate al-Ikhlas', id:'Surah Al-Ikhlas', ur:'سورۃ الاخلاص', bn:'সূরা আল-ইখলাস', tr:'İhlas Suresi' },
+  'سورة الفلق': { en:'Surah al-Falaq', fr:'Sourate al-Falaq', id:'Surah Al-Falaq', ur:'سورۃ الفلق', bn:'সূরা আল-ফালাক', tr:'Felak Suresi' },
+  'سورة الناس': { en:'Surah an-Nas', fr:'Sourate an-Nas', id:'Surah An-Nas', ur:'سورۃ الناس', bn:'সূরা আন-নাস', tr:'Nas Suresi' },
+  'سيد الاستغفار': { en:'The master of seeking forgiveness', fr:'Le maître de la demande de pardon', id:'Penghulu istigfar', ur:'سید الاستغفار', bn:'সাইয়িদুল ইস্তিগফার', tr:'İstiğfarın efendisi' },
+  'ألا بذكر الله تطمئن القلوب': { en:'Truly, in the remembrance of Allah hearts find rest', fr:'Certes, c’est par l’évocation d’Allah que les cœurs trouvent la quiétude', id:'Ingatlah, hanya dengan mengingat Allah hati menjadi tenang', ur:'سنو! اللہ کے ذکر ہی سے دلوں کو سکون ملتا ہے', bn:'জেনে রাখো, আল্লাহর স্মরণেই হৃদয় শান্তি পায়', tr:'Bilesin ki kalpler ancak Allah’ı anmakla huzur bulur' },
+  'خير الدعاء دعاء يوم عرفة — اضغط للأدعية المنظّمة ←': { en:'The best of dua is the dua of Arafah — tap for the organised duas ←', fr:'La meilleure invocation est celle d’Arafat — appuyez pour les invocations classées ←', id:'Doa terbaik adalah doa hari Arafah — ketuk untuk doa tertata ←', ur:'بہترین دعا یومِ عرفہ کی دعا ہے — منظم دعاؤں کے لیے دبائیں ←', bn:'সেরা দুআ আরাফার দিনের দুআ — সাজানো দুআ দেখতে ট্যাপ করুন ←', tr:'Duaların en hayırlısı Arefe günü duasıdır — düzenli dualar için dokun ←' },
+  'قسماً موثّقاً — اضغط أي قسم لعرض أذكاره كاملة': { en:'Sections with sources — tap any section to see its adhkar in full', fr:'Des sections sourcées — appuyez sur une section pour voir ses adhkar en entier', id:'Bagian bersumber — ketuk bagian mana pun untuk melihat zikirnya lengkap', ur:'حوالہ جات کے ساتھ اقسام — کسی بھی قسم پر دبائیں اور اس کے تمام اذکار دیکھیں', bn:'সূত্রসহ বিভাগ — যেকোনো বিভাগে ট্যাপ করে সব আযকার দেখুন', tr:'Kaynaklı bölümler — zikirlerin tamamı için bir bölüme dokun' },
+  '⭐ يوم عرفة': { en:'⭐ Day of Arafah', fr:'⭐ Jour d’Arafat', id:'⭐ Hari Arafah', ur:'⭐ یومِ عرفہ', bn:'⭐ আরাফার দিন', tr:'⭐ Arefe günü' },
+  '☁️ المزامنة السحابية': { en:'☁️ Cloud sync', fr:'☁️ Synchronisation cloud', id:'☁️ Sinkronisasi cloud', ur:'☁️ کلاؤڈ مطابقت', bn:'☁️ ক্লাউড সিঙ্ক', tr:'☁️ Bulut senkronizasyonu' },
+  'المزامنة السحابية': { en:'Cloud sync', fr:'Synchronisation cloud', id:'Sinkronisasi cloud', ur:'کلاؤڈ مطابقت', bn:'ক্লাউড সিঙ্ক', tr:'Bulut senkronizasyonu' },
+  'معطّلة — بياناتك على هذا الجهاز فقط': { en:'Off — your data stays on this device only', fr:'Désactivée — vos données restent uniquement sur cet appareil', id:'Nonaktif — data hanya di perangkat ini', ur:'بند — آپ کا ڈیٹا صرف اسی ڈیوائس پر ہے', bn:'বন্ধ — আপনার ডেটা শুধু এই ডিভাইসে', tr:'Kapalı — verileriniz yalnızca bu cihazda' },
+  'المزامنة': { en:'Sync', fr:'Synchronisation', id:'Sinkronisasi', ur:'مطابقت', bn:'সিঙ্ক', tr:'Senkronizasyon' },
+  'اختيارية تماماً': { en:'Completely optional', fr:'Entièrement facultative', id:'Sepenuhnya opsional', ur:'بالکل اختیاری', bn:'সম্পূর্ণ ঐচ্ছিক', tr:'Tamamen isteğe bağlı' },
+  'الخصوصية:': { en:'Privacy:', fr:'Confidentialité :', id:'Privasi:', ur:'رازداری:', bn:'গোপনীয়তা:', tr:'Gizlilik:' },
+  'إعداداتك الشخصية وملفك الشخصي يبقيان على جهازك ولا يُرفعان.': { en:'Your settings and profile stay on your device and are never uploaded.', fr:'Vos réglages et votre profil restent sur votre appareil et ne sont jamais envoyés.', id:'Pengaturan dan profilmu tetap di perangkatmu dan tidak diunggah.', ur:'آپ کی ترتیبات اور پروفائل آپ ہی کی ڈیوائس پر رہتے ہیں، اپ لوڈ نہیں ہوتے۔', bn:'আপনার সেটিংস ও প্রোফাইল আপনার ডিভাইসেই থাকে, আপলোড হয় না।', tr:'Ayarların ve profilin cihazında kalır, hiçbir yere yüklenmez.' },
+  'ما يُزامَن:': { en:'What syncs:', fr:'Ce qui est synchronisé :', id:'Yang disinkronkan:', ur:'کیا مطابقت پذیر ہوتا ہے:', bn:'যা সিঙ্ক হয়:', tr:'Senkronize olanlar:' },
+  'سجل العبادات · التكبير · الختمة · الصيام · الأوسمة · حسابات الزكاة': { en:'Worship log · Takbeer · Khatma · Fasting · Badges · Zakat calculations', fr:'Journal d’adoration · Takbir · Khatma · Jeûne · Badges · Calculs de zakat', id:'Catatan ibadah · Takbir · Khatam · Puasa · Lencana · Hitungan zakat', ur:'عبادات کا ریکارڈ · تکبیر · ختم · روزے · بیجز · زکوٰۃ کے حساب', bn:'ইবাদতের লগ · তাকবির · খতম · রোজা · ব্যাজ · যাকাতের হিসাব', tr:'İbadet kaydı · Tekbir · Hatim · Oruç · Rozetler · Zekât hesapları' },
+  'تفعيل المزامنة بين الأجهزة': { en:'Turn on sync across devices', fr:'Activer la synchronisation entre appareils', id:'Aktifkan sinkronisasi antarperangkat', ur:'آلات کے درمیان مطابقت فعال کریں', bn:'ডিভাইসগুলোর মধ্যে সিঙ্ক চালু করুন', tr:'Cihazlar arası senkronizasyonu aç' },
+  '👤 الملف الشخصي': { en:'👤 Profile', fr:'👤 Profil', id:'👤 Profil', ur:'👤 پروفائل', bn:'👤 প্রোফাইল', tr:'👤 Profil' },
+  'صورة الحساب': { en:'Profile picture', fr:'Photo de profil', id:'Foto profil', ur:'پروفائل تصویر', bn:'প্রোফাইল ছবি', tr:'Profil resmi' },
+  'محفوظة على جهازك فقط — لا تُرفع لأيِّ خادم.': { en:'Stored on your device only — never sent to any server.', fr:'Stockée uniquement sur votre appareil — jamais envoyée à un serveur.', id:'Hanya disimpan di perangkatmu — tidak pernah dikirim ke server mana pun.', ur:'صرف آپ کی ڈیوائس پر محفوظ — کسی سرور پر نہیں بھیجی جاتی۔', bn:'শুধু আপনার ডিভাইসে সংরক্ষিত — কোনো সার্ভারে যায় না।', tr:'Yalnızca cihazında saklanır — hiçbir sunucuya gönderilmez.' },
+  '📷 اختيار صورة': { en:'📷 Choose a photo', fr:'📷 Choisir une photo', id:'📷 Pilih foto', ur:'📷 تصویر منتخب کریں', bn:'📷 ছবি বাছুন', tr:'📷 Fotoğraf seç' },
+  '🎨 المظهر': { en:'🎨 Appearance', fr:'🎨 Apparence', id:'🎨 Tampilan', ur:'🎨 ظاہری شکل', bn:'🎨 চেহারা', tr:'🎨 Görünüm' },
+  'المظهر': { en:'Appearance', fr:'Apparence', id:'Tampilan', ur:'ظاہری شکل', bn:'চেহারা', tr:'Görünüm' },
+  'اختر وضع العرض': { en:'Choose display mode', fr:'Choisissez le mode d’affichage', id:'Pilih mode tampilan', ur:'ڈسپلے موڈ منتخب کریں', bn:'ডিসপ্লে মোড বাছুন', tr:'Görüntüleme modunu seç' },
+  'فاتح': { en:'Light', fr:'Clair', id:'Terang', ur:'روشن', bn:'উজ্জ্বল', tr:'Açık' },
+  'داكن': { en:'Dark', fr:'Sombre', id:'Gelap', ur:'تاریک', bn:'অন্ধকার', tr:'Koyu' },
+  'OLED — أسود كامل لتوفير البطارية': { en:'OLED — pure black to save battery', fr:'OLED — noir absolu pour économiser la batterie', id:'OLED — hitam murni untuk menghemat baterai', ur:'OLED — بیٹری بچانے کے لیے مکمل سیاہ', bn:'OLED — ব্যাটারি বাঁচাতে সম্পূর্ণ কালো', tr:'OLED — pil tasarrufu için tam siyah' },
+  'حجم الخط — تلقائي': { en:'Font size — auto', fr:'Taille du texte — auto', id:'Ukuran font — otomatis', ur:'فونٹ سائز — خودکار', bn:'ফন্ট সাইজ — স্বয়ংক্রিয়', tr:'Yazı boyutu — otomatik' },
+  'يتبع إعدادات حجم الخط في جهازك تلقائياً': { en:'Follows your device font size automatically', fr:'Suit automatiquement la taille de police de votre appareil', id:'Mengikuti ukuran font perangkatmu secara otomatis', ur:'خودکار طور پر آپ کے ڈیوائس کے فونٹ سائز کی پیروی کرتا ہے', bn:'স্বয়ংক্রিয়ভাবে আপনার ডিভাইসের ফন্ট সাইজ অনুসরণ করে', tr:'Cihazının yazı boyutunu otomatik izler' },
+  'متوسط': { en:'Medium', fr:'Moyen', id:'Sedang', ur:'درمیانہ', bn:'মাঝারি', tr:'Orta' },
+  'لتغيير الحجم: إعدادات الجهاز ← إمكانية الوصول ← حجم الخط': { en:'To change it: device Settings ← Accessibility ← Font size', fr:'Pour le changer : Réglages ← Accessibilité ← Taille du texte', id:'Untuk mengubahnya: Pengaturan perangkat ← Aksesibilitas ← Ukuran font', ur:'تبدیل کے لیے: ڈیوائس کی ترتیبات ← رسائی ← فونٹ سائز', bn:'বদলাতে: ডিভাইস সেটিংস ← অ্যাক্সেসিবিলিটি ← ফন্ট সাইজ', tr:'Değiştirmek için: Cihaz ayarları ← Erişilebilirlik ← Yazı boyutu' },
+  '🔔 الإشعارات والتذكيرات': { en:'🔔 Notifications and reminders', fr:'🔔 Notifications et rappels', id:'🔔 Notifikasi dan pengingat', ur:'🔔 اطلاعات اور یاد دہانیاں', bn:'🔔 নোটিফিকেশন ও রিমাইন্ডার', tr:'🔔 Bildirimler ve hatırlatmalar' },
+  'تفعيل الإشعارات': { en:'Enable notifications', fr:'Activer les notifications', id:'Aktifkan notifikasi', ur:'اطلاعات فعال کریں', bn:'নোটিফিকেশন চালু করুন', tr:'Bildirimleri aç' },
+  'لتلقي التذكيرات': { en:'to receive reminders', fr:'pour recevoir les rappels', id:'untuk menerima pengingat', ur:'یاد دہانیاں حاصل کرنے کے لیے', bn:'রিমাইন্ডার পেতে', tr:'hatırlatmaları almak için' },
+  '📿 ورد الصباح': { en:'📿 Morning wird', fr:'📿 Wird du matin', id:'📿 Wird pagi', ur:'📿 صبح کا ورد', bn:'📿 সকালের ওয়ারদ', tr:'📿 Sabah virdi' },
+  '5:30 صباحاً': { en:'5:30 am', fr:'5 h 30', id:'05.30 pagi', ur:'صبح 5:30', bn:'সকাল ৫:৩০', tr:'05.30' },
+  '🌙 ورد المساء': { en:'🌙 Evening wird', fr:'🌙 Wird du soir', id:'🌙 Wird petang', ur:'🌙 شام کا ورد', bn:'🌙 সন্ধ্যার ওয়ারদ', tr:'🌙 Akşam virdi' },
+  '5:00 مساءً': { en:'5:00 pm', fr:'17 h 00', id:'17.00', ur:'شام 5:00', bn:'বিকাল ৫:০০', tr:'17.00' },
+  '☀️ أذكار الصباح': { en:'☀️ Morning adhkar', fr:'☀️ Adhkar du matin', id:'☀️ Zikir pagi', ur:'☀️ صبح کے اذکار', bn:'☀️ সকালের আযকার', tr:'☀️ Sabah zikirleri' },
+  'بعد الفجر': { en:'After Fajr', fr:'Après Fajr', id:'Setelah Subuh', ur:'فجر کے بعد', bn:'ফজরের পরে', tr:'Sabah namazından sonra' },
+  '🌆 أذكار المساء': { en:'🌆 Evening adhkar', fr:'🌆 Adhkar du soir', id:'🌆 Zikir petang', ur:'🌆 شام کے اذکار', bn:'🌆 সন্ধ্যার আযকার', tr:'🌆 Akşam zikirleri' },
+  'بعد العصر': { en:'After Asr', fr:'Après Asr', id:'Setelah Asar', ur:'عصر کے بعد', bn:'আসরের পরে', tr:'İkindi sonrası' },
+  '9 ذو الحجة · ١٥ مايو ٢٠٢٧': { en:'9 Dhu al-Hijjah · 15 May 2027', fr:'9 Dhou al-hijja · 15 mai 2027', id:'9 Zulhijah · 15 Mei 2027', ur:'9 ذو الحجہ · 15 مئی 2027', bn:'৯ জিলহজ · ১৫ মে ২০২৭', tr:'9 Zilhicce · 15 Mayıs 2027' },
+  '🎬 فيديو أسبوعي': { en:'🎬 Weekly video', fr:'🎬 Vidéo hebdomadaire', id:'🎬 Video mingguan', ur:'🎬 ہفتہ وار ویڈیو', bn:'🎬 সাপ্তাহিক ভিডিও', tr:'🎬 Haftalık video' },
+  'كل جمعة مساءً': { en:'Every Friday evening', fr:'Chaque vendredi soir', id:'Setiap Jumat malam', ur:'ہر جمعہ شام', bn:'প্রতি শুক্রবার সন্ধ্যায়', tr:'Her Cuma akşamı' },
+  'تنبيه الأذان': { en:'Adhan alert', fr:'Alerte adhan', id:'Pengingat azan', ur:'اذان کی اطلاع', bn:'আজানের সতর্কতা', tr:'Ezan uyarısı' },
+  'إشعار عند دخول وقت كل صلاة في القاهرة — يُحسب على الجهاز بلا إنترنت': { en:'Alert when each prayer time begins in Cairo — computed on-device, no internet', fr:'Alerte à l’entrée de chaque prière au Caire — calculée sur l’appareil, sans internet', id:'Pengingat saat waktu salat tiba di Kairo — dihitung di perangkat, tanpa internet', ur:'قاہرہ میں ہر نماز کے وقت پر اطلاع — ڈیوائس پر حساب، انٹرنیٹ کے بغیر', bn:'কায়রোতে প্রতিটি নামাজের সময় শুরু হলে সতর্কতা — ডিভাইসেই হিসাব, ইন্টারনেট ছাড়া', tr:'Kahire’de her namaz vakti girdiğinde uyarı — cihazda hesaplanır, internet gerekmez' },
+  '📲 التطبيق': { en:'📲 App', fr:'📲 L’application', id:'📲 Aplikasi', ur:'📲 ایپ', bn:'📲 অ্যাপ', tr:'📲 Uygulama' },
+  'تثبيت التطبيق': { en:'Install the app', fr:'Installer l’application', id:'Pasang aplikasi', ur:'ایپ انسٹال کریں', bn:'অ্যাপ ইনস্টল করুন', tr:'Uygulamayı yükle' },
+  'يعمل بدون إنترنت': { en:'Works offline', fr:'Fonctionne hors ligne', id:'Bekerja tanpa internet', ur:'انٹرنیٹ کے بغیر چلتی ہے', bn:'ইন্টারনেট ছাড়াই চলে', tr:'İnternetsiz çalışır' },
+  'مشاركة التطبيق': { en:'Share the app', fr:'Partager l’application', id:'Bagikan aplikasi', ur:'ایپ شیئر کریں', bn:'অ্যাপ শেয়ার করুন', tr:'Uygulamayı paylaş' },
+  'شارك مع أهلك': { en:'Share with your family', fr:'Partagez avec vos proches', id:'Bagikan ke keluargamu', ur:'اپنے گھر والوں سے شیئر کریں', bn:'পরিবারের সঙ্গে শেয়ার করুন', tr:'Ailenle paylaş' },
+  'تحميل التطبيق': { en:'Download the app', fr:'Télécharger l’application', id:'Unduh aplikasi', ur:'ایپ ڈاؤن لوڈ کریں', bn:'অ্যাপ ডাউনলোড করুন', tr:'Uygulamayı indir' },
+  'دليل التثبيت': { en:'Install guide', fr:'Guide d’installation', id:'Panduan pemasangan', ur:'انسٹال گائیڈ', bn:'ইনস্টল গাইড', tr:'Kurulum rehberi' },
+  '🕐 نظام الساعة': { en:'🕐 Clock format', fr:'🕐 Format de l’heure', id:'🕐 Format jam', ur:'🕐 گھڑی کا نظام', bn:'🕐 ঘড়ির ফরম্যাট', tr:'🕐 Saat biçimi' },
+  'يؤثر على مواقيت الصلاة في كل الصفحات': { en:'Affects prayer times on every page', fr:'Affecte les horaires de prière sur toutes les pages', id:'Memengaruhi waktu salat di semua halaman', ur:'ہر صفحے پر اوقاتِ نماز پر اثر ڈالتا ہے', bn:'সব পৃষ্ঠায় নামাজের সময়ে প্রভাব ফেলে', tr:'Tüm sayfalarda namaz vakitlerini etkiler' },
+  '24 ساعة': { en:'24-hour', fr:'24 heures', id:'24 jam', ur:'24 گھنٹے', bn:'২৪ ঘণ্টা', tr:'24 saat' },
+  'النظام الدولي': { en:'International', fr:'International', id:'Internasional', ur:'بین الاقوامی', bn:'আন্তর্জাতিক', tr:'Uluslararası' },
+  '4:35 م': { en:'4:35 pm', fr:'16 h 35', id:'16.35', ur:'4:35 شام', bn:'বিকাল ৪:৩৫', tr:'16.35' },
+  '12 ساعة': { en:'12-hour', fr:'12 heures', id:'12 jam', ur:'12 گھنٹے', bn:'১২ ঘণ্টা', tr:'12 saat' },
+  'ص / م': { en:'am / pm', fr:'am / pm', id:'am / pm', ur:'صبح / شام', bn:'পূর্বাহ্ণ / অপরাহ্ণ', tr:'ÖÖ / ÖS' },
+  '🌐 اللغة': { en:'🌐 Language', fr:'🌐 Langue', id:'🌐 Bahasa', ur:'🌐 زبان', bn:'🌐 ভাষা', tr:'🌐 Dil' },
+  'لغة التطبيق': { en:'App language', fr:'Langue de l’application', id:'Bahasa aplikasi', ur:'ایپ کی زبان', bn:'অ্যাপের ভাষা', tr:'Uygulama dili' },
+  '♿ الوصول والقراءة': { en:'♿ Access and reading', fr:'♿ Accessibilité et lecture', id:'♿ Akses dan membaca', ur:'♿ رسائی اور مطالعہ', bn:'♿ অ্যাক্সেস ও পাঠ', tr:'♿ Erişim ve okuma' },
+  '🔎 واجهة أكبر': { en:'🔎 Larger interface', fr:'🔎 Interface agrandie', id:'🔎 Antarmuka lebih besar', ur:'🔎 بڑا انٹرفیس', bn:'🔎 বড় ইন্টারফেস', tr:'🔎 Daha büyük arayüz' },
+  'تكبير النصوص والأزرار والمسافات — مفيد على الشاشات الصغيرة وفي الشمس': { en:'Bigger text, buttons and spacing — handy on small screens and in sunlight', fr:'Textes, boutons et espacements agrandis — pratique sur petit écran et au soleil', id:'Teks, tombol, dan jarak lebih besar — berguna di layar kecil dan saat matahari terang', ur:'بڑا متن، بٹن اور فاصلے — چھوٹی اسکرین اور دھوپ میں مفید', bn:'বড় লেখা, বোতাম ও ফাঁক — ছোট স্ক্রিনে ও রোদে কাজে লাগে', tr:'Daha büyük yazı, düğme ve boşluklar — küçük ekranda ve güneşte işe yarar' },
+  '📖 قراءة ميسّرة': { en:'📖 Easy reading', fr:'📖 Lecture facilitée', id:'📖 Bacaan mudah', ur:'📖 آسان مطالعہ', bn:'📖 সহজ পাঠ', tr:'📖 Kolay okuma' },
+  'تباعد أوسع بين الأسطر والحروف، وأسطر أقصر — مساعدة لعسر القراءة': { en:'Wider line and letter spacing, shorter lines — a help for dyslexia', fr:'Interlignes et espacement des lettres plus larges, lignes plus courtes — une aide pour la dyslexie', id:'Jarak baris dan huruf lebih lebar, baris lebih pendek — bantuan untuk disleksia', ur:'سطروں اور حروف میں زیادہ فاصلہ، چھوٹی سطریں — ڈسلیکسیا میں مدد', bn:'লাইন ও অক্ষরের বেশি ফাঁক, ছোট লাইন — ডিসলেক্সিয়ায় সহায়ক', tr:'Daha geniş satır ve harf aralığı, kısa satırlar — disleksi için kolaylık' },
+  'نصّ المصحف لا يتغيّر حجمه في «واجهة أكبر» حتى لا تختلّ الصفحة.': { en:'Mushaf text doesn’t grow in “Larger interface”, so the page stays intact.', fr:'Le texte du moushaf ne grossit pas en « interface agrandie », pour ne pas casser la page.', id:'Teks mushaf tidak membesar di “Antarmuka lebih besar”, agar halaman tetap rapi.', ur:'«بڑا انٹرفیس» میں مصحف کا متن نہیں بڑھتا تاکہ صفحہ بگڑے نہیں۔', bn:'“বড় ইন্টারফেস”-এ মুসহাফের লেখা বড় হয় না, যাতে পৃষ্ঠা ঠিক থাকে।', tr:'“Daha büyük arayüz”de mushaf metni büyümez, böylece sayfa bozulmaz.' },
+  '💾 البيانات': { en:'💾 Data', fr:'💾 Données', id:'💾 Data', ur:'💾 ڈیٹا', bn:'💾 ডেটা', tr:'💾 Veriler' },
+  'تصدير البيانات': { en:'Export data', fr:'Exporter les données', id:'Ekspor data', ur:'ڈیٹا برآمد کریں', bn:'ডেটা এক্সপোর্ট করুন', tr:'Verileri dışa aktar' },
+  'حفظ نسخة احتياطية JSON': { en:'Save a JSON backup', fr:'Enregistrer une sauvegarde JSON', id:'Simpan cadangan JSON', ur:'JSON بیک اپ محفوظ کریں', bn:'JSON ব্যাকআপ সংরক্ষণ করুন', tr:'JSON yedeği al' },
+  '📤 تصدير': { en:'📤 Export', fr:'📤 Exporter', id:'📤 Ekspor', ur:'📤 برآمد', bn:'📤 এক্সপোর্ট', tr:'📤 Dışa aktar' },
+  'استيراد نسخة احتياطية': { en:'Import a backup', fr:'Importer une sauvegarde', id:'Impor cadangan', ur:'بیک اپ درآمد کریں', bn:'ব্যাকআপ ইমপোর্ট করুন', tr:'Yedek içe aktar' },
+  'استعادة بياناتك من ملف JSON': { en:'Restore your data from a JSON file', fr:'Restaurer vos données depuis un fichier JSON', id:'Pulihkan datamu dari berkas JSON', ur:'JSON فائل سے اپنا ڈیٹا بحال کریں', bn:'JSON ফাইল থেকে ডেটা ফিরিয়ে আনুন', tr:'Verilerini bir JSON dosyasından geri yükle' },
+  '📥 استيراد': { en:'📥 Import', fr:'📥 Importer', id:'📥 Impor', ur:'📥 درآمد', bn:'📥 ইমপোর্ট', tr:'📥 İçe aktar' },
+  'مسح البيانات': { en:'Clear data', fr:'Effacer les données', id:'Hapus data', ur:'ڈیٹا صاف کریں', bn:'ডেটা মুছুন', tr:'Verileri temizle' },
+  'يمسح كل التقدم': { en:'erases all progress', fr:'efface toute la progression', id:'menghapus semua kemajuan', ur:'تمام پیش رفت مٹا دیتا ہے', bn:'সব অগ্রগতি মুছে যায়', tr:'tüm ilerlemeyi siler' },
+  '🎛️ تخصيص العبادة والمظهر': { en:'🎛️ Worship and look', fr:'🎛️ Adoration et apparence', id:'🎛️ Ibadah dan tampilan', ur:'🎛️ عبادت اور ظاہری شکل', bn:'🎛️ ইবাদত ও রূপ', tr:'🎛️ İbadet ve görünüm' },
+  '📖 تجربة القرآن': { en:'📖 Quran experience', fr:'📖 Expérience du Coran', id:'📖 Pengalaman Al-Qur’an', ur:'📖 قرآن کا تجربہ', bn:'📖 কুরআনের অভিজ্ঞতা', tr:'📖 Kur’an deneyimi' },
+  'هدف الورد اليومي': { en:'Daily wird goal', fr:'Objectif du wird quotidien', id:'Target wird harian', ur:'روزانہ ورد کا ہدف', bn:'দৈনিক ওয়ারদ লক্ষ্য', tr:'Günlük vird hedefi' },
+  'ختمة/10 أيام (60)': { en:'Khatma in 10 days (60)', fr:'Khatma en 10 jours (60)', id:'Khatam 10 hari (60)', ur:'ختم 10 دن میں (60)', bn:'১০ দিনে খতম (৬০)', tr:'10 günde hatim (60)' },
+  'ختمة/30 (30)': { en:'Khatma in 30 days (30)', fr:'Khatma en 30 jours (30)', id:'Khatam 30 hari (30)', ur:'ختم 30 دن میں (30)', bn:'৩০ দিনে খতম (৩০)', tr:'30 günde hatim (30)' },
+  'ختمة/60 (10)': { en:'Khatma in 60 days (10)', fr:'Khatma en 60 jours (10)', id:'Khatam 60 hari (10)', ur:'ختم 60 دن میں (10)', bn:'৬০ দিনে খতম (১০)', tr:'60 günde hatim (10)' },
+  'معجم الجذور (Word-by-Word)': { en:'Root lexicon (word by word)', fr:'Lexique des racines (mot à mot)', id:'Leksikon akar kata (kata demi kata)', ur:'جذروں کا معجم (لفظ بلفظ)', bn:'মূল শব্দকোষ (শব্দে শব্দে)', tr:'Kök sözlüğü (kelime kelime)' },
+  'الضغط المطوّل على كلمةٍ يفتح بطاقة جذرها': { en:'Long-press a word to open its root card', fr:'Un appui long sur un mot ouvre sa fiche de racine', id:'Tekan lama sebuah kata untuk membuka kartu akarnya', ur:'کسی لفظ کو دیر تک دبائیں تو اس کے جذر کا کارڈ کھلتا ہے', bn:'কোনো শব্দে দীর্ঘ চাপ দিলে তার মূল কার্ড খোলে', tr:'Bir kelimeye uzun basmak kök kartını açar' },
+  'وضع الحفظ': { en:'Memorisation mode', fr:'Mode mémorisation', id:'Mode hafalan', ur:'حفظ کا موڈ', bn:'মুখস্থ মোড', tr:'Ezber modu' },
+  'إخفاء الآيات وكشفُها للمراجعة الذاتية': { en:'Hide verses, then reveal them for self-review', fr:'Masquer les versets puis les révéler pour s’auto-évaluer', id:'Sembunyikan ayat lalu buka untuk menguji diri', ur:'آیات چھپائیں اور خود جانچنے کے لیے کھولیں', bn:'আয়াত লুকিয়ে নিজে যাচাইয়ের জন্য খুলুন', tr:'Ayetleri gizle, kendini sınamak için aç' },
+  '🤚 الحواس والصوت': { en:'🤚 Senses and sound', fr:'🤚 Sens et son', id:'🤚 Indra dan suara', ur:'🤚 حواس اور آواز', bn:'🤚 ইন্দ্রিয় ও শব্দ', tr:'🤚 Duyular ve ses' },
+  'شدة الاهتزاز': { en:'Vibration strength', fr:'Intensité des vibrations', id:'Kekuatan getar', ur:'کمپن کی شدت', bn:'কম্পনের তীব্রতা', tr:'Titreşim gücü' },
+  'إيقاف': { en:'Off', fr:'Désactivé', id:'Mati', ur:'بند', bn:'বন্ধ', tr:'Kapalı' },
+  'خفيف': { en:'Light', fr:'Léger', id:'Ringan', ur:'ہلکا', bn:'হালকা', tr:'Hafif' },
+  'قوي': { en:'Strong', fr:'Fort', id:'Kuat', ur:'مضبوط', bn:'জোরালো', tr:'Güçlü' },
+  'صوت التكبير': { en:'Takbeer sound', fr:'Son du takbir', id:'Suara takbir', ur:'تکبیر کی آواز', bn:'তাকবিরের শব্দ', tr:'Tekbir sesi' },
+  'نغمةٌ قصيرةٌ مع كل دورة تكبير': { en:'A short tone on every takbeer round', fr:'Une courte note à chaque cycle de takbir', id:'Nada pendek tiap putaran takbir', ur:'ہر تکبیر دورانیے پر مختصر سُر', bn:'প্রতিটি তাকবির চক্রে ছোট সুর', tr:'Her tekbir turunda kısa bir ton' },
+  'لون السمة': { en:'Accent colour', fr:'Couleur d’accent', id:'Warna aksen', ur:'تھیم کا رنگ', bn:'অ্যাকসেন্ট রং', tr:'Vurgu rengi' },
+  'تأثير الزجاج (Glassmorphism)': { en:'Glass effect (glassmorphism)', fr:'Effet verre (glassmorphism)', id:'Efek kaca (glassmorphism)', ur:'شیشے کا اثر (Glassmorphism)', bn:'গ্লাস ইফেক্ট (গ্লাসমরফিজম)', tr:'Cam efekti (glassmorphism)' },
+  'عمقٌ بصريٌّ خفيف خلف البطاقات': { en:'A subtle visual depth behind cards', fr:'Une légère profondeur visuelle derrière les cartes', id:'Kedalaman visual halus di balik kartu', ur:'کارڈز کے پیچھے ہلکی بصری گہرائی', bn:'কার্ডের পেছনে হালকা ভিজ্যুয়াল গভীরতা', tr:'Kartların arkasında hafif görsel derinlik' },
+  'زاد · الإصدار 2.0 · 1447هـ': { en:'Zad · v2.0 · 1447 AH', fr:'Zad · v2.0 · 1447 H', id:'Zad · v2.0 · 1447 H', ur:'زاد · ورژن 2.0 · 1447ھ', bn:'জাদ · সংস্করণ ২.০ · ১৪৪৭ হিজরি', tr:'Zad · sürüm 2.0 · 1447 H' },
+  'عن التطبيق والمطور': { en:'About the app and the developer', fr:'À propos de l’application et du développeur', id:'Tentang aplikasi dan pengembang', ur:'ایپ اور ڈویلپر کے بارے میں', bn:'অ্যাপ ও ডেভেলপার সম্পর্কে', tr:'Uygulama ve geliştirici hakkında' },
+  'مسح': { en:'Clear', fr:'Effacer', id:'Hapus', ur:'صاف کریں', bn:'মুছুন', tr:'Temizle' },
+  'من الفجر إلى طلوع الشمس': { en:'from Fajr until sunrise', fr:'de Fajr au lever du soleil', id:'dari Subuh hingga terbit matahari', ur:'فجر سے طلوعِ آفتاب تک', bn:'ফজর থেকে সূর্যোদয় পর্যন্ত', tr:'Sabah namazından güneş doğana dek' },
+  'من العصر إلى المغرب': { en:'from Asr to Maghrib', fr:'de Asr à Maghrib', id:'dari Asar sampai Magrib', ur:'عصر سے مغرب تک', bn:'আসর থেকে মাগরিব পর্যন্ত', tr:'İkindiden akşama dek' },
+  'عقب كل صلاة مكتوبة': { en:'after every obligatory prayer', fr:'après chaque prière obligatoire', id:'setelah setiap salat wajib', ur:'ہر فرض نماز کے بعد', bn:'প্রতিটি ফরজ নামাজের পরে', tr:'her farz namazdan sonra' },
+  'يُستحب الإكثار منها': { en:'recommended to say often', fr:'recommandés à répéter souvent', id:'dianjurkan diperbanyak', ur:'کثرت سے پڑھنا مستحب ہے', bn:'বেশি বেশি পড়া মুস্তাহাব', tr:'çokça okunması müstehap' },
+  'عند الإيواء إلى الفراش': { en:'when going to bed', fr:'au moment de se coucher', id:'saat akan tidur', ur:'بستر پر جانے کے وقت', bn:'বিছানায় যাওয়ার সময়', tr:'yatağa girerken' },
+  'عند الاستيقاظ من النوم': { en:'on waking from sleep', fr:'au réveil', id:'saat bangun tidur', ur:'نیند سے بیدار ہونے پر', bn:'ঘুম থেকে জাগলে', tr:'uykudan uyanınca' },
+  'في أثناء الصلاة': { en:'during the prayer', fr:'pendant la prière', id:'saat salat', ur:'نماز کے دوران', bn:'নামাজের মধ্যে', tr:'namaz esnasında' },
+  'قبل الطعام وبعده': { en:'before and after eating', fr:'avant et après le repas', id:'sebelum dan sesudah makan', ur:'کھانے سے پہلے اور بعد', bn:'খাওয়ার আগে ও পরে', tr:'yemekten önce ve sonra' },
+  'قبل الوضوء وبعده': { en:'before and after wudu', fr:'avant et après les ablutions', id:'sebelum dan sesudah wudu', ur:'وضو سے پہلے اور بعد', bn:'ওজুর আগে ও পরে', tr:'abdestten önce ve sonra' },
+  'دخول الخلاء والخروج': { en:'entering and leaving the toilet', fr:'entrer et sortir des toilettes', id:'masuk dan keluar toilet', ur:'بیت الخلا میں داخلہ و خروج', bn:'শৌচাগারে প্রবেশ ও প্রস্থান', tr:'tuvalete girerken ve çıkarken' },
+  'دخول المسجد والخروج منه': { en:'entering and leaving the mosque', fr:'entrer et sortir de la mosquée', id:'masuk dan keluar masjid', ur:'مسجد میں داخلہ و خروج', bn:'মসজিদে প্রবেশ ও প্রস্থান', tr:'camiye girerken ve çıkarken' },
+  'الخروج والدخول': { en:'leaving and entering', fr:'sortir et entrer', id:'keluar dan masuk', ur:'خروج و دخول', bn:'প্রস্থান ও প্রবেশ', tr:'çıkarken ve girerken' },
+  'الركوب والسفر': { en:'riding and travelling', fr:'monter et voyager', id:'naik kendaraan dan bepergian', ur:'سواری اور سفر', bn:'যানে ওঠা ও ভ্রমণ', tr:'binek ve yolculuk' },
+  'مواقف متنوعة': { en:'various situations', fr:'situations diverses', id:'berbagai situasi', ur:'متنوع مواقع', bn:'বিভিন্ন পরিস্থিতি', tr:'çeşitli durumlar' },
+  'زاد — يومك مع العبادة والذكر': { en:'Zad — your day with worship and remembrance', fr:'Zad — votre journée avec l’adoration et l’évocation', id:'Zad — harimu bersama ibadah dan zikir', ur:'زاد — عبادت اور ذکر کے ساتھ آپ کا دن', bn:'জাদ — ইবাদত ও যিকিরে আপনার দিন', tr:'Zad — ibadet ve zikirle günün' },
+  '🌙 آية المساء': { en:'🌙 Evening verse', fr:'🌙 Verset du soir', id:'🌙 Ayat petang', ur:'🌙 شام کی آیت', bn:'🌙 সন্ধ্যার আয়াত', tr:'🌙 Akşam ayeti' },
+  'مصاحف مرتّلة · إذاعات قرآنية · سلاسل صوتية —': { en:'Recited mushafs · Quran radio · audio series —', fr:'Moushafs récités · radios coraniques · séries audio —', id:'Mushaf murattal · radio Qur’an · seri audio —', ur:'ترتیل مصاحف · قرآنی ریڈیو · آڈیو سلسلے —', bn:'তিলাওয়াতকৃত মুসহাফ · কুরআন রেডিও · অডিও সিরিজ —', tr:'Tilavetli mushaflar · Kur’an radyosu · sesli seriler —' },
+  'مادة تتبدّل عند كل فتح': { en:'Content that changes on every visit', fr:'Un contenu qui change à chaque visite', id:'Materi yang berganti tiap dibuka', ur:'ہر بار کھلنے پر بدلنے والا مواد', bn:'প্রতিবার খুললে বদলে যাওয়া কনটেন্ট', tr:'Her açılışta değişen içerik' },
+  '📖 المكتبة النصية': { en:'📖 Text library', fr:'📖 Bibliothèque de textes', id:'📖 Perpustakaan teks', ur:'📖 متنی کتب خانہ', bn:'📖 পাঠগ্রন্থাগার', tr:'📖 Metin kütüphanesi' },
+  '🎲 أبواب أخرى': { en:'🎲 More sections', fr:'🎲 Autres rubriques', id:'🎲 Bagian lain', ur:'🎲 دیگر ابواب', bn:'🎲 আরও বিভাগ', tr:'🎲 Diğer bölümler' },
+  'مباحث عامة في السنة': { en:'General topics in the Sunnah', fr:'Thèmes généraux de la Sunna', id:'Topik umum dalam Sunnah', ur:'سنت کے عمومی مباحث', bn:'সুন্নাহর সাধারণ বিষয়', tr:'Sünnette genel konular' },
+  'الحديث وعلومه': { en:'Hadith and its sciences', fr:'Le hadith et ses sciences', id:'Hadis dan ilmunya', ur:'حدیث اور اس کے علوم', bn:'হাদিস ও তার বিজ্ঞান', tr:'Hadis ve ilimleri' },
+  'آل البيت': { en:'The Prophet’s family', fr:'La famille du Prophète', id:'Keluarga Nabi', ur:'اہلِ بیت', bn:'আহলে বাইত', tr:'Ehl-i Beyt' },
+  'العقيدة': { en:'Creed', fr:'Croyance', id:'Akidah', ur:'عقیدہ', bn:'আকিদা', tr:'Akaid' },
+  'الأمر بالمعروف والنهي عن المنكر': { en:'Enjoining good and forbidding wrong', fr:'Ordonner le bien et interdire le mal', id:'Menyuruh kebaikan dan mencegah kemungkaran', ur:'امر بالمعروف و نہی عن المنکر', bn:'সৎকর্মের আদেশ ও অসৎকর্মে নিষেধ', tr:'İyiliği emretmek, kötülüğü yasaklamak' },
+  'الدعوة والحسبة': { en:'Dawah and hisbah', fr:'Prédication et hisba', id:'Dakwah dan hisbah', ur:'دعوت اور حسبہ', bn:'দাওয়াহ ও হিসবা', tr:'Davet ve hisbe' },
+  'فقه الأسرة': { en:'Family fiqh', fr:'Fiqh de la famille', id:'Fikih keluarga', ur:'فقہِ خاندان', bn:'পরিবার বিষয়ক ফিকহ', tr:'Aile fıkhı' },
+  'الفقه وأصوله': { en:'Fiqh and its principles', fr:'Fiqh et ses fondements', id:'Fikih dan usulnya', ur:'فقہ اور اصولِ فقہ', bn:'ফিকহ ও উসুল', tr:'Fıkıh ve usulü' },
+  'السيرة النبوية': { en:'Prophetic biography', fr:'Biographie du Prophète', id:'Sirah Nabawiyah', ur:'سیرتِ نبویؐ', bn:'নবীর জীবনী', tr:'Siyer-i Nebi' },
+  'السيرة والتاريخ': { en:'Biography and history', fr:'Biographie et histoire', id:'Sirah dan sejarah', ur:'سیرت و تاریخ', bn:'জীবনী ও ইতিহাস', tr:'Siyer ve tarih' },
+  'أهل السنة والجماعة': { en:'Ahl al-Sunnah wa al-Jama‘ah', fr:'Gens de la Sunna et du consensus', id:'Ahlussunnah wal Jamaah', ur:'اہلِ سنت و الجماعت', bn:'আহলে সুন্নাহ ওয়াল জামাআত', tr:'Ehl-i Sünnet ve’l-Cemaat' },
+  'الطب والتداوي والرقية الشرعية': { en:'Medicine, treatment and ruqyah', fr:'Médecine, soins et roqya', id:'Kedokteran, pengobatan dan rukyah', ur:'طب، علاج اور رقیہ شرعیہ', bn:'চিকিৎসা ও শরিয়তসম্মত রুকইয়াহ', tr:'Tıp, tedavi ve şer‘î rukye' },
+  'الآداب الشرعية': { en:'Islamic manners', fr:'Bonnes manières islamiques', id:'Adab Islami', ur:'شرعی آداب', bn:'ইসলামি আদব', tr:'İslami edepler' },
+  'الفضائل والآداب': { en:'Virtues and manners', fr:'Vertus et bonnes manières', id:'Keutamaan dan adab', ur:'فضائل و آداب', bn:'ফজিলত ও আদব', tr:'Faziletler ve edepler' },
+  'إمام الحرم المكي — تلاوة مرتلة بصوت الشيخ سعود الشريم.': { en:'Imam of the Grand Mosque — measured recitation by Sheikh Saud Al-Shuraim.', fr:'Imam de la Grande Mosquée — récitation posée du cheikh Saoud al-Chouraïm.', id:'Imam Masjidil Haram — tilawah tartil Syaikh Saud Asy-Syuraim.', ur:'امام حرم مکی — شیخ سعود الشريم کی ترتیل تلاوت۔', bn:'মক্কার গ্র্যান্ড মসজিদের ইমাম — শায়খ সাউদ আশ-শুরাইমের তারতিল তিলাওয়াত।', tr:'Mescid-i Haram imamı — Şeyh Suud eş-Şureym’den ağır tilavet.' },
+  'تلاوات خاشعة بصوت الشيخ مشاري راشد العفاسي على مدار الساعة.': { en:'Humble recitations by Sheikh Mishary Rashid Alafasy, around the clock.', fr:'Récitations recueillies du cheikh Michari Rachid al-Afassy, en continu.', id:'Tilawah khusyuk Syaikh Misyari Rasyid Alafasy, sepanjang waktu.', ur:'شیخ مشاری راشد العفاسی کی خشوع بھری تلاوتیں، چوبیس گھنٹے۔', bn:'শায়খ মিশারি রাশিদ আলাফাসির বিনীত তিলাওয়াত, দিনরাত।', tr:'Şeyh Mişari Raşid el-Afasi’den gün boyu huşulu tilavetler.' },
+  'إمام الحرم المكي الشريف — تلاوات مؤثّرة بصوت الشيخ السديس.': { en:'Imam of the Holy Sanctuary — moving recitations by Sheikh Al-Sudais.', fr:'Imam du Saint Sanctuaire — récitations émouvantes du cheikh al-Soudaïs.', id:'Imam Masjidil Haram — tilawah menyentuh Syaikh As-Sudais.', ur:'امام حرم مکی شریف — شیخ السدیس کی مؤثر تلاوتیں۔', bn:'পবিত্র হারামের ইমাম — শায়খ সুদাইসের হৃদয়স্পর্শী তিলাওয়াত।', tr:'Mescid-i Haram imamı — Şeyh Sudays’tan etkileyici tilavetler.' },
+  'المصحف المرتل — محمد صديق المنشاوي': { en:'Recited mushaf — Muhammad Siddiq Al-Minshawi', fr:'Moushaf récité — Mohamed Siddiq al-Minchawi', id:'Mushaf murattal — Muhammad Shiddiq Al-Minsyawi', ur:'ترتیل مصحف — محمد صدیق المنشاوی', bn:'তিলাওয়াতকৃত মুসহাফ — মুহাম্মদ সিদ্দিক আল-মিনশাবি', tr:'Tilavetli mushaf — Muhammed Sıddık el-Minşavi' },
+  'القرآن الكريم كاملاً برواية حفص عن عاصم بصوت الشيخ المنشاوي.': { en:'The complete Quran in Hafs ‘an Asim, recited by Sheikh Al-Minshawi.', fr:'Le Coran complet selon Hafs d’après Asim, récité par le cheikh al-Minchawi.', id:'Al-Qur’an lengkap riwayat Hafs dari Ashim, dibacakan Syaikh Al-Minsyawi.', ur:'مکمل قرآن، حفص عن عاصم کی روایت میں، شیخ المنشاوی کی آواز میں۔', bn:'সম্পূর্ণ কুরআন, হাফস আন আসিম রেওয়ায়েতে, শায়খ আল-মিনশাবির কণ্ঠে।', tr:'Tam Kur’an, Hafs an Asım rivayetinde, Şeyh el-Minşavi’nin sesinden.' },
+  'إذاعة القرآن الكريم السعودية': { en:'Saudi Quran Radio', fr:'Radio coranique saoudienne', id:'Radio Qur’an Saudi', ur:'سعودی قرآن ریڈیو', bn:'সৌদি কুরআন রেডিও', tr:'Suudi Kur’an Radyosu' },
+  'إذاعة القرآن الكريم من القاهرة': { en:'Quran Radio from Cairo', fr:'Radio coranique du Caire', id:'Radio Qur’an Kairo', ur:'قاہرہ سے قرآن ریڈیو', bn:'কায়রো থেকে কুরআন রেডিও', tr:'Kahire Kur’an Radyosu' },
+  'سعود الشريم': { en:'Saud Al-Shuraim', fr:'Saoud al-Chouraïm', id:'Saud Asy-Syuraim', ur:'سعود الشريم', bn:'সাউদ আশ-শুরাইম', tr:'Saud eş-Şureym' },
+  'مشاري راشد العفاسي': { en:'Mishary Rashid Alafasy', fr:'Michari Rachid al-Afassy', id:'Misyari Rasyid Alafasy', ur:'مشاری راشد العفاسی', bn:'মিশারি রাশিদ আলাফাসি', tr:'Mişari Raşid el-Afasi' },
+  'عبد الرحمن السديس': { en:'Abdulrahman Al-Sudais', fr:'Abdoulrahman al-Soudaïs', id:'Abdurrahman As-Sudais', ur:'عبدالرحمٰن السدیس', bn:'আবদুর রহমান সুদাইস', tr:'Abdurrahman es-Sudays' },
+  'المبكّر': { en:'Early riser', fr:'Lève-tôt', id:'Si awal', ur:'پہلے اٹھنے والا', bn:'প্রভাত-উত্থিত', tr:'Erken kalkan' },
+  'الذاكرون': { en:'Those who remember', fr:'Ceux qui évoquent', id:'Ahli zikir', ur:'ذکر کرنے والے', bn:'যিকিরকারীরা', tr:'Zikredenler' },
+  'الصائمون': { en:'Those who fast', fr:'Ceux qui jeûnent', id:'Ahli puasa', ur:'روزہ دار', bn:'রোজাদার', tr:'Oruç tutanlar' },
+  'الخاتمون': { en:'Those who complete the Quran', fr:'Ceux qui terminent le Coran', id:'Ahli khatam', ur:'ختم کرنے والے', bn:'খতমকারীরা', tr:'Hatim yapanlar' },
+  'المسارعون': { en:'Those who race to good', fr:'Ceux qui rivalisent de bien', id:'Ahli fastabiq', ur:'نیکی میں سبقت کرنے والے', bn:'সৎকর্মে অগ্রগামীরা', tr:'Hayırda yarışanlar' },
+  'المكبّرون': { en:'Those who say takbeer', fr:'Ceux qui prononcent le takbir', id:'Ahli takbir', ur:'تکبیر کہنے والے', bn:'তাকবিরকারীরা', tr:'Tekbir getirenler' },
+  'المتصدقون': { en:'Those who give charity', fr:'Ceux qui donnent en aumône', id:'Ahli sedekah', ur:'صدقہ دینے والے', bn:'দানকারীরা', tr:'Sadaka verenler' },
+  'السابقة': { en:'The forerunners', fr:'Les devanciers', id:'Yang terdepan', ur:'سبقت کرنے والے', bn:'অগ্রগামীরা', tr:'Öncüler' },
+  'عرفة': { en:'Arafah', fr:'Arafat', id:'Arafah', ur:'عرفہ', bn:'আরাফাহ', tr:'Arefe' },
+  '☀️ فاتح': { en:'☀️ Light', fr:'☀️ Clair', id:'☀️ Terang', ur:'☀️ روشن', bn:'☀️ উজ্জ্বল', tr:'☀️ Açık' },
+  '🌙 داكن': { en:'🌙 Dark', fr:'🌙 Sombre', id:'🌙 Gelap', ur:'🌙 تاریک', bn:'🌙 অন্ধকার', tr:'🌙 Koyu' },
+  'زاد 2026 · بدون إعلانات 📴': { en:'Zad 2026 · no ads 📴', fr:'Zad 2026 · sans publicité 📴', id:'Zad 2026 · tanpa iklan 📴', ur:'زاد 2026 · اشتہارات کے بغیر 📴', bn:'জাদ ২০২৬ · বিজ্ঞাপনহীন 📴', tr:'Zad 2026 · reklamsız 📴' },
+  'قرآن': { en:'Quran', fr:'Coran', id:'Al-Qur’an', ur:'قرآن', bn:'কুরআন', tr:'Kur’an' },
+  '🎬 مكتبة المحتوى': { en:'🎬 Content library', fr:'🎬 Bibliothèque de contenus', id:'🎬 Pustaka konten', ur:'🎬 مواد کا کتب خانہ', bn:'🎬 কনটেন্ট লাইব্রেরি', tr:'🎬 İçerik kütüphanesi' },
+  'محاضرات ومقاطع مختارة': { en:'Selected lectures and clips', fr:'Conférences et extraits choisis', id:'Ceramah dan klip pilihan', ur:'منتخب بیانات اور کلپس', bn:'নির্বাচিত বক্তৃতা ও ক্লিপ', tr:'Seçme sohbetler ve klipler' },
+  'محاضرة': { en:'Lecture', fr:'Conférence', id:'Ceramah', ur:'بیان', bn:'বক্তৃতা', tr:'Sohbet' },
+  'علماء ومقدمون': { en:'Scholars and presenters', fr:'Savants et présentateurs', id:'Ulama dan pemateri', ur:'علماء اور مقررین', bn:'আলিম ও উপস্থাপক', tr:'Alimler ve sunucular' },
+  'نقطة علمية': { en:'Quick benefit', fr:'Point bénéfique', id:'Poin ilmu', ur:'علمی نکتہ', bn:'জ্ঞানগর্ভ পয়েন্ট', tr:'Kısa fayda' },
+  'قائمة المحاضرات': { en:'Lectures list', fr:'Liste des conférences', id:'Daftar ceramah', ur:'بیانات کی فہرست', bn:'বক্তৃতার তালিকা', tr:'Sohbet listesi' },
+  'الكل': { en:'All', fr:'Tout', id:'Semua', ur:'سب', bn:'সব', tr:'Tümü' },
+  '🕋 عشر ذي الحجة': { en:'🕋 First ten of Dhul-Hijjah', fr:'🕋 Les dix premiers de Dhou al-hijja', id:'🕋 Sepuluh hari Zulhijah', ur:'🕋 ذوالحجہ کے پہلے عشرے', bn:'🕋 জিলহজের প্রথম দশক', tr:'🕋 Zilhicce’nin ilk onu' },
+  '💚 التزكية والإيمان': { en:'💚 Purification and faith', fr:'💚 Purification et foi', id:'💚 Tazkiyah dan iman', ur:'💚 تزکیہ اور ایمان', bn:'💚 তাযকিয়া ও ঈমান', tr:'💚 Arınma ve iman' },
+  '📜 السيرة النبوية': { en:'📜 Prophetic biography', fr:'📜 Biographie du Prophète', id:'📜 Sirah Nabawiyah', ur:'📜 سیرتِ نبویؐ', bn:'📜 নবীর জীবনী', tr:'📜 Siyer-i Nebi' },
+  '🧭 سلسلة الصحابة': { en:'🧭 Companions series', fr:'🧭 Série des Compagnons', id:'🧭 Seri Sahabat', ur:'🧭 صحابہ کا سلسلہ', bn:'🧭 সাহাবিদের সিরিজ', tr:'🧭 Sahabeler serisi' },
+  '📖 قصص وعبر': { en:'📖 Stories and lessons', fr:'📖 Récits et leçons', id:'📖 Kisah dan pelajaran', ur:'📖 کہانیاں اور سبق', bn:'📖 গল্প ও শিক্ষা', tr:'📖 Kıssalar ve dersler' },
+  '🎙️ بودكاست وحوارات': { en:'🎙️ Podcasts and talks', fr:'🎙️ Podcasts et entretiens', id:'🎙️ Podcast dan dialog', ur:'🎙️ پوڈکاسٹ اور گفتگو', bn:'🎙️ পডকাস্ট ও আলাপ', tr:'🎙️ Podcast ve söyleşiler' },
+  '🌙 رمضان': { en:'🌙 Ramadan', fr:'🌙 Ramadan', id:'🌙 Ramadan', ur:'🌙 رمضان', bn:'🌙 রমজান', tr:'🌙 Ramazan' },
+  '📅 محرم وعاشوراء': { en:'📅 Muharram and Ashura', fr:'📅 Muharram et Achoura', id:'📅 Muharam dan Asyura', ur:'📅 محرم اور عاشورہ', bn:'📅 মুহাররম ও আশুরা', tr:'📅 Muharrem ve Aşure' },
+  '⚖️ الفقه والأحكام': { en:'⚖️ Fiqh and rulings', fr:'⚖️ Fiqh et règles', id:'⚖️ Fikih dan hukum', ur:'⚖️ فقہ اور احکام', bn:'⚖️ ফিকহ ও বিধান', tr:'⚖️ Fıkıh ve hükümler' },
+  '🧒 للأطفال': { en:'🧒 For children', fr:'🧒 Pour les enfants', id:'🧒 Untuk anak', ur:'🧒 بچوں کے لیے', bn:'🧒 শিশুদের জন্য', tr:'🧒 Çocuklar için' },
+  '⏱️ المدة:': { en:'⏱️ Duration:', fr:'⏱️ Durée :', id:'⏱️ Durasi:', ur:'⏱️ دورانیہ:', bn:'⏱️ সময়কাল:', tr:'⏱️ Süre:' },
+  'أقل من 30 دقيقة': { en:'Under 30 minutes', fr:'Moins de 30 minutes', id:'Kurang dari 30 menit', ur:'30 منٹ سے کم', bn:'৩০ মিনিটের কম', tr:'30 dakikadan az' },
+  'من 30 إلى 60 دقيقة': { en:'30 to 60 minutes', fr:'De 30 à 60 minutes', id:'30 sampai 60 menit', ur:'30 سے 60 منٹ', bn:'৩০ থেকে ৬০ মিনিট', tr:'30 ila 60 dakika' },
+  'من ساعة إلى ساعة ونصف': { en:'1 to 1.5 hours', fr:'De 1 h à 1 h 30', id:'1 sampai 1,5 jam', ur:'1 سے 1.5 گھنٹے', bn:'১ থেকে দেড় ঘণ্টা', tr:'1 ila 1,5 saat' },
+  'أكثر من ساعة ونصف': { en:'Over 1.5 hours', fr:'Plus de 1 h 30', id:'Lebih dari 1,5 jam', ur:'1.5 گھنٹے سے زیادہ', bn:'দেড় ঘণ্টার বেশি', tr:'1,5 saatten fazla' },
+  '🎤 الشيخ أو المقدم:': { en:'🎤 Scholar or presenter:', fr:'🎤 Savant ou présentateur :', id:'🎤 Ulama atau pemateri:', ur:'🎤 عالم یا مقرر:', bn:'🎤 আলিম বা উপস্থাপক:', tr:'🎤 Alim veya sunucu:' },
+  '🎲 خلط': { en:'🎲 Shuffle', fr:'🎲 Mélanger', id:'🎲 Acak', ur:'🎲 خلط ملط', bn:'🎲 এলোমেলো', tr:'🎲 Karıştır' },
+  '⭐ مميز': { en:'⭐ Featured', fr:'⭐ En vedette', id:'⭐ Unggulan', ur:'⭐ نمایاں', bn:'⭐ নির্বাচিত', tr:'⭐ Öne çıkan' },
+  '🆕 جديد': { en:'🆕 New', fr:'🆕 Nouveau', id:'🆕 Baru', ur:'🆕 نیا', bn:'🆕 নতুন', tr:'🆕 Yeni' },
+  '🔥 مهم': { en:'🔥 Important', fr:'🔥 Important', id:'🔥 Penting', ur:'🔥 اہم', bn:'🔥 গুরুত্বপূর্ণ', tr:'🔥 Önemli' },
+  'عشر ذي الحجة — التخطيط العملي': { en:'The first ten of Dhul-Hijjah — a practical plan', fr:'Les dix premiers de Dhou al-hijja — un plan pratique', id:'Sepuluh hari Zulhijah — rencana praktis', ur:'ذوالحجہ کے عشرے — عملی منصوبہ', bn:'জিলহজের প্রথম দশক — বাস্তব পরিকল্পনা', tr:'Zilhiccenin ilk onu — pratik plan' },
+  'لا تدخل العشر قبل مشاهدة هذا المقطع': { en:'Don’t enter the ten days without watching this', fr:'N’entrez pas dans les dix jours sans voir cette vidéo', id:'Jangan masuki sepuluh hari ini sebelum menonton', ur:'یہ کلپ دیکھے بغیر عشرے میں نہ جائیں', bn:'এই ক্লিপ না দেখে দশকে ঢুকবেন না', tr:'Bu klibi izlemeden on güne girmeyin' },
+  'العَشر الأُوَل من ذي الحِجَّة': { en:'The first ten days of Dhul-Hijjah', fr:'Les dix premiers jours de Dhou al-hijja', id:'Sepuluh hari pertama Zulhijah', ur:'ذوالحجہ کے پہلے دس دن', bn:'জিলহজের প্রথম দশ দিন', tr:'Zilhiccenin ilk on günü' },
+  'أوائل ذي الحجة | أفضل أيام الدهر': { en:'Start of Dhul-Hijjah | the best days of the year', fr:'Début de Dhou al-hijja | les meilleurs jours de l’année', id:'Awal Zulhijah | hari terbaik sepanjang tahun', ur:'ذوالحجہ کا آغاز | سال کے بہترین دن', bn:'জিলহজের শুরু | বছরের সেরা দিন', tr:'Zilhiccenin başı | yılın en hayırlı günleri' },
+  'الغيرة': { en:'jealousy', fr:'la jalousie', id:'kecemburuan', ur:'رشک', bn:'ঈর্ষা', tr:'kıskançlık' },
+  'الكذب': { en:'lying', fr:'le mensonge', id:'kebohongan', ur:'جھوٹ', bn:'মিথ্যা', tr:'yalan' },
+  'الطلاق': { en:'divorce', fr:'le divorce', id:'perceraian', ur:'طلاق', bn:'তালাক', tr:'boşanma' },
+  'الموضة': { en:'fashion', fr:'la mode', id:'mode', ur:'فیشن', bn:'ফ্যাশন', tr:'moda' },
+  'التشتت': { en:'distraction', fr:'la dispersion', id:'gangguan fokus', ur:'بکھراؤ', bn:'মনোযোগহীনতা', tr:'dağınık zihin' },
+  'التوكل': { en:'tawakkul', fr:'la confiance en Allah', id:'tawakal', ur:'توکل', bn:'তাওয়াক্কুল', tr:'tevekkül' },
+  'اتباع الهوى': { en:'following desires', fr:'suivre ses passions', id:'mengikuti hawa nafsu', ur:'خواہشات کی پیروی', bn:'খেয়াল-খুশির অনুসরণ', tr:'hevese uymak' },
+  'التفاهة': { en:'triviality', fr:'la futilité', id:'kesia-siaan', ur:'ہلکا پن', bn:'তুচ্ছতা', tr:'boş işler' },
+  'الأحداث الجارية': { en:'current events', fr:'l’actualité', id:'peristiwa terkini', ur:'موجودہ واقعات', bn:'চলমান ঘটনা', tr:'güncel olaylar' },
+  'الانضباط وضياع الوقت': { en:'discipline and wasting time', fr:'la discipline et la perte de temps', id:'kedisiplinan dan membuang waktu', ur:'نظم و ضبط اور وقت کا ضیاع', bn:'শৃঙ্খলা ও সময় নষ্ট', tr:'disiplin ve zaman kaybı' },
+  'حب الظهور': { en:'seeking attention', fr:'la recherche de visibilité', id:'mencari perhatian', ur:'شہرت کی چاہت', bn:'প্রদর্শনেচ্ছা', tr:'gösteriş sevdası' },
+  'السوشيال ميديا': { en:'social media', fr:'les réseaux sociaux', id:'media sosial', ur:'سوشل میڈیا', bn:'সোশ্যাল মিডিয়া', tr:'sosyal medya' },
+  'الصحاب': { en:'choosing friends', fr:'le choix des amis', id:'memilih teman', ur:'سنگت کا انتخاب', bn:'বন্ধু নির্বাচন', tr:'arkadaş seçimi' },
   'انشر التطبيق': { en:'Share the app', fr:'Partager l’app', id:'Bagikan aplikasi', ur:'ایپ شیئر کریں', bn:'অ্যাপ শেয়ার করুন', tr:'Uygulamayı paylaş' },
 };
 
@@ -1543,4 +1900,253 @@ const PAGE_TITLES = {
 })();
 
 /* خريطة النصوص العامة متاحة للصفحات (لبطاقة «الآن» الديناميكية) */
+
+/* ══════════════════════════════════════════════════════════
+   TOASTS — ترجمة رسائل التنبيه (كانت عربية فقط في كل الواجهات)
+   ══════════════════════════════════════════════════════════ */
+const TOASTS = {
+  'أحسنت! جزاك الله خيراً ✅': { en:'Well done! May Allah reward you ✅', fr:'Bravo ! Qu’Allah te récompense ✅', id:'Bagus! Semoga Allah membalas kebaikanmu ✅', ur:'بہت خوب! اللہ آپ کو بہتر بدلہ دے ✅', bn:'চমৎকার! আল্লাহ আপনাকে উত্তম প্রতিদান দিন ✅', tr:'Aferin! Allah seni hayırla mükâfatlandırsın ✅' },
+  'اختر ملف صورة': { en:'Choose an image file', fr:'Choisissez un fichier image', id:'Pilih berkas gambar', ur:'تصویر کی فائل منتخب کریں', bn:'একটি ছবির ফাইল বাছুন', tr:'Bir görsel dosyası seç' },
+  'التفسير المختصر متاح أعلاه': { en:'The brief tafsir is shown above', fr:'Le tafsir abrégé est affiché ci-dessus', id:'Tafsir ringkas tampil di atas', ur:'مختصر تفسیر اوپر موجود ہے', bn:'সংক্ষিপ্ত তাফসির উপরে দেওয়া আছে', tr:'Kısa tefsir yukarıda gösteriliyor' },
+  'التفسير غير متاح حالياً': { en:'Tafsir is not available right now', fr:'Le tafsir n’est pas disponible pour le moment', id:'Tafsir belum tersedia saat ini', ur:'تفسیر اس وقت دستیاب نہیں', bn:'তাফসির এখন পাওয়া যাচ্ছে না', tr:'Tefsir şu anda mevcut değil' },
+  'اللهم تقبل منا ومنكم صالح الأعمال 🌸': { en:'O Allah, accept our good deeds 🌸', fr:'Ô Allah, accepte nos bonnes œuvres 🌸', id:'Ya Allah, terimalah amal baik kami 🌸', ur:'اے اللہ، ہماری نیک اعمال قبول فرما 🌸', bn:'হে আল্লাহ, আমাদের নেক আমল কবুল করুন 🌸', tr:'Allah’ım, salih amellerimizi kabul et 🌸' },
+  'انسخ الرابط وشاركه': { en:'Copy the link and share it', fr:'Copiez le lien et partagez-le', id:'Salin tautan lalu bagikan', ur:'لنک کاپی کریں اور شیئر کریں', bn:'লিংক কপি করে শেয়ার করুন', tr:'Bağlantıyı kopyalayıp paylaş' },
+  'انسخ النص يدوياً': { en:'Copy the text manually', fr:'Copiez le texte manuellement', id:'Salin teksnya secara manual', ur:'متن خود کاپی کریں', bn:'লেখাটি নিজে কপি করুন', tr:'Metni elle kopyala' },
+  'تذكير: بر الوالدين من أحب الأعمال إلى الله ❤️': { en:'Reminder: honouring parents is among the deeds Allah loves most ❤️', fr:'Rappel : la bonté envers les parents est parmi les actes les plus aimés d’Allah ❤️', id:'Pengingat: berbakti kepada orang tua adalah amal yang paling dicintai Allah ❤️', ur:'یاد دہانی: والدین کی خدمت اللہ کو سب سے زیادہ پسند ہے ❤️', bn:'স্মরণ: পিতা-মাতার সেবা আল্লাহর সবচেয়ে প্রিয় কাজ ❤️', tr:'Hatırlatma: anne babaya iyilik, Allah’ın en sevdiği amellerdendir ❤️' },
+  'تعذّر الحفظ': { en:'Could not save', fr:'Enregistrement impossible', id:'Gagal menyimpan', ur:'محفوظ نہیں ہو سکا', bn:'সংরক্ষণ করা যায়নি', tr:'Kaydedilemedi' },
+  'تعذّر جلب التفسير — تحقق من الاتصال': { en:'Could not load the tafsir — check your connection', fr:'Impossible de charger le tafsir — vérifiez la connexion', id:'Gagal memuat tafsir — periksa koneksi', ur:'تفسیر حاصل نہیں ہو سکی — رابطہ چیک کریں', bn:'তাফসির আনা যায়নি — সংযোগ পরীক্ষা করুন', tr:'Tefsir yüklenemedi — bağlantını kontrol et' },
+  'تعذّرت الطباعة من هذا المتصفح': { en:'Printing is not supported in this browser', fr:'L’impression n’est pas prise en charge par ce navigateur', id:'Pencetakan tidak didukung di peramban ini', ur:'اس براؤزر میں پرنٹ ممکن نہیں', bn:'এই ব্রাউজারে প্রিন্ট করা যাবে না', tr:'Bu tarayıcıda yazdırma desteklenmiyor' },
+  'تم اختيار الخطة ✅': { en:'Plan selected ✅', fr:'Plan sélectionné ✅', id:'Rencana dipilih ✅', ur:'منصوبہ منتخب ہو گیا ✅', bn:'পরিকল্পনা নির্বাচিত ✅', tr:'Plan seçildi ✅' },
+  'تم النسخ 📋': { en:'Copied 📋', fr:'Copié 📋', id:'Disalin 📋', ur:'کاپی ہو گیا 📋', bn:'কপি হয়েছে 📋', tr:'Kopyalandı 📋' },
+  'تم تحديث إعداد التذكير ✅': { en:'Reminder setting updated ✅', fr:'Réglage du rappel mis à jour ✅', id:'Pengaturan pengingat diperbarui ✅', ur:'یاد دہانی کی ترتیب اپ ڈیٹ ہو گئی ✅', bn:'রিমাইন্ডার সেটিং হালনাগাদ হয়েছে ✅', tr:'Hatırlatma ayarı güncellendi ✅' },
+  'تم تحديث الصورة 🌙': { en:'Image updated 🌙', fr:'Image mise à jour 🌙', id:'Gambar diperbarui 🌙', ur:'تصویر اپ ڈیٹ ہو گئی 🌙', bn:'ছবি হালনাগাদ হয়েছে 🌙', tr:'Görsel güncellendi 🌙' },
+  'تم تحديد البطاقة — جاهزة للمشاركة 📤': { en:'Card ready — you can share it 📤', fr:'Carte prête — vous pouvez la partager 📤', id:'Kartu siap — bisa langsung dibagikan 📤', ur:'کارڈ تیار ہے — شیئر کریں 📤', bn:'কার্ড প্রস্তুত — শেয়ার করুন 📤', tr:'Kart hazır — paylaşabilirsin 📤' },
+  'تم حفظ الإعداد ✅': { en:'Setting saved ✅', fr:'Réglage enregistré ✅', id:'Pengaturan disimpan ✅', ur:'ترتیب محفوظ ہو گئی ✅', bn:'সেটিং সংরক্ষিত ✅', tr:'Ayar kaydedildi ✅' },
+  'تمت إعادة العداد 🔄': { en:'Counter reset 🔄', fr:'Compteur réinitialisé 🔄', id:'Penghitung direset 🔄', ur:'کاؤنٹر ری سیٹ ہو گیا 🔄', bn:'কাউন্টার রিসেট হয়েছে 🔄', tr:'Sayaç sıfırlandı 🔄' },
+  'تهنئة العيد تجدد المحبة 🌙': { en:'Eid greetings renew love 🌙', fr:'Les vœux de l’Aïd renouvellent l’affection 🌙', id:'Ucapan Idul Fitri menyegarkan kasih sayang 🌙', ur:'عید کی مبارکباد محبت تازہ کرتی ہے 🌙', bn:'ঈদের শুভেচ্ছা ভালোবাসা নতুন করে 🌙', tr:'Bayram tebriği sevgiyi tazeler 🌙' },
+  'جارٍ تجهيز الصورة…': { en:'Preparing the image…', fr:'Préparation de l’image…', id:'Menyiapkan gambar…', ur:'تصویر تیار ہو رہی ہے…', bn:'ছবি তৈরি হচ্ছে…', tr:'Görsel hazırlanıyor…' },
+  'حفظ الله أخوتك ورزقكم المحبة 💚': { en:'May Allah preserve your brotherhood and grant you love 💚', fr:'Qu’Allah préserve votre fraternité et vous accorde l’affection 💚', id:'Semoga Allah menjaga ukhuwah dan mengaruniakan kasih sayang 💚', ur:'اللہ آپ کی بھائی چارہ قائم رکھے اور محبت عطا فرمائے 💚', bn:'আল্লাহ আপনার ভ্রাতৃত্ব রক্ষা করুন ও ভালোবাসা দিন 💚', tr:'Allah kardeşliğinizi korusun ve size sevgi versin 💚' },
+  'سجّلت هذا العمل بالفعل ✅': { en:'You already logged this deed ✅', fr:'Vous avez déjà enregistré cet acte ✅', id:'Amal ini sudah kamu catat ✅', ur:'یہ عمل پہلے ہی درج ہے ✅', bn:'এই আমলটি আগেই লিপিবদ্ধ হয়েছে ✅', tr:'Bu ameli zaten kaydettin ✅' },
+  'سيتم توجيهك لمنصة التبرع الموثوقة 🌟': { en:'You’ll be taken to the trusted donation platform 🌟', fr:'Vous serez redirigé vers la plateforme de dons de confiance 🌟', id:'Kamu akan diarahkan ke platform donasi terpercaya 🌟', ur:'آپ کو قابلِ اعتماد عطیہ پلیٹ فارم پر بھیجا جائے گا 🌟', bn:'আপনাকে নির্ভরযোগ্য দান প্ল্যাটফর্মে নেওয়া হবে 🌟', tr:'Güvenilir bağış platformuna yönlendirileceksin 🌟' },
+  'صلة الرحم تزيد العمر والرزق 🌟': { en:'Keeping family ties increases lifespan and provision 🌟', fr:'Maintenir les liens familiaux allonge la vie et la subsistance 🌟', id:'Menyambung silaturahmi memanjangkan umur dan rezeki 🌟', ur:'صلہ رحمی عمر اور رزق میں اضافہ کرتی ہے 🌟', bn:'আত্মীয়তার বন্ধন আয়ু ও রিজিক বাড়ায় 🌟', tr:'Akrabalık bağını korumak ömrü ve rızkı artırır 🌟' },
+  'لقد سجّلت هذا العمل بالفعل ✅': { en:'You have already logged this deed ✅', fr:'Vous avez déjà enregistré cet acte ✅', id:'Amal ini sudah pernah kamu catat ✅', ur:'آپ یہ عمل پہلے درج کر چکے ہیں ✅', bn:'আপনি এই আমলটি আগেই লিপিবদ্ধ করেছেন ✅', tr:'Bu ameli daha önce kaydettin ✅' },
+  'ما شاء الله! أتممت الختمة كاملة 🏆': { en:'MashaAllah! You completed the whole khatma 🏆', fr:'MâchâAllah ! Vous avez terminé toute la khatma 🏆', id:'Masyaallah! Kamu menuntaskan khataman penuh 🏆', ur:'ما شاء اللہ! آپ نے پوری ختم مکمل کر لی 🏆', bn:'মাশাআল্লাহ! আপনি পুরো খতম সম্পন্ন করেছেন 🏆', tr:'Mâşâallah! Hatmin tamamını bitirdin 🏆' },
+  'هذا الهدف مُضاف بالفعل': { en:'This goal is already added', fr:'Cet objectif est déjà ajouté', id:'Target ini sudah ditambahkan', ur:'یہ ہدف پہلے ہی شامل ہے', bn:'এই লক্ষ্য আগেই যোগ করা হয়েছে', tr:'Bu hedef zaten eklendi' },
+  'وضع بلا ميكروفون — اقرأ الآية ثم قيّم نفسك': { en:'No-microphone mode — recite the verse, then assess yourself', fr:'Mode sans micro — récitez le verset, puis évaluez-vous', id:'Mode tanpa mikrofon — baca ayatnya, lalu nilai dirimu', ur:'بغیر مائیک موڈ — آیت پڑھیں پھر خود جانچیں', bn:'মাইক ছাড়া মোড — আয়াত পড়ে নিজেকে মূল্যায়ন করুন', tr:'Mikrofonsuz mod — ayeti oku, sonra kendini değerlendir' },
+  '⏳ جارٍ تجهيز الصورة...': { en:'Preparing the image…', fr:'Préparation de l’image…', id:'Menyiapkan gambar…', ur:'تصویر تیار ہو رہی ہے…', bn:'ছবি তৈরি হচ্ছে…', tr:'Görsel hazırlanıyor…' },
+  '▶️ اضغط مرة أخرى للتشغيل': { en:'Tap once more to play', fr:'Appuyez encore une fois pour lire', id:'Ketuk sekali lagi untuk memutar', ur:'چلانے کے لیے دوبارہ دبائیں', bn:'চালাতে আরেকবার চাপুন', tr:'Oynatmak için bir kez daha dokun' },
+  '⚠️ أدخل سعر جرام الذهب أولاً': { en:'Enter the gold price per gram first', fr:'Saisissez d’abord le prix du gramme d’or', id:'Masukkan dulu harga emas per gram', ur:'پہلے سونے کی فی گرام قیمت درج کریں', bn:'আগে প্রতি গ্রাম সোনার দাম লিখুন', tr:'Önce gram altın fiyatını gir' },
+  '⚠️ إنشاء الصورة يحتاج اتصالاً بالإنترنت أول مرة': { en:'Creating the image needs internet the first time', fr:'La création de l’image nécessite Internet la première fois', id:'Pembuatan gambar butuh internet pada kali pertama', ur:'پہلی بار تصویر بنانے کے لیے انٹرنیٹ درکار ہے', bn:'প্রথমবার ছবি তৈরি করতে ইন্টারনেট দরকার', tr:'Görseli ilk kez oluşturmak için internet gerekir' },
+  '⚠️ اختر إجابة أولاً': { en:'Choose an answer first', fr:'Choisissez d’abord une réponse', id:'Pilih jawaban dulu', ur:'پہلے جواب منتخب کریں', bn:'আগে একটি উত্তর বাছুন', tr:'Önce bir cevap seç' },
+  '⚠️ المتصفح لا يدعم الإشعارات': { en:'This browser doesn’t support notifications', fr:'Ce navigateur ne prend pas en charge les notifications', id:'Peramban ini tidak mendukung notifikasi', ur:'یہ براؤزر اطلاعات کی اجازت نہیں دیتا', bn:'এই ব্রাউজার নোটিফিকেশন সমর্থন করে না', tr:'Bu tarayıcı bildirimleri desteklemiyor' },
+  '⚠️ تعذّر إنشاء الصورة': { en:'Could not create the image', fr:'Impossible de créer l’image', id:'Gagal membuat gambar', ur:'تصویر بنائی نہیں جا سکی', bn:'ছবি তৈরি করা যায়নি', tr:'Görsel oluşturulamadı' },
+  '⚠️ جرّب مجدداً': { en:'Try again', fr:'Réessayez', id:'Coba lagi', ur:'دوبارہ کوشش کریں', bn:'আবার চেষ্টা করুন', tr:'Tekrar dene' },
+  '⚠️ فات الحج — راجع حالتك': { en:'Hajj has passed — check your status', fr:'Le Hajj est passé — vérifiez votre situation', id:'Haji sudah lewat — periksa statusmu', ur:'حج رہ گیا — اپنی حالت دیکھیں', bn:'হজ ছুটে গেছে — আপনার অবস্থা দেখুন', tr:'Hac geçti — durumunu gözden geçir' },
+  '⚠️ فعّل الإشعارات أولًا من الأعلى': { en:'Enable notifications first from the top', fr:'Activez d’abord les notifications en haut', id:'Aktifkan notifikasi dulu di bagian atas', ur:'پہلے اوپر سے اطلاعات فعال کریں', bn:'আগে উপরে থেকে নোটিফিকেশন চালু করুন', tr:'Önce üstten bildirimleri aç' },
+  '⚠️ وحدة الإشعارات غير محمّلة — أعد تحميل الصفحة': { en:'Notifications module isn’t loaded — reload the page', fr:'Le module de notifications n’est pas chargé — rechargez la page', id:'Modul notifikasi belum termuat — muat ulang halaman', ur:'اطلاعات ماڈیول لوڈ نہیں ہوا — صفحہ دوبارہ کھولیں', bn:'নোটিফিকেশন মডিউল লোড হয়নি — পেজ রিলোড করুন', tr:'Bildirim modülü yüklenmedi — sayfayı yenile' },
+  '✅ أحسنت! هذا النشاط مكتمل بالفعل': { en:'Well done! This activity is already complete', fr:'Bravo ! Cette activité est déjà terminée', id:'Bagus! Aktivitas ini sudah selesai', ur:'بہت خوب! یہ سرگرمی پہلے ہی مکمل ہے', bn:'চমৎকার! এই কার্যক্রম আগেই সম্পন্ন', tr:'Aferin! Bu etkinlik zaten tamamlandı' },
+  '✅ تم اختيار الخطة': { en:'Plan selected', fr:'Plan sélectionné', id:'Rencana dipilih', ur:'منصوبہ منتخب ہو گیا', bn:'পরিকল্পনা নির্বাচিত', tr:'Plan seçildi' },
+  '✅ تم المشاركة!': { en:'Shared!', fr:'Partagé !', id:'Dibagikan!', ur:'شیئر ہو گیا!', bn:'শেয়ার হয়েছে!', tr:'Paylaşıldı!' },
+  '✅ تم النسخ': { en:'Copied', fr:'Copié', id:'Disalin', ur:'کاپی ہو گیا', bn:'কপি হয়েছে', tr:'Kopyalandı' },
+  '✅ تم تثبيت التطبيق!': { en:'App installed!', fr:'Application installée !', id:'Aplikasi terpasang!', ur:'ایپ انسٹال ہو گئی!', bn:'অ্যাপ ইনস্টল হয়েছে!', tr:'Uygulama yüklendi!' },
+  '✅ تم تحديث الورد المخصص': { en:'Custom wird updated', fr:'Wird personnalisé mis à jour', id:'Wird khusus diperbarui', ur:'حسبِ ضرورت ورد اپ ڈیٹ ہو گیا', bn:'কাস্টম ওয়ারদ হালনাগাদ হয়েছে', tr:'Özel vird güncellendi' },
+  '✅ تم تصدير البيانات': { en:'Data exported', fr:'Données exportées', id:'Data diekspor', ur:'ڈیٹا برآمد ہو گیا', bn:'ডেটা এক্সপোর্ট হয়েছে', tr:'Veriler dışa aktarıldı' },
+  '✅ تم تفعيل الإشعارات!': { en:'Notifications enabled!', fr:'Notifications activées !', id:'Notifikasi diaktifkan!', ur:'اطلاعات فعال ہو گئیں!', bn:'নোটিফিকেশন চালু হয়েছে!', tr:'Bildirimler açıldı!' },
+  '✅ تم حفظ الصورة — شاركها مع أحبابك': { en:'Image saved — share it with your loved ones', fr:'Image enregistrée — partagez-la avec vos proches', id:'Gambar tersimpan — bagikan ke orang tercinta', ur:'تصویر محفوظ ہو گئی — اپنوں سے شیئر کریں', bn:'ছবি সংরক্ষিত — প্রিয়জনদের সঙ্গে শেয়ার করুন', tr:'Görsel kaydedildi — sevdiklerinle paylaş' },
+  '✅ تم حفظ صورة الحساب': { en:'Profile image saved', fr:'Image de profil enregistrée', id:'Gambar profil tersimpan', ur:'پروفائل تصویر محفوظ ہو گئی', bn:'প্রোফাইল ছবি সংরক্ষিত', tr:'Profil görseli kaydedildi' },
+  '✅ تم نسخ الاسم': { en:'Name copied', fr:'Nom copié', id:'Nama disalin', ur:'نام کاپی ہو گیا', bn:'নাম কপি হয়েছে', tr:'İsim kopyalandı' },
+  '✅ تم نسخ التقدم': { en:'Progress copied', fr:'Progression copiée', id:'Kemajuan disalin', ur:'پیش رفت کاپی ہو گئی', bn:'অগ্রগতি কপি হয়েছে', tr:'İlerleme kopyalandı' },
+  '✅ تم نسخ الدعاء': { en:'Du’a copied', fr:'Invocation copiée', id:'Doa disalin', ur:'دعا کاپی ہو گئی', bn:'দুআ কপি হয়েছে', tr:'Dua kopyalandı' },
+  '✅ تم نسخ الرابط': { en:'Link copied', fr:'Lien copié', id:'Tautan disalin', ur:'لنک کاپی ہو گیا', bn:'লিংক কপি হয়েছে', tr:'Bağlantı kopyalandı' },
+  '✅ تم نسخ رابط التطبيق': { en:'App link copied', fr:'Lien de l’application copié', id:'Tautan aplikasi disalin', ur:'ایپ کا لنک کاپی ہو گیا', bn:'অ্যাপের লিংক কপি হয়েছে', tr:'Uygulama bağlantısı kopyalandı' },
+  '✅ تمّ — تقبّل الله': { en:'Done — may Allah accept', fr:'Terminé — qu’Allah l’accepte', id:'Selesai — semoga Allah menerima', ur:'ہو گیا — اللہ قبول فرمائے', bn:'সম্পন্ন — আল্লাহ কবুল করুন', tr:'Tamam — Allah kabul etsin' },
+  '✅ جاهزة للمشاركة': { en:'Ready to share', fr:'Prêt à partager', id:'Siap dibagikan', ur:'شیئر کرنے کے لیے تیار', bn:'শেয়ারের জন্য প্রস্তুত', tr:'Paylaşmaya hazır' },
+  '✅ صحيح! أحسنت': { en:'Correct! Well done', fr:'Correct ! Bravo', id:'Benar! Bagus', ur:'درست! بہت خوب', bn:'সঠিক! চমৎকার', tr:'Doğru! Aferin' },
+  '✅ صحيح! ✨ +5 نور': { en:'Correct! ✨ +5 light', fr:'Correct ! ✨ +5 lumières', id:'Benar! ✨ +5 cahaya', ur:'درست! ✨ +5 نور', bn:'সঠিক! ✨ +৫ নূর', tr:'Doğru! ✨ +5 nur' },
+  '✅ عاد الاتصال بالإنترنت': { en:'Back online', fr:'Connexion rétablie', id:'Kembali online', ur:'انٹرنیٹ دوبارہ جڑ گیا', bn:'ইন্টারনেট আবার চালু', tr:'İnternet geri geldi' },
+  '✅ مكتمل — بارك الله فيك': { en:'Complete — may Allah reward you', fr:'Terminé — qu’Allah te récompense', id:'Selesai — semoga Allah membalasmu', ur:'مکمل — اللہ آپ کو جزائے خیر دے', bn:'সম্পন্ন — আল্লাহ আপনাকে প্রতিদান দিন', tr:'Tamamlandı — Allah razı olsun' },
+  '✓ شكراً — سيساعدنا بلاغك في تحسين المساعد': { en:'Thanks — your report helps us improve the assistant', fr:'Merci — votre signalement nous aide à améliorer l’assistant', id:'Terima kasih — laporanmu membantu kami memperbaiki asisten', ur:'شکریہ — آپ کی اطلاع اسسٹنٹ بہتر بنانے میں مدد دے گی', bn:'ধন্যবাদ — আপনার রিপোর্ট সহায়কটিকে উন্নত করতে সাহায্য করবে', tr:'Teşekkürler — bildirimin asistanı geliştirmemize yardımcı olur' },
+  '✨ +10 نور! أحسنت يا بطل': { en:'✨ +10 light! Well done, champion', fr:'✨ +10 lumières ! Bravo, champion', id:'✨ +10 cahaya! Hebat, jagoan', ur:'✨ +10 نور! شاباش چیمپئن', bn:'✨ +১০ নূর! চমৎকার, চ্যাম্পিয়ন', tr:'✨ +10 nur! Aferin, şampiyon' },
+  '✨ +10 نور! بطلٌ صالح 💚': { en:'✨ +10 light! A righteous champion 💚', fr:'✨ +10 lumières ! Un champion vertueux 💚', id:'✨ +10 cahaya! Jagoan yang saleh 💚', ur:'✨ +10 نور! نیک چیمپئن 💚', bn:'✨ +১০ নূর! নেক চ্যাম্পিয়ন 💚', tr:'✨ +10 nur! Salih bir şampiyon 💚' },
+  '❌ الملف غير صحيح — تأكد أنه ملف JSON من زاد': { en:'Invalid file — make sure it’s a Zad JSON file', fr:'Fichier invalide — vérifiez qu’il s’agit d’un JSON de Zad', id:'Berkas tidak valid — pastikan ini JSON dari Zad', ur:'فائل درست نہیں — یقینی بنائیں یہ زاد کی JSON ہے', bn:'ফাইল সঠিক নয় — নিশ্চিত করুন এটি যাদ-এর JSON', tr:'Dosya geçersiz — Zad JSON dosyası olduğundan emin ol' },
+  '❌ خطأ في التصدير': { en:'Export failed', fr:'Échec de l’exportation', id:'Ekspor gagal', ur:'برآمدگی میں خرابی', bn:'এক্সপোর্ট ব্যর্থ', tr:'Dışa aktarma başarısız' },
+  '❌ فعّلها من إعدادات المتصفح': { en:'Enable it from your browser settings', fr:'Activez-la dans les réglages du navigateur', id:'Aktifkan dari pengaturan peramban', ur:'براؤزر کی ترتیبات سے فعال کریں', bn:'ব্রাউজারের সেটিংস থেকে চালু করুন', tr:'Tarayıcı ayarlarından aç' },
+  '❤️ أُضيفت لمفضّلتك': { en:'Added to your favourites', fr:'Ajouté à vos favoris', id:'Ditambahkan ke favoritmu', ur:'پسندیدہ میں شامل ہو گیا', bn:'প্রিয় তালিকায় যোগ হয়েছে', tr:'Favorilerine eklendi' },
+  '❤️ تمت الإضافة للمفضلة': { en:'Added to favourites', fr:'Ajouté aux favoris', id:'Ditambahkan ke favorit', ur:'پسندیدہ میں شامل ہو گیا', bn:'প্রিয় তালিকায় যোগ হয়েছে', tr:'Favorilere eklendi' },
+  '⬇️ تم تنزيل النسخة الاحتياطية': { en:'Backup downloaded', fr:'Sauvegarde téléchargée', id:'Cadangan diunduh', ur:'بیک اپ ڈاؤن لوڈ ہو گیا', bn:'ব্যাকআপ ডাউনলোড হয়েছে', tr:'Yedek indirildi' },
+  '⬇️ تم تنزيل نسخة بياناتك': { en:'Your data copy was downloaded', fr:'La copie de vos données a été téléchargée', id:'Salinan datamu sudah diunduh', ur:'آپ کے ڈیٹا کی نقل ڈاؤن لوڈ ہو گئی', bn:'আপনার ডেটার কপি ডাউনলোড হয়েছে', tr:'Veri kopyan indirildi' },
+  '⭐ أحسنت! +نجمة': { en:'Well done! +1 star', fr:'Bravo ! +1 étoile', id:'Bagus! +1 bintang', ur:'بہت خوب! +1 ستارہ', bn:'চমৎকার! +১ তারা', tr:'Aferin! +1 yıldız' },
+  '⭐ نجمة جديدة! فهمت خطوة الحج': { en:'New star! You understood a Hajj step', fr:'Nouvelle étoile ! Vous avez compris une étape du Hajj', id:'Bintang baru! Kamu paham satu tahap haji', ur:'نیا ستارہ! آپ نے حج کا ایک مرحلہ سمجھا', bn:'নতুন তারা! হজের একটি ধাপ বুঝেছেন', tr:'Yeni yıldız! Hac adımlarından birini anladın' },
+  '🌐 الترجمة إلى هذه اللغة قيد الإضافة قريباً': { en:'Translation into this language is coming soon', fr:'La traduction dans cette langue arrive bientôt', id:'Terjemahan ke bahasa ini segera hadir', ur:'اس زبان میں ترجمہ جلد شامل ہو گا', bn:'এই ভাষায় অনুবাদ শীঘ্রই আসছে', tr:'Bu dile çeviri yakında geliyor' },
+  '🌟 أهلاً بك أيها البطل! بطاقتُك جاهزة': { en:'Welcome, champion! Your card is ready', fr:'Bienvenue, champion ! Ta carte est prête', id:'Selamat datang, jagoan! Kartumu siap', ur:'خوش آمدید چیمپئن! آپ کا کارڈ تیار ہے', bn:'স্বাগতম, চ্যাম্পিয়ন! আপনার কার্ড প্রস্তুত', tr:'Hoş geldin şampiyon! Kartın hazır' },
+  '🌸 معذورة اليوم — لا تُكتب عليكِ ولا تُحسب لكِ': { en:'Excused today — nothing is recorded for or against you', fr:'Excusée aujourd’hui — rien n’est compté pour ou contre toi', id:'Dimaklumi hari ini — tidak ada yang dicatat untukmu maupun atasmu', ur:'آج معذور ہیں — نہ کچھ لکھا جاتا ہے نہ شمار', bn:'আজ মাফ — আপনার পক্ষে বা বিপক্ষে কিছু লেখা হয় না', tr:'Bugün mazur sayılırsın — lehine de aleyhine de bir şey yazılmaz' },
+  '🌸 مفكّرةٌ جديدةٌ ليومكِ': { en:'A fresh journal page for your day', fr:'Une nouvelle page de journal pour ta journée', id:'Halaman jurnal baru untuk harimu', ur:'آپ کے دن کے لیے نیا صفحہ', bn:'আপনার দিনের জন্য নতুন পাতা', tr:'Günün için yeni bir sayfa' },
+  '🎉 أنجزت 100 تكبيرة! ما شاء الله عليك!': { en:'You reached 100 takbirs! MashaAllah!', fr:'100 takbîr atteints ! MâchâAllah !', id:'Kamu mencapai 100 takbir! Masyaallah!', ur:'آپ نے 100 تکبیریں مکمل کیں! ما شاء اللہ!', bn:'আপনি ১০০ তাকবির পূর্ণ করেছেন! মাশাআল্লাহ!', tr:'100 tekbire ulaştın! Mâşâallah!' },
+  '🎉 ترتيب صحيح!': { en:'Correct order!', fr:'Bon ordre !', id:'Urutan benar!', ur:'ترتیب درست ہے!', bn:'ক্রম সঠিক!', tr:'Doğru sıra!' },
+  '🎉 ما شاء الله — تقبّل الله منك': { en:'MashaAllah — may Allah accept from you', fr:'MâchâAllah — qu’Allah l’accepte de toi', id:'Masyaallah — semoga Allah menerimanya', ur:'ما شاء اللہ — اللہ آپ سے قبول فرمائے', bn:'মাশাআল্লাহ — আল্লাহ আপনার পক্ষ থেকে কবুল করুন', tr:'Mâşâallah — Allah senden kabul etsin' },
+  '🎉 ما شاء الله! أتممت الورد اليومي كاملاً': { en:'MashaAllah! You finished today’s wird', fr:'MâchâAllah ! Tu as terminé le wird du jour', id:'Masyaallah! Kamu menuntaskan wird hari ini', ur:'ما شاء اللہ! آپ نے آج کا ورد مکمل کیا', bn:'মাশাআল্লাহ! আজকের ওয়ারদ সম্পূর্ণ করেছেন', tr:'Mâşâallah! Günün virdini bitirdin' },
+  '🎉 ورد اليوم مكتمل! جزاك الله خيراً 🌟': { en:'Today’s wird is complete! May Allah reward you 🌟', fr:'Le wird du jour est terminé ! Qu’Allah te récompense 🌟', id:'Wird hari ini selesai! Semoga Allah membalasmu 🌟', ur:'آج کا ورد مکمل! اللہ جزائے خیر دے 🌟', bn:'আজকের ওয়ারদ সম্পূর্ণ! আল্লাহ প্রতিদান দিন 🌟', tr:'Günün virdi tamam! Allah razı olsun 🌟' },
+  '🎨 رائع! أكملت النشاط وكسبت نجمة ⭐': { en:'Great! Activity complete — you earned a star ⭐', fr:'Génial ! Activité terminée — une étoile gagnée ⭐', id:'Keren! Aktivitas selesai — dapat satu bintang ⭐', ur:'زبردست! سرگرمی مکمل — ایک ستارہ ملا ⭐', bn:'দারুণ! কার্যক্রম শেষ — একটি তারা পেলেন ⭐', tr:'Harika! Etkinlik tamam — bir yıldız kazandın ⭐' },
+  '🎵 فتح على SoundCloud للتحميل': { en:'Opened on SoundCloud to download', fr:'Ouvert sur SoundCloud pour le téléchargement', id:'Dibuka di SoundCloud untuk diunduh', ur:'ڈاؤن لوڈ کے لیے SoundCloud پر کھل گیا', bn:'ডাউনলোডের জন্য SoundCloud-এ খোলা হয়েছে', tr:'İndirmek için SoundCloud’da açıldı' },
+  '🎵 قريباً: عيد الأضحى': { en:'Coming soon: Eid al-Adha', fr:'Bientôt : Aïd al-Adha', id:'Segera: Idul Adha', ur:'جلد آ رہا ہے: عید الاضحیٰ', bn:'শীঘ্রই: ঈদুল আজহা', tr:'Yakında: Kurban Bayramı' },
+  '🎵 قريباً: لبيك اللهم لبيك': { en:'Coming soon: Labbayk Allahumma Labbayk', fr:'Bientôt : Labbayk Allahumma Labbayk', id:'Segera: Labbaik Allahumma Labbaik', ur:'جلد آ رہا ہے: لبیک اللھم لبیک', bn:'শীঘ্রই: লাব্বাইক আল্লাহুম্মা লাব্বাইক', tr:'Yakında: Lebbeyk Allahümme Lebbeyk' },
+  '🎵 قريباً: يا كعبتي': { en:'Coming soon: Ya Ka‘bati', fr:'Bientôt : Yâ Ka‘batî', id:'Segera: Ya Ka’bati', ur:'جلد آ رہا ہے: یا کعبتی', bn:'শীঘ্রই: ইয়া কাব্বাতি', tr:'Yakında: Yâ Kâbe’ti' },
+  '🏆 ما شاء الله! أتممت الختمة كاملة!': { en:'MashaAllah! You completed the whole khatma!', fr:'MâchâAllah ! Tu as terminé toute la khatma !', id:'Masyaallah! Khatamanmu tuntas!', ur:'ما شاء اللہ! آپ نے پوری ختم مکمل کی!', bn:'মাশাআল্লাহ! পুরো খতম সম্পন্ন!', tr:'Mâşâallah! Hatmin tamamını bitirdin!' },
+  '💾 تم الحفظ': { en:'Saved', fr:'Enregistré', id:'Disimpan', ur:'محفوظ ہو گیا', bn:'সংরক্ষিত', tr:'Kaydedildi' },
+  '💾 تم حفظ حساب الزكاة': { en:'Zakat calculation saved', fr:'Calcul de la zakat enregistré', id:'Perhitungan zakat disimpan', ur:'زکوٰۃ کا حساب محفوظ ہو گیا', bn:'যাকাতের হিসাব সংরক্ষিত', tr:'Zekât hesabı kaydedildi' },
+  '💾 تم حفظ ملاحظتك': { en:'Your note was saved', fr:'Votre note a été enregistrée', id:'Catatanmu tersimpan', ur:'آپ کا نوٹ محفوظ ہو گیا', bn:'আপনার নোট সংরক্ষিত হয়েছে', tr:'Notun kaydedildi' },
+  '📋 تم النسخ': { en:'Copied', fr:'Copié', id:'Disalin', ur:'کاپی ہو گیا', bn:'কপি হয়েছে', tr:'Kopyalandı' },
+  '📋 تم نسخ التقرير — يمكنك إرساله مباشرةً': { en:'Report copied — you can send it right away', fr:'Rapport copié — tu peux l’envoyer directement', id:'Laporan disalin — bisa langsung dikirim', ur:'رپورٹ کاپی ہو گئی — ابھی بھیج سکتے ہیں', bn:'রিপোর্ট কপি হয়েছে — এখনই পাঠাতে পারেন', tr:'Rapor kopyalandı — hemen gönderebilirsin' },
+  '📋 تم نسخ الدعاء': { en:'Du’a copied', fr:'Invocation copiée', id:'Doa disalin', ur:'دعا کاپی ہو گئی', bn:'দুআ কপি হয়েছে', tr:'Dua kopyalandı' },
+  '📋 تم نسخ الرابط': { en:'Link copied', fr:'Lien copié', id:'Tautan disalin', ur:'لنک کاپی ہو گیا', bn:'লিংক কপি হয়েছে', tr:'Bağlantı kopyalandı' },
+  '📋 تم نسخ القصّة': { en:'Story copied', fr:'Histoire copiée', id:'Kisah disalin', ur:'کہانی کاپی ہو گئی', bn:'গল্প কপি হয়েছে', tr:'Hikâye kopyalandı' },
+  '📋 تم نسخ المتن': { en:'Text copied', fr:'Texte copié', id:'Teks disalin', ur:'متن کاپی ہو گیا', bn:'লেখা কপি হয়েছে', tr:'Metin kopyalandı' },
+  '📋 تم نسخ الملخص': { en:'Summary copied', fr:'Résumé copié', id:'Ringkasan disalin', ur:'خلاصہ کاپی ہو گیا', bn:'সারসংক্ষেপ কপি হয়েছে', tr:'Özet kopyalandı' },
+  '📋 تم نسخ الملخص للحافظة': { en:'Summary copied to clipboard', fr:'Résumé copié dans le presse-papiers', id:'Ringkasan disalin ke papan klip', ur:'خلاصہ کلپ بورڈ میں کاپی ہو گیا', bn:'সারসংক্ষেপ ক্লিপবোর্ডে কপি হয়েছে', tr:'Özet panoya kopyalandı' },
+  '📋 تم نسخ النص': { en:'Text copied', fr:'Texte copié', id:'Teks disalin', ur:'متن کاپی ہو گیا', bn:'লেখা কপি হয়েছে', tr:'Metin kopyalandı' },
+  '📡 الفيديو يحتاج اتصالاً بالإنترنت': { en:'The video needs an internet connection', fr:'La vidéo nécessite une connexion Internet', id:'Video ini membutuhkan koneksi internet', ur:'ویڈیو کے لیے انٹرنیٹ درکار ہے', bn:'ভিডিওটির জন্য ইন্টারনেট দরকার', tr:'Video için internet bağlantısı gerekir' },
+  '📥 تم تحميل البطاقة!': { en:'Card downloaded!', fr:'Carte téléchargée !', id:'Kartu terunduh!', ur:'کارڈ ڈاؤن لوڈ ہو گیا!', bn:'কার্ড ডাউনলোড হয়েছে!', tr:'Kart indirildi!' },
+  '📥 تم تحميل مفكّرتكِ': { en:'Your journal was downloaded', fr:'Ton journal a été téléchargé', id:'Jurnalmu sudah diunduh', ur:'آپ کی ڈائری ڈاؤن لوڈ ہو گئی', bn:'আপনার ডায়েরি ডাউনলোড হয়েছে', tr:'Günlüğün indirildi' },
+  '📴 أنت غير متصل — يعمل وضع عدم الاتصال': { en:'You’re offline — offline mode is active', fr:'Vous êtes hors ligne — le mode hors ligne est actif', id:'Kamu offline — mode luring aktif', ur:'آپ آف لائن ہیں — آف لائن موڈ فعال', bn:'আপনি অফলাইন — অফলাইন মোড চালু', tr:'Çevrimdışısın — çevrimdışı mod etkin' },
+  '🔄 الإجابة الصحيحة ظاهرةٌ بالأخضر': { en:'The correct answer is shown in green', fr:'La bonne réponse est en vert', id:'Jawaban benar ditandai hijau', ur:'درست جواب سبز رنگ میں ہے', bn:'সঠিক উত্তর সবুজে দেখানো হয়েছে', tr:'Doğru cevap yeşil gösterilir' },
+  '🔄 تمت إعادة التعيين': { en:'Reset done', fr:'Réinitialisation effectuée', id:'Reset selesai', ur:'ری سیٹ ہو گیا', bn:'রিসেট সম্পন্ন', tr:'Sıfırlama tamamlandı' },
+  '🔄 تمت إعادة تعيين الأذكار': { en:'Adhkar reset', fr:'Adhkâr réinitialisés', id:'Zikir direset', ur:'اذکار ری سیٹ ہو گئے', bn:'জিকির রিসেট হয়েছে', tr:'Zikirler sıfırlandı' },
+  '🔄 جارٍ تحديث التطبيق لأحدث نسخة...': { en:'Updating the app to the latest version…', fr:'Mise à jour de l’application…', id:'Memperbarui aplikasi ke versi terbaru…', ur:'ایپ کو تازہ ترین ورژن میں اپ ڈیٹ کیا جا رہا ہے…', bn:'অ্যাপকে সর্বশেষ সংস্করণে হালনাগাদ করা হচ্ছে…', tr:'Uygulama en son sürüme güncelleniyor…' },
+  '🔄 جرّب تاني! تذكّر: وجه ← يدين ← رأس ← قدم': { en:'Try again! Remember: face ← hands ← head ← feet', fr:'Réessaie ! Rappel : visage ← mains ← tête ← pieds', id:'Coba lagi! Ingat: wajah ← tangan ← kepala ← kaki', ur:'دوبارہ کوشش کریں! یاد رکھیں: چہرہ ← ہاتھ ← سر ← پاؤں', bn:'আবার চেষ্টা করুন! মনে রাখুন: মুখ ← হাত ← মাথা ← পা', tr:'Tekrar dene! Hatırla: yüz ← eller ← baş ← ayaklar' },
+  '🔔 الإشعارات قيد التفعيل': { en:'Enabling notifications', fr:'Activation des notifications', id:'Mengaktifkan notifikasi', ur:'اطلاعات فعال کی جا رہی ہیں', bn:'নোটিফিকেশন চালু হচ্ছে', tr:'Bildirimler açılıyor' },
+  '🔔 تم تفعيل الإشعارات بنجاح!': { en:'Notifications enabled successfully!', fr:'Notifications activées avec succès !', id:'Notifikasi berhasil diaktifkan!', ur:'اطلاعات کامیابی سے فعال ہو گئیں!', bn:'নোটিফিকেশন সফলভাবে চালু হয়েছে!', tr:'Bildirimler başarıyla açıldı!' },
+  '🔕 تم إيقاف تنبيه الأذان': { en:'Adhan alert turned off', fr:'Alerte de l’adhan désactivée', id:'Peringatan azan dimatikan', ur:'اذان کی اطلاع بند کر دی گئی', bn:'আজানের নোটিফিকেশন বন্ধ', tr:'Ezan bildirimi kapatıldı' },
+  '🔕 تم رفض الإشعارات': { en:'Notifications were declined', fr:'Notifications refusées', id:'Notifikasi ditolak', ur:'اطلاعات مسترد کر دی گئیں', bn:'নোটিফিকেশন প্রত্যাখ্যাত', tr:'Bildirimler reddedildi' },
+  '🔗 تم نسخ الرابط': { en:'Link copied', fr:'Lien copié', id:'Tautan disalin', ur:'لنک کاپی ہو گیا', bn:'লিংক কপি হয়েছে', tr:'Bağlantı kopyalandı' },
+  '🗑️ أُزيلت من المفضلة': { en:'Removed from favourites', fr:'Retiré des favoris', id:'Dihapus dari favorit', ur:'پسندیدہ سے ہٹا دیا گیا', bn:'প্রিয় তালিকা থেকে সরানো হয়েছে', tr:'Favorilerden kaldırıldı' },
+  '🗑️ تم حذف الملاحظة': { en:'Note deleted', fr:'Note supprimée', id:'Catatan dihapus', ur:'نوٹ حذف ہو گیا', bn:'নোট মুছে ফেলা হয়েছে', tr:'Not silindi' },
+  '🗑️ تم مسح البيانات': { en:'Data cleared', fr:'Données effacées', id:'Data dihapus', ur:'ڈیٹا صاف ہو گیا', bn:'ডেটা মুছে ফেলা হয়েছে', tr:'Veriler temizlendi' },
+  '🗑️ تمت الإزالة من المفضلة': { en:'Removed from favourites', fr:'Retiré des favoris', id:'Dihapus dari favorit', ur:'پسندیدہ سے ہٹا دیا گیا', bn:'প্রিয় তালিকা থেকে সরানো হয়েছে', tr:'Favorilerden kaldırıldı' },
+  '🤲 بارك الله فيك، تم حفظ التدبر': { en:'May Allah reward you — your reflection was saved', fr:'Qu’Allah te récompense — ta méditation est enregistrée', id:'Semoga Allah membalasmu — tadaburmu tersimpan', ur:'اللہ آپ کو جزا دے — تدبر محفوظ ہو گیا', bn:'আল্লাহ আপনাকে প্রতিদান দিন — তাদাব্বুর সংরক্ষিত', tr:'Allah razı olsun — tefekkürün kaydedildi' },
+  '🧠 أنهيت الاختبار! كسبت 3 نجوم ⭐⭐⭐': { en:'You finished the quiz! 3 stars earned ⭐⭐⭐', fr:'Quiz terminé ! 3 étoiles gagnées ⭐⭐⭐', id:'Kuis selesai! 3 bintang didapat ⭐⭐⭐', ur:'آپ نے کوئز مکمل کیا! 3 ستارے ملے ⭐⭐⭐', bn:'কুইজ শেষ! ৩ তারা পেলেন ⭐⭐⭐', tr:'Testi bitirdin! 3 yıldız kazandın ⭐⭐⭐' },
+  '🧭 البوصلة غير معايرة — حرّك الهاتف على شكل ٨ ثم أعد المحاولة': { en:'Compass not calibrated — move your phone in a figure-8, then try again', fr:'Boussole non calibrée — déplacez le téléphone en forme de 8, puis réessayez', id:'Kompas belum terkalibrasi — gerakkan ponsel membentuk angka 8, lalu coba lagi', ur:'قطب نما کیلیبریٹ نہیں — فون کو 8 کی شکل میں گھمائیں پھر کوشش کریں', bn:'কম্পাস ক্যালিব্রেট হয়নি — ফোনটি ৮ আকৃতিতে ঘুরিয়ে আবার চেষ্টা করুন', tr:'Pusula kalibre değil — telefonu 8 şeklinde hareket ettirip tekrar dene' },
+  '📲 افتح القائمة ← «إضافة للشاشة الرئيسية»': { en:'Open the menu → “Add to Home Screen”', fr:'Ouvrez le menu → « Ajouter à l’écran d’accueil »', id:'Buka menu → “Tambahkan ke Layar Utama”', ur:'مینو کھولیں → «ہوم اسکرین پر شامل کریں»', bn:'মেনু খুলুন → “হোম স্ক্রিনে যোগ করুন”', tr:'Menüyü aç → “Ana ekrana ekle”' },
+  '📖 ممتاز! قرأت القصة وكسبت نجمة ⭐': { en:'Excellent! You read the story and earned a star ⭐', fr:'Excellent ! Histoire lue, une étoile gagnée ⭐', id:'Hebat! Kamu membaca kisahnya dan dapat bintang ⭐', ur:'زبردست! کہانی پڑھی اور ستارہ ملا ⭐', bn:'দারুণ! গল্প পড়ে একটি তারা পেলেন ⭐', tr:'Harika! Hikâyeyi okudun, bir yıldız kazandın ⭐' },
+  'اللَّهُ أَكْبَرُ اللَّهُ أَكْبَرُ وَلِلَّهِ الْحَمْدُ 🎵': { en:'Allahu Akbar, Allahu Akbar, wa lillahi al-hamd 🎵', fr:'Allahou Akbar, Allahou Akbar, wa lillâhi al-hamd 🎵', id:'Allahu Akbar, Allahu Akbar, wa lillahil hamd 🎵', ur:'اللہ اکبر، اللہ اکبر، وللہ الحمد 🎵', bn:'আল্লাহু আকবার, আল্লাহু আকবার, ওয়া লিল্লাহিল হামদ 🎵', tr:'Allahu Ekber, Allahu Ekber, ve lillâhil hamd 🎵' },
+  'الآن': { en:'Now', fr:'Maintenant', id:'Sekarang', ur:'ابھی', bn:'এখন', tr:'Şimdi' },
+};
+
+/* قوالب بمتغيّرات — {n} {name} {label} {title} */
+const TOAST_TPL = {
+  'الهدف الجديد: {n} تسبيحة 🎯': { en:'New target: {n} tasbihs 🎯', fr:'Nouvel objectif : {n} tasbîh 🎯', id:'Target baru: {n} tasbih 🎯', ur:'نیا ہدف: {n} تسبیحیں 🎯', bn:'নতুন লক্ষ্য: {n} তাসবিহ 🎯', tr:'Yeni hedef: {n} tesbih 🎯' },
+  '✅ {n} — دورة مكتملة': { en:'{n} — round complete', fr:'{n} — tour terminé', id:'{n} — putaran selesai', ur:'{n} — دور مکمل', bn:'{n} — চক্র সম্পন্ন', tr:'{n} — tur tamamlandı' },
+  '✅ {label} — دورة مكتملة! (×{n})': { en:'{label} — round complete! (×{n})', fr:'{label} — tour terminé ! (×{n})', id:'{label} — putaran selesai! (×{n})', ur:'{label} — دور مکمل! (×{n})', bn:'{label} — চক্র সম্পন্ন! (×{n})', tr:'{label} — tur tamamlandı! (×{n})' },
+  '✅ الحديث {n} — تم التعليم': { en:'Hadith {n} marked as learned', fr:'Hadith {n} marqué comme appris', id:'Hadis {n} ditandai sudah dipelajari', ur:'حدیث {n} — تعلیم مکمل', bn:'হাদিস {n} — শেখা হয়েছে', tr:'{n}. hadis öğrenildi' },
+  '✅ تم اختيار: {name}': { en:'Selected: {name}', fr:'Sélectionné : {name}', id:'Dipilih: {name}', ur:'منتخب کیا: {name}', bn:'নির্বাচিত: {name}', tr:'Seçildi: {name}' },
+  '✅ تم استيراد {n} عنصر — جارٍ التحديث': { en:'Imported {n} items — refreshing', fr:'{n} éléments importés — actualisation', id:'{n} item diimpor — menyegarkan', ur:'{n} عناصر درآمد ہوئے — اپ ڈیٹ ہو رہا ہے', bn:'{n} আইটেম আমদানি হয়েছে — হালনাগাদ হচ্ছে', tr:'{n} öğe içe aktarıldı — yenileniyor' },
+  '🎉 أتممت {title} كاملة — بارك الله فيك': { en:'You completed {title} — may Allah reward you', fr:'Tu as terminé {title} — qu’Allah te récompense', id:'Kamu menuntaskan {title} — semoga Allah membalasmu', ur:'آپ نے {title} مکمل کیا — اللہ جزا دے', bn:'আপনি {title} সম্পূর্ণ করেছেন — আল্লাহ প্রতিদান দিন', tr:'{title} tamamlandı — Allah razı olsun' },
+  '🎉 ما شاء الله! أتممت {n} تسبيحة': { en:'MashaAllah! You completed {n} tasbihs', fr:'MâchâAllah ! {n} tasbîh accomplis', id:'Masyaallah! {n} tasbih selesai', ur:'ما شاء اللہ! {n} تسبیحیں مکمل', bn:'মাশাআল্লাহ! {n} তাসবিহ সম্পন্ন', tr:'Mâşâallah! {n} tesbih tamamlandı' },
+  '🎯 أُضيف هدف: {title}': { en:'Goal added: {title}', fr:'Objectif ajouté : {title}', id:'Target ditambahkan: {title}', ur:'ہدف شامل ہو گیا: {title}', bn:'লক্ষ্য যোগ হয়েছে: {title}', tr:'Hedef eklendi: {title}' },
+  '🎵 {title}': { en:'{title}', fr:'{title}', id:'{title}', ur:'{title}', bn:'{title}', tr:'{title}' },
+  '🎵 قريباً: {title}': { en:'Coming soon: {title}', fr:'Bientôt : {title}', id:'Segera: {title}', ur:'جلد آ رہا ہے: {title}', bn:'শীঘ্রই: {title}', tr:'Yakında: {title}' },
+  '🏅 وسام جديد: {label}': { en:'New badge: {label}', fr:'Nouveau badge : {label}', id:'Lencana baru: {label}', ur:'نیا تمغہ: {label}', bn:'নতুন ব্যাজ: {label}', tr:'Yeni rozet: {label}' },
+  '💝 بارك الله فيك — {title}': { en:'May Allah reward you — {title}', fr:'Qu’Allah te récompense — {title}', id:'Semoga Allah membalasmu — {title}', ur:'اللہ آپ کو جزا دے — {title}', bn:'আল্লাহ আপনাকে প্রতিদান দিন — {title}', tr:'Allah razı olsun — {title}' },
+  '💾 تم حفظ {n} تسبيحة': { en:'{n} tasbihs saved', fr:'{n} tasbîh enregistrés', id:'{n} tasbih disimpan', ur:'{n} تسبیحیں محفوظ ہو گئیں', bn:'{n} তাসবিহ সংরক্ষিত', tr:'{n} tesbih kaydedildi' },
+  '📍 تم اختيار {name}': { en:'Selected: {name}', fr:'Sélectionné : {name}', id:'Dipilih: {name}', ur:'منتخب کیا: {name}', bn:'নির্বাচিত: {name}', tr:'Seçildi: {name}' },
+  '📖 جزء {n} مكتمل — بارك الله فيك': { en:'Juz {n} complete — may Allah reward you', fr:'Juz {n} terminé — qu’Allah te récompense', id:'Juz {n} selesai — semoga Allah membalasmu', ur:'پارہ {n} مکمل — اللہ جزا دے', bn:'পারা {n} সম্পূর্ণ — আল্লাহ প্রতিদান দিন', tr:'{n}. cüz tamam — Allah razı olsun' },
+  '🔊 {n} تكبيرة — ما شاء الله!': { en:'{n} takbirs — MashaAllah!', fr:'{n} takbîr — MâchâAllah !', id:'{n} takbir — Masyaallah!', ur:'{n} تکبیریں — ما شاء اللہ!', bn:'{n} তাকবির — মাশাআল্লাহ!', tr:'{n} tekbir — Mâşâallah!' },
+  '🔔 تنبيه الأذان مفعّل — {n} إشعارات مجدولة': { en:'Adhan alert on — {n} notifications scheduled', fr:'Alerte adhan activée — {n} notifications programmées', id:'Peringatan azan aktif — {n} notifikasi dijadwalkan', ur:'اذان کی اطلاع فعال — {n} اطلاعات شیڈول ہوئیں', bn:'আজানের নোটিফিকেশন চালু — {n} নোটিফিকেশন নির্ধারিত', tr:'Ezan bildirimi açık — {n} bildirim planlandı' },
+  '🎉 مبروك! حصلت على {name}': { en:'Congrats! You earned {name}', fr:'Bravo ! Tu as gagné {name}', id:'Selamat! Kamu mendapat {name}', ur:'مبارک ہو! آپ نے {name} حاصل کیا', bn:'অভিনন্দন! আপনি {name} পেয়েছেন', tr:'Tebrikler! {name} kazandın' },
+  '🌱 نبتةُ «{name}» كبرت! ✨ +5 نور': { en:'The “{name}” plant grew! ✨ +5 light', fr:'La plante « {name} » a grandi ! ✨ +5 lumières', id:'Tanaman “{name}” tumbuh! ✨ +5 cahaya', ur:'«{name}» کا پودا بڑھ گیا! ✨ +5 نور', bn:'“{name}” গাছটি বেড়েছে! ✨ +৫ নূর', tr:'“{name}” fidanı büyüdü! ✨ +5 nur' },
+  '🌳 «{name}» مثمرةٌ بالكامل، ما شاء الله!': { en:'“{name}” is fully fruitful — MashaAllah!', fr:'« {name} » est pleinement fructueux — MâchâAllah !', id:'“{name}” berbuah penuh — Masyaallah!', ur:'«{name}» پوری طرح پھل دار ہے — ما شاء اللہ!', bn:'“{name}” পুরোপুরি ফলবান — মাশাআল্লাহ!', tr:'“{name}” tam meyveli — Mâşâallah!' },
+};
+
+/* ZT(msg) — تُرجم رسالة تنبيه عربية إلى اللغة الحالية.
+   المطابقة تامة أولًا، ثم قوالب بمتغيّرات (أطول قالب أولًا)، وإلا يُعاد النص كما هو. */
+/* تُرجم الأجزاء المتغيّرة داخل الرسالة إن كانت في UI_MAP (اسم شارة/قسم…) */
+const ZT_PARTS = {
+  'المبكّر': { en:'Early Bird', fr:'Lève-tôt', id:'Si Awal', ur:'ابتدائی', bn:'প্রভাতী', tr:'Erkenci' },
+  'الذاكرون': { en:'The Rememberers', fr:'Les invocateurs', id:'Para Pezikir', ur:'ذاکرین', bn:'যিকিরকারীরা', tr:'Zikredenler' },
+  'الصائمون': { en:'The Fasters', fr:'Les jeûneurs', id:'Para Puasa', ur:'روزہ دار', bn:'রোজাদাররা', tr:'Oruç Tutanlar' },
+  'الخاتمون': { en:'Khatma Completers', fr:'Ceux qui achèvent', id:'Penuntaskan Khatam', ur:'ختم کرنے والے', bn:'খতম সম্পন্নকারীরা', tr:'Hatmi Bitirenler' },
+  'المسارعون': { en:'The Swift', fr:'Les empressés', id:'Para Cepat', ur:'سبقت لینے والے', bn:'দ্রুতগামীরা', tr:'Yarışanlar' },
+  'المكبّرون': { en:'The Takbir Voices', fr:'Ceux du takbîr', id:'Para Takbir', ur:'تکبیر کہنے والے', bn:'তাকবিরকারীরা', tr:'Tekbir Getirenler' },
+  'المتصدقون': { en:'The Givers', fr:'Les donateurs', id:'Para Pemberi', ur:'صدقہ دینے والے', bn:'দানকারীরা', tr:'Sadaka Verenler' },
+  'السابقة': { en:'Streaker', fr:'Série', id:'Rentetan', ur:'لگاتار', bn:'ধারাবাহিক', tr:'Seri' },
+  'عرفة': { en:'Arafah', fr:'Arafah', id:'Arafah', ur:'عرفہ', bn:'আরাফাহ', tr:'Arefe' }
+};
+function ztPart(v, lang) {
+  const hit = ZT_PARTS[v] || (window.ZAD_UI_MAP && window.ZAD_UI_MAP[v]);
+  if (!hit) return v;
+  return hit[lang] || hit.en || v;
+}
+
+function ZT(msg) {
+  if (msg == null) return msg;
+  const s = String(msg);
+  let lang = 'ar';
+  try { lang = (window.I18N && I18N.current) || 'ar'; } catch (e) {}
+  if (!lang || lang === 'ar') return s;
+  const exact = TOASTS[s] || TOASTS[s.trim()];
+  if (exact) return exact[lang] || exact.en || s;
+
+  /* قوالب: نحوّل {x} إلى مجموعة التقاط */
+  const keys = Object.keys(TOAST_TPL).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
+    const ph = [];
+    const rx = new RegExp('^' + key.replace(/[.*+?^$()|[\]\\]/g, '\\$&')
+      .replace(/\{[a-z]+\}/gi, (m) => { ph.push(m.slice(1, -1)); return '(.+?)'; }) + '$');
+    const hit = rx.exec(s.trim());
+    if (!hit) continue;
+    let tplStr = TOAST_TPL[key][lang] || TOAST_TPL[key].en;
+    ph.forEach((name, i) => { tplStr = tplStr.split('{' + name + '}').join(ztPart(hit[i + 1], lang)); });
+    return tplStr;
+  }
+  return s;
+}
+window.ZT = ZT;
+
+/* ════════════════════════════════════════════════════════════
+   تنسيق التاريخ الهجري باللغة الحالية — مصدر واحد لكل الصفحات
+   (كان مكتوبًا بالعربية في app.js و calendar.js و index.html)
+   ════════════════════════════════════════════════════════════ */
+const ZAD_HIJRI_MONTHS = ['محرّم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+const ZAD_LOCALES = { ar:'ar-EG', en:'en-GB', fr:'fr-FR', id:'id-ID', ur:'ur-PK', bn:'bn-BD', tr:'tr-TR' };
+function zadLangNow() {
+  try { return (window.I18N && window.I18N.current) || localStorage.getItem('zad_lang') || 'ar'; } catch (e) { return 'ar'; }
+}
+function ZadFmtHijri(day, month, year, date) {
+  const L = zadLangNow();
+  const d = date || new Date();
+  const suffix = { ar:'هـ', ur:'ہجری', bn:'হিজরি', en:'AH', fr:'H', id:'H', tr:'H' }[L] || 'AH';
+  if (L === 'ar') return `${day} ${ZAD_HIJRI_MONTHS[month - 1]} ${year} ${suffix}`;
+  try {
+    const parts = new Intl.DateTimeFormat(ZAD_LOCALES[L] + '-u-ca-islamic-umalqura',
+      { day:'numeric', month:'long', year:'numeric' }).formatToParts(d);
+    const pick = t => (parts.find(p => p.type === t) || {}).value || '';
+    if (pick('day') && pick('month') && pick('year')) return `${pick('day')} ${pick('month')} ${pick('year')} ${suffix}`;
+  } catch (e) {}
+  return `${day} ${ZAD_HIJRI_MONTHS[month - 1]} ${year} ${suffix}`;
+}
+function ZadFmtGreg(date) {
+  const L = zadLangNow();
+  const d = date || new Date();
+  const arabic = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  if (L === 'ar') return `${d.getDate()} ${arabic[d.getMonth()]} ${d.getFullYear()} م`;
+  try { return new Intl.DateTimeFormat(ZAD_LOCALES[L], { day:'numeric', month:'long', year:'numeric' }).format(d); }
+  catch (e) { return `${d.getDate()} ${arabic[d.getMonth()]} ${d.getFullYear()}`; }
+}
+/* «N من M عبادة» حسب اللغة — تستخدمها app.js عند رسم شريط التقدم */
+function ZadWorshipProgress(done, total) {
+  const L = zadLangNow();
+  const out = {
+    ar: `${done} من ${total} عبادة`,
+    en: `${done} of ${total} acts of worship`,
+    fr: `${done} sur ${total} adorations`,
+    id: `${done} dari ${total} ibadah`,
+    ur: `${done} از ${total} عبادات`,
+    bn: `${total}-এর মধ্যে ${done} ইবাদত`,
+    tr: `${total} ibadetten ${done}`
+  }[L] || `${done} من ${total} عبادة`;
+  return out;
+}
+window.ZadWorshipProgress = ZadWorshipProgress;
+window.ZadFmtHijri = ZadFmtHijri;
+window.ZadFmtGreg = ZadFmtGreg;
+
 window.ZAD_UI_MAP = UI_MAP;
