@@ -301,7 +301,7 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
     if (n == null || isNaN(n)) return '٠';
     return String(n).replace(/[0-9]/g, function (c) { return '٠١٢٣٤٥٦٧٨٩'[+c]; });
   }
-  function toast(msg) {
+  function toast(msg) { msg = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
     var t = document.getElementById('mn-toast');
     t.textContent = msg; t.classList.add('on');
     clearTimeout(toast._t);
@@ -341,9 +341,34 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
     var cls = st.online === null ? 'wait' : (st.online ? '' : 'off');
     var txt = st.online === null ? 'جارٍ الاتصال بالمصدر…'
             : st.online ? 'متصل: محتوى موسوعة الأحاديث النبوية الحيّ'
-            : 'وضع أوفلاين: ' + ar((window.ZAD_MAKTABA.seed || []).length) + ' حديثًا محفوظة على جهازك';
+            :(MNOFF[MNL]||MNOFF.ar)(ar((window.ZAD_MAKTABA.seed || []).length));
     return '<span class="mn-dot ' + cls + '"></span><span>' + txt + '</span>';
   }
+
+/* ── صياغة الأعداد بلغة الواجهة بدل العربية الثابتة ───────────── */
+var MNL=(function(){try{return localStorage.getItem('zad_lang')||'ar';}catch(e){return 'ar';}})();
+var MNU={
+  ar:{h:'حديثًا',sub:'بابًا فرعيًا',off:'أوفلاين',saved:'حديثًا محفوظة على جهازك',savedCard:'حديثًا محفوظًا',inSec:'حديثًا في هذا القسم',res:'نتيجة في الأحاديث المحفوظة على جهازك',scope:'حديثًا محفوظة على جهازك'},
+  en:{h:'hadiths',sub:'sub-chapters',off:'offline',saved:'hadiths saved on your device',savedCard:'hadiths saved',inSec:'hadiths in this section',res:'results in the hadiths saved on your device',scope:'hadiths saved on your device'},
+  fr:{h:'hadiths',sub:'sous-chapitres',off:'hors ligne',saved:'hadiths enregistrés sur votre appareil',savedCard:'hadiths enregistrés',inSec:'hadiths dans cette section',res:'résultats dans les hadiths enregistrés sur votre appareil',scope:'hadiths enregistrés sur votre appareil'},
+  id:{h:'hadis',sub:'subbab',off:'offline',saved:'hadis tersimpan di perangkatmu',savedCard:'hadis tersimpan',inSec:'hadis di bagian ini',res:'hasil dalam hadis yang tersimpan di perangkatmu',scope:'hadis tersimpan di perangkatmu'},
+  ur:{h:'حدیثیں',sub:'ذیلی ابواب',off:'آف لائن',saved:'حدیثیں آپ کے آلے پر محفوظ',savedCard:'حدیثیں محفوظ',inSec:'حدیثیں اس حصے میں',res:'نتائج محفوظ احادیث میں',scope:'حدیثیں آپ کے آلے پر محفوظ'},
+  bn:{h:'হাদিস',sub:'উপ-অধ্যায়',off:'অফলাইন',saved:'হাদিস তোমার ডিভাইসে সংরক্ষিত',savedCard:'হাদিস সংরক্ষিত',inSec:'হাদিস এই বিভাগে',res:'ফলাফল সংরক্ষিত হাদিসে',scope:'হাদিস তোমার ডিভাইসে সংরক্ষিত'},
+  tr:{h:'hadis',sub:'alt bölüm',off:'çevrimdışı',saved:'hadis cihazınızda kayıtlı',savedCard:'hadis kayıtlı',inSec:'bu bölümde hadis',res:'sonuç kayıtlı hadislerde',scope:'hadis cihazınızda kayıtlı'}
+};
+function mnU(key,n){var U=MNU[MNL]||MNU.ar;return n+' '+(U[key]||'');}
+var MNSRC={
+  ar:function(n){return '— تُجلب الأحاديث من واجهتها العامة، وتُحفظ نسخة من '+n+' حديثًا داخل التطبيق لتعمل بلا إنترنت. الفتوى الشرعية للعلماء، وهذا عَرضٌ للنصوص كما وردت في الموسوعة.';},
+  en:function(n){return '— The hadiths are fetched from its public API, and a copy of '+n+' hadiths is stored inside the app so it works without internet. Legal rulings belong to the scholars; this is a presentation of the texts as they appear in the encyclopedia.';},
+  fr:function(n){return '— Les hadiths sont récupérés depuis son API publique, et une copie de '+n+' hadiths est stockée dans l\'application pour fonctionner sans internet. La fatwa revient aux savants ; ceci est une présentation des textes tels qu\'ils figurent dans l\'encyclopédie.';},
+  id:function(n){return '— Hadis diambil dari API publiknya, dan salinan '+n+' hadis disimpan di dalam aplikasi agar berfungsi tanpa internet. Fatwa adalah wewenang ulama; ini hanyalah penyajian teks sebagaimana ada di ensiklopedia.';},
+  ur:function(n){return '— احادیث اس کے عوامی API سے لائی جاتی ہیں، اور '+n+' احادیث کی نقل ایپ میں محفوظ ہے تاکہ بغیر انٹرنیٹ چلے۔ شرعی فتویٰ علماء کا کام ہے؛ یہ نصوص کی ویسی ہی پیشکش ہے جیسی موسوعہ میں ہیں۔';},
+  bn:function(n){return '— হাদিসগুলো এর পাবলিক API থেকে আনা হয়, আর '+n+'টি হাদিসের কপি অ্যাপের ভেতরে রাখা হয় যাতে ইন্টারনেট ছাড়াই চলে। শরিয়তের ফতোয়া উলামাদের বিষয়; এটি বিশ্বকোষে থাকা মূল পাঠেরই উপস্থাপন।';},
+  tr:function(n){return '— Hadisler genel API\'sinden alınır ve internetsiz çalışması için uygulamada '+n+' hadisin kopyası saklanır. Şer\'î fetva âlimlere aittir; bu, metinlerin ansiklopedideki hâliyle sunumudur.';}
+};
+var MNOFF={ar:function(n){return 'وضع أوفلاين: '+mnU('saved',n);},en:function(n){return 'Offline mode: '+mnU('saved',n);},fr:function(n){return 'Mode hors ligne : '+mnU('saved',n);},id:function(n){return 'Mode offline: '+mnU('saved',n);},ur:function(n){return 'آف لائن موڈ: '+mnU('saved',n);},bn:function(n){return 'অফলাইন মোড: '+mnU('saved',n);},tr:function(n){return 'Çevrimdışı mod: '+mnU('saved',n);}};
+var MNSEED={ar:function(n){return 'وتُحفظ نسخة من '+n+' حديثًا داخل التطبيق لتعمل بلا إنترنت. ';},en:function(n){return 'A copy of '+n+' hadiths is stored inside the app so it works without internet. ';},fr:function(n){return 'Une copie de '+n+' hadiths est stockée dans l\'application pour fonctionner sans internet. ';},id:function(n){return 'Salinan '+n+' hadis disimpan di dalam aplikasi agar berfungsi tanpa internet. ';},ur:function(n){return 'ایپ میں '+n+' احادیث کی نقل محفوظ ہے تاکہ بغیر انٹرنیٹ چلے۔ ';},bn:function(n){return 'অ্যাপের ভেতরে '+n+'টি হাদিসের কপি রাখা হয় যাতে ইন্টারনেট ছাড়াই চলে। ';},tr:function(n){return 'İnternetsiz çalışması için uygulamada '+n+' hadisin kopyası saklanır. ';}};
+var MNSCOPE={ar:function(n){return 'البحث الحالي يعمل داخل '+n+' حديثًا محفوظة على جهازك. جرّب كلمةً أخرى مثل «الصلاة» أو «النية» أو «الصبر».';},en:function(n){return 'The current search runs inside '+n+' hadiths saved on your device. Try another word such as “prayer”, “intention” or “patience”.';},fr:function(n){return 'La recherche actuelle porte sur '+n+' hadiths enregistrés sur votre appareil. Essayez un autre mot comme « prière », « intention » ou « patience ». ';},id:function(n){return 'Pencarian saat ini berjalan di dalam '+n+' hadis tersimpan di perangkatmu. Coba kata lain seperti “salat”, “niat” atau “sabar”.';},ur:function(n){return 'موجودہ تلاش آپ کے آلے پر محفوظ '+n+' احادیث میں ہے۔ کوئی دوسرا لفظ آزمائیں جیسے «نماز»، «نیت» یا «صبر»۔';},bn:function(n){return 'বর্তমান অনুসন্ধান তোমার ডিভাইসে সংরক্ষিত '+n+'টি হাদিসের মধ্যে চলছে। অন্য শব্দ চেষ্টা করো যেমন “নামাজ”, “নিয়ত” বা “ধৈর্য”।';},tr:function(n){return 'Mevcut arama cihazınızda kayıtlı '+n+' hadis içinde çalışıyor. “Namaz”, “niyet” veya “sabır” gibi başka bir kelime deneyin.';}};
   function statusDot() { return '<div class="mn-status" id="mn-status">' + statusInner() + '</div>'; }
   function refreshStatus() {
     var n = document.getElementById('mn-status');
@@ -394,7 +419,7 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
     if (saved.length) {
       html += '<div class="mn-cont" data-saved="1" role="button" tabindex="0">' +
         '<span class="ci">🔖</span><span class="cb"><span class="ct">محفوظاتك</span>' +
-        '<span class="cn">' + ar(saved.length) + ' حديثًا محفوظًا</span></span><span class="cg">‹</span></div>';
+        '<span class="cn">' + mnU('savedCard',ar(saved.length)) + '</span></span><span class="cg">‹</span></div>';
     }
 
     html += '<div class="mn-sec">الأبواب السبعة<small>اضغط بابًا لتصفح أبوابه الفرعية</small></div>';
@@ -404,7 +429,7 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
       html += '<a class="mn-root" href="#/c/' + esc(r.id) + '">' +
         '<div class="mn-root-top"><span class="mn-root-ico">' + (ROOT_ICONS[String(r.id)] || '📘') + '</span>' +
           '<span><span class="mn-root-name">' + esc(r.t) + '</span>' +
-          '<span class="mn-root-meta">' + ar(r.n) + ' حديثًا · ' + ar(r.k.length) + ' بابًا فرعيًا · ' + ar(offlineN) + ' أوفلاين</span></span>' +
+          '<span class="mn-root-meta">' + mnU('h',ar(r.n)) + ' · ' + mnU('sub',ar(r.k.length)) + ' · ' + mnU('off',ar(offlineN)) + '</span></span>' +
         '</div>' +
         '<div class="mn-chips">' + r.k.slice(0, 3).map(function (k) { return '<span class="mn-chip">' + esc(k.t) + '</span>'; }).join('') +
           (r.k.length > 3 ? '<span class="mn-chip">+' + ar(r.k.length - 3) + '</span>' : '') + '</div>' +
@@ -418,9 +443,8 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
         '<a href="videos.html"><span class="xi">🎬</span><span><span class="xt">المكتبة المرئية</span><span class="xs">محاضرات ومقاطع مرئية</span></span></a>' +
       '</nav>' +
       '<div class="mn-src"><b>المصدر:</b> موسوعة الأحاديث النبوية المترجمة ' +
-        '<a href="https://hadeethenc.com" target="_blank" rel="noopener">HadeethEnc.com</a> — تُجلب الأحاديث من واجهتها العامة، ' +
-        'وتُحفظ نسخة من ' + ar(c.seed) + ' حديثًا داخل التطبيق لتعمل بلا إنترنت. ' +
-        'الفتوى الشرعية للعلماء، وهذا عَرضٌ للنصوص كما وردت في الموسوعة.</div>';
+        '<a href="https://hadeethenc.com" target="_blank" rel="noopener">HadeethEnc.com</a> ' +
+        (MNSRC[MNL]||MNSRC.ar)(ar(c.seed)) + '</div>';
     return html;
   }
 
@@ -477,11 +501,11 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
     var res = Lib.search(q, 40);
     var html = '<a class="mn-crumb" href="#/" style="text-decoration:none"><span>🏠 المكتبة</span><span class="sep">/</span><span>بحث</span><span class="sep">/</span><span>' + esc(q) + '</span></a>';
     html += '<div class="mn-cat-head"><h2>نتائج «' + esc(q) + '»</h2>' +
-      '<p>' + (res.length ? ar(res.length) + ' نتيجة في الأحاديث المحفوظة على جهازك' : 'لا نتائج في النسخة المحفوظة') + '</p></div>';
+      '<p>' + (res.length ? mnU('res',ar(res.length)) : 'لا نتائج في النسخة المحفوظة') + '</p></div>';
 
     if (!res.length) {
       html += '<div class="mn-empty"><span class="ei">🔍</span><b>لم نجد شيئًا هنا</b>' +
-        '<p>البحث الحالي يعمل داخل ' + ar(Lib.seed().length) + ' حديثًا محفوظة على جهازك. جرّب كلمةً أخرى مثل «الصلاة» أو «النية» أو «الصبر».</p></div>';
+        '<p>' + (MNSCOPE[MNL]||MNSCOPE.ar)(ar(Lib.seed().length)) + '</p></div>';
     } else {
       html += '<div class="mn-list">' + res.map(cardHTML).join('') + '</div>';
     }
@@ -503,7 +527,7 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
 
     html += '<div class="mn-cat-head">' +
       '<h2>' + (ROOT_ICONS[String(id)] || '📘') + ' ' + esc(info.name) + '</h2>' +
-      '<p id="mn-cat-desc">' + (info.n ? ar(info.n) + ' حديثًا في هذا القسم' : 'قسم من أبواب المكتبة') + '</p>' +
+      '<p id="mn-cat-desc">' + (info.n ? mnU('inSec',ar(info.n)) : 'قسم من أبواب المكتبة') + '</p>' +
       '<div class="mn-prog"><div class="mn-prog-bar"><div class="mn-prog-fill" id="mn-prog"></div></div>' +
       '<div class="mn-prog-lbl"><span id="mn-prog-t">جارٍ التحميل…</span><span id="mn-prog-n"></span></div></div>' +
     '</div>';
@@ -838,5 +862,7 @@ html[data-theme="dark"] .mn-cross .xt,html[data-theme="oled"] .mn-cross .xt{colo
 </script>
 <script src="js/ui/share-studio.js" defer></script>
 <script src="js/a11y-mode.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
+<script src="lang.min.js" defer></script>
 </body>
 </html>

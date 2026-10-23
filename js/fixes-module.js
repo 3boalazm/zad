@@ -302,7 +302,9 @@ function replaceZeroStates() {
   /* استبدل نِسب 0% بعبارات تحفيزية */
   document.querySelectorAll('#prog-txt, .prog-txt').forEach(el => {
     if (el.textContent.includes('0 من') || el.textContent.trim() === '0%') {
-      el.innerHTML = '<span style="color:var(--green-mid,#1a5d47)">ابدأ رحلتك — أول عبادة بانتظارك 🌱</span>';
+      const START = { ar:'ابدأ رحلتك — أول عبادة بانتظارك 🌱', en:'Begin your journey — your first act of worship awaits 🌱', fr:'Commencez votre parcours — votre première adoration vous attend 🌱', id:'Mulai perjalananmu — ibadah pertamamu menanti 🌱', ur:'اپنا سفر شروع کریں — پہلی عبادت آپ کی منتظر ہے 🌱', bn:'যাত্রা শুরু করুন — প্রথম ইবাদত আপনার انتظারে 🌱', tr:'Yolculuğuna başla — ilk ibadetin seni bekliyor 🌱' };
+      let _l = 'ar'; try { _l = (window.I18N && I18N.current) || localStorage.getItem('zad_lang') || 'ar'; } catch(e) {}
+      el.innerHTML = '<span style="color:var(--green-mid,#1a5d47)">' + (START[_l] || START.ar) + '</span>';
     }
   });
 

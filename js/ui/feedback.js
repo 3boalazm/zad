@@ -21,7 +21,12 @@ const ZadFeedback = (() => {
       document.body.appendChild(el);
     }
     const icons = { info: 'ℹ️', success: '✅', error: '⚠️', warn: '🔔' };
-    el.innerHTML = `<span class="zt-icon">${icons[type] || ''}</span><span>${msg}</span>`;
+    /* الترجمة: الرسائل عربية في الكود، وZT يحوّلها للغة الواجهة */
+    const shown = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
+    /* الرسالة قد تحمل ✅/⚠️ في أولها — لا نكرّر أيقونة النوع */
+    const clean = String(shown).replace(/^[\s\u2705\u26A0\uFE0F\u{1F514}\u2139\uFE0F\u274C]+/u, '').trim() || shown;
+    const sameIcon = String(shown).trim().startsWith(icons[type]);
+    el.innerHTML = `<span class="zt-icon">${sameIcon ? '' : (icons[type] || '')}</span><span>${clean}</span>`;
     el.className = `zad-toast zt-${type} show`;
 
     clearTimeout(toastTimer);

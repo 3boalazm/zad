@@ -91,7 +91,10 @@ function formatHijriDate(date = new Date()) {
 window.formatHijriDate = formatHijriDate;
 
 function refreshHijriDisplay() {
-  const str = formatHijriDate();
+  const h = getHijriDateAccurate(new Date());
+  const str = (typeof window.ZadFmtHijri === 'function')
+    ? window.ZadFmtHijri(h.day, h.month, h.year)
+    : formatHijriDate();
   document.querySelectorAll('#hijri-full, .hd-hijri, [data-hijri]').forEach(el => {
     el.textContent = str;
   });
@@ -109,9 +112,10 @@ window.fetchAndCacheHijriDate = async function() {
       greg: todayStr, ts: Date.now(),
       source: h.source, offset: getHijriOffset()
     }));
-    document.querySelectorAll('#hijri-full, .hd-hijri').forEach(el => {
-      el.textContent = `${h.day} ${HIJRI_MONTHS[h.month-1]} ${h.year} هـ`;
-    });
+    const txt2 = (typeof window.ZadFmtHijri === 'function')
+      ? window.ZadFmtHijri(h.day, h.month, h.year, today)
+      : `${h.day} ${HIJRI_MONTHS[h.month-1]} ${h.year} هـ`;
+    document.querySelectorAll('#hijri-full, .hd-hijri').forEach(el => { el.textContent = txt2; });
   } catch(e) {}
 };
 

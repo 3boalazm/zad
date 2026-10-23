@@ -154,8 +154,8 @@ function renderHasn() {
       <div class="hasn-ch-header">
         <div class="hasn-ch-icon" style="background:${sec.color}20;color:${sec.color}">${sec.icon}</div>
         <div class="hasn-ch-body">
-          <div class="hasn-ch-title">${sec.num}. ${sec.title}</div>
-          <div class="hasn-ch-meta">🕐 ${sec.time} · ${sec.items.length} أذكار</div>
+          <div class="hasn-ch-title">${sec.num}. <span class="hasn-ch-name" lang="ar" dir="rtl">${sec.title}</span></div>
+          <div class="hasn-ch-meta">🕐 <span class="hasn-ch-time">${sec.time}</span> · ${sec.items.length} <span class="hasn-ch-num">أذكار</span></div>
         </div>
         <span class="hasn-ch-arrow">←</span>
       </div>
@@ -165,12 +165,12 @@ function renderHasn() {
           const current = savedCounts[key] || 0;
           const target = item.count || 1;
           const done = current >= target;
-          const label = done ? '✅ تمّ' : (current > 0 ? `عُدّ (${current}/${target})` : `عُدّ (${target})`);
+          const label = done ? '<span class="hasn-done">✅ تمّ</span>' : `<span class="hasn-count-word">عُدّ</span> (${current > 0 ? current + '/' : ''}${target})`;
           return `
           <div class="hasn-dhikr">
-            <div class="hasn-dhikr-ar">${item.ar}</div>
+            <div class="hasn-dhikr-ar" lang="ar" dir="rtl">${item.ar}</div>
             <div class="hasn-dhikr-meta">
-              <span class="hasn-dhikr-source">📖 ${item.source}</span>
+              <span class="hasn-dhikr-source">📖 <span class="hasn-src">${item.source}</span></span>
               <button class="hasn-count-btn ${done ? 'done' : ''}" id="hcb-${sec.num}-${i}"
                       onclick="event.stopPropagation();countHasn(${sec.num},${i},${target})">
                 ${label}
@@ -240,5 +240,7 @@ document.addEventListener('DOMContentLoaded', initHasnLoader);
   <script src="menu.min.js" defer></script>
 <script src="command-palette.min.js" defer></script>
 <script src="js/a11y-mode.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
+<script src="lang.min.js" defer></script>
 </body>
 </html>

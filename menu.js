@@ -222,21 +222,23 @@
 
   /* ═══ محوّل اللغة الثلاثي ═══ */
   /* ═══ محوّل اللغة المنسدل (متعدد اللغات) ═══ */
-  .zad-lang-dd{position:relative;margin-bottom:8px}
-  .zad-lang-trigger{width:100%;display:flex;align-items:center;gap:9px;padding:10px 13px;border:1.5px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(255,255,255,.08);color:#f4ecd6;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
-  .zad-lang-trigger:hover{border-color:var(--gold,#c9a14a);background:rgba(255,255,255,.12)}
-  .zad-lang-trigger .zll-flag{font-size:18px}
-  .zad-lang-trigger .zll-name{flex:1;text-align:right}
-  .zad-lang-trigger .zll-arrow{font-size:11px;transition:transform .25s;opacity:.7}
+  /* z-index أعلى من أشقّاء الشريط (.sidebar > * له z-index:1) وإلا القائمة
+     تُرسم خلف روابط القائمة فتظهر النصوص متراكبة. */
+  .zad-lang-dd{position:relative;z-index:60;margin-bottom:8px}
+  .zad-lang-dd.open{z-index:80}
+  .zad-lang-trigger{width:100%;display:flex;align-items:center;gap:9px;padding:9px 11px;border:1.5px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(255,255,255,.08);color:#f4ecd6;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s}
+  .zad-lang-trigger:hover{border-color:var(--gold,#c9a14a);background:rgba(255,255,255,.13)}
+  .zad-lang-trigger .zll-flag,.zad-lang-opt .zll-flag{flex:0 0 26px;width:26px;height:19px;display:inline-flex;align-items:center;justify-content:center;border-radius:5px;background:rgba(201,161,74,.22);border:1px solid rgba(201,161,74,.45);color:#f6e3ad;font-size:9.5px;font-weight:900;letter-spacing:.4px;font-family:'Segoe UI',system-ui,sans-serif}
+  .zad-lang-trigger .zll-name{flex:1;text-align:start;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .zad-lang-trigger .zll-arrow{font-size:10px;transition:transform .25s;opacity:.75;flex:0 0 auto}
   .zad-lang-dd.open .zad-lang-trigger .zll-arrow{transform:rotate(180deg)}
-  .zad-lang-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#0e3b2e;border:1.5px solid rgba(201,161,74,.3);border-radius:13px;padding:6px;box-shadow:0 14px 40px -8px rgba(0,0,0,.55);z-index:50;max-height:0;overflow:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:max-height .28s,opacity .2s,transform .2s}
-  .zad-lang-dd.open .zad-lang-menu{max-height:340px;opacity:1;transform:none;pointer-events:auto}
-  .zad-lang-opt{width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border:none;border-radius:9px;background:transparent;color:#f4ecd6;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;text-align:right}
-  .zad-lang-opt .zll-flag{font-size:17px}
-  .zad-lang-opt span:nth-child(2){flex:1}
+  .zad-lang-menu{position:absolute;top:calc(100% + 6px);inset-inline:0;background:#0b3126;border:1.5px solid rgba(201,161,74,.38);border-radius:13px;padding:6px 6px 10px;box-sizing:border-box;box-shadow:0 18px 44px -10px rgba(0,0,0,.75),0 0 0 1px rgba(0,0,0,.25);z-index:90;max-height:0;overflow:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:max-height .26s,opacity .2s,transform .2s}
+  .zad-lang-dd.open .zad-lang-menu{max-height:min(430px,66vh);overflow-y:auto;overscroll-behavior:contain;opacity:1;transform:none;pointer-events:auto}
+  .zad-lang-opt{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border:none;border-radius:9px;background:transparent;color:#f4ecd6;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .18s,color .18s;text-align:start}
+  .zad-lang-opt>span:nth-child(2){flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .zad-lang-opt:hover{background:rgba(255,255,255,.1)}
-  .zad-lang-opt.active{background:rgba(201,161,74,.18);color:#fff}
-  .zad-lang-opt .zll-check{color:var(--gold,#e6c97a);font-weight:900}
+  .zad-lang-opt.active{background:rgba(201,161,74,.2);color:#fff}
+  .zad-lang-opt .zll-check{color:var(--gold,#e6c97a);font-weight:900;flex:0 0 auto}
 
   /* ═══ أزرار التثبيت والمشاركة ═══ */
   .zad-install-row{display:flex;gap:6px;margin-bottom:6px}
@@ -553,8 +555,9 @@
     if (!btn) return;
     const seps = [...document.querySelectorAll('.nav-sep:not(.zad-no-hit)')];
     const allOpen = seps.length > 0 && seps.every(s => !s.classList.contains('collapsed'));
-    btn.textContent = allOpen ? 'طي الكل' : 'فتح الكل';
-    btn.setAttribute('aria-label', allOpen ? 'طي كل الأقسام' : 'فتح كل الأقسام');
+    btn.dataset.open = allOpen ? '1' : '0';
+    btn.textContent = zm(allOpen ? 'closeAll' : 'openAll');
+    btn.setAttribute('aria-label', zm(allOpen ? 'closeAll' : 'openAll'));
     const q = document.getElementById('zad-nav-q');
     btn.hidden = !!(q && q.value.trim());
   }
@@ -671,18 +674,21 @@
     box.innerHTML =
       '<div class="zad-nav-search">' +
         '<span class="zns-ico" aria-hidden="true">🔍</span>' +
-        '<input id="zad-nav-q" class="zns-input" type="text" autocomplete="off" spellcheck="false" placeholder="ابحث في القائمة…" aria-label="ابحث في القائمة">' +
-        '<button type="button" class="zns-clear" id="zad-nav-clear" aria-label="مسح البحث" hidden>✕</button>' +
+        '<input id="zad-nav-q" class="zns-input" type="text" autocomplete="off" spellcheck="false" placeholder="' + zm('search') + '" aria-label="' + zm('searchAria') + '">' +
+        '<button type="button" class="zns-clear" id="zad-nav-clear" aria-label="' + zm('clearAria') + '" hidden>✕</button>' +
       '</div>' +
       '<div class="zad-nav-actions">' +
-        '<button type="button" class="zad-nav-all" id="zad-nav-all" aria-label="فتح كل الأقسام">فتح الكل</button>' +
+        '<button type="button" class="zad-nav-all" id="zad-nav-all" aria-label="' + zm('openAll') + '">' + zm('openAll') + '</button>' +
         '<span class="zad-nav-total" id="zad-nav-total"></span>' +
       '</div>' +
-      '<div class="zad-nav-empty" id="zad-nav-empty" hidden>لا توجد صفحة بهذا الاسم</div>';
+      '<div class="zad-nav-empty" id="zad-nav-empty" hidden>' + zm('noResult') + '</div>';
     navEl.parentNode.insertBefore(box, navEl);
 
     const totalEl = box.querySelector('#zad-nav-total');
-    if (totalEl) totalEl.textContent = (MENU.filter(m => m.href && m.section).length) + ' صفحة';
+    if (totalEl) {
+      totalEl.dataset.n = String(MENU.filter(m => m.href && m.section).length);
+      totalEl.textContent = totalEl.dataset.n + ' ' + zm('pages');
+    }
   }
 
   function wireNavTools() {
@@ -740,15 +746,75 @@
   /* ══════════════════════════════════════════════════════════════════════
      محوّل اللغة الثلاثي
      ════════════════════════════════════════════════════════════════════ */
+  /* رمز اللغة بحروف لاتينية بدل علم إيموجي: الأعلام تُرسم كرمزين (SA/GB)
+     على ويندوز وبعض أندرويد، فتبدو مكسورة. الشعار النصّي ثابت في كل جهاز. */
   const ZAD_LANGS = [
-    { code:'ar', flag:'🇸🇦', name:'العربية' },
-    { code:'en', flag:'🇬🇧', name:'English' },
-    { code:'id', flag:'🇮🇩', name:'Bahasa Indonesia' },
-    { code:'ur', flag:'🇵🇰', name:'اردو' },
-    { code:'bn', flag:'🇧🇩', name:'বাংলা' },
-    { code:'tr', flag:'🇹🇷', name:'Türkçe' },
-    { code:'fr', flag:'🇫🇷', name:'Français' },
+    { code:'ar', flag:'AR', name:'العربية' },
+    { code:'en', flag:'EN', name:'English' },
+    { code:'id', flag:'ID', name:'Bahasa Indonesia' },
+    { code:'ur', flag:'UR', name:'اردو' },
+    { code:'bn', flag:'BN', name:'বাংলা' },
+    { code:'tr', flag:'TR', name:'Türkçe' },
+    { code:'fr', flag:'FR', name:'Français' },
   ];
+
+  /* ════ نصوص menu.js المولّدة — تُترجم مع تبديل اللغة ════ */
+  const ZM = {
+    'search':    { ar:'ابحث في القائمة…', en:'Search the menu…', fr:'Rechercher dans le menu…', id:'Cari di menu…', ur:'مینو میں تلاش کریں…', bn:'মেনুতে খুঁজুন…', tr:'Menüde ara…' },
+    'searchAria':{ ar:'ابحث في القائمة', en:'Search the menu', fr:'Rechercher dans le menu', id:'Cari di menu', ur:'مینو میں تلاش', bn:'মেনুতে খুঁজুন', tr:'Menüde ara' },
+    'clearAria': { ar:'مسح البحث', en:'Clear search', fr:'Effacer la recherche', id:'Hapus pencarian', ur:'تلاش صاف کریں', bn:'অনুসন্ধান মুছুন', tr:'Aramayı temizle' },
+    'openAll':   { ar:'فتح الكل', en:'Expand all', fr:'Tout déplier', id:'Buka semua', ur:'سب کھولیں', bn:'সব খুলুন', tr:'Tümünü aç' },
+    'closeAll':  { ar:'إغلاق الكل', en:'Collapse all', fr:'Tout replier', id:'Tutup semua', ur:'سب بند کریں', bn:'সব বন্ধ করুন', tr:'Tümünü kapat' },
+    'allAria':   { ar:'فتح كل الأقسام', en:'Expand all sections', fr:'Déplier toutes les sections', id:'Buka semua bagian', ur:'سب حصے کھولیں', bn:'সব বিভাগ খুলুন', tr:'Tüm bölümleri aç' },
+    'noResult':  { ar:'لا توجد صفحة بهذا الاسم', en:'No page with that name', fr:'Aucune page de ce nom', id:'Tidak ada halaman dengan nama itu', ur:'اس نام کا کوئی صفحہ نہیں', bn:'এই নামে কোনো পাতা নেই', tr:'Bu adda sayfa yok' },
+    'pages':     { ar:'صفحة', en:'pages', fr:'pages', id:'halaman', ur:'صفحات', bn:'পাতা', tr:'sayfa' },
+    'light':     { ar:'فاتح', en:'Light', fr:'Clair', id:'Terang', ur:'روشن', bn:'উজ্জ্বল', tr:'Açık' },
+    'dark':      { ar:'داكن', en:'Dark', fr:'Sombre', id:'Gelap', ur:'گہرا', bn:'গাঢ়', tr:'Koyu' },
+    'install':   { ar:'تثبيت التطبيق', en:'Install app', fr:'Installer l’app', id:'Pasang aplikasi', ur:'ایپ انسٹال کریں', bn:'অ্যাপ ইনস্টল করুন', tr:'Uygulamayı yükle' },
+    'share':     { ar:'مشاركة', en:'Share', fr:'Partager', id:'Bagikan', ur:'شیئر', bn:'শেয়ার', tr:'Paylaş' },
+    'foot':      { ar:'زاد 2026 · بدون إعلانات 📴', en:'Zad 2026 · No ads 📴', fr:'Zad 2026 · Sans publicité 📴', id:'Zad 2026 · Tanpa iklan 📴', ur:'زاد 2026 · اشتہارات کے بغیر 📴', bn:'যাদ 2026 · বিজ্ঞাপনহীন 📴', tr:'Zad 2026 · Reklamsız 📴' },
+    'brandSub':  { ar:'رفيق العبادة والخير', en:'Worship Companion', fr:'Compagnon d’adoration', id:'Sahabat Ibadah', ur:'عبادت کا ساتھی', bn:'ইবাদতের সঙ্গী', tr:'İbadet Yoldaşı' },
+    'menuAria':  { ar:'القائمة الرئيسية', en:'Main menu', fr:'Menu principal', id:'Menu utama', ur:'مرکزی مینو', bn:'প্রধান মেনু', tr:'Ana menü' }
+  };
+  function zm(key) {
+    let lang = 'ar';
+    try { lang = (window.I18N && window.I18N.current) || 'ar'; } catch (e) {}
+    const e = ZM[key];
+    if (!e) return key;
+    return e[lang] || e.en || e.ar;
+  }
+  /* إعادة كتابة كل نص ولّده menu.js بعد تبديل اللغة */
+  function relabel() {
+    const q = document.getElementById('zad-nav-q');
+    if (q) { q.placeholder = zm('search'); q.setAttribute('aria-label', zm('searchAria')); }
+    const clr = document.getElementById('zad-nav-clear');
+    if (clr) clr.setAttribute('aria-label', zm('clearAria'));
+    const all = document.getElementById('zad-nav-all');
+    if (all) {
+      const open = all.dataset.open === '1';
+      all.textContent = zm(open ? 'closeAll' : 'openAll');
+      all.setAttribute('aria-label', zm(open ? 'closeAll' : 'openAll'));
+    }
+    const empty = document.getElementById('zad-nav-empty');
+    if (empty) empty.textContent = zm('noResult');
+    const total = document.getElementById('zad-nav-total');
+    if (total && total.dataset.n) total.textContent = total.dataset.n + ' ' + zm('pages');
+    document.querySelectorAll('.theme-opt[data-theme="light"]').forEach(b => { b.textContent = '☀️ ' + zm('light'); });
+    document.querySelectorAll('.theme-opt[data-theme="dark"]').forEach(b => { b.textContent = '🌙 ' + zm('dark'); });
+    const ib = document.getElementById('zad-install-btn');
+    if (ib) ib.textContent = '📲 ' + zm('install');
+    const sb = document.querySelector('.zad-inst-btn:not(.primary)');
+    if (sb) sb.textContent = '🔗 ' + zm('share');
+    const foot = document.querySelector('.side-foot');
+    if (foot) foot.textContent = zm('foot');
+    const bsub = document.querySelector('.sidebar .brand-sub');
+    if (bsub) bsub.textContent = zm('brandSub');
+    const nav = document.querySelector('.sidebar .nav');
+    if (nav) nav.setAttribute('aria-label', zm('menuAria'));
+  }
+  window.ZadMenuRelabel = relabel;
+  document.addEventListener('DOMContentLoaded', relabel);
+  window.addEventListener('zad:lang', () => setTimeout(relabel, 30));
 
   function buildLangSwitcher(targetEl) {
     if (!targetEl || targetEl.dataset.zadLang) return;
@@ -762,14 +828,14 @@
     wrap.className = 'zad-lang-dd';
     wrap.innerHTML = `
       <button class="zad-lang-trigger" id="zad-lang-trigger" aria-haspopup="true" aria-expanded="false">
-        <span class="zll-flag">${curLang.flag}</span>
+        <span class="zll-flag" aria-hidden="true">${curLang.flag}</span>
         <span class="zll-name">${curLang.name}</span>
-        <span class="zll-arrow">▾</span>
+        <span class="zll-arrow" aria-hidden="true">▾</span>
       </button>
       <div class="zad-lang-menu" id="zad-lang-menu" role="menu">
         ${ZAD_LANGS.map(l => `
-          <button role="menuitem" class="zad-lang-opt ${l.code===cur?'active':''}" data-lang="${l.code}">
-            <span class="zll-flag">${l.flag}</span><span>${l.name}</span>
+          <button role="menuitem" class="zad-lang-opt ${l.code===cur?'active':''}" data-lang="${l.code}" lang="${l.code}">
+            <span class="zll-flag" aria-hidden="true">${l.flag}</span><span>${l.name}</span>
             ${l.code===cur?'<span class="zll-check">✓</span>':''}
           </button>`).join('')}
       </div>`;
@@ -845,10 +911,10 @@
     row.className = 'zad-install-row';
     row.innerHTML = `
       <button class="zad-inst-btn primary" id="zad-install-btn" onclick="installPWA?.()">
-        📲 تثبيت التطبيق
+        📲 ${zm('install')}
       </button>
       <button class="zad-inst-btn" onclick="window._zadShareApp()">
-        🔗 مشاركة
+        🔗 ${zm('share')}
       </button>`;
     oldBtn.replaceWith(row);
   }
@@ -1036,17 +1102,17 @@
   const SIDEBAR_SHELL =
     '<a href="index.html" class="brand" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px">' +
       '<div class="brand-mark"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد" style="width:36px;height:36px;border-radius:10px"></div>' +
-      '<div><div class="brand-name">زاد</div><div class="brand-sub">رفيق العبادة والخير</div></div>' +
+      '<div><div class="brand-name">زاد</div><div class="brand-sub">' + zm('brandSub') + '</div></div>' +
     '</a>' +
     '<div id="profile-chip" style="display:none;align-items:center;gap:8px;background:var(--sand);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--ink)"></div>' +
     '<div class="theme-seg" id="theme-seg">' +
-      '<button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme(\'light\')">☀️ فاتح</button>' +
-      '<button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme(\'dark\')">🌙 داكن</button>' +
+      '<button type="button" class="theme-opt" data-theme="light" onclick="applyTheme&&applyTheme(\'light\')">☀️ ' + zm('light') + '</button>' +
+      '<button type="button" class="theme-opt" data-theme="dark" onclick="applyTheme&&applyTheme(\'dark\')">🌙 ' + zm('dark') + '</button>' +
       '<button type="button" class="theme-opt" data-theme="oled" onclick="applyTheme&&applyTheme(\'oled\')">⚫ OLED</button>' +
     '</div>' +
-    '<button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 تثبيت / تحميل التطبيق</button>' +
-    '<nav class="nav" aria-label="القائمة الرئيسية"><a href="index.html" class="active"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>' +
-    '<div class="side-foot">زاد 2026 · بدون إعلانات 📴</div>';
+    '<button class="sidebar-install-btn" id="sidebar-install-btn" onclick="installPWA?.()">📲 ' + zm('install') + '</button>' +
+    '<nav class="nav" aria-label="' + zm('menuAria') + '"><a href="index.html" class="active"><span class="ico">🏠</span><span>لوحة التحكم</span></a></nav>' +
+    '<div class="side-foot">' + zm('foot') + '</div>';
 
   function ensureSidebarShell(sidebar) {
     if (!sidebar) return;

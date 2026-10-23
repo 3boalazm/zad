@@ -214,6 +214,7 @@ html[data-theme="dark"] .qd-tabs button.on,html[data-theme="oled"] .qd-tabs butt
   </main>
 </div>
 
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
 <script src="js/calendar.min.js" defer></script>
@@ -306,7 +307,7 @@ html[data-theme="dark"] .qd-tabs button.on,html[data-theme="oled"] .qd-tabs butt
     document.getElementById('qd-perday').value = S.perDay;
   }
 
-  function toast(m) {
+  function toast(m) { m = (typeof window.ZT === 'function') ? window.ZT(m) : m;
     var t = document.getElementById('qd-toast');
     if (!t) {
       t = document.createElement('div'); t.id = 'qd-toast';

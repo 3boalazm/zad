@@ -236,7 +236,10 @@ function enhanceAccessibility() {
     const skip = document.createElement('a');
     skip.id   = 'skip-to-main';
     skip.href = '#main-content';
-    skip.textContent = 'انتقل للمحتوى الرئيسي';
+    const SKIP_TXT = { ar:'انتقل للمحتوى الرئيسي', en:'Skip to main content', fr:'Aller au contenu principal', id:'Lompat ke konten utama', ur:'مرکزی مواد پر جائیں', bn:'মূল কনটেন্টে যান', tr:'Ana içeriğe geç' };
+    const _sl = () => { try { return (window.I18N && I18N.current) || localStorage.getItem('zad_lang') || 'ar'; } catch (e) { return 'ar'; } };
+    skip.textContent = SKIP_TXT[_sl()] || SKIP_TXT.ar;
+    window.addEventListener('zad:lang', () => { skip.textContent = SKIP_TXT[_sl()] || SKIP_TXT.ar; });
     skip.style.cssText = `
       position: absolute;
       top: -40px;

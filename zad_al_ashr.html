@@ -2633,7 +2633,7 @@ function shareNative() {
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  t.textContent = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
@@ -2677,5 +2677,6 @@ document.addEventListener('click', function(e) {
 });
 </script>
 <script src="js/a11y-mode.js" defer></script>
+<script src="lang.min.js" defer></script>
 </body>
 </html>

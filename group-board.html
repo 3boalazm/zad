@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function initials(a) { a = (a || '').trim(); return a ? a[0] : '🙂'; }
   function medal(i) { return i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1); }
 
-  function toast(msg) {
+  function toast(msg) { msg = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
     try { if (typeof window.showToast === 'function') { window.showToast(msg); return; } } catch (e) {}
     var t = document.getElementById('lb-toast');
     if (!t) { t = document.createElement('div'); t.id = 'lb-toast'; t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--primitive-green-700);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transition:all .3s'; document.body.appendChild(t); }
@@ -221,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
   render();
 });
 </script>
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>

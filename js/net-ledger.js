@@ -336,6 +336,15 @@
     return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
   }
   var STATE_AR = { net: 'شبكة', cache: 'من الذاكرة', blocked: 'أوقفته', fail: 'فشل', local: 'جهازي' };
+  /* ترجمة حالة الطلب بلغة الواجهة (الشريحة + العدّاد) */
+  function zlabel(state) {
+    var ar = STATE_AR[state] || state;
+    try {
+      var M = window.ZAD_UI_MAP || {}, lg = document.documentElement.lang || 'ar';
+      if (lg !== 'ar' && M[ar] && M[ar][lg]) return M[ar][lg];
+    } catch (e) {}
+    return ar;
+  }
 
   function summary(log) {
     var hosts = {}, net = 0, blocked = 0, total = 0;
@@ -360,7 +369,7 @@
         return '<div class="nl-row"><div class="nl-time">' + fmtTime(e.t) + '</div>'
           + '<div class="nl-main"><div class="nl-host">' + info.name + '</div>'
           + '<div class="nl-why">' + (e.p || '/') + ' · ' + esc(info.why) + '</div></div>'
-          + '<span class="nl-badge ' + e.s + '">' + (STATE_AR[e.s] || e.s) + (e.n > 1 ? ' ×' + e.n : '') + '</span></div>';
+          + '<span class="nl-badge ' + e.s + '">' + zlabel(e.s) + (e.n > 1 ? ' ×' + e.n : '') + '</span></div>';
       }).join('');
       el.innerHTML =
         '<div class="nl-sum">'

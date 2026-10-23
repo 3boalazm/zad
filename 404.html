@@ -165,6 +165,20 @@
   }
   .theme-btn:hover{transform:translateY(-1px);border-color:var(--gold,#c9a14a)}
 
+
+  /* ─── اختيار اللغة ─── */
+  .lang-btn{
+    position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:3;
+    height:38px;border-radius:12px;cursor:pointer;padding:0 8px;font-size:12.5px;font-weight:800;
+    background:var(--card,#fff);color:var(--ink,#1a1a18);
+    border:1.5px solid var(--border,#e5e4de);
+    box-shadow:0 8px 20px -12px rgba(14,59,46,.5);
+    font-family:'Tajawal','IBM Plex Sans Arabic',system-ui,sans-serif;
+  }
+  .lang-btn:hover{border-color:var(--gold,#c9a14a)}
+  html[dir="rtl"] .theme-btn{left:auto;right:12px}
+  html[dir="rtl"] .lang-btn{right:auto;left:12px}
+
   @media(max-width:420px){
     .err-card{padding:26px 18px 22px;border-radius:24px}
     .err-title{font-size:20px}
@@ -183,41 +197,42 @@
   <span class="e-orb a" aria-hidden="true"></span>
   <span class="e-orb b" aria-hidden="true"></span>
 
-  <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الثيم: فاتح / داكن / أسود" title="تبديل الثيم">🌙</button>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الثيم: فاتح / داكن / أسود" title="تبديل الثيم" data-l10n-aria="themeAria" data-l10n-title="themeTitle">🌙</button>
+  <select class="lang-btn" id="langBtn" aria-label="تغيير اللغة"></select>
 
   <main>
     <div class="err-card">
       <div class="err-brand">
         <svg viewBox="0 0 512 512" role="img" aria-label="زاد" xmlns="http://www.w3.org/2000/svg"><rect width="512" height="512" rx="171.82" ry="171.82" fill="#09231b"/><path fill="#fff" d="m153.92,331.54c14.52,0,40.42-4.55,58.64-13.38l11.39-25.05c16.22-35.86,9.68-58.35-5.98-79.41l5.98-11.1-40.99-27.33h-5.69l-14.52,50.95c31.31,15.66,54.65,31.31,63.19,48.96-16.22,1.14-48.67,2.56-62.62,2.56-34.44,0-32.16-8.54-36.43-23.63h-5.69c-1.14,15.09-2.28,33.87-2.28,41.27,0,25.05,12.52,36.15,35.01,36.15Z"/><path fill="#fff" d="m278.31,336.09l15.09-46.68c3.42-10.82,5.12-21.92,5.12-33.3v-72.3l9.96-11.67-15.37-56.93h-5.69l-24.48,30.17,9.68,190.71h5.69Z"/><path fill="#e8c274" d="m383.63,151.65c.28-.28.28-4.55,0-4.84l-27.61-27.61-27.89,27.89v4.27l27.89,27.89,27.61-27.61Z"/><path fill="#fff" d="m358.86,201.74h-5.69l-19.36,46.11c14.52,14.52,33.59,31.88,45.54,51.24-9.11,31.31-50.95,51.81-103.61,61.2v5.69l61.2,31.03c28.18-32.73,48.39-75.71,48.39-117.84,0-4.55-.28-9.39-1.14-14.23l9.11-20.78-34.44-42.41Z"/></svg>
-        <b>زاد</b>
+        <b data-l10n="brand">زاد</b>
       </div>
 
       <div class="err-num">404</div>
       <div class="err-ico" aria-hidden="true">🧭</div>
 
-      <h1 class="err-title">الصفحة دي مش موجودة</h1>
-      <p class="err-sub">يمكن الرابط قديم أو مكتوب غلط، أو الصفحة اتنقلت. من هنا تقدر ترجع على طول لأي حتة في زاد.</p>
+      <h1 class="err-title" data-l10n="h1">الصفحة دي مش موجودة</h1>
+      <p class="err-sub" data-l10n="sub">يمكن الرابط قديم أو مكتوب غلط، أو الصفحة اتنقلت. من هنا تقدر ترجع على طول لأي حتة في زاد.</p>
 
-      <a href="index.html" class="err-home">🏠 رجوع للوحة التحكم</a>
+      <a href="index.html" class="err-home" data-l10n="home">🏠 رجوع للوحة التحكم</a>
 
       <div class="err-search">
-        <input id="q" type="search" autocomplete="off" placeholder="دوّر على صفحة… مواقيت، مصحف، أذكار" aria-label="ابحث عن صفحة">
+        <input id="q" type="search" autocomplete="off" placeholder="دوّر على صفحة… مواقيت، مصحف، أذكار" aria-label="ابحث عن صفحة" data-l10n-ph="ph" data-l10n-aria="searchAria">
         <span class="si" aria-hidden="true">🔍</span>
       </div>
 
-      <div class="err-shortcuts-label">وجهات سريعة</div>
-      <nav class="err-grid" id="grid" aria-label="روابط سريعة">
-        <a href="prayers.html" class="err-link" data-k="مواقيت الصلاة وقت صلاة prayers"><span class="el-ico">🕌</span><span class="el-txt">مواقيت الصلاة</span></a>
-        <a href="mushaf.html" class="err-link" data-k="المصحف القرآن ورد mushaf quran"><span class="el-ico">📖</span><span class="el-txt">الورد القرآني</span></a>
-        <a href="adhkar.html" class="err-link" data-k="أذكار اذكار أذكار الصباح والمساء adhkar"><span class="el-ico">📿</span><span class="el-txt">الأذكار</span></a>
-        <a href="takbeer.html" class="err-link" data-k="مسبحة تسبيح سبحة tasbih"><span class="el-ico">🌙</span><span class="el-txt">المسبحة</span></a>
-        <a href="qibla.html" class="err-link" data-k="قبلة اتجاه القبلة بوصلة qibla"><span class="el-ico">🧭</span><span class="el-txt">القبلة</span></a>
-        <a href="kids.html" class="err-link" data-k="أطفال اطفال kids ألعاب"><span class="el-ico">🧸</span><span class="el-txt">عالم الأطفال</span></a>
+      <div class="err-shortcuts-label" data-l10n="quick">وجهات سريعة</div>
+      <nav class="err-grid" id="grid" aria-label="روابط سريعة" data-l10n-aria="navAria">
+        <a href="prayers.html" class="err-link" data-k="مواقيت الصلاة وقت صلاة prayers"><span class="el-ico">🕌</span><span class="el-txt" data-l10n="lPrayers">مواقيت الصلاة</span></a>
+        <a href="mushaf.html" class="err-link" data-k="المصحف القرآن ورد mushaf quran"><span class="el-ico">📖</span><span class="el-txt" data-l10n="lMushaf">الورد القرآني</span></a>
+        <a href="adhkar.html" class="err-link" data-k="أذكار اذكار أذكار الصباح والمساء adhkar"><span class="el-ico">📿</span><span class="el-txt" data-l10n="lAdhkar">الأذكار</span></a>
+        <a href="takbeer.html" class="err-link" data-k="مسبحة تسبيح سبحة tasbih"><span class="el-ico">🌙</span><span class="el-txt" data-l10n="lTasbih">المسبحة</span></a>
+        <a href="qibla.html" class="err-link" data-k="قبلة اتجاه القبلة بوصلة qibla"><span class="el-ico">🧭</span><span class="el-txt" data-l10n="lQibla">القبلة</span></a>
+        <a href="kids.html" class="err-link" data-k="أطفال اطفال kids ألعاب"><span class="el-ico">🧸</span><span class="el-txt" data-l10n="lKids">عالم الأطفال</span></a>
       </nav>
-      <p class="err-empty" id="empty" hidden>مفيش صفحة بالاسم ده — جرّب «مصحف» أو «أذكار» أو «صلاة».</p>
+      <p class="err-empty" id="empty" hidden data-l10n="empty">مفيش صفحة بالاسم ده — جرّب «مصحف» أو «أذكار» أو «صلاة».</p>
     </div>
 
-    <p class="err-foot"><b>زاد</b> · رفيقك في العبادة</p>
+    <p class="err-foot"><b data-l10n="brand">زاد</b> <span data-l10n="foot">· رفيقك في العبادة</span></p>
   </main>
 
 <script>
@@ -278,5 +293,66 @@
 })();
 </script>
 <script src="js/a11y-mode.js" defer></script>
+<script src="lang.min.js" defer></script>
+
+<script>
+/* ── تعريب/ترجمة صفحة 404 — مستقلة تمامًا عن محرّك الترجمة ── */
+(function(){
+  var T = {"brand": {"ar":"زاد","en":"Zad","fr":"Zad","id":"Zad","ur":"زاد","bn":"জাদ","tr":"Zad"},
+    "docTitle": {"ar": "الصفحة غير موجودة — زاد", "en": "Page not found — Zad", "fr": "Page introuvable — Zad", "id": "Halaman tidak ditemukan — Zad", "ur": "صفحہ نہیں ملا — زاد", "bn": "পৃষ্ঠা পাওয়া যায়নি — জাদ", "tr": "Sayfa bulunamadı — Zad"}, "themeAria": {"ar": "تبديل الثيم: فاتح / داكن / أسود", "en": "Switch theme: light / dark / black", "fr": "Changer de thème : clair / sombre / noir", "id": "Ganti tema: terang / gelap / hitam", "ur": "تھیم بدلیں: روشن / تاریک / سیاہ", "bn": "থিম বদলান: উজ্জ্বল / অন্ধকার / কালো", "tr": "Temayı değiştir: açık / koyu / siyah"}, "themeTitle": {"ar": "تبديل الثيم", "en": "Switch theme", "fr": "Changer de thème", "id": "Ganti tema", "ur": "تھیم بدلیں", "bn": "থিম বদলান", "tr": "Temayı değiştir"}, "themeCur": {"ar": "الثيم الحالي: %s — اضغط للتغيير", "en": "Current theme: %s — tap to change", "fr": "Thème actuel : %s — appuyez pour changer", "id": "Tema saat ini: %s — ketuk untuk ganti", "ur": "موجودہ تھیم: %s — تبدیل کے لیے دبائیں", "bn": "বর্তমান থিম: %s — বদলাতে ট্যাপ করুন", "tr": "Geçerli tema: %s — değiştirmek için dokun"}, "h1": {"ar": "الصفحة دي مش موجودة", "en": "This page doesn’t exist", "fr": "Cette page n’existe pas", "id": "Halaman ini tidak ada", "ur": "یہ صفحہ موجود نہیں", "bn": "এই পৃষ্ঠাটি নেই", "tr": "Bu sayfa mevcut değil"}, "sub": {"ar": "يمكن الرابط قديم أو مكتوب غلط، أو الصفحة اتنقلت. من هنا تقدر ترجع على طول لأي حتة في زاد.", "en": "The link may be old or mistyped, or the page has moved. From here you can jump straight to anywhere in Zad.", "fr": "Le lien est peut-être ancien ou mal saisi, ou la page a été déplacée. D’ici, vous pouvez rejoindre n’importe quelle partie de Zad.", "id": "Tautannya mungkin lama atau salah ketik, atau halamannya sudah dipindah. Dari sini kamu bisa langsung ke bagian mana pun di Zad.", "ur": "ہو سکتا ہے لنک پرانا یا غلط لکھا ہوا ہو، یا صفحہ منتقل ہو گیا ہو۔ یہاں سے آپ زاد کے کسی بھی حصے میں جا سکتے ہیں۔", "bn": "লিংকটি পুরোনো বা ভুল লেখা হতে পারে, অথবা পৃষ্ঠাটি সরে গেছে। এখান থেকে আপনি জাদের যেকোনো জায়গায় যেতে পারেন।", "tr": "Bağlantı eski veya yanlış yazılmış olabilir ya da sayfa taşınmış olabilir. Buradan Zad’ın herhangi bir yerine geçebilirsin."}, "home": {"ar": "🏠 رجوع للوحة التحكم", "en": "🏠 Back to dashboard", "fr": "🏠 Retour au tableau de bord", "id": "🏠 Kembali ke dasbor", "ur": "🏠 ڈیش بورڈ پر واپس", "bn": "🏠 ড্যাশবোর্ডে ফিরুন", "tr": "🏠 Panoya dön"}, "ph": {"ar": "دوّر على صفحة… مواقيت، مصحف، أذكار", "en": "Search a page… prayer times, mushaf, adhkar", "fr": "Chercher une page… horaires, moushaf, adhkar", "id": "Cari halaman… waktu salat, mushaf, zikir", "ur": "صفحہ تلاش کریں… اوقاتِ نماز، مصحف، اذکار", "bn": "পৃষ্ঠা খুঁজুন… নামাজের সময়, মুসহাফ, আযকার", "tr": "Sayfa ara… namaz vakitleri, mushaf, zikirler"}, "searchAria": {"ar": "ابحث عن صفحة", "en": "Search for a page", "fr": "Rechercher une page", "id": "Cari halaman", "ur": "صفحہ تلاش کریں", "bn": "পৃষ্ঠা খুঁজুন", "tr": "Sayfa ara"}, "quick": {"ar": "وجهات سريعة", "en": "Quick destinations", "fr": "Destinations rapides", "id": "Tujuan cepat", "ur": "فوری منزلیں", "bn": "দ্রুত গন্তব্য", "tr": "Hızlı hedefler"}, "navAria": {"ar": "روابط سريعة", "en": "Quick links", "fr": "Liens rapides", "id": "Tautan cepat", "ur": "فوری روابط", "bn": "দ্রুত লিংক", "tr": "Hızlı bağlantılar"}, "empty": {"ar": "مفيش صفحة بالاسم ده — جرّب «مصحف» أو «أذكار» أو «صلاة».", "en": "No page by that name — try “mushaf”, “adhkar” or “prayer”.", "fr": "Aucune page de ce nom — essayez « moushaf », « adhkar » ou « prière ».", "id": "Tidak ada halaman dengan nama itu — coba “mushaf”, “zikir”, atau “salat”.", "ur": "اس نام کا کوئی صفحہ نہیں — «مصحف»، «اذکار» یا «نماز» آزمائیں۔", "bn": "এই নামে কোনো পৃষ্ঠা নেই — “মুসহাফ”, “আযকার” বা “নামাজ” চেষ্টা করুন।", "tr": "Bu isimde sayfa yok — “mushaf”, “zikir” veya “namaz” deneyin."}, "foot": {"ar": "· رفيقك في العبادة", "en": "· Your companion in worship", "fr": "· Votre compagnon dans l’adoration", "id": "· Sahabat ibadahmu", "ur": "· عبادت میں آپ کا ساتھی", "bn": "· ইবাদতে আপনার সঙ্গী", "tr": "· İbadette yol arkadaşın"}, "lPrayers": {"ar": "مواقيت الصلاة", "en": "Prayer times", "fr": "Horaires de prière", "id": "Waktu salat", "ur": "اوقاتِ نماز", "bn": "নামাজের সময়", "tr": "Namaz vakitleri"}, "lMushaf": {"ar": "الورد القرآني", "en": "Quran wird", "fr": "Wird coranique", "id": "Wird Al-Qur’an", "ur": "قرآنی ورد", "bn": "কুরআনের ওয়ারদ", "tr": "Kur’an virdi"}, "lAdhkar": {"ar": "الأذكار", "en": "Adhkar", "fr": "Adhkar", "id": "Zikir", "ur": "اذکار", "bn": "আযকার", "tr": "Zikirler"}, "lTasbih": {"ar": "المسبحة", "en": "Tasbih counter", "fr": "Compteur de tasbih", "id": "Penghitung tasbih", "ur": "تسبیح کاؤنٹر", "bn": "তাসবিহ কাউন্টার", "tr": "Tesbih sayacı"}, "lQibla": {"ar": "القبلة", "en": "Qibla", "fr": "Qibla", "id": "Kiblat", "ur": "قبلہ", "bn": "কিবলা", "tr": "Kıble"}, "lKids": {"ar": "عالم الأطفال", "en": "Kids world", "fr": "Monde des enfants", "id": "Dunia anak", "ur": "بچوں کی دنیا", "bn": "শিশুদের জগৎ", "tr": "Çocuklar dünyası"}, "langAria": {"ar": "تغيير اللغة", "en": "Change language", "fr": "Changer de langue", "id": "Ganti bahasa", "ur": "زبان بدلیں", "bn": "ভাষা পরিবর্তন করুন", "tr": "Dili değiştir"}}, NAMES = {"ar": "العربية", "en": "English", "fr": "Français", "id": "Indonesia", "ur": "اردو", "bn": "বাংলা", "tr": "Türkçe"}, LANGS = ['ar','en','fr','id','ur','bn','tr'];
+  var sel = document.getElementById('langBtn');
+  function cur(){
+    var l = 'ar';
+    try { l = localStorage.getItem('zad_lang') || 'ar'; } catch(e){}
+    return LANGS.indexOf(l) === -1 ? 'ar' : l;
+  }
+  function t(key, L){ var e = T[key]; return (e && (e[L] || e.en)) || (e && e.ar) || ''; }
+  function apply(L){
+    var root = document.documentElement;
+    root.setAttribute('lang', L);
+    root.setAttribute('dir', (L === 'ar' || L === 'ur') ? 'rtl' : 'ltr');
+    document.title = t('docTitle', L);
+    [].forEach.call(document.querySelectorAll('[data-l10n]'), function(el){
+      el.textContent = t(el.getAttribute('data-l10n'), L);
+    });
+    [].forEach.call(document.querySelectorAll('[data-l10n-ph]'), function(el){
+      el.setAttribute('placeholder', t(el.getAttribute('data-l10n-ph'), L));
+    });
+    [].forEach.call(document.querySelectorAll('[data-l10n-aria]'), function(el){
+      el.setAttribute('aria-label', t(el.getAttribute('data-l10n-aria'), L));
+    });
+    [].forEach.call(document.querySelectorAll('[data-l10n-title]'), function(el){
+      el.setAttribute('title', t(el.getAttribute('data-l10n-title'), L));
+    });
+    if (sel) {
+      sel.setAttribute('aria-label', t('langAria', L));
+      sel.value = L;
+    }
+    /* كلمات البحث اللاتينية في روابط الاختصارات */
+    var idx = { lPrayers: 'prayer salah namaz', lMushaf: 'quran mushaf', lAdhkar: 'adhkar zikr', lTasbih: 'tasbih dhikr', lQibla: 'qibla', lKids: 'kids children' };
+    Object.keys(idx).forEach(function(k){
+      var el = document.querySelector('[data-l10n="' + k + '"]');
+      var a = el && el.closest('.err-link');
+      if (!a) return;
+      if (!a.__ar) a.__ar = a.getAttribute('data-k') || '';
+      a.setAttribute('data-k', a.__ar + ' ' + idx[k]);
+    });
+  }
+  if (sel) {
+    LANGS.forEach(function(L){
+      var o = document.createElement('option');
+      o.value = L; o.textContent = NAMES[L];
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', function(){
+      var L = sel.value;
+      try { localStorage.setItem('zad_lang', L); } catch(e){}
+      apply(L);
+    });
+    apply(cur());
+  }
+  document.addEventListener('zad:lang', function(){ apply(cur()); });
+})();
+</script>
 </body>
 </html>

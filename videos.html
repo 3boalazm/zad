@@ -338,7 +338,7 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
 
     <div class="vid-links-note" id="vid-links-note">
       <span class="vln-ico">🔗</span>
-      <span>البطاقات التي تحمل زر <b>«↗»</b> وشارة <b>«🔍 بحث»</b> أو <b>«🌐 الموقع»</b> لا يتوفر لها رابط فيديو مباشر في القائمة المصدر — الضغط عليها يفتح صفحة البحث أو الموقع الرسمي للشيخ في تبويب جديد لتختار الحلقة بنفسك. أما البطاقات بزر <b>«▶»</b> فتعمل بالمشغّل المدمج داخل الصفحة بصورة مصغّرة حقيقية.</span>
+      <span data-lede="videos-help">البطاقات التي تحمل زر «↗» وشارة «🔍 بحث» أو «🌐 الموقع» لا يتوفر لها رابط فيديو مباشر في القائمة المصدر — الضغط عليها يفتح صفحة البحث أو الموقع الرسمي للشيخ في تبويب جديد لتختار الحلقة بنفسك. أما البطاقات بزر «▶» فتعمل بالمشغّل المدمج داخل الصفحة بصورة مصغّرة حقيقية.</span>
     </div>
 
 <div id="vids-container" class="cols-4">
@@ -3391,6 +3391,8 @@ html[data-theme="dark"] .vid-watch-btn,html[data-theme="oled"] .vid-watch-btn{ba
   <div class="player-title" id="player-title"></div>
 </div>
 
+<script src="i18n/content.js" defer></script>
+<script src="i18n/content-summaries.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
@@ -3421,7 +3423,17 @@ function openPlayer(id, title) {
   const f = document.getElementById('yt-iframe');
   const t = document.getElementById('player-title');
   if (f) f.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
-  if (t) t.textContent = title || '';
+  /* عنوان المشغّل يصل عربيًا من onclick — يُترجم هنا، ويُجزَّأ على « — » لعنوان+اسم */
+  if (t) {
+    let label = title || '';
+    const L = (window.I18N && I18N.current) || 'ar';
+    const M = window.ZAD_UI_MAP;
+    if (L !== 'ar' && M && label) {
+      const tr1 = (k) => (M[k] ? (M[k][L] || M[k].en) : null);
+      label = tr1(label) || label.split(' — ').map(p => tr1(p) || p).join(' — ');
+    }
+    t.textContent = label;
+  }
   if (o) o.classList.add('open');
   document.body.style.overflow = 'hidden';
 }

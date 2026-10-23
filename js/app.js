@@ -359,7 +359,12 @@ function updateProgress() {
   const done = worshipKeys.filter(k => STATE.worship[k]).length;
   const pct  = Math.round((done / (worshipKeys.length || 1)) * 100);
   if (bar) bar.style.width = pct + '%';
-  if (txt) txt.textContent = done + ' من ' + worshipKeys.length + ' عبادة';
+  if (txt) {
+    const n = worshipKeys.length;
+    txt.textContent = (typeof window.ZadWorshipProgress === 'function')
+      ? window.ZadWorshipProgress(done, n)
+      : done + ' من ' + n + ' عبادة';
+  }
   const pctEl = document.getElementById('prog-pct');
   if (pctEl) pctEl.textContent = pct + '%';
   if (typeof updateCircularRing === 'function') updateCircularRing(pct);
@@ -868,9 +873,11 @@ async function fetchAndCacheHijriDate() {
     }));
     /* تحديث عناصر الواجهة التي تعرض التاريخ الهجري */
     const MONTHS = ['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
-    document.querySelectorAll('#hijri-full, .hd-hijri').forEach(el => {
-      el.textContent = `${h.day} ${MONTHS[h.month-1]} ${h.year} هـ`;
-    });
+    /* التنسيق حسب لغة الواجهة (ZadFmtHijri في lang.js) */
+    const txt = (typeof window.ZadFmtHijri === 'function')
+      ? window.ZadFmtHijri(h.day, h.month, h.year, today)
+      : `${h.day} ${MONTHS[h.month-1]} ${h.year} هـ`;
+    document.querySelectorAll('#hijri-full, .hd-hijri').forEach(el => { el.textContent = txt; });
   } catch(e) {}
 }
 
@@ -908,7 +915,8 @@ function showToast(msg) {
     toast.id = 'zad-toast'; toast.className = 'toast';
     document.body.appendChild(toast);
   }
-  toast.textContent = msg;
+  /* الترجمة: الرسائل مكتوبة بالعربية في الكود؛ ZT يحوّلها للغة الواجهة */
+  toast.textContent = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
   toast.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);

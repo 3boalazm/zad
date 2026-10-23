@@ -809,7 +809,7 @@ function duRender(tab) {
       if (d.badge === 'quran')  badgeHtml = `<span class="du-badge du-badge-quran">📖 قرآن كريم</span>`;
       if (d.badge === 'sahabi') badgeHtml = `<span class="du-badge du-badge-sahabi">⭐ صحابي</span>`;
 
-      const refHtml  = d.ref  ? `<div class="du-quran-ref">📖 ${d.ref}</div>` : '';
+      const refHtml  = d.ref  ? `<div class="du-quran-ref"><span aria-hidden="true">📖</span> ${d.ref}</div>` : '';
       const noteHtml = d.note ? `<div class="du-note">💡 ${d.note}</div>` : '';
       const idEsc = d.id.replace(/'/g,"\\'");
 
@@ -922,6 +922,8 @@ window.duFilter = function() {
 document.addEventListener('DOMContentLoaded', () => { duSwitch('jawami'); });
 </script>
 
+<script src="i18n/content-misc.js" defer></script>
+<script src="i18n/content-dua.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>

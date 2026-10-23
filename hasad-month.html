@@ -142,6 +142,25 @@ html[data-theme="dark"] .hm-cross .cx-t,html[data-theme="oled"] .hm-cross .cx-t{
     var d=keys.filter(function(k){return w[k];}).length;
     return Math.round(d/keys.length*100);
   }
+
+  var ZL=(function(){try{return localStorage.getItem('zad_lang')||'ar';}catch(e){return 'ar';}})();
+  var ZMONTH={ar:0,en:1,fr:1,id:1,ur:1,bn:1,tr:1};
+  function zMonthName(y,m){
+    if(ZL==='ar') return AR_MONTHS[m];
+    try { return new Intl.DateTimeFormat(ZL,{month:'long'}).format(new Date(y,m,1)); } catch(e){ return AR_MONTHS[m]; }
+  }
+  function zActive(a,n,best,bpct){
+    var T={
+      ar:function(a,n,best,bpct){return a+' من '+n+' يومًا نشطًا'+(best?' · أفضل يوم: '+best+' ('+bpct+'%)':'');},
+      en:function(a,n,best,bpct){return a+' of '+n+' active days'+(best?' · best day: '+best+' ('+bpct+'%)':'');},
+      fr:function(a,n,best,bpct){return a+' sur '+n+' jours actifs'+(best?' · meilleur jour : '+best+' ('+bpct+' %)':'');},
+      id:function(a,n,best,bpct){return a+' dari '+n+' hari aktif'+(best?' · hari terbaik: '+best+' ('+bpct+'%)':'');},
+      ur:function(a,n,best,bpct){return n+' میں سے '+a+' فعال دن'+(best?' · بہترین دن: '+best+' ('+bpct+'%)':'');},
+      bn:function(a,n,best,bpct){return n+' দিনের মধ্যে '+a+' সক্রিয়'+(best?' · সেরা দিন: '+best+' ('+bpct+'%)':'');},
+      tr:function(a,n,best,bpct){return n+' günün '+a+' günü aktif'+(best?' · en iyi gün: '+best+' ('+bpct+'%)':'');}
+    };
+    return (T[ZL]||T.ar)(a,n,best,bpct);
+  }
   function level(p){return p<=0?0:p<40?1:p<70?2:p<90?3:4;}
 
   function run(){
@@ -149,7 +168,7 @@ html[data-theme="dark"] .hm-cross .cx-t,html[data-theme="oled"] .hm-cross .cx-t{
     var now=new Date(), y=now.getFullYear(), m=now.getMonth();
     var daysInMonth=new Date(y,m+1,0).getDate();
     var todayK=keyOf(new Date());
-    document.getElementById('hm-month').textContent=AR_MONTHS[m]+' '+y;
+    document.getElementById('hm-month').textContent=zMonthName(y,m)+' '+y;
 
     /* بناء أيام الشهر */
     var firstWeekday=new Date(y,m,1).getDay();        /* 0=أحد .. 6=سبت */
@@ -169,7 +188,7 @@ html[data-theme="dark"] .hm-cross .cx-t,html[data-theme="oled"] .hm-cross .cx-t{
     grid.innerHTML=html;
     var avg=active>0?Math.round(sumPct/active):0;
     document.getElementById('hm-pct').textContent=avg+'%';
-    document.getElementById('hm-active').textContent=active+' من '+daysInMonth+' يومًا نشطًا'+(bestDay?' · أفضل يوم: '+bestDay+' ('+bestPct+'%)':'');
+    document.getElementById('hm-active').textContent=zActive(active,daysInMonth,bestDay,bestPct);
 
     /* فروقات تراكمية خلال الشهر (takbeer / juz / zad / fasting) */
     var monthKeys=Object.keys(hist).filter(function(k){var p=k.split('-');return +p[0]===y && (+p[1]-1)===m;}).sort();
@@ -221,5 +240,7 @@ html[data-theme="dark"] .hm-cross .cx-t,html[data-theme="oled"] .hm-cross .cx-t{
 <script src="js/vendor/gsap.min.js" defer></script>
 <script src="animations.min.js" defer></script>
 <script src="js/a11y-mode.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
+<script src="lang.min.js" defer></script>
 </body>
 </html>

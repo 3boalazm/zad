@@ -178,7 +178,7 @@
     }
   }
 
-  function toast(msg){
+  function toast(msg){ msg = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
     var t=document.createElement('div');
     t.textContent=msg;
     t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:10px 20px;border-radius:99px;z-index:2000001;font-size:13px;font-family:system-ui';

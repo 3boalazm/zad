@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
 <title>جدول العبادات — انتقل إلى برنامج اليوم</title>
+<script>
+/* ── ترجمة صفحة التحويل القصيرة (تعمل قبل تحميل أي ملف آخر) ── */
+(function(){
+  var T = {"docTitle": {"ar": "جدول العبادات — انتقل إلى برنامج اليوم", "en": "Worship tracker — moved to Today’s Plan", "fr": "Suivi des adorations — déplacé vers le programme du jour", "id": "Pelacak ibadah — pindah ke Rencana Hari Ini", "ur": "عبادات کا شیڈول — آج کے پروگرام میں منتقل", "bn": "ইবাদতের তালিকা — আজকের প্ল্যানে সরানো হয়েছে", "tr": "İbadet takibi — Günün Programına taşındı"}, "moved": {"ar": "📿 جدول العبادات أصبح جزءًا من «برنامج اليوم»", "en": "📿 The worship tracker is now part of “Today’s Plan”", "fr": "📿 Le suivi des adorations fait désormais partie du « programme du jour »", "id": "📿 Pelacak ibadah kini bagian dari “Rencana Hari Ini”", "ur": "📿 عبادات کا شیڈول اب «آج کے پروگرام» کا حصہ ہے", "bn": "📿 ইবাদতের তালিকা এখন “আজকের প্ল্যান”-এর অংশ", "tr": "📿 İbadet takibi artık “Günün Programı”nın bir parçası"}, "redirecting": {"ar": "يتم تحويلك الآن… وإلا", "en": "Redirecting now… or else", "fr": "Redirection en cours… sinon", "id": "Mengalihkan sekarang… atau", "ur": "ابھی منتقلی ہو رہی ہے… ورنہ", "bn": "এখনই সরানো হচ্ছে… নাহলে", "tr": "Şimdi yönlendiriliyor… yoksa"}, "tapHere": {"ar": "اضغط هنا", "en": "tap here", "fr": "appuyez ici", "id": "ketuk di sini", "ur": "یہاں دبائیں", "bn": "এখানে ট্যাপ করুন", "tr": "buraya dokun"}}, NAMES = {"ar": "العربية", "en": "English", "fr": "Français", "id": "Indonesia", "ur": "اردو", "bn": "বাংলা", "tr": "Türkçe"}, LANGS = ['ar','en','fr','id','ur','bn','tr'];
+  var L = 'ar';
+  try { L = localStorage.getItem('zad_lang') || 'ar'; } catch(e){}
+  if (LANGS.indexOf(L) === -1) L = 'ar';
+  function t(k){ var e = T[k]; return (e && (e[L] || e.en)) || (e && e.ar) || ''; }
+  var r = document.documentElement;
+  r.setAttribute('lang', L);
+  r.setAttribute('dir', (L === 'ar' || L === 'ur') ? 'rtl' : 'ltr');
+  document.title = t('docTitle');
+  [].forEach.call(document.querySelectorAll('[data-t]'), function(el){ el.textContent = t(el.getAttribute('data-t')); });
+})();
+</script>
 <meta http-equiv="refresh" content="0; url=barnamaj.html#worship-tracker">
 <link rel="canonical" href="barnamaj.html">
 <script>location.replace('barnamaj.html#worship-tracker');</script>
@@ -13,8 +28,8 @@
 </head>
 <body>
 <div>
-<p style="font-size:18px;font-weight:800">📿 جدول العبادات أصبح جزءًا من «برنامج اليوم»</p>
-<p>يتم تحويلك الآن… وإلا <a href="barnamaj.html#worship-tracker">اضغط هنا</a>.</p>
+<p style="font-size:18px;font-weight:800" data-t="moved">📿 جدول العبادات أصبح جزءًا من «برنامج اليوم»</p>
+<p><span data-t="redirecting">يتم تحويلك الآن… وإلا</span> <a href="barnamaj.html#worship-tracker" data-t="tapHere">اضغط هنا</a>.</p>
 </div>
 <script src="js/a11y-mode.js" defer></script>
 </body>

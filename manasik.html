@@ -389,7 +389,7 @@ if (!HAJJ.jam || typeof HAJJ.jam !== 'object') HAJJ.jam = { sughra:0, wusta:0, k
 if (!HAJJ.jamTab) HAJJ.jamTab = 'sughra';
 if (!HAJJ.nusuk)    HAJJ.nusuk    = 'tamattu';   /* النسك الافتراضي */
 
-function toast(msg){
+function toast(msg){ msg = (typeof window.ZT === 'function') ? window.ZT(msg) : msg;
   try{ if (typeof window.showToast === 'function'){ window.showToast(msg); return; } }catch(e){}
   let t = document.getElementById('mn-toast');
   if (!t){ t = document.createElement('div'); t.id='mn-toast';
