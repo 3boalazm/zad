@@ -3110,6 +3110,18 @@ function ZT(msg) {
     ph.forEach((name, i) => { tplStr = tplStr.split('{' + name + '}').join(ztPart(hit[i + 1], lang)); });
     return tplStr;
   }
+  /* رسائل لم تُدرَج في TOASTS: نجرّب القاموس العام ثم القوالب (نحو «الجزء 3») */
+  const plain = s.trim();
+  const rec = UI_MAP[plain];
+  if (rec) return rec[lang] || rec.en || s;
+  const tplOut = zadTpl(plain, lang);
+  if (tplOut) return tplOut;
+  for (const [re, make] of zadPatterns(lang)) {
+    const m = re.exec(plain);
+    if (!m) continue;
+    const out = make.apply(null, m.slice(1).map(x => (x == null ? x : zadNum(x, lang))));
+    if (out) return out;
+  }
   return s;
 }
 window.ZT = ZT;
