@@ -1069,6 +1069,16 @@ function zadTplList() {
   _zadTplSize = size;
   return _zadTplCache;
 }
+function zadNum(t, lang) {
+  /* أرقام موحّدة حسب لغة الواجهة: لاتينية، أو عربية/أردية/بنغالية */
+  return String(t).replace(/[0-9\u0660-\u0669]/g, d => {
+    const n = d >= '0' && d <= '9' ? +d : d.charCodeAt(0) - 0x0660;
+    if (lang === 'ar') return String.fromCharCode(0x0660 + n);
+    if (lang === 'ur') return String.fromCharCode(0x06F0 + n);
+    if (lang === 'bn') return String.fromCharCode(0x09E6 + n);
+    return String(n);
+  });
+}
 function zadTpl(t, lang) {
   if (!/[0-9\u0660-\u0669]/.test(t)) return null;
   for (const [re, key, names] of zadTplList()) {
@@ -1077,12 +1087,199 @@ function zadTpl(t, lang) {
     const rec = UI_MAP[key];
     let out = rec && (rec[lang] || rec.en);
     if (!out) continue;
-    names.forEach((nm, i) => { out = out.split('{' + nm + '}').join(m[i + 1]); });
+    names.forEach((nm, i) => { out = out.split('{' + nm + '}').join(zadNum(m[i + 1], lang)); });
     return out;
   }
   return null;
 }
 
+/* أنماط رقمية تُبنى حسب اللغة: تُستعمل للنصوص وللسمات (title/aria-label) معًا */
+function zadPatterns(lang) {
+  return [
+
+        /* «اليوم: 12 جمادى الأولى 1448 هـ» · «📅 اليوم: …» */
+        [/^([^\u0600-\u06FF\w]{0,3}\s*)?اليوم:?\s*([\u0660-\u0669\d]+)\s+([\u0600-\u06FF ]+?)\s+([\u0660-\u0669\d]+)\s*هـ$/, (emo, d, m, y) => {
+          const M2 = ZAD_HIJ_M[m] || ZAD_GREG_M[m];
+          const base = d + ' ' + ((M2 || {})[lang] || m) + ' ' + y + ' ' + (ZAD_ERA[lang] || 'AH');
+          const L = { en:'Today: ', fr:'Aujourd’hui : ', id:'Hari ini: ', ur:'آج: ', bn:'আজ: ', tr:'Bugün: ' }[lang] || '';
+          return (emo || '') + L + base;
+        }],
+        /* «أكتوبر 2026» · «الجمعة — ٢٣ أكتوبر ٢٠٢٦» */
+        [/^(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+([\u0660-\u0669\d]+)$/, (m, y) => ((ZAD_GREG_M[m] || {})[lang] || m) + ' ' + y],
+        [/^(السبت|الأحد|الاثنين|الثلاثاء|الأربعاء|الخميس|الجمعة)\s*—\s*([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+([\u0660-\u0669\d]+)$/, (wd, d, m, y) => {
+          const W = { 'السبت':{en:'Saturday',fr:'samedi',id:'Sabtu',ur:'ہفتہ',bn:'শনিবার',tr:'Cumartesi'},
+                      'الأحد':{en:'Sunday',fr:'dimanche',id:'Ahad',ur:'اتوار',bn:'রবিবার',tr:'Pazar'},
+                      'الاثنين':{en:'Monday',fr:'lundi',id:'Senin',ur:'پیر',bn:'সোমবার',tr:'Pazartesi'},
+                      'الثلاثاء':{en:'Tuesday',fr:'mardi',id:'Selasa',ur:'منگل',bn:'মঙ্গলবার',tr:'Salı'},
+                      'الأربعاء':{en:'Wednesday',fr:'mercredi',id:'Rabu',ur:'بدھ',bn:'বুধবার',tr:'Çarşamba'},
+                      'الخميس':{en:'Thursday',fr:'jeudi',id:'Kamis',ur:'جمعرات',bn:'বৃহস্পতিবার',tr:'Perşembe'},
+                      'الجمعة':{en:'Friday',fr:'vendredi',id:'Jumat',ur:'جمعہ',bn:'শুক্রবার',tr:'Cuma'} }[wd];
+          return (W && W[lang] ? W[lang] : wd) + ' — ' + d + ' ' + ((ZAD_GREG_M[m] || {})[lang] || m) + ' ' + y;
+        }],
+        /* «٣٤٥٬٠٠٠ ج.م» — مبالغ بالجنيه */
+        [/^([^\u0600-\u06FF]{0,20}?)([\u0660-\u0669\d٬,\.]+)\s*ج\.م(.*)$/, (pre, num, tail) => {
+          const n2 = num.replace(/٬/g, ',');
+          return zadNum(pre + n2, lang) + ' EGP' + (tail || '');
+        }],
+        /* «٢٣‏/١٠‏/٢٠٢٦» — تاريخ مختصر (مع علامات RLM) */
+        [/^([\u0660-\u0669\d]{1,4})[\u200f\/]([\u0660-\u0669\d]{1,2})[\u200f\/]([\u0660-\u0669\d]{2,4})$/, (a, b, c) => {
+          const L = { en:`${a}/${b}/${c}`, fr:`${a}/${b}/${c}`, id:`${a}/${b}/${c}`,
+                      ur:`${a}/${b}/${c}`, bn:`${a}/${b}/${c}`, tr:`${a}.${b}.${c}` }[lang];
+          return L || (a + '/' + b + '/' + c);
+        }],
+        /* «٧ فبراير» · «9 ذو الحجة» — يوم + شهر */
+        [/^([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)$/, (n, m) => n + ' ' + ((ZAD_GREG_M[m] || {})[lang] || m)],
+        [/^([\u0660-\u0669\d]+)\s+(محرم|صفر|ربيع الأول|ربيع الآخر|جمادى الأولى|جمادى الآخرة|رجب|شعبان|رمضان|شوال|ذو القعدة|ذو الحجة)$/, (n, m) => n + ' ' + ((ZAD_HIJ_M[m] || {})[lang] || m)],
+        /* «١٢ جمادى الأولى ١٤٤٨ هـ» · «1448 هـ» */
+        [/^([\u0660-\u0669\d]+)\s+([\u0600-\u06FF ]+?)\s+([\u0660-\u0669\d]+)\s*هـ$/, (d, m, y) => {
+          const M2 = ZAD_HIJ_M[m] || ZAD_GREG_M[m];
+          return d + ' ' + ((M2 || {})[lang] || m) + ' ' + y + ' ' + (ZAD_ERA[lang] || 'AH');
+        }],
+        [/^([\u0660-\u0669\d]+)\s*هـ$/, (y) => y + ' ' + (ZAD_ERA[lang] || 'AH')],
+        /* «اليوم الثالث: 40%» — ترتيب + نسبة */
+        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر):\s*([\u0660-\u0669\d]+)%$/, (ord, pct) => {
+          const i = ZAD_ORD.indexOf(ord);
+          const W = ZAD_ORD_W[lang];
+          if (!W) return '';
+          return { en:`Day ${i+1}: ${pct}%`, fr:`Jour ${i+1} : ${pct}%`, id:`Hari ke-${i+1}: ${pct}%`,
+                   ur:`دن ${i+1}: ${pct}%`, bn:`${i+1} নম্বর দিন: ${pct}%`, tr:`${i+1}. gün: ${pct}%` }[lang];
+        }],
+        /* «سورة الحج 27» · «سورة الكوثر 1-2» · «﴿ الحديد: 20 ﴾» */
+        [/^سورة ([\u0600-\u06FF ]+?) ([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : name;
+          return (nm || name) + ' ' + ref;
+        }],
+        [/^﴿\s*([\u0600-\u06FF ]+?)\s*[:·]\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)\s*﴾$/, (name, ref) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : name;
+          return '﴿ ' + (nm || name) + ': ' + ref + ' ﴾';
+        }],
+        /* «إنقاص عدد الزوج» · «عدد الأبناء» — واجهة المواريث */
+        [/^(إنقاص|زيادة) عدد (.+)$/, (verb, who) => {
+          const rec = UI_MAP[who.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : who.trim();
+          const V = { en: verb === 'إنقاص' ? 'Decrease' : 'Increase',
+                      fr: verb === 'إنقاص' ? 'Diminuer' : 'Augmenter',
+                      id: verb === 'إنقاص' ? 'Kurangi' : 'Tambah',
+                      ur: verb === 'إنقاص' ? 'کم کریں' : 'بڑھائیں',
+                      bn: verb === 'إنقاص' ? 'কমান' : 'বাড়াও',
+                      tr: verb === 'إنقاص' ? 'Azalt' : 'Artır' }[lang];
+          return nm ? (V + ' — ' + nm) : '';
+        }],
+        /* «الفائت من الفجر» · «قضيت واحدة من الفجر» — قضاء الفوائت */
+        [/^(الفائت|قضيت واحدة) من (.+)$/, (kind, prayer) => {
+          const rec = UI_MAP[prayer.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : prayer.trim();
+          if (!nm) return '';
+          return kind === 'الفائت'
+            ? { en:`Missed from ${nm}`, fr:`Manquée de ${nm}`, id:`Terlewat dari ${nm}`, ur:`${nm} سے فوت`, bn:`${nm} থেকে ছুটে যাওয়া`, tr:`${nm} kaçırılan` }[lang]
+            : { en:`Made up one from ${nm}`, fr:`Rattrapée une de ${nm}`, id:`Diqadha satu dari ${nm}`, ur:`${nm} سے ایک ادا کی`, bn:`${nm} থেকে একটি আদায় করেছি`, tr:`${nm} için bir kaza` }[lang];
+        }],
+        /* عدّادات عربية خالصة: «13 أذكار» · «5 أيام ✓» · «3 جلسات» */
+        [/^([\u0660-\u0669\d]+)\s*(أذكار|آيات|أحاديث|أيام|مرات|جلسات)\s*(✓)?$/, (n, unit, tick) => {
+          const U = { 'أذكار':{en:'adhkar',fr:'adhkar',id:'zikir',ur:'اذکار',bn:'আযকার',tr:'zikir'},
+                      'آيات':{en:'verses',fr:'versets',id:'ayat',ur:'آیات',bn:'আয়াত',tr:'ayet'},
+                      'أحاديث':{en:'hadiths',fr:'hadiths',id:'hadis',ur:'حدیثیں',bn:'হাদিস',tr:'hadis'},
+                      'أيام':{en:'days',fr:'jours',id:'hari',ur:'دن',bn:'দিন',tr:'gün'},
+                      'مرات':{en:'times',fr:'fois',id:'kali',ur:'بار',bn:'বার',tr:'kez'},
+                      'جلسات':{en:'sessions',fr:'séances',id:'sesi',ur:'نشستیں',bn:'সেশন',tr:'oturum'} }[unit];
+          if (!U) return '';
+          return n + ' ' + (U[lang] || U.en) + (tick ? ' ✓' : '');
+        }],
+        /* «اليوم 3 من 10» · «3 / 30 جزء» · «جزء 3» (خطة الختمة والعشر) */
+        [/^اليوم ([\u0660-\u0669\d]+) من ([\u0660-\u0669\d]+)$/, (a,b) => ({
+          en:`Day ${a} of ${b}`, fr:`Jour ${a} sur ${b}`, id:`Hari ${a} dari ${b}`,
+          ur:`${b} میں سے دن ${a}`, bn:`${b}-এর মধ্যে ${a} নম্বর দিন`, tr:`${b} günün ${a}. günü` }[lang])],
+        [/^([\u0660-\u0669\d]+) \/ ([\u0660-\u0669\d]+) جزء$/, (a,b) => ({
+          en:`${a} / ${b} Juz`, fr:`${a} / ${b} juz`, id:`${a} / ${b} juz`,
+          ur:`${a} / ${b} پارہ`, bn:`${a} / ${b} জুজ`, tr:`${a} / ${b} cüz` }[lang])],
+        [/^جزء ([\u0660-\u0669\d]+)$/, (n) => ({
+          en:`Juz ${n}`, fr:`Juz ${n}`, id:`Juz ${n}`, ur:`پارہ ${n}`, bn:`জুজ ${n}`, tr:`Cüz ${n}` }[lang])],
+        [/^📚\s*([\u0660-\u0669\d]+)\s*حديثًا$/, (n) => ({
+          en:`📚 ${n} hadiths`, fr:`📚 ${n} hadiths`, id:`📚 ${n} hadis`,
+          ur:`📚 ${n} حدیثیں`, bn:`📚 ${n} হাদিস`, tr:`📚 ${n} hadis` }[lang])],
+        [/^([\u0660-\u0669\d]+)\s*من\s*([\u0660-\u0669\d]+)\s*عبادة$/, (a,b) => ({
+          en:`${a} of ${b} acts of worship`, fr:`${a} sur ${b} adorations`, id:`${a} dari ${b} ibadah`,
+          ur:`${a} از ${b} عبادات`, bn:`${b}-এর মধ্যে ${a} ইবাদত`, tr:`${b} ibadetten ${a}` }[lang])],
+        [/^([\u0660-\u0669\d]+)\s*أذكار\s*·\s*(.+)$/, (n,rest) => {
+          const R = UI_MAP[rest.trim()] ? (UI_MAP[rest.trim()][lang] || UI_MAP[rest.trim()].en) : rest;
+          return { en:`${n} adhkar · ${R}`, fr:`${n} adhkar · ${R}`, id:`${n} zikir · ${R}`,
+                   ur:`${n} اذکار · ${R}`, bn:`${n} আযকার · ${R}`, tr:`${n} zikir · ${R}` }[lang];
+        }],
+        /* «اليوم الأول — الجزء 1–3» و«الفاتحة → آل عمران» (خطة الختمة) */
+        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر) — الجزء ([\u0660-\u0669\d]+)–([\u0660-\u0669\d]+)$/, (ord, a, b) => {
+          const N = { 'الأول':1,'الثاني':2,'الثالث':3,'الرابع':4,'الخامس':5,'السادس':6,'السابع':7,'الثامن':8,'التاسع':9,'العاشر':10 }[ord];
+          const j = { en:'Juz', fr:'Juz', id:'Juz', ur:'پارہ', bn:'জুজ', tr:'Cüz' }[lang];
+          return { en:`Day ${N} — ${j} ${a}–${b}`, fr:`Jour ${N} — ${j} ${a}–${b}`, id:`Hari ${N} — ${j} ${a}–${b}`,
+                   ur:`${N === 1 ? 'پہلا' : N === 2 ? 'دوسرا' : N === 3 ? 'تیسرا' : N === 4 ? 'چوتھا' : N === 5 ? 'پانچواں' : N === 6 ? 'چھٹا' : N === 7 ? 'ساتواں' : N === 8 ? 'آٹھواں' : N === 9 ? 'نواں' : 'دسواں'} دن — ${j} ${a}–${b}`,
+                   bn:`${['প্রথম','দ্বিতীয়','তৃতীয়','চতুর্থ','পঞ্চম','ষষ্ঠ','সপ্তম','অষ্টম','নবম','দশম'][N-1]} দিন — ${j} ${a}–${b}`,
+                   tr:`${N}. gün — ${j} ${a}–${b}` }[lang];
+        }],
+        [/^([\u0600-\u06FF’' ]+) → ([\u0600-\u06FF’' ]+)$/, (a, b) => {
+          const A = UI_MAP[a.trim()], B = UI_MAP[b.trim()];
+          if (!A || !B) return '';
+          const va = A[lang] || A.en, vb = B[lang] || B.en;
+          return va && vb ? va + ' → ' + vb : '';
+        }],
+        /* «أصل المسألة:» — عنوان ينتهي بنقطتين */
+        [/^([\u0600-\u06FF ]+):$/, (label) => {
+          const e = UI_MAP[label.trim()];
+          if (!e) return '';
+          const v = e[lang] || e.en;
+          return v ? v + ':' : '';
+        }],
+        /* مبالغ الزكاة: «النصاب: ٠ ج.م» / «= ٠ ج.م» */
+        [/^([^\u0600-\u06FF\w]{1,4}\s*)?([\u0600-\u06FF ]+):\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (emo, label, num) => {
+          const L2 = label.trim();
+          const m2 = UI_MAP[L2] || UI_MAP[L2 + ':'] || null;
+          const lab = m2 ? (m2[lang] || m2.en) : L2;
+          return (emo || '') + lab + ': ' + num + ' EGP';
+        }],
+        [/^=\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (num) => '= ' + num + ' EGP'],
+        [/^([\u0660-\u0669\d]+)\s*جم$/, (n) => n + ' g'],
+        [/^([\u0660-\u0669\d]+)\s*كجم \(([\u0660-\u0669\d]+) أوسق\)$/, (n, w) => n + ' kg (' + w + ' wasq)'],
+        [/^([\u0660-\u0669\d]+) شاة · ([\u0660-\u0669\d]+) بقرة · ([\u0660-\u0669\d]+) إبل$/, (a,b,c) => ({
+          en:`${a} sheep · ${b} cows · ${c} camels`, fr:`${a} moutons · ${b} vaches · ${c} chameaux`, id:`${a} kambing · ${b} sapi · ${c} unta`,
+          ur:`${a} بھیڑ · ${b} گائے · ${c} اونٹ`, bn:`${a} ভেড়া · ${b} গরু · ${c} উট`, tr:`${a} koyun · ${b} sığır · ${c} deve` }[lang])],
+        /* «المصحف المرتل/المجود — <اسم القارئ>» */
+        [/^(المصحف المرتل|المصحف المجود|🎙️ مصحف مُجوَّد|📖 مصحف مُرتَّل)\s*—\s*(.+)$/, (kind, name) => {
+          const isMuj = kind.indexOf('مجود') !== -1;
+          const K = { en: isMuj ? 'Mujawwad mushaf' : 'Recited mushaf',
+                      fr: isMuj ? 'Moushaf moujawwad' : 'Moushaf récité',
+                      id: isMuj ? 'Mushaf mujawwad' : 'Mushaf murattal',
+                      ur: isMuj ? 'مجود مصحف' : 'ترتیل مصحف',
+                      bn: isMuj ? 'মুজাওয়াদ মুসহাফ' : 'তারতিল মুসহাফ',
+                      tr: isMuj ? 'Mücevved mushaf' : 'Tertil mushaf' }[lang];
+          return K ? (K + ' — ' + name) : '';
+        }],
+        /* «٤٢٧٣ حديثًا مشروحًا في ٧ أبواب و٤١ بابًا فرعيًا — بحث يعمل بلا إنترنت» */
+        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في ([\u0660-\u0669\d]+) (?:أبواب|أبوابًا) و([\u0660-\u0669\d]+) بابًا فرعيًا(.*)$/, (n,sec,sub,tail) => {
+          const T = {
+            en:`${n} explained hadiths across ${sec} sections and ${sub} subsections — search works offline`,
+            fr:`${n} hadiths expliqués en ${sec} sections et ${sub} sous-sections — recherche hors ligne`,
+            id:`${n} hadis berpenjelasan dalam ${sec} bagian dan ${sub} subbagian — pencarian tanpa internet`,
+            ur:`${n} تشریح شدہ احادیث، ${sec} ابواب اور ${sub} ذیلی ابواب میں — تلاش انٹرنیٹ کے بغیر`,
+            bn:`${sec} বিভাগ ও ${sub} উপবিভাগে ${n} ব্যাখ্যাকৃত হাদিস — ইন্টারনেট ছাড়াই খোঁজ`,
+            tr:`${sec} bölüm ve ${sub} alt bölümde ${n} şerhli hadis — arama internetsiz çalışır`
+          }[lang];
+          return T || '';
+        }],
+        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في (.+)$/, (n,rest) => ({
+          en:`${n} explained hadiths in ${rest}`, fr:`${n} hadiths expliqués en ${rest}`, id:`${n} hadis berpenjelasan dalam ${rest}`,
+          ur:`${n} تشریح شدہ احادیث ${rest} میں`, bn:`${n} ব্যাখ্যাকৃত হাদিস ${rest}-এ`, tr:`${rest} içinde ${n} şerhli hadis` }[lang])],
+        /* «إيه المشكلة في X؟» — سلسلة محاضرات */
+        [/^إيه المشكلة في (.+?)\؟(.*)$/, (topic, tail) => {
+          const tp = (UI_MAP[topic] && (UI_MAP[topic][lang] || UI_MAP[topic].en)) || '';
+          if (!tp) return '';
+          const ep = tail.replace(/\(الحلقة (\d+) — الموسم (\d+)\)/, (m, a, b) => ({
+            en:`(Episode ${a} — Season ${b})`, fr:`(Épisode ${a} — Saison ${b})`, id:`(Episode ${a} — Musim ${b})`,
+            ur:`(قسط ${a} — سیزن ${b})`, bn:`(পর্ব ${a} — সিজন ${b})`, tr:`(Bölüm ${a} — Sezon ${b})` }[lang]));
+          return { en:`What’s the problem with ${tp}?`, fr:`Quel est le problème avec ${tp} ?`, id:`Apa masalah dengan ${tp}?`,
+                   ur:`${tp} میں کیا مسئلہ ہے؟`, bn:`${tp} নিয়ে সমস্যা কী?`, tr:`${tp} ile sorun ne?` }[lang] + ep;
+        }],
+  ];
+}
 /* أسماء الشهور: ميلادية (عربية) وهجرية — للترجمة داخل الأنماط الرقمية */
 const ZAD_GREG_M = {
   'يناير':{en:'January',fr:'janvier',id:'Januari',ur:'جنوری',bn:'জানুয়ারি',tr:'Ocak'},
@@ -1304,8 +1501,17 @@ const I18N = {
         const src = el.__zadArAttr[attr] != null ? el.__zadArAttr[attr] : v;
         const rec = UI_MAP[src.trim()];
         if (!rec) {
-          /* سمات مولّدة بالجافاسكربت: «الجزء 3» · «صيام اليوم 12» */
-          const tv2 = zadTpl(src.trim(), lang);
+          /* سمات مولّدة بالجافاسكربت: «الجزء 3» · «صيام اليوم 12» · «اليوم الثالث: 40%» */
+          const raw2 = src.trim();
+          let tv2 = zadTpl(raw2, lang);
+          if (!tv2) {
+            for (const [re2, make2] of zadPatterns(lang)) {
+              const m2 = raw2.match(re2);
+              if (!m2) continue;
+              const out2 = make2.apply(null, m2.slice(1).map(x => (x == null ? x : zadNum(x, lang))));
+              if (out2) { tv2 = out2; break; }
+            }
+          }
           if (tv2 && el.getAttribute(attr) !== tv2) el.setAttribute(attr, tv2);
           return;
         }
@@ -1324,160 +1530,7 @@ const I18N = {
         if (lang === 'bn') return String.fromCharCode(0x09E6 + (+d));
         return d;
       });
-      const PATTERNS = [
-
-        /* «٧ فبراير» · «9 ذو الحجة» — يوم + شهر */
-        [/^([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)$/, (n, m) => n + ' ' + ((ZAD_GREG_M[m] || {})[lang] || m)],
-        [/^([\u0660-\u0669\d]+)\s+(محرم|صفر|ربيع الأول|ربيع الآخر|جمادى الأولى|جمادى الآخرة|رجب|شعبان|رمضان|شوال|ذو القعدة|ذو الحجة)$/, (n, m) => n + ' ' + ((ZAD_HIJ_M[m] || {})[lang] || m)],
-        /* «١٢ جمادى الأولى ١٤٤٨ هـ» · «1448 هـ» */
-        [/^([\u0660-\u0669\d]+)\s+([\u0600-\u06FF ]+?)\s+([\u0660-\u0669\d]+)\s*هـ$/, (d, m, y) => {
-          const M2 = ZAD_HIJ_M[m] || ZAD_GREG_M[m];
-          return d + ' ' + ((M2 || {})[lang] || m) + ' ' + y + ' ' + (ZAD_ERA[lang] || 'AH');
-        }],
-        [/^([\u0660-\u0669\d]+)\s*هـ$/, (y) => y + ' ' + (ZAD_ERA[lang] || 'AH')],
-        /* «اليوم الثالث: 40%» — ترتيب + نسبة */
-        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر):\s*([\u0660-\u0669\d]+)%$/, (ord, pct) => {
-          const i = ZAD_ORD.indexOf(ord);
-          const W = ZAD_ORD_W[lang];
-          if (!W) return '';
-          return { en:`Day ${i+1}: ${pct}%`, fr:`Jour ${i+1} : ${pct}%`, id:`Hari ke-${i+1}: ${pct}%`,
-                   ur:`دن ${i+1}: ${pct}%`, bn:`${i+1} নম্বর দিন: ${pct}%`, tr:`${i+1}. gün: ${pct}%` }[lang];
-        }],
-        /* «سورة الحج 27» · «سورة الكوثر 1-2» · «﴿ الحديد: 20 ﴾» */
-        [/^سورة ([\u0600-\u06FF ]+?) ([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
-          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
-          const nm = rec ? (rec[lang] || rec.en) : name;
-          return (nm || name) + ' ' + ref;
-        }],
-        [/^﴿\s*([\u0600-\u06FF ]+?)\s*[:·]\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)\s*﴾$/, (name, ref) => {
-          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
-          const nm = rec ? (rec[lang] || rec.en) : name;
-          return '﴿ ' + (nm || name) + ': ' + ref + ' ﴾';
-        }],
-        /* «إنقاص عدد الزوج» · «عدد الأبناء» — واجهة المواريث */
-        [/^(إنقاص|زيادة) عدد (.+)$/, (verb, who) => {
-          const rec = UI_MAP[who.trim()];
-          const nm = rec ? (rec[lang] || rec.en) : who.trim();
-          const V = { en: verb === 'إنقاص' ? 'Decrease' : 'Increase',
-                      fr: verb === 'إنقاص' ? 'Diminuer' : 'Augmenter',
-                      id: verb === 'إنقاص' ? 'Kurangi' : 'Tambah',
-                      ur: verb === 'إنقاص' ? 'کم کریں' : 'بڑھائیں',
-                      bn: verb === 'إنقاص' ? 'কমান' : 'বাড়াও',
-                      tr: verb === 'إنقاص' ? 'Azalt' : 'Artır' }[lang];
-          return nm ? (V + ' — ' + nm) : '';
-        }],
-        /* «الفائت من الفجر» · «قضيت واحدة من الفجر» — قضاء الفوائت */
-        [/^(الفائت|قضيت واحدة) من (.+)$/, (kind, prayer) => {
-          const rec = UI_MAP[prayer.trim()];
-          const nm = rec ? (rec[lang] || rec.en) : prayer.trim();
-          if (!nm) return '';
-          return kind === 'الفائت'
-            ? { en:`Missed from ${nm}`, fr:`Manquée de ${nm}`, id:`Terlewat dari ${nm}`, ur:`${nm} سے فوت`, bn:`${nm} থেকে ছুটে যাওয়া`, tr:`${nm} kaçırılan` }[lang]
-            : { en:`Made up one from ${nm}`, fr:`Rattrapée une de ${nm}`, id:`Diqadha satu dari ${nm}`, ur:`${nm} سے ایک ادا کی`, bn:`${nm} থেকে একটি আদায় করেছি`, tr:`${nm} için bir kaza` }[lang];
-        }],
-        /* عدّادات عربية خالصة: «13 أذكار» · «5 أيام ✓» · «3 جلسات» */
-        [/^([\u0660-\u0669\d]+)\s*(أذكار|آيات|أحاديث|أيام|مرات|جلسات)\s*(✓)?$/, (n, unit, tick) => {
-          const U = { 'أذكار':{en:'adhkar',fr:'adhkar',id:'zikir',ur:'اذکار',bn:'আযকার',tr:'zikir'},
-                      'آيات':{en:'verses',fr:'versets',id:'ayat',ur:'آیات',bn:'আয়াত',tr:'ayet'},
-                      'أحاديث':{en:'hadiths',fr:'hadiths',id:'hadis',ur:'حدیثیں',bn:'হাদিস',tr:'hadis'},
-                      'أيام':{en:'days',fr:'jours',id:'hari',ur:'دن',bn:'দিন',tr:'gün'},
-                      'مرات':{en:'times',fr:'fois',id:'kali',ur:'بار',bn:'বার',tr:'kez'},
-                      'جلسات':{en:'sessions',fr:'séances',id:'sesi',ur:'نشستیں',bn:'সেশন',tr:'oturum'} }[unit];
-          if (!U) return '';
-          return n + ' ' + (U[lang] || U.en) + (tick ? ' ✓' : '');
-        }],
-        /* «اليوم 3 من 10» · «3 / 30 جزء» · «جزء 3» (خطة الختمة والعشر) */
-        [/^اليوم ([\u0660-\u0669\d]+) من ([\u0660-\u0669\d]+)$/, (a,b) => ({
-          en:`Day ${a} of ${b}`, fr:`Jour ${a} sur ${b}`, id:`Hari ${a} dari ${b}`,
-          ur:`${b} میں سے دن ${a}`, bn:`${b}-এর মধ্যে ${a} নম্বর দিন`, tr:`${b} günün ${a}. günü` }[lang])],
-        [/^([\u0660-\u0669\d]+) \/ ([\u0660-\u0669\d]+) جزء$/, (a,b) => ({
-          en:`${a} / ${b} Juz`, fr:`${a} / ${b} juz`, id:`${a} / ${b} juz`,
-          ur:`${a} / ${b} پارہ`, bn:`${a} / ${b} জুজ`, tr:`${a} / ${b} cüz` }[lang])],
-        [/^جزء ([\u0660-\u0669\d]+)$/, (n) => ({
-          en:`Juz ${n}`, fr:`Juz ${n}`, id:`Juz ${n}`, ur:`پارہ ${n}`, bn:`জুজ ${n}`, tr:`Cüz ${n}` }[lang])],
-        [/^📚\s*([\u0660-\u0669\d]+)\s*حديثًا$/, (n) => ({
-          en:`📚 ${n} hadiths`, fr:`📚 ${n} hadiths`, id:`📚 ${n} hadis`,
-          ur:`📚 ${n} حدیثیں`, bn:`📚 ${n} হাদিস`, tr:`📚 ${n} hadis` }[lang])],
-        [/^([\u0660-\u0669\d]+)\s*من\s*([\u0660-\u0669\d]+)\s*عبادة$/, (a,b) => ({
-          en:`${a} of ${b} acts of worship`, fr:`${a} sur ${b} adorations`, id:`${a} dari ${b} ibadah`,
-          ur:`${a} از ${b} عبادات`, bn:`${b}-এর মধ্যে ${a} ইবাদত`, tr:`${b} ibadetten ${a}` }[lang])],
-        [/^([\u0660-\u0669\d]+)\s*أذكار\s*·\s*(.+)$/, (n,rest) => {
-          const R = UI_MAP[rest.trim()] ? (UI_MAP[rest.trim()][lang] || UI_MAP[rest.trim()].en) : rest;
-          return { en:`${n} adhkar · ${R}`, fr:`${n} adhkar · ${R}`, id:`${n} zikir · ${R}`,
-                   ur:`${n} اذکار · ${R}`, bn:`${n} আযকার · ${R}`, tr:`${n} zikir · ${R}` }[lang];
-        }],
-        /* «اليوم الأول — الجزء 1–3» و«الفاتحة → آل عمران» (خطة الختمة) */
-        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر) — الجزء ([\u0660-\u0669\d]+)–([\u0660-\u0669\d]+)$/, (ord, a, b) => {
-          const N = { 'الأول':1,'الثاني':2,'الثالث':3,'الرابع':4,'الخامس':5,'السادس':6,'السابع':7,'الثامن':8,'التاسع':9,'العاشر':10 }[ord];
-          const j = { en:'Juz', fr:'Juz', id:'Juz', ur:'پارہ', bn:'জুজ', tr:'Cüz' }[lang];
-          return { en:`Day ${N} — ${j} ${a}–${b}`, fr:`Jour ${N} — ${j} ${a}–${b}`, id:`Hari ${N} — ${j} ${a}–${b}`,
-                   ur:`${N === 1 ? 'پہلا' : N === 2 ? 'دوسرا' : N === 3 ? 'تیسرا' : N === 4 ? 'چوتھا' : N === 5 ? 'پانچواں' : N === 6 ? 'چھٹا' : N === 7 ? 'ساتواں' : N === 8 ? 'آٹھواں' : N === 9 ? 'نواں' : 'دسواں'} دن — ${j} ${a}–${b}`,
-                   bn:`${['প্রথম','দ্বিতীয়','তৃতীয়','চতুর্থ','পঞ্চম','ষষ্ঠ','সপ্তম','অষ্টম','নবম','দশম'][N-1]} দিন — ${j} ${a}–${b}`,
-                   tr:`${N}. gün — ${j} ${a}–${b}` }[lang];
-        }],
-        [/^([\u0600-\u06FF’' ]+) → ([\u0600-\u06FF’' ]+)$/, (a, b) => {
-          const A = UI_MAP[a.trim()], B = UI_MAP[b.trim()];
-          if (!A || !B) return '';
-          const va = A[lang] || A.en, vb = B[lang] || B.en;
-          return va && vb ? va + ' → ' + vb : '';
-        }],
-        /* «أصل المسألة:» — عنوان ينتهي بنقطتين */
-        [/^([\u0600-\u06FF ]+):$/, (label) => {
-          const e = UI_MAP[label.trim()];
-          if (!e) return '';
-          const v = e[lang] || e.en;
-          return v ? v + ':' : '';
-        }],
-        /* مبالغ الزكاة: «النصاب: ٠ ج.م» / «= ٠ ج.م» */
-        [/^([^\u0600-\u06FF\w]{1,4}\s*)?([\u0600-\u06FF ]+):\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (emo, label, num) => {
-          const L2 = label.trim();
-          const m2 = UI_MAP[L2] || UI_MAP[L2 + ':'] || null;
-          const lab = m2 ? (m2[lang] || m2.en) : L2;
-          return (emo || '') + lab + ': ' + num + ' EGP';
-        }],
-        [/^=\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (num) => '= ' + num + ' EGP'],
-        [/^([\u0660-\u0669\d]+)\s*جم$/, (n) => n + ' g'],
-        [/^([\u0660-\u0669\d]+)\s*كجم \(([\u0660-\u0669\d]+) أوسق\)$/, (n, w) => n + ' kg (' + w + ' wasq)'],
-        [/^([\u0660-\u0669\d]+) شاة · ([\u0660-\u0669\d]+) بقرة · ([\u0660-\u0669\d]+) إبل$/, (a,b,c) => ({
-          en:`${a} sheep · ${b} cows · ${c} camels`, fr:`${a} moutons · ${b} vaches · ${c} chameaux`, id:`${a} kambing · ${b} sapi · ${c} unta`,
-          ur:`${a} بھیڑ · ${b} گائے · ${c} اونٹ`, bn:`${a} ভেড়া · ${b} গরু · ${c} উট`, tr:`${a} koyun · ${b} sığır · ${c} deve` }[lang])],
-        /* «المصحف المرتل/المجود — <اسم القارئ>» */
-        [/^(المصحف المرتل|المصحف المجود|🎙️ مصحف مُجوَّد|📖 مصحف مُرتَّل)\s*—\s*(.+)$/, (kind, name) => {
-          const isMuj = kind.indexOf('مجود') !== -1;
-          const K = { en: isMuj ? 'Mujawwad mushaf' : 'Recited mushaf',
-                      fr: isMuj ? 'Moushaf moujawwad' : 'Moushaf récité',
-                      id: isMuj ? 'Mushaf mujawwad' : 'Mushaf murattal',
-                      ur: isMuj ? 'مجود مصحف' : 'ترتیل مصحف',
-                      bn: isMuj ? 'মুজাওয়াদ মুসহাফ' : 'তারতিল মুসহাফ',
-                      tr: isMuj ? 'Mücevved mushaf' : 'Tertil mushaf' }[lang];
-          return K ? (K + ' — ' + name) : '';
-        }],
-        /* «٤٢٧٣ حديثًا مشروحًا في ٧ أبواب و٤١ بابًا فرعيًا — بحث يعمل بلا إنترنت» */
-        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في ([\u0660-\u0669\d]+) (?:أبواب|أبوابًا) و([\u0660-\u0669\d]+) بابًا فرعيًا(.*)$/, (n,sec,sub,tail) => {
-          const T = {
-            en:`${n} explained hadiths across ${sec} sections and ${sub} subsections — search works offline`,
-            fr:`${n} hadiths expliqués en ${sec} sections et ${sub} sous-sections — recherche hors ligne`,
-            id:`${n} hadis berpenjelasan dalam ${sec} bagian dan ${sub} subbagian — pencarian tanpa internet`,
-            ur:`${n} تشریح شدہ احادیث، ${sec} ابواب اور ${sub} ذیلی ابواب میں — تلاش انٹرنیٹ کے بغیر`,
-            bn:`${sec} বিভাগ ও ${sub} উপবিভাগে ${n} ব্যাখ্যাকৃত হাদিস — ইন্টারনেট ছাড়াই খোঁজ`,
-            tr:`${sec} bölüm ve ${sub} alt bölümde ${n} şerhli hadis — arama internetsiz çalışır`
-          }[lang];
-          return T || '';
-        }],
-        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في (.+)$/, (n,rest) => ({
-          en:`${n} explained hadiths in ${rest}`, fr:`${n} hadiths expliqués en ${rest}`, id:`${n} hadis berpenjelasan dalam ${rest}`,
-          ur:`${n} تشریح شدہ احادیث ${rest} میں`, bn:`${n} ব্যাখ্যাকৃত হাদিস ${rest}-এ`, tr:`${rest} içinde ${n} şerhli hadis` }[lang])],
-        /* «إيه المشكلة في X؟» — سلسلة محاضرات */
-        [/^إيه المشكلة في (.+?)\؟(.*)$/, (topic, tail) => {
-          const tp = (UI_MAP[topic] && (UI_MAP[topic][lang] || UI_MAP[topic].en)) || '';
-          if (!tp) return '';
-          const ep = tail.replace(/\(الحلقة (\d+) — الموسم (\d+)\)/, (m, a, b) => ({
-            en:`(Episode ${a} — Season ${b})`, fr:`(Épisode ${a} — Saison ${b})`, id:`(Episode ${a} — Musim ${b})`,
-            ur:`(قسط ${a} — سیزن ${b})`, bn:`(পর্ব ${a} — সিজন ${b})`, tr:`(Bölüm ${a} — Sezon ${b})` }[lang]));
-          return { en:`What’s the problem with ${tp}?`, fr:`Quel est le problème avec ${tp} ?`, id:`Apa masalah dengan ${tp}?`,
-                   ur:`${tp} میں کیا مسئلہ ہے؟`, bn:`${tp} নিয়ে সমস্যা কী?`, tr:`${tp} ile sorun ne?` }[lang] + ep;
-        }],
-      ];
+      const PATTERNS = zadPatterns(lang);
       const w3 = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
         acceptNode(n) {
           const pe = n.parentElement;
