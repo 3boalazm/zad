@@ -1178,20 +1178,32 @@ const I18N = {
           /* المحتوى الحر (وصف الحلقة) أطول من سقف الواجهة القصير */
           const cap = pe.closest('.vid-desc,.vid-sum,p.vid-desc') ? 600 : 400;
           if (t.length < 2 || t.length > cap) return NodeFilter.FILTER_REJECT;
-          return UI_MAP[t] ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          if (UI_MAP[t]) return NodeFilter.FILTER_ACCEPT;
+          /* «💡 نص» — أيقونة في أوّل النص: نطابق الباقي ونُبقي الأيقونة */
+          if (t.length <= cap + 8) {
+            const em = t.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
+            if (em && UI_MAP[em[2].trim()]) return NodeFilter.FILTER_ACCEPT;
+          }
+          return NodeFilter.FILTER_REJECT;
         }
       });
       const hits = [];
       let node;
       while ((node = walker.nextNode())) hits.push(node);
       hits.forEach(n => {
-        const key = n.nodeValue.trim();
+        let key = n.nodeValue.trim();
+        let icon = '';
+        if (!UI_MAP[key]) {
+          const em = key.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
+          if (em && UI_MAP[em[2].trim()]) { icon = em[1]; key = em[2].trim(); }
+        }
+        if (!UI_MAP[key]) return;
         const v = UI_MAP[key][lang] || UI_MAP[key].en;
         if (!v) return;
         if (!n.__zadAr) n.__zadAr = n.nodeValue;
         const lead = n.nodeValue.match(/^\s*/)[0];
         const trail = n.nodeValue.match(/\s*$/)[0];
-        n.nodeValue = lead + v + trail;
+        n.nodeValue = lead + icon + v + trail;
       });
     }
 

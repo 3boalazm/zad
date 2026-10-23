@@ -13,6 +13,6 @@ class S(socketserver.ThreadingTCPServer):
     request_queue_size = 256
 
 if __name__ == '__main__':
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8124
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8130
     with S(('127.0.0.1', port), H) as httpd:
         httpd.serve_forever()

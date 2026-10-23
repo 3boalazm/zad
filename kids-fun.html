@@ -991,6 +991,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
   };
 })();
 </script>
+<script src="i18n/content-kids.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
@@ -1050,7 +1051,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
     var bank=document.getElementById('ba-bank'); bank.innerHTML='';
     shuffle(ay.w).forEach(function(word,i){
       var b=document.createElement('button');
-      b.className='ba-word'; b.textContent=word; b.dataset.word=word;
+      b.className='ba-word ayah'; b.textContent=word; b.dataset.word=word;
       b.onclick=function(){ baPlace(b); };
       bank.appendChild(b);
     });
@@ -1060,7 +1061,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
     btn.classList.add('placed');
     placed.push(btn.dataset.word);
     var slot=document.createElement('span');
-    slot.className='ba-word placed'; slot.textContent=btn.dataset.word;
+    slot.className='ba-word placed ayah'; slot.textContent=btn.dataset.word;
     slot.onclick=function(){ /* رجّع الكلمة */
       var idx=placed.indexOf(btn.dataset.word);
       if(idx>-1) placed.splice(idx,1);
