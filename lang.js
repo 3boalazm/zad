@@ -1152,7 +1152,8 @@ const I18N = {
 
     /* 3.5) تعميم على عُقد النصوص داخل المحتوى (مطابقة تامة، بلا لمس النص الشرعي) */
     const SKIP = /(quran|ayah|dhikr|dua|hadith|verse|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
-    const mainEl = document.querySelector('.main') || document.querySelector('main') || document.getElementById('main-content') || document.body;
+    /* نطاق التطبيق: كل الصفحة (النوافذ والأشرطة الثابتة تعيش خارج .main) */
+    const mainEl = document.body || document.querySelector('.main') || document.querySelector('main') || document.getElementById('main-content');
     if (mainEl) {
       /* استعادة أي نص عُرِّب سابقًا قبل تطبيق اللغة الجديدة */
       const w2 = document.createTreeWalker(mainEl, NodeFilter.SHOW_TEXT, null);
@@ -1220,7 +1221,9 @@ const I18N = {
           if (el.getAttribute(attr) !== el.__zadArAttr[attr]) el.setAttribute(attr, el.__zadArAttr[attr]);
           return;
         }
-        const rec = UI_MAP[v.trim()];
+        /* المفتاح يُقرأ من الأصل العربي دائمًا، حتى لا تعلق الواجهة على لغةٍ سابقة */
+        const src = el.__zadArAttr[attr] != null ? el.__zadArAttr[attr] : v;
+        const rec = UI_MAP[src.trim()];
         if (!rec) return;
         const tv = rec[lang] || rec.en;
         if (tv && el.getAttribute(attr) !== tv) el.setAttribute(attr, tv);
