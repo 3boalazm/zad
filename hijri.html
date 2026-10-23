@@ -262,6 +262,7 @@ html[data-theme="dark"] .type-tab.active,html[data-theme="oled"] .type-tab.activ
   <a href="ai.html" class="fab-ai" aria-label="AI">🤖</a>
 </div>
 
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
@@ -290,6 +291,34 @@ html[data-theme="dark"] .type-tab.active,html[data-theme="oled"] .type-tab.activ
 const HIJRI_MONTHS_AR = ['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
 const GREG_MONTHS_AR  = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const WEEK_AR = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+/* ── تسمية الأشهر والأيام بلغة الواجهة (Intl) ─────────────────
+   كانت الصفحة تكتب أسماء عربية ثابتة، فتظهر «جمادى الأولى ١٤٤٨ هـ» في كل اللغات. */
+const _LOC = {ar:'ar', en:'en', fr:'fr', id:'id', ur:'ur', bn:'bn', tr:'tr'};
+function _lang(){ try { return _LOC[localStorage.getItem('zad_lang')||'ar'] || 'ar'; } catch(e){ return 'ar'; } }
+function hMonthName(m){
+  const L = _lang(); if (L === 'ar') return HIJRI_MONTHS_AR[m-1];
+  try { return new Intl.DateTimeFormat(L,{month:'long', calendar:'islamic-umalqura'}).format(hijriToGreg(1448,m,1)); }
+  catch(e){ return HIJRI_MONTHS_AR[m-1]; }
+}
+function hMonthShort(m){
+  const L = _lang(); if (L === 'ar') return HIJRI_MONTHS_AR[m-1].substring(0,3);
+  try { return new Intl.DateTimeFormat(L,{month:'short', calendar:'islamic-umalqura'}).format(hijriToGreg(1448,m,1)); }
+  catch(e){ return HIJRI_MONTHS_AR[m-1].substring(0,3); }
+}
+function gMonthName(i){
+  const L = _lang(); if (L === 'ar') return GREG_MONTHS_AR[i];
+  try { return new Intl.DateTimeFormat(L,{month:'long'}).format(new Date(2026,i,1)); }
+  catch(e){ return GREG_MONTHS_AR[i]; }
+}
+function weekName(d){
+  const L = _lang(); if (L === 'ar') return WEEK_AR[d];
+  try { return new Intl.DateTimeFormat(L,{weekday:'long'}).format(new Date(2026,10,1+d)); }
+  catch(e){ return WEEK_AR[d]; }
+}
+function hEra(){ return _lang()==='ar' ? ' هـ' : ' AH'; }
+function mEra(){ return _lang()==='ar' ? ' م' : ''; }
+window.addEventListener('zad:lang', function(){ try { showBanner(gregToHijri(new Date()), new Date()); render(); } catch(e){} });
 
 /* Confirmed reference */
 const DH1 = new Date(2026, 4, 18); /* May 18, 2026 = 1 Dhul Hijjah 1447 */
@@ -389,8 +418,8 @@ function showBanner(h, now) {
   const spEl  = document.getElementById('tb-special-name');
 
   if (dayEl) dayEl.textContent = h.d;
-  if (hijEl) hijEl.textContent = `${h.d} ${HIJRI_MONTHS_AR[h.m-1]} ${h.y} هـ`;
-  if (grEl)  grEl.textContent  = `${now.getDate()} ${GREG_MONTHS_AR[now.getMonth()]} ${now.getFullYear()} م · ${WEEK_AR[now.getDay()]}`;
+  if (hijEl) hijEl.textContent = `${h.d} ${hMonthName(h.m)} ${h.y}${hEra()}`;
+  if (grEl)  grEl.textContent  = `${now.getDate()} ${gMonthName(now.getMonth())} ${now.getFullYear()}${mEra()} · ${weekName(now.getDay())}`;
   if (spEl) {
     if (sp) { spEl.textContent = sp.label; spEl.style.display = 'inline-flex'; }
     else    { spEl.style.display = 'none'; }
@@ -405,7 +434,7 @@ function showBanner(h, now) {
 
 /* ── Hijri calendar month ────────────────────────────────── */
 function renderHijriMonth(hy, hm) {
-  document.getElementById('cal-month-lbl').textContent = `${HIJRI_MONTHS_AR[hm-1]} ${hy} هـ`;
+  document.getElementById('cal-month-lbl').textContent = `${hMonthName(hm)} ${hy}${hEra()}`;
 
   /* Find first day of this Hijri month */
   const firstDay   = hijriToGreg(hy, hm, 1);
@@ -458,7 +487,7 @@ function renderHijriMonth(hy, hm) {
 
 /* ── Gregorian calendar month ────────────────────────────── */
 function renderGregMonth(gy, gm) {
-  document.getElementById('cal-month-lbl').textContent = `${GREG_MONTHS_AR[gm-1]} ${gy}`;
+  document.getElementById('cal-month-lbl').textContent = `${gMonthName(gm-1)} ${gy}`;
 
   const firstDay = new Date(gy, gm-1, 1);
   const startDow = firstDay.getDay();
@@ -486,12 +515,12 @@ function renderGregMonth(gy, gm) {
     else if (sp) cls += ' special-day';
     if (isFri) cls += ' friday-col';
 
-    const hijriLabel = `${h.d} ${HIJRI_MONTHS_AR[h.m-1].substring(0,3)}`;
+    const hijriLabel = `${h.d} ${hMonthShort(h.m)}`;
     const badge = sp ? `<div class="cd-badge ${sp.cls}">${h.d===9?'عرفة':h.d===10?'عيد':''}</div>` : '';
 
     html += `<div class="${cls}" onclick="showDayPopupGreg(${gy},${gm-1},${d})">
       <div class="cd-primary">${d}</div>
-      <div class="cd-secondary">${h.d} ${HIJRI_MONTHS_AR[h.m-1].substring(0,3)}</div>
+      <div class="cd-secondary">${h.d} ${hMonthShort(h.m)}</div>
       ${badge}
     </div>`;
 
@@ -530,8 +559,8 @@ function showDayPopup(hy, hm, hd) {
   content.innerHTML = `
     <div style="text-align:center;margin-bottom:16px">
       <div style="font-size:48px;font-weight:900;font-family:'ThmanyahSans','Tajawal',sans-serif;color:var(--green-deep)">${hd}</div>
-      <div style="font-size:18px;font-weight:700;color:var(--ink)">${HIJRI_MONTHS_AR[hm-1]} ${hy} هـ</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:4px;direction:ltr">${WEEK_AR[greg.getDay()]} · ${greg.getDate()} ${GREG_MONTHS_AR[greg.getMonth()]} ${greg.getFullYear()}</div>
+      <div style="font-size:18px;font-weight:700;color:var(--ink)">${hMonthName(hm)} ${hy}${hEra()}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px;direction:ltr">${weekName(greg.getDay())} · ${greg.getDate()} ${gMonthName(greg.getMonth())} ${greg.getFullYear()}</div>
       ${sp ? `<div class="cd-badge special" style="margin-top:8px;padding:5px 16px;font-size:13px">${sp.label}</div>` : ''}
     </div>
     ${hm===12&&hd>=1&&hd<=9 ? `<a href="barnamaj.html" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px">📿 سجّل عبادات اليوم ${hd} →</a>` : ''}
