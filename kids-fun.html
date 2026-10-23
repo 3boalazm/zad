@@ -1016,6 +1016,15 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
 /* ══ لعبة ابنِ الآية — ترتيب كلمات آيات قصيرة (محلي بالكامل) ══ */
 (function(){
   'use strict';
+  /* ترجمة نصوص اللعبة المولّدة بلغة الواجهة */
+  function LT(ar){
+    try {
+      var M = window.ZAD_UI_MAP || {}, lg = document.documentElement.lang || 'ar';
+      if (lg === 'ar') return ar;
+      var rec = M[ar];
+      return (rec && rec[lg]) ? rec[lg] : ar;
+    } catch (e) { return ar; }
+  }
   /* آيات قصيرة مناسبة للأطفال (بدون تشكيل ثقيل) */
   var AYAT=[
     {s:'سورة الإخلاص', w:['قُل','هو','اللَّهُ','أحدٌ']},
@@ -1041,7 +1050,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
   window.baLoad=function(){
     var g=document.getElementById('ba-game'); if(!g) return;
     var ay=AYAT[cur]; placed=[];
-    document.getElementById('ba-surah').textContent='﴿ '+ay.s+' ﴾';
+    document.getElementById('ba-surah').textContent='﴿ '+LT(ay.s)+' ﴾';
     document.getElementById('ba-slots').innerHTML='';
     document.getElementById('ba-feedback').textContent='';
     document.getElementById('ba-feedback').className='ba-feedback';
@@ -1074,10 +1083,10 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
   window.baCheck=function(){
     var ay=AYAT[cur];
     var fb=document.getElementById('ba-feedback');
-    if(placed.length<ay.w.length){ fb.textContent='رتّب كل الكلمات أولاً 🙂'; fb.className='ba-feedback'; return; }
+    if(placed.length<ay.w.length){ fb.textContent=LT('رتّب كل الكلمات أولاً 🙂'); fb.className='ba-feedback'; return; }
     var ok = placed.join(' ')===ay.w.join(' ');
     if(ok){
-      fb.textContent='🎉 أحسنتَ! آيةٌ صحيحة'; fb.className='ba-feedback ok';
+      fb.textContent=LT('🎉 أحسنتَ! آيةٌ صحيحة'); fb.className='ba-feedback ok';
       var st=kLoad(); st.stars=(st.stars||0)+2; kSave(st);
       document.getElementById('ba-star-n').textContent=st.stars;
       document.getElementById('ba-check').style.display='none';
@@ -1085,7 +1094,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
       if(navigator.vibrate) navigator.vibrate([15,40,15]);
       if(typeof confetti==='function'){ try{ confetti({particleCount:60,spread:55,origin:{y:.7}}); }catch(e){} }
     } else {
-      fb.textContent='حاول مرّة أخرى 💪'; fb.className='ba-feedback no';
+      fb.textContent=LT('حاول مرّة أخرى 💪'); fb.className='ba-feedback no';
       if(navigator.vibrate) navigator.vibrate(40);
     }
   };
