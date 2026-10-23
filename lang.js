@@ -1356,25 +1356,57 @@ const I18N = {
     this._watch();
   },
 
-  /* إعادة الترجمة عند إدخال محتوى جديد في الصفحة (بطاقات تُرسم بالجافاسكربت) */
+  /* إعادة الترجمة عند إدخال محتوى جديد في الصفحة (بطاقات تُرسم بالجافاسكربت).
+     مهم: apply() نفسه يغيّر نصوصًا، فيولّد سجلات جديدة. نفصل المراقب أثناء
+     التطبيق ثم نعيد ربطه، وإلا دارت الحلقة إلى ما لا نهاية (٤ مرات/ثانية). */
   _watch() {
     if (this._obs || typeof MutationObserver === 'undefined') return;
     let timer = null;
+    const OPTS = { childList: true, subtree: true, characterData: false };
+    /* سقف صارم: بعض السكربتات تعيد كتابة النص عربيًا بعد كل ترجمة، فتتحوّل
+       المراقبة إلى حلقة بلا نهاية. نحدّها بعدد محاولات وحدّ أدنى للفاصل. */
+    const MAX_APPLIES = 25, MIN_GAP = 700;
+    this._obsCount = this._obsCount || 0;
+    this._lastObsApply = this._lastObsApply || 0;
     this._obs = new MutationObserver(() => {
-      if (this._applying || this.current === 'ar') return;
+      if (this.current === 'ar') return;
+      if (this._obsCount >= MAX_APPLIES) { try { this._obs.disconnect(); } catch (e) {} return; }
       clearTimeout(timer);
       timer = setTimeout(() => {
-        this._applying = true;
+        const now = Date.now();
+        if (now - this._lastObsApply < MIN_GAP) return;
+        this._lastObsApply = now;
+        this._obsCount++;
+        const obs = this._obs;
+        try { obs.disconnect(); } catch (e) {}
         try { this.apply(); } catch (e) {}
-        this._applying = false;
+        clearTimeout(timer);
+        try { obs.observe(document.body, OPTS); } catch (e) {}
       }, 250);
     });
-    const start = () => { try { this._obs.observe(document.body, { childList: true, subtree: true }); } catch (e) {} };
+    const start = () => {
+      try { this._obs.observe(document.body, OPTS); } catch (e) {}
+      /* أي تفاعل من المستخدم = محتوى جديد محتمل ⇒ ميزانية جديدة */
+      if (!this._budgetHook) {
+        this._budgetHook = true;
+        const reset = () => { this._obsCount = 0; this._lastObsApply = 0; };
+        document.addEventListener('click', reset, true);
+        document.addEventListener('input', reset, true);
+      }
+    };
     if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
   }
 };
 
 window.I18N = I18N;
+/* عند تبديل اللغة نمنح المراقب ميزانية جديدة */
+const _zadSetLang = I18N.setLang.bind(I18N);
+I18N.setLang = function () {
+  this._obsCount = 0; this._lastObsApply = 0;
+  const r = _zadSetLang.apply(this, arguments);
+  if (this._obs && !this._watching) { /* ensure observing */ }
+  return r;
+};
 window.toggleLang = () => I18N.toggle();
 document.addEventListener('DOMContentLoaded', () => I18N.init());
 
