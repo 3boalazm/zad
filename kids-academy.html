@@ -464,7 +464,7 @@ html[data-theme="dark"] .ac-gend h3,html[data-theme="oled"] .ac-gend h3{color:va
     for (var n = 0; n <= 20; n++){
       var done = a.numbers.indexOf(n) > -1;
       html += '<button type="button" class="ac-lbtn ac-num' + (done ? ' done' : '') + (n === curN ? ' sel' : '') +
-              '" data-n="' + n + '" aria-label="الرقم ' + NUM_NAMES[n] + '">' + n + '</button>';
+              '" data-n="' + n + '" aria-label="' + LT('الرقم ' + NUM_NAMES[n]) + '">' + n + '</button>';
     }
     box.innerHTML = html;
     box.querySelectorAll('.ac-lbtn').forEach(function(b){

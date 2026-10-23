@@ -1303,7 +1303,12 @@ const I18N = {
         /* المفتاح يُقرأ من الأصل العربي دائمًا، حتى لا تعلق الواجهة على لغةٍ سابقة */
         const src = el.__zadArAttr[attr] != null ? el.__zadArAttr[attr] : v;
         const rec = UI_MAP[src.trim()];
-        if (!rec) return;
+        if (!rec) {
+          /* سمات مولّدة بالجافاسكربت: «الجزء 3» · «صيام اليوم 12» */
+          const tv2 = zadTpl(src.trim(), lang);
+          if (tv2 && el.getAttribute(attr) !== tv2) el.setAttribute(attr, tv2);
+          return;
+        }
         const tv = rec[lang] || rec.en;
         if (tv && el.getAttribute(attr) !== tv) el.setAttribute(attr, tv);
       });
