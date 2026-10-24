@@ -340,6 +340,7 @@ html[data-theme="dark"] .jr-medal .jr-medal-t,html[data-theme="oled"] .jr-medal 
   </div>
 
 <script src="i18n/content-kids.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
@@ -556,7 +557,7 @@ html[data-theme="dark"] .jr-medal .jr-medal-t,html[data-theme="oled"] .jr-medal 
       if(cur<3){s2.kidsSchool.akhlaq[name]=cur+1;write(s2);
         pl.classList.add('grow');setTimeout(function(){pl.classList.remove('grow');},320);
         if(navigator.vibrate)navigator.vibrate(15);
-        if(window.showToast)window.showToast('🌱 نبتةُ «'+name+'» كبرت! ✨ +5 نور');
+        if(window.showToast)window.showToast(ztr('🌱 نبتةُ «{name}»', {name: name}) + ' — ' + ztr('كبرت! ✨ +5 نور'));
         render();}
       else if(window.showToast)window.showToast('🌳 «'+name+'» مثمرةٌ بالكامل، ما شاء الله!');
       return;}

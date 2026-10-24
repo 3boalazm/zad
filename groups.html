@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
     Groups.createGroup(name).then(function (g) {
       document.getElementById('create-name').value = '';
       renderGroups(); if (navigator.vibrate) navigator.vibrate(30);
-      toast('🎉 أُنشئت «' + g.name + '» — رمز الدعوة: ' + g.code);
+      toast(ztr('🎉 أُنشئت «{name}»', {name: g.name}) + ' — ' + ztr('رمز الدعوة: {code}', {code: g.code}));
     });
   });
 
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
     Groups.joinGroup(code).then(function (g) {
       document.getElementById('join-code').value = '';
       renderGroups(); if (navigator.vibrate) navigator.vibrate(30);
-      toast('✅ انضممتَ إلى «' + g.name + '»');
+      toast(ztr('✅ انضممتَ إلى «{name}»', {name: g.name}));
     }).catch(function () { toast('رمز غير صالح'); });
   });
 

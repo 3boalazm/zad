@@ -437,6 +437,7 @@ html[data-theme="dark"] .ts-g-btn.bad,html[data-theme="oled"] .ts-g-btn.bad{colo
 
 <a href="ai.html" class="fab-ai">🤖</a>
 
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
@@ -514,7 +515,39 @@ const TS_SURAHS = [
   {id:112,n:'الإخلاص',v:4},{id:113,n:'الفلق',v:5},{id:114,n:'الناس',v:6}
 ];
 
+/* ── ترجمة نصوص تُبنى بالجافاسكربت (أسماء السور، الشرائط، الرسائل) ──
+   نقرأ من قاموس الواجهة ZAD_UI_MAP مع استبدال المتغيّرات {x}. */
+function TS_T(tpl, vars) {
+  var lang = 'ar';
+  try { lang = (window.I18N && window.I18N.current) || 'ar'; } catch (e) {}
+  var map = window.ZAD_UI_MAP || {};
+  var hit = map[tpl];
+  var out = (lang && lang !== 'ar' && hit) ? (hit[lang] || hit.en || tpl) : tpl;
+  if (vars) for (var k in vars) out = out.split('{' + k + '}').join(vars[k] == null ? '' : vars[k]);
+  return out;
+}
+/* اسم السورة: بعض الأسماء كلمات عامة في القاموس (البقرة=بقرة)، فنستخدم مفتاحًا مركّبًا حين يوجد */
+function TS_surahName(n) {
+  var map = window.ZAD_UI_MAP || {};
+  var lang = 'ar';
+  try { lang = (window.I18N && window.I18N.current) || 'ar'; } catch (e) {}
+  var k = 'سورة ' + n;
+  if (lang !== 'ar' && map[k]) return map[k][lang] || map[k].en || n;
+  return n;   /* لا نرجع إلى الاسم المجرّد: «البقرة» كلمة عامة في القاموس (بقرة) */
+}
+
+
+/* عنوان المصدر (سورة/صفحة/مقطع) — يُبنى من حالة الوصف لا من نصٍّ محفوظ */
+function TS_srcLabel() {
+  if (!_srcInfo) return '';
+  if (_srcInfo.mode === 'page') return TS_T('صفحة {n}', {n: _srcInfo.pg});
+  var nm = TS_surahName(_srcInfo.name || '');
+  if (_srcInfo.mode === 'range') return nm + ' — ' + TS_T('آية {from} إلى {to}', {from: _srcInfo.from, to: _srcInfo.to});
+  return nm;
+}
+
 /* ── State ───────────────────────────────────────────────── */
+let _srcInfo   = null; /* وصف المصدر الحالي (سورة/صفحة/مقطع) لإعادة بناء العنوان عند تغيير اللغة */
 let _ayahs     = [];   /* current loaded ayahs */
 let _curIdx    = 0;    /* current ayah index */
 let _transcript= '';
@@ -558,7 +591,7 @@ function initSR() {
   };
 
   _recog.onerror = (e) => {
-    setStatus('error', '⚠️ خطأ: ' + (e.error === 'not-allowed' ? 'لم يُسمح بالميكروفون' : e.error));
+    setStatus('error', TS_T('⚠️ خطأ: {msg}', {msg: e.error === 'not-allowed' ? TS_T('لم يُسمح بالميكروفون') : e.error}));
     stopRecording();
   };
 
@@ -576,7 +609,7 @@ async function loadContent() {
   const cardEl    = document.getElementById('ts-quran-card');
   const recEl     = document.getElementById('ts-recorder');
 
-  setStatus('', '⏳ جارٍ التحميل...');
+  setStatus('', TS_T('⏳ جارٍ التحميل...'));
 
   try {
     let url = '';
@@ -584,23 +617,26 @@ async function loadContent() {
 
     if (mode === 'surah') {
       const sid = document.getElementById('ts-surah-sel').value;
-      if (!sid) { alert('اختر سورة أولاً'); return; }
+      if (!sid) { alert(TS_T('اختر سورة أولاً')); return; }
       const s = TS_SURAHS.find(s => s.id == sid);
       url = `${TS_API}/surah/${sid}/${TS_ED}`;
-      label = `سورة ${s?.n || ''}`;
+      _srcInfo = {mode: 'surah', name: s?.n || ''};
+      label = TS_srcLabel();
 
     } else if (mode === 'page') {
       const pg = parseInt(document.getElementById('ts-page-inp').value) || 1;
       url = `${TS_API}/page/${Math.min(604, Math.max(1, pg))}/${TS_ED}`;
-      label = `صفحة ${pg}`;
+      _srcInfo = {mode: 'page', pg: pg};
+      label = TS_srcLabel();
 
     } else { /* range */
       const sid  = document.getElementById('ts-range-surah').value;
       const from = parseInt(document.getElementById('ts-range-from').value) || 1;
       const to   = parseInt(document.getElementById('ts-range-to').value)   || 7;
-      if (!sid) { alert('اختر سورة'); return; }
+      if (!sid) { alert(TS_T('اختر سورة')); return; }
       url = `${TS_API}/surah/${sid}/${TS_ED}`;
-      label = `سورة ${TS_SURAHS.find(s=>s.id==sid)?.n || ''} — ${from} إلى ${to}`;
+      _srcInfo = {mode: 'range', name: TS_SURAHS.find(s=>s.id==sid)?.n || '', from: from, to: to};
+      label = TS_srcLabel();
     }
 
     let sig;
@@ -615,7 +651,7 @@ async function loadContent() {
       ayahs = ayahs.filter(a => a.numberInSurah >= from && a.numberInSurah <= to);
     }
 
-    if (!ayahs.length) { alert('لم يتم تحميل الآيات، تحقق من اتصالك'); return; }
+    if (!ayahs.length) { alert(TS_T('لم يتم تحميل الآيات، تحقق من اتصالك')); return; }
 
     _ayahs   = ayahs;
     _curIdx  = 0;
@@ -630,10 +666,10 @@ async function loadContent() {
 
     renderAyah();
     resetRecorder();
-    setStatus('', 'اضغط الزر للبدء في التسميع');
+    setStatus('', TS_T('اضغط الزر للبدء في التسميع'));
 
   } catch(e) {
-    setStatus('error', '❌ فشل التحميل — تحقق من الاتصال');
+    setStatus('error', TS_T('❌ فشل التحميل — تحقق من الاتصال'));
   }
 }
 
@@ -650,7 +686,7 @@ function renderAyah() {
   ).join(' ');
   document.getElementById('ts-ayah-display').innerHTML = html;
   document.getElementById('ts-ayah-counter').textContent =
-    `آية ${ayah.numberInSurah} — ${ayah.surah?.name || ''}`;
+    TS_T('آية {n}', {n: ayah.numberInSurah}) + ' — ' + TS_surahName(ayah.surah?.name || '');
   document.getElementById('ts-progress-lbl').textContent =
     `${_curIdx + 1} / ${total}`;
 
@@ -691,10 +727,10 @@ function stopRecording() {
   btn.classList.remove('recording', 'listening');
   btn.innerHTML = '🎙️';
   if (_transcript.trim()) {
-    setStatus('', '✅ تم التسجيل — اضغط "تحقق من التلاوة"');
+    setStatus('', TS_T('✅ تم التسجيل — اضغط "تحقق من التلاوة"'));
     document.getElementById('ts-check-btn').disabled = false;
   } else {
-    setStatus('', 'لم يُكتشف صوت — حاول مجدداً');
+    setStatus('', TS_T('لم يُكتشف صوت — حاول مجدداً'));
   }
 }
 
@@ -719,7 +755,7 @@ function checkRecitation() {
   const original = ayah.text.trim();
   const spoken   = _transcript.trim();
 
-  if (!spoken) { setStatus('error', 'لم يُتعرف على صوت — حاول مجدداً'); return; }
+  if (!spoken) { setStatus('error', TS_T('لم يُتعرف على صوت — حاول مجدداً')); return; }
 
   /* Normalize both texts — handles Uthmani orthography, dagger alifs, and speech text */
   const norm = t => t
@@ -781,11 +817,11 @@ function checkRecitation() {
       var sNo = (ayah.surah && (ayah.surah.number || ayah.surah.no)) || 0;
       var aNo = ayah.numberInSurah || 0;
       if (sNo && aNo) {
-        var nm = 'سورة ' + ((ayah.surah && ayah.surah.name) || '') + ' — آية ' + aNo;
+        var nm = TS_surahName((ayah.surah && ayah.surah.name) || '') + ' — ' + TS_T('آية {n}', {n: aNo});
         window.ZadSRS.add(sNo, aNo, nm);
         window.ZadSRS.grade(sNo + ':' + aNo, score >= 95 ? 5 : score >= 80 ? 4 : score >= 50 ? 3 : 2, nm);
         var note = document.getElementById('ts-grade-note');
-        if (note) note.textContent = '🗓️ أُضيفت للتكرار المتباعد بدرجة ' + score + '٪ — راجعها من «الورد الذكي».';
+        if (note) note.textContent = TS_T('🗓️ أُضيفت للتكرار المتباعد بدرجة {n}٪ — راجعها من «الورد الذكي».', {n: score});
       }
     }
   } catch (e) {}
@@ -808,10 +844,10 @@ function showResults(score, errors, srcLabel, ayah) {
 
   /* Label */
   const labels = [
-    [0,  '😟 تحتاج مراجعة مكثّفة'],
-    [50, '🙂 جيد — تابع المراجعة'],
-    [80, '😊 جيد جداً — استمر'],
-    [95, '🌟 ممتاز! إتقان رائع'],
+    [0,  TS_T('😟 تحتاج مراجعة مكثّفة')],
+    [50, TS_T('🙂 جيد — تابع المراجعة')],
+    [80, TS_T('😊 جيد جداً — استمر')],
+    [95, TS_T('🌟 ممتاز! إتقان رائع')],
   ];
   lblEl.textContent = labels.reduce((r,l) => score>=l[0]?l[1]:r, labels[0][1]);
 
@@ -826,7 +862,7 @@ function showResults(score, errors, srcLabel, ayah) {
         <div class="ts-error-ico">⚠️</div>
         <div>
           <div class="ts-error-word">${e.word}</div>
-          <div class="ts-error-note">الكلمة رقم ${e.idx+1} — راجع نطقها</div>
+          <div class="ts-error-note">${TS_T('الكلمة رقم {n} — راجع نطقها', {n: e.idx+1})}</div>
         </div>
       </li>`).join('');
   }
@@ -879,9 +915,9 @@ function restartSession() {
 /* ── History ─────────────────────────────────────────────── */
 function saveToHistory(score, ayah) {
   _history.unshift({
-    src:   `سورة ${ayah.surah?.name} — آية ${ayah.numberInSurah}`,
+    src:   TS_surahName(ayah.surah?.name || '') + ' — ' + TS_T('آية {n}', {n: ayah.numberInSurah}),
     score,
-    time:  new Date().toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'})
+    time:  new Date().toLocaleTimeString((window.I18N && window.I18N.current) || 'ar',{hour:'2-digit',minute:'2-digit'})
   });
   _history = _history.slice(0, 20);
   localStorage.setItem(TS_KEY, JSON.stringify(_history));
@@ -891,7 +927,7 @@ function saveToHistory(score, ayah) {
 function renderHistory() {
   const el = document.getElementById('ts-history-list');
   if (!_history.length) {
-    el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">لا يوجد سجل بعد</div>';
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">' + TS_T('لا يوجد سجل بعد') + '</div>';
     return;
   }
   el.innerHTML = _history.slice(0, 8).map(h => `
@@ -938,12 +974,32 @@ function levenshtein(a, b) {
 
 /* ── Init ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  /* Fill surah dropdowns */
-  const opts = TS_SURAHS.map(s =>
-    `<option value="${s.id}">${s.id}. سورة ${s.n} (${s.v} آية)</option>`
-  ).join('');
-  document.getElementById('ts-surah-sel').insertAdjacentHTML('beforeend', opts);
-  document.getElementById('ts-range-surah').insertAdjacentHTML('beforeend', opts);
+  /* Fill surah dropdowns — وتُعاد عند تغيير اللغة */
+  function fillSurahOptions() {
+    const opts = TS_SURAHS.map(s =>
+      `<option value="${s.id}">${s.id}. ${TS_surahName(s.n)} (${s.v} ${TS_T('آيات')})</option>`
+    ).join('');
+    ['ts-surah-sel', 'ts-range-surah'].forEach(id => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const keep = sel.value;
+      sel.innerHTML = `<option value="">${TS_T('اختر سورة...')}</option>` + opts;
+      if (keep) sel.value = keep;
+    });
+  }
+  fillSurahOptions();
+  window.addEventListener('zad:lang', () => {
+    fillSurahOptions();
+    const srcEl = document.getElementById('ts-src-label');
+    if (srcEl && _srcInfo) srcEl.textContent = TS_srcLabel();
+    const lbl = document.getElementById('ts-ayah-counter');
+    if (lbl && _ayahs[_curIdx]) {
+      const a = _ayahs[_curIdx];
+      lbl.textContent = TS_T('آية {n}', {n: a.numberInSurah}) + ' — ' + TS_surahName(a.surah?.name || '');
+    }
+    const rl = document.getElementById('ts-result-label');
+    if (rl && rl.textContent) rl.textContent = TS_T(rl.textContent);
+  });
 
   /* Mode change */
   document.getElementById('ts-mode').addEventListener('change', handleModeChange);
@@ -980,8 +1036,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res) res.classList.add('show');
       var g = document.getElementById('ts-grade');
       if (g) g.style.display = 'block';
-      if (typeof showToast === 'function') showToast('وضع بلا ميكروفون — اقرأ الآية ثم قيّم نفسك');
-      this.textContent = 'أنت الآن بلا ميكروفون ✓';
+      if (typeof showToast === 'function') showToast(TS_T('وضع بلا ميكروفون — اقرأ الآية ثم قيّم نفسك'));
+      this.textContent = TS_T('أنت الآن بلا ميكروفون ✓');
       this.disabled = true;
     };
   });
@@ -992,11 +1048,11 @@ document.addEventListener('DOMContentLoaded', () => {
     var surahNo = (ayah.surah && (ayah.surah.number || ayah.surah.no)) || (window._tsSurahNo || 0);
     var aNo = ayah.numberInSurah || ayah.n || 0;
     if (!surahNo || !aNo) return;
-    var name = 'سورة ' + ((ayah.surah && ayah.surah.name) || '') + ' — آية ' + aNo;
+    var name = TS_surahName((ayah.surah && ayah.surah.name) || '') + ' — ' + TS_T('آية {n}', {n: aNo});
     window.ZadSRS.add(surahNo, aNo, name);
     var it = window.ZadSRS.grade(surahNo + ':' + aNo, q, name);
     var note = document.getElementById('ts-grade-note');
-    if (note) note.textContent = '✓ أُضيفت للمراجعة — تعود في ' + it.due + ' (فاصل ' + it.ivl + ' يوم).';
+    if (note) note.textContent = TS_T('✓ أُضيفت للمراجعة — تعود في {due} (فاصل {ivl} يوم).', {due: it.due, ivl: it.ivl});
     if (navigator.vibrate) navigator.vibrate(18);
   };
 })();

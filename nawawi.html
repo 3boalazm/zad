@@ -713,26 +713,26 @@ function renderList() {
           <!-- Sharh -->
           <div class="nw-section">
             <div class="nw-sec-title">💡 الشرح</div>
-            <div class="nw-sec-body" lang="ar" dir="rtl">${h.sharh}</div>
+            <div class="nw-sec-body">${h.sharh}</div>
           </div>
           <!-- Fawaed -->
           <div class="nw-section">
             <div class="nw-sec-title">🌟 الفوائد المستفادة</div>
             <div class="nw-lessons">
-              ${h.fawaed.map((f,i) => `<div class="nw-lesson" style="animation-delay:${i*60}ms"><span class="li">✦</span><span lang="ar" dir="rtl">${f}</span></div>`).join('')}
+              ${h.fawaed.map((f,i) => `<div class="nw-lesson" style="animation-delay:${i*60}ms"><span class="li">✦</span><span>${f}</span></div>`).join('')}
             </div>
           </div>
           <!-- Tatbiq -->
           <div class="nw-section">
             <div class="nw-sec-title">🛠️ التطبيق العملي</div>
-            <div class="nw-sec-body" style="background:rgba(14,59,46,.04);border-radius:12px;padding:12px;border-right:3px solid rgba(14,59,46,.2)" lang="ar" dir="rtl">${h.tatbiq}</div>
+            <div class="nw-sec-body" style="background:rgba(14,59,46,.04);border-radius:12px;padding:12px;border-right:3px solid rgba(14,59,46,.2)">${h.tatbiq}</div>
           </div>
           <!-- Quiz -->
           ${h.quiz ? `
           <div class="nw-section">
             <div class="nw-sec-title">❓ اختبر نفسك</div>
             <div class="nw-quiz" id="quiz-${h.n}">
-              <div class="nw-quiz-q" lang="ar" dir="rtl">${h.quiz.q}</div>
+              <div class="nw-quiz-q">${h.quiz.q}</div>
               <div class="nw-quiz-opts">
                 ${h.quiz.opts.map((o,i) => `<button class="nw-quiz-opt" lang="ar" dir="rtl" onclick="nwQuiz(${h.n},${i},${h.quiz.correct})">${o}</button>`).join('')}
               </div>
@@ -805,7 +805,7 @@ window.nwToggleRead = function(n) {
     if (btn) { btn.textContent = '✅ قرأت'; btn.classList.add('done'); }
     card?.classList.add('read');
     if (check) check.textContent = '✅';
-    if (typeof showToast === 'function') showToast(`✅ الحديث ${n} — تم التعليم`);
+    if (typeof showToast === 'function') showToast(ztr('✅ الحديث {n} — تم التعليم', {n: n}));
     if (typeof confetti !== 'undefined' && read.length % 10 === 0) {
       confetti({particleCount:60,spread:60,origin:{y:.6},colors:['#0e3b2e','#c9a14a','#fff']});
     }

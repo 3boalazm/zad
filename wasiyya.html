@@ -167,6 +167,7 @@ html[data-theme="dark"] .ws-out b,html[data-theme="oled"] .ws-out b{color:#e6c97
   </main>
 </div>
 
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
 <script src="js/calendar.min.js" defer></script>
@@ -192,7 +193,16 @@ html[data-theme="dark"] .ws-out b,html[data-theme="oled"] .ws-out b{color:#e6c97
 (function () {
   'use strict';
   var AR = function (n) { return String(n).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }); };
-  function money(v) { return v.toLocaleString('ar-EG', { maximumFractionDigits: 2 }); }
+  /* ترجمة نصوص تُبنى في الجافاسكربت */
+  var WS_LOC = { ar:'ar-EG', en:'en-GB', fr:'fr-FR', id:'id-ID', ur:'ur-PK', bn:'bn-BD', tr:'tr-TR' };
+  function L() { try { return (window.I18N && window.I18N.current) || 'ar'; } catch (e) { return 'ar'; } }
+  function wtr(tpl, vars) {
+    var m = window.ZAD_UI_MAP || {}, l = L(), h = m[tpl];
+    var o = (l !== 'ar' && h) ? (h[l] || h.en || tpl) : tpl;
+    if (vars) for (var k in vars) o = o.split('{' + k + '}').join(vars[k] == null ? '' : vars[k]);
+    return o;
+  }
+  function money(v) { return v.toLocaleString(WS_LOC[L()] || 'ar-EG', { maximumFractionDigits: 2 }); }
   function calc() {
     var estEl = document.getElementById('ws-estate'), pctEl = document.getElementById('ws-pct');
     var est = Math.max(0, +estEl.value || 0);
@@ -201,9 +211,11 @@ html[data-theme="dark"] .ws-out b,html[data-theme="oled"] .ws-out b{color:#e6c97
     if (rawPct !== pct) pctEl.value = pct;   /* لا تعرض ٥٠ وتحتسب ٣٣ */
     var cur = document.getElementById('ws-cur').value;
     var amt = est * pct / 100;
-    document.getElementById('ws-amount').textContent = 'قيمة الوصية: ' + money(amt) + ' ' + cur;
-    document.getElementById('ws-rest').textContent = 'الباقي للميراث: ' + money(est - amt) + ' ' + cur +
-      (pct >= 33 ? ' — وهذا سقف الثلث المأذون به.' : ' — ويجوز لك رفعها إلى الثلث (٣٣٪).');
+    document.getElementById('ws-amount').textContent =
+      wtr('قيمة الوصية: {amount} {cur}', { amount: money(amt), cur: cur });
+    document.getElementById('ws-rest').textContent = pct >= 33
+      ? wtr('الباقي للميراث: {amount} {cur} — وهذا سقف الثلث المأذون به.', { amount: money(est - amt), cur: cur })
+      : wtr('الباقي للميراث: {amount} {cur} — ويجوز لك رفعها إلى الثلث (٣٣٪).', { amount: money(est - amt), cur: cur });
   }
   function boot() {
     ['ws-estate', 'ws-pct', 'ws-cur'].forEach(function (id) {
@@ -227,7 +239,7 @@ html[data-theme="dark"] .ws-out b,html[data-theme="oled"] .ws-out b{color:#e6c97
       else ok();
       function ok() {
         var b = document.getElementById('ws-copy');
-        var old = b.textContent; b.textContent = '✓ نُسخ';
+        var old = b.textContent; b.textContent = wtr('✓ نُسخ');
         setTimeout(function () { b.textContent = old; }, 1800);
       }
     });

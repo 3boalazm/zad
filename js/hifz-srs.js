@@ -1,3 +1,5 @@
+/* توقيت التحميل غير مضمون: نستدعي ZT وقت الرسم لا وقت التحميل */
+function ZT(m) { return (typeof window.ZT === 'function' && window.ZT !== ZT) ? window.ZT(m) : m; }
 /* ═══════════════════════════════════════════════════════════════════════════
    زاد — الورد الذكي (تكرار متباعد)  ·  js/hifz-srs.js
    ─────────────────────────────────────────────────────────────────────────
@@ -178,8 +180,10 @@
       }).join('');
       el.innerHTML =
         '<div class="srs-h">🧠 <b>مراجعة اليوم</b><span class="n">' + (s.due ? ar(s.due) + ' مستحقّة' : 'لا شيء مستحق') + '</span></div>'
-        + '<div class="srs-sub">التكرار المتباعد: ما تعثّرت فيه يعود غدًا، وما أتقنته يعود بعد ٣ ثم ٧ ثم ١٦ يومًا. '
-        + 'المحفوظ عندك: <b>' + ar(s.total) + '</b> آية' + (s.tomorrow ? ' · غدًا: ' + ar(s.tomorrow) : '') + '.</div>'
+        + '<div class="srs-sub" data-zad-ui>'
+        + '<span>' + ZT('التكرار المتباعد: ما تعثّرت فيه يعود غدًا، وما أتقنته يعود بعد ٣ ثم ٧ ثم ١٦ يومًا.') + '</span> '
+        + '<span>' + ZT('المحفوظ عندك:') + '</span> <b>' + ar(s.total) + '</b> <span>' + ZT('آية') + '</span>'
+        + (s.tomorrow ? ' · <span>' + ZT('غدًا:') + '</span> ' + ar(s.tomorrow) : '') + '.</div>'
         + (rows || '<div class="srs-empty">لا شيء مستحقّ اليوم — اقرأ وردك، وما تتعثّر فيه سيُضاف تلقائيًا من صفحة التسميع.</div>')
         + '<div class="srs-foot"><a class="srs-link" href="tasmee.html">🎙️ تسميع لآية جديدة</a>'
         + '<a class="srs-link" href="mushaf-quran.html">🕋 المصحف</a></div>';

@@ -276,7 +276,7 @@ html[data-theme="dark"] .qd-tabs button.on,html[data-theme="oled"] .qd-tabs butt
     wrap.addEventListener('click', function (e) {
       var b = e.target.closest('.qd-do'); if (!b) return;
       var row = b.closest('.qd-row'); var id = row.getAttribute('data-id');
-      if (!S.left[id]) { toast('لا فائت من ' + row.querySelector('.nm').firstChild.textContent.trim()); return; }
+      if (!S.left[id]) { toast(ztr('لا فائت من {n}', {n: row.querySelector('.nm').firstChild.textContent.trim()})); return; }
       S.left[id]--; S.done++;
       row.querySelector('.qd-inp').value = S.left[id];
       save(); paint();
@@ -354,7 +354,7 @@ html[data-theme="dark"] .qd-tabs button.on,html[data-theme="oled"] .qd-tabs butt
       document.getElementById('qd-rows').querySelectorAll('.qd-inp').forEach(function (i, idx) { i.value = S.left[PRAYERS[idx].id]; });
       paint();
       document.getElementById('qd-tabs').querySelector('[data-tab="manual"]').click();
-      toast('قُدِّر لكل صلاة ' + AR(per) + ' فائتة — عدّلها كما تشاء');
+      toast(ztr('قُدِّر لكل صلاة {n}', {n: AR(per)}) + ' — ' + ztr('فائتة — عدّلها كما تشاء'));
     });
 
     window.qadaUI = { state: S, paint: paint };

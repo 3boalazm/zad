@@ -587,7 +587,7 @@
           <span class="zh-v-theme" id="dvc-theme" hidden></span>
           <button id="dvc-share" class="zh-v-share" aria-label="مشاركة الآية">🖼️</button>
         </div>
-        <div class="zh-v-text" id="dvc-text">…</div>
+        <div class="zh-v-text" id="dvc-text" lang="ar" dir="rtl">…</div>
         <div class="zh-v-src" id="dvc-src"></div>
       </section>
 
@@ -711,6 +711,7 @@
 
 <!-- ══ Scripts ══ -->
 <script src="i18n/content.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
 <script src="js/calendar.min.js" defer></script>
@@ -1283,6 +1284,21 @@ const ZH_EVENING = [
  * آية اليوم: مصرف ١٧٧ آية (js/data/verses.js) بدل ٨.
  * الاختيار تابع لليوم — لا يتغيّر بالتحديث، ويتغيّر كل يوم ومع صباح/مساء.
  */
+
+/* اسم السورة داخل مرجع الآية يُترجم (﴿ الروم · 17 ﴾) */
+function zhSurahRef(src) {
+  try {
+    const L = (window.I18N && window.I18N.current) || 'ar';
+    if (!L || L === 'ar') return src;
+    const m = String(src || '').match(/^﴿\s*([^:·]+?)\s*[:·]\s*(.+?)\s*﴾$/);
+    if (!m) return src;
+    const map = window.ZAD_UI_MAP || {};
+    const hit = map['سورة ' + m[1]];
+    const name = hit ? (hit[L] || hit.en || m[1]) : m[1];
+    return '﴿ ' + name + ' · ' + m[2] + ' ﴾';
+  } catch (e) { return src; }
+}
+
 function zhInitVerse() {
   const isMorning = new Date().getHours() >= 4 && new Date().getHours() < 16;
   let v;
@@ -1306,7 +1322,7 @@ function zhInitVerse() {
     void textEl.offsetWidth;              /* إعادة تشغيل الحركة */
     textEl.classList.add('zh-v-fade');
   }
-  if (srcEl) srcEl.textContent = v.source;
+  if (srcEl) srcEl.textContent = zhSurahRef(v.source);
   if (themeEl) { themeEl.textContent = v.theme || ''; themeEl.hidden = !v.theme; }
 
   const shareBtn = document.getElementById('dvc-share');
@@ -1664,7 +1680,7 @@ window.addEventListener('load', () => {
     <div class="ac-crescent">🌙</div>
     <div class="ac-eyebrow">⭐ اليوم التاسع ⭐</div>
     <div class="ac-title">اليومَ هو <span class="ac-gold">يومُ عَرَفَة</span></div>
-    <div class="ac-verse">«مَا مِنْ يَوْمٍ أَكْثَرَ مِنْ أَنْ يُعْتِقَ اللهُ فِيهِ عَبْدًا مِنَ النَّارِ مِنْ يَوْمِ عَرَفَةَ»</div>
+    <div lang="ar" dir="rtl" class="ac-verse">«مَا مِنْ يَوْمٍ أَكْثَرَ مِنْ أَنْ يُعْتِقَ اللهُ فِيهِ عَبْدًا مِنَ النَّارِ مِنْ يَوْمِ عَرَفَةَ»</div>
     <div class="ac-verse-src">رواه مسلم</div>
     <div class="ac-timer"><div class="ac-timer-fill"></div></div>
   </div>

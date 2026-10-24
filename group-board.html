@@ -109,7 +109,7 @@ html[data-theme="dark"] .lb-pct b,html[data-theme="oled"] .lb-pct b{color:var(--
         <button class="hamburger" id="hamburger" aria-label="القائمة">☰</button>
         <a href="index.html" class="tb-logo"><img fetchpriority="high" src="icons/icon-192.svg" alt="زاد"></a>
       </div>
-      <div class="tb-center"><div class="page-title">لوحة <span>الصدارة</span></div></div>
+      <div class="tb-center"><div class="page-title">لوحة الصدارة</div></div>
       <div class="tb-right">
         <div class="notif-wrap"><button class="notif-btn" id="notif-btn" onclick="toggleNotifDropdown?.()" aria-label="الإشعارات">🔔<span class="notif-dot" id="notif-dot"></span></button><div class="notif-dropdown" id="notif-dropdown"></div></div>
       </div>
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('cpy-code').addEventListener('click', function () { copy(g.code, 'تم نسخ الرمز ✅'); });
       document.getElementById('cpy-link').addEventListener('click', function () { copy(link, 'تم نسخ رابط الدعوة 🔗'); });
       document.getElementById('sync-btn').addEventListener('click', function () {
-        Groups.syncMyStats(g.id).then(function () { render(); if (navigator.vibrate) navigator.vibrate(25); toast('🔄 حُدِّث إنجازك (' + Groups.myCompletionPct() + '%)'); });
+        Groups.syncMyStats(g.id).then(function () { render(); if (navigator.vibrate) navigator.vibrate(25); toast(ztr('🔄 حُدِّث إنجازك ({n})', {n: Groups.myCompletionPct() + '%'})); });
       });
       document.getElementById('leave-btn').addEventListener('click', function () {
         Groups.leaveGroup(g.id).then(function () { toast('🚪 غادرتَ المجموعة'); setTimeout(function () { location.href = 'groups.html'; }, 700); });

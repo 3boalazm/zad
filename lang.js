@@ -1051,6 +1051,392 @@ const LANG_INSTALL = {
   id: '📲 Pasang Aplikasi', ur: '📲 ایپ انسٹال کریں', bn: '📲 অ্যাপ ইনস্টল করুন', tr: '📲 Uygulamayı Yükle'
 };
 
+/* ── قوالب رقمية: مفتاح «الجزء {n}» يطابق «الجزء 3» في الصفحة تلقائيًا ──
+   تُبنى التعابير مرة واحدة وتُخزَّن، فلا كلفة على كل تطبيق لغة. */
+let _zadTplCache = null, _zadTplSize = -1;
+function zadTplList() {
+  const size = Object.keys(UI_MAP).length;
+  if (_zadTplCache && _zadTplSize === size) return _zadTplCache;
+  const keys = Object.keys(UI_MAP).filter(k => /\{[a-z]+\}/i.test(k)).sort((a, b) => b.length - a.length);
+  _zadTplCache = keys.map(k => {
+    const names = [];
+    const src = k.replace(/[.*+?^$()|[\]\\]/g, '\\$&')
+                 .replace(/\{([a-z]+)\}/gi, (m, nm) => {
+                   names.push(nm);
+                   /* {n} أرقام فقط · {name} قد يكون كلمة عربية («الرقم صِفر») */
+                   return /^(n|m|d|y|p|s|o)$/i.test(nm) ? '([0-9\\u0660-\\u0669]+)' : '([^\\s][^·—]{0,30}?)';
+                 });
+    let re = null;
+    try { re = new RegExp('^' + src + '$'); } catch (e) { re = null; }
+    return re ? [re, k, names] : null;
+  }).filter(Boolean);
+  _zadTplSize = size;
+  return _zadTplCache;
+}
+function zadNum(t, lang) {
+  /* أرقام موحّدة حسب لغة الواجهة: لاتينية، أو عربية/أردية/بنغالية */
+  /* فاصل الآلاف العربي «٬» يصير فاصلة في غير العربية */
+  const norm = lang === 'ar' ? String(t) : String(t).replace(/\u066C/g, ',');
+  return norm.replace(/[0-9\u0660-\u0669]/g, d => {
+    const n = d >= '0' && d <= '9' ? +d : d.charCodeAt(0) - 0x0660;
+    if (lang === 'ar') return String.fromCharCode(0x0660 + n);
+    if (lang === 'ur') return String.fromCharCode(0x06F0 + n);
+    if (lang === 'bn') return String.fromCharCode(0x09E6 + n);
+    return String(n);
+  });
+}
+/* ── مطابقة متسامحة مع التشكيل والمسافات ───────────────────────
+   بعض العناوين تأتي من ملفات البيانات مُشكَّلة ومسافاتها مكسورة
+   («الذِّكْرُ قَبْ لَ الْوُضُ وءِ»)؛ نُطبّع المفتاح والمدخل معًا فنلتقي. */
+function zadNorm(s) {
+  return String(s).replace(/[\u064B-\u0652\u0670\u0640\u0671]/g, '').replace(/\s+/g, ' ').trim();
+}
+let ZAD_NORM_IDX = null, ZAD_NORM_SIZE = -1;
+function zadRec(t) {
+  if (t == null) return null;
+  const k = String(t).trim();
+  if (UI_MAP[k]) return UI_MAP[k];
+  const n = zadNorm(k);
+  if (!n) return null;
+  if (ZAD_NORM_IDX === null || ZAD_NORM_SIZE !== Object.keys(UI_MAP).length) {
+    ZAD_NORM_IDX = {};
+    for (const kk in UI_MAP) { const nn = zadNorm(kk); if (nn && !ZAD_NORM_IDX[nn]) ZAD_NORM_IDX[nn] = kk; }
+    ZAD_NORM_SIZE = Object.keys(UI_MAP).length;
+  }
+  const hit = ZAD_NORM_IDX[n];
+  if (hit) return UI_MAP[hit];
+  /* مسافاتٌ مقحومة داخل الكلمة («الاسْ تِيقَاظِ») — نقارن بلا أي مسافة */
+  const n2 = n.replace(/\s+/g, '');
+  if (n2) {
+    if (!ZAD_NORM_IDX.__n2 || ZAD_NORM_IDX.__n2len !== Object.keys(UI_MAP).length) {
+      const idx2 = {};
+      for (const kk in UI_MAP) { const k2 = zadNorm(kk).replace(/\s+/g, ''); if (k2 && !idx2[k2]) idx2[k2] = kk; }
+      ZAD_NORM_IDX.__n2 = idx2; ZAD_NORM_IDX.__n2len = Object.keys(UI_MAP).length;
+    }
+    const hit2 = ZAD_NORM_IDX.__n2[n2];
+    if (hit2) return UI_MAP[hit2];
+  }
+  return null;
+}
+function zadTpl(t, lang) {
+  if (t.length < 3) return null;
+  /* «سورة الحج 27»: القالب «سورة {name}» يلتهم الرقم مع الاسم، فنتركها للأنماط
+     التي تعرف اسم السورة ورقم الآية كلًّا على حدة. */
+  if (/^\s*سورة\s/.test(t) && !/—/.test(t) && !/آية/.test(t) &&
+      /[0-9\u0660-\u0669]+(?:-[0-9\u0660-\u0669]+)?\s*$/.test(t)) return null;
+  for (const [re, key, names] of zadTplList()) {
+    const m = re.exec(t);
+    if (!m) continue;
+    const rec = UI_MAP[key];
+    let out = rec && (rec[lang] || rec.en);
+    if (!out) continue;
+    names.forEach((nm, i) => {
+      const cap = m[i + 1];
+      /* الكلمة الملتقطة قد تكون عربية: تُترجم أيضًا إن كان لها مدخل («الرقم صِفر») */
+      let val = cap;
+      if (!/^[0-9\u0660-\u0669]+$/.test(cap)) {
+        const cr = UI_MAP[cap];
+        if (cr) val = cr[lang] || cr.en || cap;
+      }
+      out = out.split('{' + nm + '}').join(zadNum(val, lang));
+    });
+    return out;
+  }
+  return null;
+}
+
+/* أنماط رقمية تُبنى حسب اللغة: تُستعمل للنصوص وللسمات (title/aria-label) معًا */
+function zadPatterns(lang) {
+  return [
+
+        /* «اليوم: 12 جمادى الأولى 1448 هـ» · «📅 اليوم: …» */
+        [/^([^\u0600-\u06FF\w]{0,3}\s*)?اليوم:?\s*([\u0660-\u0669\d]+)\s+([\u0600-\u06FF ]+?)\s+([\u0660-\u0669\d]+)\s*هـ$/, (emo, d, m, y) => {
+          const M2 = ZAD_HIJ_M[m] || ZAD_GREG_M[m];
+          const base = d + ' ' + ((M2 || {})[lang] || m) + ' ' + y + ' ' + (ZAD_ERA[lang] || 'AH');
+          const L = { en:'Today: ', fr:'Aujourd’hui : ', id:'Hari ini: ', ur:'آج: ', bn:'আজ: ', tr:'Bugün: ' }[lang] || '';
+          return (emo || '') + L + base;
+        }],
+        /* «أكتوبر 2026» · «الجمعة — ٢٣ أكتوبر ٢٠٢٦» */
+        [/^(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+([\u0660-\u0669\d]+)$/, (m, y) => ((ZAD_GREG_M[m] || {})[lang] || m) + ' ' + y],
+        [/^(السبت|الأحد|الاثنين|الثلاثاء|الأربعاء|الخميس|الجمعة)\s*—\s*([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+([\u0660-\u0669\d]+)$/, (wd, d, m, y) => {
+          const W = { 'السبت':{en:'Saturday',fr:'samedi',id:'Sabtu',ur:'ہفتہ',bn:'শনিবার',tr:'Cumartesi'},
+                      'الأحد':{en:'Sunday',fr:'dimanche',id:'Ahad',ur:'اتوار',bn:'রবিবার',tr:'Pazar'},
+                      'الاثنين':{en:'Monday',fr:'lundi',id:'Senin',ur:'پیر',bn:'সোমবার',tr:'Pazartesi'},
+                      'الثلاثاء':{en:'Tuesday',fr:'mardi',id:'Selasa',ur:'منگل',bn:'মঙ্গলবার',tr:'Salı'},
+                      'الأربعاء':{en:'Wednesday',fr:'mercredi',id:'Rabu',ur:'بدھ',bn:'বুধবার',tr:'Çarşamba'},
+                      'الخميس':{en:'Thursday',fr:'jeudi',id:'Kamis',ur:'جمعرات',bn:'বৃহস্পতিবার',tr:'Perşembe'},
+                      'الجمعة':{en:'Friday',fr:'vendredi',id:'Jumat',ur:'جمعہ',bn:'শুক্রবার',tr:'Cuma'} }[wd];
+          return (W && W[lang] ? W[lang] : wd) + ' — ' + d + ' ' + ((ZAD_GREG_M[m] || {})[lang] || m) + ' ' + y;
+        }],
+        /* «٣٤٥٬٠٠٠ ج.م» — مبالغ بالجنيه */
+        [/^([^\u0600-\u06FF]{0,20}?)([\u0660-\u0669\d٬,\.]+)\s*ج\.م(.*)$/, (pre, num, tail) => {
+          const n2 = num.replace(/٬/g, ',');
+          return zadNum(pre + n2, lang) + ' EGP' + (tail || '');
+        }],
+        /* «٢٣‏/١٠‏/٢٠٢٦» — تاريخ مختصر (مع علامات RLM) */
+        [/^([\u0660-\u0669\d]{1,4})[\u200f\/]([\u0660-\u0669\d]{1,2})[\u200f\/]([\u0660-\u0669\d]{2,4})$/, (a, b, c) => {
+          const L = { en:`${a}/${b}/${c}`, fr:`${a}/${b}/${c}`, id:`${a}/${b}/${c}`,
+                      ur:`${a}/${b}/${c}`, bn:`${a}/${b}/${c}`, tr:`${a}.${b}.${c}` }[lang];
+          return L || (a + '/' + b + '/' + c);
+        }],
+        /* «قيمة الوصية: ١٦٥٬٠٠٠ ج.م» — مبالغ بعنوان عربي */
+        [/^(قيمة الوصية|الباقي للميراث|النصاب|الزكاة المستحقة|الإجمالي):\s*([\u0660-\u0669\d٬,\.]+)\s*ج\.م(.*)$/, (label, num, tail) => {
+          const rec = UI_MAP[label] || UI_MAP[label + ':'];
+          const nm = rec ? (rec[lang] || rec.en) : label;
+          let rest = tail || '';
+          const capRec = UI_MAP['وهذا سقف الثلث المأذون به.'];
+          if (capRec) rest = rest.replace(/—\s*وهذا سقف الثلث المأذون به\.?/, '— ' + (capRec[lang] || capRec.en));
+          return nm + ': ' + zadNum(num.replace(/٬/g, ','), lang) + ' EGP' + rest;
+        }],
+        /* «سورة البقرة: 197» · «﴿ سورة الفيل ﴾» */
+        [/^سورة ([\u0600-\u06FF ]+?):\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
+          const nm0 = name.trim();
+          const rec = UI_MAP['سورة ' + nm0] || UI_MAP[nm0];
+          if (!rec) return null;
+          return (rec[lang] || rec.en) + ': ' + ref;
+        }],
+        [/^﴿\s*سورة\s+([\u0600-\u06FF ]+?)\s*﴾$/, (name) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : ('سورة ' + name);
+          return '﴿ ' + nm + ' ﴾';
+        }],
+        /* «📅 9 ذو الحجة · 15 مايو 2027» */
+        [/^([^\u0600-\u06FF\w]{0,3}\s*)([\u0660-\u0669\d]+)\s+(ذو الحجة|محرم|صفر|رجب|شعبان|رمضان|شوال|ذو القعدة|جمادى الأولى|جمادى الآخرة|ربيع الأول|ربيع الآخر)\s*·\s*([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\s+([\u0660-\u0669\d]+)$/, (emo, hd, hm, gd, gm, gy) => {
+          const H = (ZAD_HIJ_M[hm] || {})[lang] || hm, G = (ZAD_GREG_M[gm] || {})[lang] || gm;
+          return (emo || '') + hd + ' ' + H + ' · ' + gd + ' ' + G + ' ' + gy;
+        }],
+        /* تاريخ مختصر بفواصل RTL: «٢٣‏/١٠‏/٢٠٢٦» */
+        [/^([\u0660-\u0669\d]{1,4})\s*[\u200e\u200f]?\s*[\/\u2044-]\s*[\u200e\u200f]?\s*([\u0660-\u0669\d]{1,2})\s*[\u200e\u200f]?\s*[\/\u2044-]\s*[\u200e\u200f]?\s*([\u0660-\u0669\d]{2,4})$/, (a, b, c) => {
+          const sep = lang === 'tr' ? '.' : '/';
+          return [a, b, c].map(x => zadNum(x, lang)).join(sep);
+        }],
+        /* رقم مجرد: يُكتب بأرقام اللغة */
+        [/^([\u0660-\u0669\d]+)$/, (n) => zadNum(n, lang)],
+        /* «٧ فبراير» · «9 ذو الحجة» — يوم + شهر */
+        [/^([\u0660-\u0669\d]+)\s+(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)$/, (n, m) => n + ' ' + ((ZAD_GREG_M[m] || {})[lang] || m)],
+        [/^([\u0660-\u0669\d]+)\s+(محرم|صفر|ربيع الأول|ربيع الآخر|جمادى الأولى|جمادى الآخرة|رجب|شعبان|رمضان|شوال|ذو القعدة|ذو الحجة)$/, (n, m) => n + ' ' + ((ZAD_HIJ_M[m] || {})[lang] || m)],
+        /* «١٢ جمادى الأولى ١٤٤٨ هـ» · «1448 هـ» */
+        [/^([\u0660-\u0669\d]+)\s+([\u0600-\u06FF ]+?)\s+([\u0660-\u0669\d]+)\s*هـ$/, (d, m, y) => {
+          const M2 = ZAD_HIJ_M[m] || ZAD_GREG_M[m];
+          return d + ' ' + ((M2 || {})[lang] || m) + ' ' + y + ' ' + (ZAD_ERA[lang] || 'AH');
+        }],
+        [/^([\u0660-\u0669\d]+)\s*هـ$/, (y) => y + ' ' + (ZAD_ERA[lang] || 'AH')],
+        /* «اليوم الثالث: 40%» — ترتيب + نسبة */
+        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر):\s*([\u0660-\u0669\d]+)%$/, (ord, pct) => {
+          const i = ZAD_ORD.indexOf(ord);
+          const W = ZAD_ORD_W[lang];
+          if (!W) return '';
+          return { en:`Day ${i+1}: ${pct}%`, fr:`Jour ${i+1} : ${pct}%`, id:`Hari ke-${i+1}: ${pct}%`,
+                   ur:`دن ${i+1}: ${pct}%`, bn:`${i+1} নম্বর দিন: ${pct}%`, tr:`${i+1}. gün: ${pct}%` }[lang];
+        }],
+        /* «يبدأ موسم العشر بعد 196 يومًا — استعدّ الآن…» */
+        /* «الأيام البيض (13 من الشهر) — يُستحب صيامها.» */
+        [/^الأيام البيض \(([\u0660-\u0669\d]+) من الشهر\) — يُستحب صيامها\.$/, (d) => {
+          const T = { en:`The white days (the ${d}th of the month) — fasting them is recommended.`,
+            fr:`Les jours blancs (le ${d} du mois) — leur jeûne est recommandé.`,
+            id:`Hari-hari putih (tanggal ${d} bulan ini) — dianjurkan berpuasa.`,
+            ur:`ایام بیض (مہینے کی ${d} تاریخ) — ان کے روزے مستحب ہیں۔`,
+            bn:`সাদা দিনগুলো (মাসের ${d} তারিখ) — রোজা রাখা মুস্তাহাব।`,
+            tr:`Beyaz günler (ayın ${d}’i) — oruç tutmak müstehaptır.` };
+          return T[lang] || T.en;
+        }],
+        [/^يبدأ موسم العشر بعد ([\u0660-\u0669\d]+) يومًا — استعدّ الآن: راجع مناسكك، واحفظ أدعيتك\.$/, (d) => {
+          const T = { en:`The ten days begin in ${d} days — get ready now: review your rites and memorise your supplications.`,
+            fr:`Les dix jours commencent dans ${d} jours — préparez-vous : révisez vos rites et mémorisez vos invocations.`,
+            id:`Musim sepuluh hari dimulai dalam ${d} hari — bersiaplah: tinjau manasikmu dan hafalkan doamu.`,
+            ur:`عشرے کا موسم ${d} دن میں شروع ہوگا — ابھی تیاری کریں: مناسک دہرائیں اور دعائیں یاد کریں۔`,
+            bn:`দশ দিনের মৌসুম ${d} দিন পরে শুরু — এখনই প্রস্তুতি নিন: বিধানগুলো ঝালিয়ে নিন, দুআ মুখস্থ করুন।`,
+            tr:`On gün ${d} gün sonra başlıyor — şimdi hazırlan: menâsikini gözden geçir, dualarını ezberle.` };
+          return T[lang] || T.en;
+        }],
+        /* نطاقات الأعداد: «١–١٢١» (فهرس الصفحات/المجموعات) */
+        [/^([\u0660-\u0669\d]+)\s*[–-]\s*([\u0660-\u0669\d]+)$/, (a, b) => zadNum(a, lang) + '–' + zadNum(b, lang)],
+        /* «الحديث 1: الأعمال بالنيات» — عنوان حديث بادئته رقمية */
+        [/^(?:📜\s*)?الحديث ([\u0660-\u0669\d]+)\s*[:：]\s*(.+)$/, (n, title) => {
+          const rec = zadRec(title.trim());
+          const tv = rec ? (rec[lang] || rec.en) : title.trim();
+          const H = { en:'Hadith', fr:'Hadith', id:'Hadis', ur:'حدیث', bn:'হাদিস', tr:'Hadis' }[lang] || 'Hadith';
+          return H + ' ' + n + ': ' + tv;
+        }],
+        /* «سورة الحج 27» · «سورة الكوثر 1-2» · «﴿ الحديد: 20 ﴾» */
+        [/^سورة ([\u0600-\u06FF ]+?) ([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
+          const nm0 = name.trim();
+          const rec = UI_MAP['سورة ' + nm0] || UI_MAP[nm0] || UI_MAP['سورة ' + nm0.replace(/^ال/, '')];
+          if (!rec) return null;
+          const nm = rec[lang] || rec.en || ('سورة ' + nm0);
+          return nm + ' ' + ref;
+        }],
+        [/^﴿\s*([\u0600-\u06FF ]+?)\s*[:·]\s*([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)\s*﴾$/, (name, ref) => {
+          const rec = UI_MAP['سورة ' + name.trim()] || UI_MAP[name.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : name;
+          return '﴿ ' + (nm || name) + ': ' + ref + ' ﴾';
+        }],
+        /* «إنقاص عدد الزوج» · «عدد الأبناء» — واجهة المواريث */
+        [/^(إنقاص|زيادة) عدد (.+)$/, (verb, who) => {
+          const rec = UI_MAP[who.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : who.trim();
+          const V = { en: verb === 'إنقاص' ? 'Decrease' : 'Increase',
+                      fr: verb === 'إنقاص' ? 'Diminuer' : 'Augmenter',
+                      id: verb === 'إنقاص' ? 'Kurangi' : 'Tambah',
+                      ur: verb === 'إنقاص' ? 'کم کریں' : 'بڑھائیں',
+                      bn: verb === 'إنقاص' ? 'কমান' : 'বাড়াও',
+                      tr: verb === 'إنقاص' ? 'Azalt' : 'Artır' }[lang];
+          return nm ? (V + ' — ' + nm) : '';
+        }],
+        /* «الفائت من الفجر» · «قضيت واحدة من الفجر» — قضاء الفوائت */
+        [/^(الفائت|قضيت واحدة) من (.+)$/, (kind, prayer) => {
+          const rec = UI_MAP[prayer.trim()];
+          const nm = rec ? (rec[lang] || rec.en) : prayer.trim();
+          if (!nm) return '';
+          return kind === 'الفائت'
+            ? { en:`Missed from ${nm}`, fr:`Manquée de ${nm}`, id:`Terlewat dari ${nm}`, ur:`${nm} سے فوت`, bn:`${nm} থেকে ছুটে যাওয়া`, tr:`${nm} kaçırılan` }[lang]
+            : { en:`Made up one from ${nm}`, fr:`Rattrapée une de ${nm}`, id:`Diqadha satu dari ${nm}`, ur:`${nm} سے ایک ادا کی`, bn:`${nm} থেকে একটি আদায় করেছি`, tr:`${nm} için bir kaza` }[lang];
+        }],
+        /* عدّادات عربية خالصة: «13 أذكار» · «5 أيام ✓» · «3 جلسات» */
+        [/^([\u0660-\u0669\d]+)\s*(أذكار|آيات|أحاديث|أيام|مرات|جلسات)\s*(✓)?$/, (n, unit, tick) => {
+          const U = { 'أذكار':{en:'adhkar',fr:'adhkar',id:'zikir',ur:'اذکار',bn:'আযকার',tr:'zikir'},
+                      'آيات':{en:'verses',fr:'versets',id:'ayat',ur:'آیات',bn:'আয়াত',tr:'ayet'},
+                      'أحاديث':{en:'hadiths',fr:'hadiths',id:'hadis',ur:'حدیثیں',bn:'হাদিস',tr:'hadis'},
+                      'أيام':{en:'days',fr:'jours',id:'hari',ur:'دن',bn:'দিন',tr:'gün'},
+                      'مرات':{en:'times',fr:'fois',id:'kali',ur:'بار',bn:'বার',tr:'kez'},
+                      'جلسات':{en:'sessions',fr:'séances',id:'sesi',ur:'نشستیں',bn:'সেশন',tr:'oturum'} }[unit];
+          if (!U) return '';
+          return n + ' ' + (U[lang] || U.en) + (tick ? ' ✓' : '');
+        }],
+        /* «اليوم 3 من 10» · «3 / 30 جزء» · «جزء 3» (خطة الختمة والعشر) */
+        [/^اليوم ([\u0660-\u0669\d]+) من ([\u0660-\u0669\d]+)$/, (a,b) => ({
+          en:`Day ${a} of ${b}`, fr:`Jour ${a} sur ${b}`, id:`Hari ${a} dari ${b}`,
+          ur:`${b} میں سے دن ${a}`, bn:`${b}-এর মধ্যে ${a} নম্বর দিন`, tr:`${b} günün ${a}. günü` }[lang])],
+        [/^([\u0660-\u0669\d]+) \/ ([\u0660-\u0669\d]+) جزء$/, (a,b) => ({
+          en:`${a} / ${b} Juz`, fr:`${a} / ${b} juz`, id:`${a} / ${b} juz`,
+          ur:`${a} / ${b} پارہ`, bn:`${a} / ${b} জুজ`, tr:`${a} / ${b} cüz` }[lang])],
+        [/^جزء ([\u0660-\u0669\d]+)$/, (n) => ({
+          en:`Juz ${n}`, fr:`Juz ${n}`, id:`Juz ${n}`, ur:`پارہ ${n}`, bn:`জুজ ${n}`, tr:`Cüz ${n}` }[lang])],
+        [/^📚\s*([\u0660-\u0669\d]+)\s*حديثًا$/, (n) => ({
+          en:`📚 ${n} hadiths`, fr:`📚 ${n} hadiths`, id:`📚 ${n} hadis`,
+          ur:`📚 ${n} حدیثیں`, bn:`📚 ${n} হাদিস`, tr:`📚 ${n} hadis` }[lang])],
+        [/^([\u0660-\u0669\d]+)\s*من\s*([\u0660-\u0669\d]+)\s*عبادة$/, (a,b) => ({
+          en:`${a} of ${b} acts of worship`, fr:`${a} sur ${b} adorations`, id:`${a} dari ${b} ibadah`,
+          ur:`${a} از ${b} عبادات`, bn:`${b}-এর মধ্যে ${a} ইবাদত`, tr:`${b} ibadetten ${a}` }[lang])],
+        [/^([\u0660-\u0669\d]+)\s*أذكار\s*·\s*(.+)$/, (n,rest) => {
+          const R = UI_MAP[rest.trim()] ? (UI_MAP[rest.trim()][lang] || UI_MAP[rest.trim()].en) : rest;
+          return { en:`${n} adhkar · ${R}`, fr:`${n} adhkar · ${R}`, id:`${n} zikir · ${R}`,
+                   ur:`${n} اذکار · ${R}`, bn:`${n} আযকার · ${R}`, tr:`${n} zikir · ${R}` }[lang];
+        }],
+        /* «اليوم الأول — الجزء 1–3» و«الفاتحة → آل عمران» (خطة الختمة) */
+        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر) — الجزء ([\u0660-\u0669\d]+)–([\u0660-\u0669\d]+)$/, (ord, a, b) => {
+          const N = { 'الأول':1,'الثاني':2,'الثالث':3,'الرابع':4,'الخامس':5,'السادس':6,'السابع':7,'الثامن':8,'التاسع':9,'العاشر':10 }[ord];
+          const j = { en:'Juz', fr:'Juz', id:'Juz', ur:'پارہ', bn:'জুজ', tr:'Cüz' }[lang];
+          return { en:`Day ${N} — ${j} ${a}–${b}`, fr:`Jour ${N} — ${j} ${a}–${b}`, id:`Hari ${N} — ${j} ${a}–${b}`,
+                   ur:`${N === 1 ? 'پہلا' : N === 2 ? 'دوسرا' : N === 3 ? 'تیسرا' : N === 4 ? 'چوتھا' : N === 5 ? 'پانچواں' : N === 6 ? 'چھٹا' : N === 7 ? 'ساتواں' : N === 8 ? 'آٹھواں' : N === 9 ? 'نواں' : 'دسواں'} دن — ${j} ${a}–${b}`,
+                   bn:`${['প্রথম','দ্বিতীয়','তৃতীয়','চতুর্থ','পঞ্চম','ষষ্ঠ','সপ্তম','অষ্টম','নবম','দশম'][N-1]} দিন — ${j} ${a}–${b}`,
+                   tr:`${N}. gün — ${j} ${a}–${b}` }[lang];
+        }],
+        [/^([\u0600-\u06FF’' ]+) → ([\u0600-\u06FF’' ]+)$/, (a, b) => {
+          const A = UI_MAP[a.trim()], B = UI_MAP[b.trim()];
+          if (!A || !B) return '';
+          const va = A[lang] || A.en, vb = B[lang] || B.en;
+          return va && vb ? va + ' → ' + vb : '';
+        }],
+        /* «أصل المسألة:» — عنوان ينتهي بنقطتين */
+        [/^([\u0600-\u06FF ]+):$/, (label) => {
+          const e = UI_MAP[label.trim()];
+          if (!e) return '';
+          const v = e[lang] || e.en;
+          return v ? v + ':' : '';
+        }],
+        /* مبالغ الزكاة: «النصاب: ٠ ج.م» / «= ٠ ج.م» */
+        [/^([^\u0600-\u06FF\w]{1,4}\s*)?([\u0600-\u06FF ]+):\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (emo, label, num) => {
+          const L2 = label.trim();
+          const m2 = UI_MAP[L2] || UI_MAP[L2 + ':'] || null;
+          const lab = m2 ? (m2[lang] || m2.en) : L2;
+          return (emo || '') + lab + ': ' + num + ' EGP';
+        }],
+        [/^=\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (num) => '= ' + num + ' EGP'],
+        [/^([\u0660-\u0669\d]+)\s*جم$/, (n) => n + ' g'],
+        [/^([\u0660-\u0669\d]+)\s*كجم \(([\u0660-\u0669\d]+) أوسق\)$/, (n, w) => n + ' kg (' + w + ' wasq)'],
+        [/^([\u0660-\u0669\d]+) شاة · ([\u0660-\u0669\d]+) بقرة · ([\u0660-\u0669\d]+) إبل$/, (a,b,c) => ({
+          en:`${a} sheep · ${b} cows · ${c} camels`, fr:`${a} moutons · ${b} vaches · ${c} chameaux`, id:`${a} kambing · ${b} sapi · ${c} unta`,
+          ur:`${a} بھیڑ · ${b} گائے · ${c} اونٹ`, bn:`${a} ভেড়া · ${b} গরু · ${c} উট`, tr:`${a} koyun · ${b} sığır · ${c} deve` }[lang])],
+        /* «المصحف المرتل/المجود — <اسم القارئ>» */
+        [/^(المصحف المرتل|المصحف المجود|🎙️ مصحف مُجوَّد|📖 مصحف مُرتَّل)\s*—\s*(.+)$/, (kind, name) => {
+          const isMuj = kind.indexOf('مجود') !== -1;
+          const K = { en: isMuj ? 'Mujawwad mushaf' : 'Recited mushaf',
+                      fr: isMuj ? 'Moushaf moujawwad' : 'Moushaf récité',
+                      id: isMuj ? 'Mushaf mujawwad' : 'Mushaf murattal',
+                      ur: isMuj ? 'مجود مصحف' : 'ترتیل مصحف',
+                      bn: isMuj ? 'মুজাওয়াদ মুসহাফ' : 'তারতিল মুসহাফ',
+                      tr: isMuj ? 'Mücevved mushaf' : 'Tertil mushaf' }[lang];
+          return K ? (K + ' — ' + name) : '';
+        }],
+        /* «٤٢٧٣ حديثًا مشروحًا في ٧ أبواب و٤١ بابًا فرعيًا — بحث يعمل بلا إنترنت» */
+        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في ([\u0660-\u0669\d]+) (?:أبواب|أبوابًا) و([\u0660-\u0669\d]+) بابًا فرعيًا(.*)$/, (n,sec,sub,tail) => {
+          const T = {
+            en:`${n} explained hadiths across ${sec} sections and ${sub} subsections — search works offline`,
+            fr:`${n} hadiths expliqués en ${sec} sections et ${sub} sous-sections — recherche hors ligne`,
+            id:`${n} hadis berpenjelasan dalam ${sec} bagian dan ${sub} subbagian — pencarian tanpa internet`,
+            ur:`${n} تشریح شدہ احادیث، ${sec} ابواب اور ${sub} ذیلی ابواب میں — تلاش انٹرنیٹ کے بغیر`,
+            bn:`${sec} বিভাগ ও ${sub} উপবিভাগে ${n} ব্যাখ্যাকৃত হাদিস — ইন্টারনেট ছাড়াই খোঁজ`,
+            tr:`${sec} bölüm ve ${sub} alt bölümde ${n} şerhli hadis — arama internetsiz çalışır`
+          }[lang];
+          return T || '';
+        }],
+        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في (.+)$/, (n,rest) => ({
+          en:`${n} explained hadiths in ${rest}`, fr:`${n} hadiths expliqués en ${rest}`, id:`${n} hadis berpenjelasan dalam ${rest}`,
+          ur:`${n} تشریح شدہ احادیث ${rest} میں`, bn:`${n} ব্যাখ্যাকৃত হাদিস ${rest}-এ`, tr:`${rest} içinde ${n} şerhli hadis` }[lang])],
+        /* «إيه المشكلة في X؟» — سلسلة محاضرات */
+        [/^إيه المشكلة في (.+?)\؟(.*)$/, (topic, tail) => {
+          const tp = (UI_MAP[topic] && (UI_MAP[topic][lang] || UI_MAP[topic].en)) || '';
+          if (!tp) return '';
+          const ep = tail.replace(/\(الحلقة (\d+) — الموسم (\d+)\)/, (m, a, b) => ({
+            en:`(Episode ${a} — Season ${b})`, fr:`(Épisode ${a} — Saison ${b})`, id:`(Episode ${a} — Musim ${b})`,
+            ur:`(قسط ${a} — سیزن ${b})`, bn:`(পর্ব ${a} — সিজন ${b})`, tr:`(Bölüm ${a} — Sezon ${b})` }[lang]));
+          return { en:`What’s the problem with ${tp}?`, fr:`Quel est le problème avec ${tp} ?`, id:`Apa masalah dengan ${tp}?`,
+                   ur:`${tp} میں کیا مسئلہ ہے؟`, bn:`${tp} নিয়ে সমস্যা কী?`, tr:`${tp} ile sorun ne?` }[lang] + ep;
+        }],
+  ];
+}
+/* أسماء الشهور: ميلادية (عربية) وهجرية — للترجمة داخل الأنماط الرقمية */
+const ZAD_GREG_M = {
+  'يناير':{en:'January',fr:'janvier',id:'Januari',ur:'جنوری',bn:'জানুয়ারি',tr:'Ocak'},
+  'فبراير':{en:'February',fr:'février',id:'Februari',ur:'فروری',bn:'ফেব্রুয়ারি',tr:'Şubat'},
+  'مارس':{en:'March',fr:'mars',id:'Maret',ur:'مارچ',bn:'মার্চ',tr:'Mart'},
+  'أبريل':{en:'April',fr:'avril',id:'April',ur:'اپریل',bn:'এপ্রিল',tr:'Nisan'},
+  'مايو':{en:'May',fr:'mai',id:'Mei',ur:'مئی',bn:'মে',tr:'Mayıs'},
+  'يونيو':{en:'June',fr:'juin',id:'Juni',ur:'جون',bn:'জুন',tr:'Haziran'},
+  'يوليو':{en:'July',fr:'juillet',id:'Juli',ur:'جولائی',bn:'জুলাই',tr:'Temmuz'},
+  'أغسطس':{en:'August',fr:'août',id:'Agustus',ur:'اگست',bn:'আগস্ট',tr:'Ağustos'},
+  'سبتمبر':{en:'September',fr:'septembre',id:'September',ur:'ستمبر',bn:'সেপ্টেম্বর',tr:'Eylül'},
+  'أكتوبر':{en:'October',fr:'octobre',id:'Oktober',ur:'اکتوبر',bn:'অক্টোবর',tr:'Ekim'},
+  'نوفمبر':{en:'November',fr:'novembre',id:'November',ur:'نومبر',bn:'নভেম্বর',tr:'Kasım'},
+  'ديسمبر':{en:'December',fr:'décembre',id:'Desember',ur:'دسمبر',bn:'ডিসেম্বর',tr:'Aralık'}
+};
+const ZAD_HIJ_M = {
+  'محرم':{en:'Muharram',fr:'Mouharram',id:'Muharram',ur:'محرم',bn:'মুহাররম',tr:'Muharrem'},
+  'صفر':{en:'Safar',fr:'Safar',id:'Safar',ur:'صفر',bn:'সফর',tr:'Safer'},
+  'ربيع الأول':{en:'Rabi al-Awwal',fr:'Rabî‘ al-Awwal',id:'Rabiul Awal',ur:'ربیع الاول',bn:'রবিউল আউয়াল',tr:'Rebîülevvel'},
+  'ربيع الآخر':{en:'Rabi al-Thani',fr:'Rabî‘ ath-Thânî',id:'Rabiul Akhir',ur:'ربیع الثانی',bn:'রবিউস সানি',tr:'Rebîülâhir'},
+  'جمادى الأولى':{en:'Jumada al-Ula',fr:'Joumâdâ al-Oulâ',id:'Jumadil Awal',ur:'جمادی الاول',bn:'জুমাদাল উলা',tr:'Cemâziyelevvel'},
+  'جمادى الآخرة':{en:'Jumada al-Akhirah',fr:'Joumâdâ al-Âkhira',id:'Jumadil Akhir',ur:'جمادی الثانی',bn:'জুমাদাল আখিরাহ',tr:'Cemâziyelâhir'},
+  'رجب':{en:'Rajab',fr:'Rajab',id:'Rajab',ur:'رجب',bn:'রজব',tr:'Recep'},
+  'شعبان':{en:'Shaban',fr:'Cha‘bân',id:'Syaban',ur:'شعبان',bn:'শাবান',tr:'Şaban'},
+  'رمضان':{en:'Ramadan',fr:'Ramadân',id:'Ramadhan',ur:'رمضان',bn:'রমজান',tr:'Ramazan'},
+  'شوال':{en:'Shawwal',fr:'Chawwâl',id:'Syawal',ur:'شوال',bn:'শাওয়াল',tr:'Şevval'},
+  'ذو القعدة':{en:'Dhul-Qadah',fr:'Dhoul-Qa‘da',id:'Dzulqadah',ur:'ذوالقعدہ',bn:'জিলকদ',tr:'Zilkade'},
+  'ذو الحجة':{en:'Dhul-Hijjah',fr:'Dhoul-Hijja',id:'Dzulhijjah',ur:'ذوالحجہ',bn:'জিলহজ',tr:'Zilhicce'}
+};
+const ZAD_ERA = { en:'AH', fr:'H', id:'H', ur:'ہجری', bn:'হিজরি', tr:'H' };
+const ZAD_ORD = ['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر'];
+const ZAD_ORD_W = {
+  en:['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'],
+  fr:['premier','deuxième','troisième','quatrième','cinquième','sixième','septième','huitième','neuvième','dixième'],
+  id:['pertama','kedua','ketiga','keempat','kelima','keenam','ketujuh','kedelapan','kesembilan','kesepuluh'],
+  ur:['پہلا','دوسرا','تیسرا','چوتھا','پانچواں','چھٹا','ساتواں','آٹھواں','نواں','دسواں'],
+  bn:['প্রথম','দ্বিতীয়','তৃতীয়','চতুর্থ','পঞ্চম','ষষ্ঠ','সপ্তম','অষ্টম','নবম','দশম'],
+  tr:['birinci','ikinci','üçüncü','dördüncü','beşinci','altıncı','yedinci','sekizinci','dokuzuncu','onuncu']
+};
+const ZAD_HIJ_KEYS = Object.keys(ZAD_HIJ_M).sort((a,b) => b.length - a.length);
+
 /* ── i18n Engine ─────────────────────────────────────────────── */
 const I18N = {
   current: localStorage.getItem('zad_lang') || 'ar',
@@ -1152,7 +1538,8 @@ const I18N = {
 
     /* 3.5) تعميم على عُقد النصوص داخل المحتوى (مطابقة تامة، بلا لمس النص الشرعي) */
     const SKIP = /(quran|ayah|dhikr|dua|hadith|verse|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
-    const mainEl = document.querySelector('.main') || document.querySelector('main') || document.getElementById('main-content') || document.body;
+    /* نطاق التطبيق: كل الصفحة (النوافذ والأشرطة الثابتة تعيش خارج .main) */
+    const mainEl = document.body || document.querySelector('.main') || document.querySelector('main') || document.getElementById('main-content');
     if (mainEl) {
       /* استعادة أي نص عُرِّب سابقًا قبل تطبيق اللغة الجديدة */
       const w2 = document.createTreeWalker(mainEl, NodeFilter.SHOW_TEXT, null);
@@ -1173,12 +1560,29 @@ const I18N = {
           const pe = n.parentElement;
           if (!pe) return NodeFilter.FILTER_REJECT;
           if (pe.closest('script,style,textarea,[data-i18n],[lang="ar"],.zad-src')) return NodeFilter.FILTER_REJECT;
-          if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
+          if (!t) return NodeFilter.FILTER_REJECT;
+          /* الأرقام والنطاقات ليست نصًّا شرعيًا: تُعرَّب/تُكتب بأرقام اللغة دائمًا،
+             حتى داخل بطاقة محميّة (فهرس مصحف/ختمة). */
+          const NUMONLY = /^[\u0660-\u0669\d]{1,4}(?:\s*[–-]\s*[\u0660-\u0669\d]{1,4})?\s*٪?$/;
+          if (NUMONLY.test(t)) return NodeFilter.FILTER_ACCEPT;
+          /* عنصر أوقف الحماية صراحةً: واجهة تعيش داخل حاوية شرعية (بطاقة تسميع/ختمة) */
+          const OPTIN = !!pe.closest('[data-zad-ui]');
+          if (!OPTIN && SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
+          /* ١) مطابقة القاموس تتقدّم على أي سقف طول: أي متن (شرح، حكاية، سؤال)
+             بمجرّد إدراج مفتاحه يصبح قابلًا للترجمة فورًا — والمراجعة البشرية
+             مسؤولية المحتوى لا المحرّك. */
+          if (zadRec(t)) return NodeFilter.FILTER_ACCEPT;
+          /* نصٌّ عربي مُقطَّع الحروف (حركات متبوعة بمسافة) — عنوانُ ذكرٍ لا يُفتَرى له مفتاح.
+             لكن إن كان له مدخل صريح في القاموس (شعار/مقدّمة مشكولة) فليُترجم. */
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t)) return NodeFilter.FILTER_REJECT;
           /* المحتوى الحر (وصف الحلقة) أطول من سقف الواجهة القصير */
           const cap = pe.closest('.vid-desc,.vid-sum,p.vid-desc') ? 600 : 400;
           if (t.length < 2 || t.length > cap) return NodeFilter.FILTER_REJECT;
-          if (UI_MAP[t]) return NodeFilter.FILTER_ACCEPT;
+          /* نصٌّ لاتيني أصلاً («The letter Fa (ف) — episode 20») لا يُترجم */
+          const latinChars = (t.match(/[A-Za-z]/g) || []).length;
+          if (latinChars > t.length * 0.4) return NodeFilter.FILTER_REJECT;
+          if (zadTpl(t, lang)) return NodeFilter.FILTER_ACCEPT;
           /* «💡 نص» — أيقونة في أوّل النص: نطابق الباقي ونُبقي الأيقونة */
           if (t.length <= cap + 8) {
             const em = t.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
@@ -1193,12 +1597,20 @@ const I18N = {
       hits.forEach(n => {
         let key = n.nodeValue.trim();
         let icon = '';
-        if (!UI_MAP[key]) {
+        if (!zadRec(key)) {
           const em = key.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
-          if (em && UI_MAP[em[2].trim()]) { icon = em[1]; key = em[2].trim(); }
+          if (em && zadRec(em[2].trim())) { icon = em[1]; key = em[2].trim(); }
         }
-        if (!UI_MAP[key]) return;
-        const v = UI_MAP[key][lang] || UI_MAP[key].en;
+        if (!zadRec(key)) {
+          const tv = zadTpl(key, lang);
+          if (!tv) return;
+          if (!n.__zadAr) n.__zadAr = n.nodeValue;
+          const ld = n.nodeValue.match(/^\s*/)[0], tr2 = n.nodeValue.match(/\s*$/)[0];
+          n.nodeValue = ld + icon + tv + tr2;
+          return;
+        }
+        const _rec = zadRec(key);
+        const v = _rec && (_rec[lang] || _rec.en);
         if (!v) return;
         if (!n.__zadAr) n.__zadAr = n.nodeValue;
         const lead = n.nodeValue.match(/^\s*/)[0];
@@ -1208,8 +1620,8 @@ const I18N = {
     }
 
     /* 3.6) سمات يقرأها المستخدم وقارئ الشاشة: alt / aria-label / title */
-    document.querySelectorAll('img[alt],[aria-label],[title]').forEach(el => {
-      ['alt', 'aria-label', 'title'].forEach(attr => {
+    document.querySelectorAll('img[alt],[aria-label],[title],[placeholder]').forEach(el => {
+      ['alt', 'aria-label', 'title', 'placeholder'].forEach(attr => {
         const v = el.getAttribute(attr);
         if (!v) return;
         if (!el.__zadArAttr) el.__zadArAttr = {};
@@ -1218,8 +1630,24 @@ const I18N = {
           if (el.getAttribute(attr) !== el.__zadArAttr[attr]) el.setAttribute(attr, el.__zadArAttr[attr]);
           return;
         }
-        const rec = UI_MAP[v.trim()];
-        if (!rec) return;
+        /* المفتاح يُقرأ من الأصل العربي دائمًا، حتى لا تعلق الواجهة على لغةٍ سابقة */
+        const src = el.__zadArAttr[attr] != null ? el.__zadArAttr[attr] : v;
+        const rec = UI_MAP[src.trim()];
+        if (!rec) {
+          /* سمات مولّدة بالجافاسكربت: «الجزء 3» · «صيام اليوم 12» · «اليوم الثالث: 40%» */
+          const raw2 = src.trim();
+          let tv2 = zadTpl(raw2, lang);
+          if (!tv2) {
+            for (const [re2, make2] of zadPatterns(lang)) {
+              const m2 = raw2.match(re2);
+              if (!m2) continue;
+              const out2 = make2.apply(null, m2.slice(1).map(x => (x == null ? x : zadNum(x, lang))));
+              if (out2) { tv2 = out2; break; }
+            }
+          }
+          if (tv2 && el.getAttribute(attr) !== tv2) el.setAttribute(attr, tv2);
+          return;
+        }
         const tv = rec[lang] || rec.en;
         if (tv && el.getAttribute(attr) !== tv) el.setAttribute(attr, tv);
       });
@@ -1235,98 +1663,20 @@ const I18N = {
         if (lang === 'bn') return String.fromCharCode(0x09E6 + (+d));
         return d;
       });
-      const PATTERNS = [
-        [/^📚\s*([\u0660-\u0669\d]+)\s*حديثًا$/, (n) => ({
-          en:`📚 ${n} hadiths`, fr:`📚 ${n} hadiths`, id:`📚 ${n} hadis`,
-          ur:`📚 ${n} حدیثیں`, bn:`📚 ${n} হাদিস`, tr:`📚 ${n} hadis` }[lang])],
-        [/^([\u0660-\u0669\d]+)\s*من\s*([\u0660-\u0669\d]+)\s*عبادة$/, (a,b) => ({
-          en:`${a} of ${b} acts of worship`, fr:`${a} sur ${b} adorations`, id:`${a} dari ${b} ibadah`,
-          ur:`${a} از ${b} عبادات`, bn:`${b}-এর মধ্যে ${a} ইবাদত`, tr:`${b} ibadetten ${a}` }[lang])],
-        [/^([\u0660-\u0669\d]+)\s*أذكار\s*·\s*(.+)$/, (n,rest) => {
-          const R = UI_MAP[rest.trim()] ? (UI_MAP[rest.trim()][lang] || UI_MAP[rest.trim()].en) : rest;
-          return { en:`${n} adhkar · ${R}`, fr:`${n} adhkar · ${R}`, id:`${n} zikir · ${R}`,
-                   ur:`${n} اذکار · ${R}`, bn:`${n} আযকার · ${R}`, tr:`${n} zikir · ${R}` }[lang];
-        }],
-        /* «اليوم الأول — الجزء 1–3» و«الفاتحة → آل عمران» (خطة الختمة) */
-        [/^اليوم (الأول|الثاني|الثالث|الرابع|الخامس|السادس|السابع|الثامن|التاسع|العاشر) — الجزء ([\u0660-\u0669\d]+)–([\u0660-\u0669\d]+)$/, (ord, a, b) => {
-          const N = { 'الأول':1,'الثاني':2,'الثالث':3,'الرابع':4,'الخامس':5,'السادس':6,'السابع':7,'الثامن':8,'التاسع':9,'العاشر':10 }[ord];
-          const j = { en:'Juz', fr:'Juz', id:'Juz', ur:'پارہ', bn:'জুজ', tr:'Cüz' }[lang];
-          return { en:`Day ${N} — ${j} ${a}–${b}`, fr:`Jour ${N} — ${j} ${a}–${b}`, id:`Hari ${N} — ${j} ${a}–${b}`,
-                   ur:`${N === 1 ? 'پہلا' : N === 2 ? 'دوسرا' : N === 3 ? 'تیسرا' : N === 4 ? 'چوتھا' : N === 5 ? 'پانچواں' : N === 6 ? 'چھٹا' : N === 7 ? 'ساتواں' : N === 8 ? 'آٹھواں' : N === 9 ? 'نواں' : 'دسواں'} دن — ${j} ${a}–${b}`,
-                   bn:`${['প্রথম','দ্বিতীয়','তৃতীয়','চতুর্থ','পঞ্চম','ষষ্ঠ','সপ্তম','অষ্টম','নবম','দশম'][N-1]} দিন — ${j} ${a}–${b}`,
-                   tr:`${N}. gün — ${j} ${a}–${b}` }[lang];
-        }],
-        [/^([\u0600-\u06FF’' ]+) → ([\u0600-\u06FF’' ]+)$/, (a, b) => {
-          const A = UI_MAP[a.trim()], B = UI_MAP[b.trim()];
-          if (!A || !B) return '';
-          const va = A[lang] || A.en, vb = B[lang] || B.en;
-          return va && vb ? va + ' → ' + vb : '';
-        }],
-        /* «أصل المسألة:» — عنوان ينتهي بنقطتين */
-        [/^([\u0600-\u06FF ]+):$/, (label) => {
-          const e = UI_MAP[label.trim()];
-          if (!e) return '';
-          const v = e[lang] || e.en;
-          return v ? v + ':' : '';
-        }],
-        /* مبالغ الزكاة: «النصاب: ٠ ج.م» / «= ٠ ج.م» */
-        [/^([^\u0600-\u06FF\w]{1,4}\s*)?([\u0600-\u06FF ]+):\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (emo, label, num) => {
-          const L2 = label.trim();
-          const m2 = UI_MAP[L2] || UI_MAP[L2 + ':'] || null;
-          const lab = m2 ? (m2[lang] || m2.en) : L2;
-          return (emo || '') + lab + ': ' + num + ' EGP';
-        }],
-        [/^=\s*([\u0660-\u0669\d.,]+)\s*ج\.م$/, (num) => '= ' + num + ' EGP'],
-        [/^([\u0660-\u0669\d]+)\s*جم$/, (n) => n + ' g'],
-        [/^([\u0660-\u0669\d]+)\s*كجم \(([\u0660-\u0669\d]+) أوسق\)$/, (n, w) => n + ' kg (' + w + ' wasq)'],
-        [/^([\u0660-\u0669\d]+) شاة · ([\u0660-\u0669\d]+) بقرة · ([\u0660-\u0669\d]+) إبل$/, (a,b,c) => ({
-          en:`${a} sheep · ${b} cows · ${c} camels`, fr:`${a} moutons · ${b} vaches · ${c} chameaux`, id:`${a} kambing · ${b} sapi · ${c} unta`,
-          ur:`${a} بھیڑ · ${b} گائے · ${c} اونٹ`, bn:`${a} ভেড়া · ${b} গরু · ${c} উট`, tr:`${a} koyun · ${b} sığır · ${c} deve` }[lang])],
-        /* «المصحف المرتل/المجود — <اسم القارئ>» */
-        [/^(المصحف المرتل|المصحف المجود|🎙️ مصحف مُجوَّد|📖 مصحف مُرتَّل)\s*—\s*(.+)$/, (kind, name) => {
-          const isMuj = kind.indexOf('مجود') !== -1;
-          const K = { en: isMuj ? 'Mujawwad mushaf' : 'Recited mushaf',
-                      fr: isMuj ? 'Moushaf moujawwad' : 'Moushaf récité',
-                      id: isMuj ? 'Mushaf mujawwad' : 'Mushaf murattal',
-                      ur: isMuj ? 'مجود مصحف' : 'ترتیل مصحف',
-                      bn: isMuj ? 'মুজাওয়াদ মুসহাফ' : 'তারতিল মুসহাফ',
-                      tr: isMuj ? 'Mücevved mushaf' : 'Tertil mushaf' }[lang];
-          return K ? (K + ' — ' + name) : '';
-        }],
-        /* «٤٢٧٣ حديثًا مشروحًا في ٧ أبواب و٤١ بابًا فرعيًا — بحث يعمل بلا إنترنت» */
-        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في ([\u0660-\u0669\d]+) (?:أبواب|أبوابًا) و([\u0660-\u0669\d]+) بابًا فرعيًا(.*)$/, (n,sec,sub,tail) => {
-          const T = {
-            en:`${n} explained hadiths across ${sec} sections and ${sub} subsections — search works offline`,
-            fr:`${n} hadiths expliqués en ${sec} sections et ${sub} sous-sections — recherche hors ligne`,
-            id:`${n} hadis berpenjelasan dalam ${sec} bagian dan ${sub} subbagian — pencarian tanpa internet`,
-            ur:`${n} تشریح شدہ احادیث، ${sec} ابواب اور ${sub} ذیلی ابواب میں — تلاش انٹرنیٹ کے بغیر`,
-            bn:`${sec} বিভাগ ও ${sub} উপবিভাগে ${n} ব্যাখ্যাকৃত হাদিস — ইন্টারনেট ছাড়াই খোঁজ`,
-            tr:`${sec} bölüm ve ${sub} alt bölümde ${n} şerhli hadis — arama internetsiz çalışır`
-          }[lang];
-          return T || '';
-        }],
-        [/^([\u0660-\u0669\d]+)\s*حديثًا مشروحًا في (.+)$/, (n,rest) => ({
-          en:`${n} explained hadiths in ${rest}`, fr:`${n} hadiths expliqués en ${rest}`, id:`${n} hadis berpenjelasan dalam ${rest}`,
-          ur:`${n} تشریح شدہ احادیث ${rest} میں`, bn:`${n} ব্যাখ্যাকৃত হাদিস ${rest}-এ`, tr:`${rest} içinde ${n} şerhli hadis` }[lang])],
-        /* «إيه المشكلة في X؟» — سلسلة محاضرات */
-        [/^إيه المشكلة في (.+?)\؟(.*)$/, (topic, tail) => {
-          const tp = (UI_MAP[topic] && (UI_MAP[topic][lang] || UI_MAP[topic].en)) || '';
-          if (!tp) return '';
-          const ep = tail.replace(/\(الحلقة (\d+) — الموسم (\d+)\)/, (m, a, b) => ({
-            en:`(Episode ${a} — Season ${b})`, fr:`(Épisode ${a} — Saison ${b})`, id:`(Episode ${a} — Musim ${b})`,
-            ur:`(قسط ${a} — سیزن ${b})`, bn:`(পর্ব ${a} — সিজন ${b})`, tr:`(Bölüm ${a} — Sezon ${b})` }[lang]));
-          return { en:`What’s the problem with ${tp}?`, fr:`Quel est le problème avec ${tp} ?`, id:`Apa masalah dengan ${tp}?`,
-                   ur:`${tp} میں کیا مسئلہ ہے؟`, bn:`${tp} নিয়ে সমস্যা কী?`, tr:`${tp} ile sorun ne?` }[lang] + ep;
-        }],
-      ];
+      const PATTERNS = zadPatterns(lang);
       const w3 = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
         acceptNode(n) {
           const pe = n.parentElement;
           if (!pe) return NodeFilter.FILTER_REJECT;
           if (pe.closest('script,style,textarea,select,option,[data-l10n],[data-i18n]')) return NodeFilter.FILTER_REJECT;
-          if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
           if (!t || t.length > 90) return NodeFilter.FILTER_REJECT;
+          /* أرقام/نطاقات: تُكتب بأرقام اللغة دائمًا ولو داخل حاوية محميّة */
+          const NUMONLY = /^[\u0660-\u0669\d]{1,4}(?:\s*[–-]\s*[\u0660-\u0669\d]{1,4})?\s*٪?$/;
+          if (NUMONLY.test(t)) return NodeFilter.FILTER_ACCEPT;
+          if (!pe.closest('[data-zad-ui]') && SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t) && !UI_MAP[t] && !zadTpl(t, lang) &&
+              !PATTERNS.some(([re]) => re.test(t))) return NodeFilter.FILTER_REJECT;
           if (/^[\u0660-\u0669\d]{1,3}٪?$/.test(t)) return NodeFilter.FILTER_ACCEPT;
           if (!isAr && /^← /.test(t) && t.length < 40 && !/[\u0600-\u06FF]/.test(t.replace(/^← /, ''))) return NodeFilter.FILTER_ACCEPT;
           /* «🕐 نص عربي» — نترجم الباقي إن كان في القاموس */
@@ -1341,6 +1691,8 @@ const I18N = {
         const raw = n.nodeValue.trim();
         const lead = n.nodeValue.match(/^\s*/)[0];
         const trail = n.nodeValue.match(/\s*$/)[0];
+        /* نحفظ الأصل مرة واحدة حتى يعود النص عربيًا عند تبديل اللغة */
+        if (n.__zadAr == null) n.__zadAr = n.nodeValue;
         if (/^[\u0660-\u0669\d]{1,3}٪?$/.test(raw)) { n.nodeValue = lead + loc(raw) + trail; return; }
         if (/^[←→] /.test(raw)) { n.nodeValue = lead + flipArrow(raw) + trail; return; }
         const em2 = raw.match(/^([^\u0600-\u06FF\w]{1,4}\s*)(.+)$/);
@@ -1349,15 +1701,40 @@ const I18N = {
           const v = e[lang] || e.en;
           if (v) { n.nodeValue = lead + em2[1] + v + trail; return; }
         }
+        const tplOut = zadTpl(raw, lang);
+        if (tplOut) { n.nodeValue = lead + tplOut + trail; return; }
         for (const [re, make] of PATTERNS) {
           const m = raw.match(re);
           if (!m) continue;
-          const args = m.slice(1).map(x => loc(x));
+          const args = m.slice(1).map(x => (x == null ? x : loc(x)));
           const out = make.apply(null, args);
           if (out) { n.nodeValue = lead + out + trail; }
           break;
         }
       });
+    }
+
+    /* 3.95) وسم النص الشرعي المشكول: نصٌّ عربي كثيف الحركات ليس له مدخل في القاموس
+       ولا يطابق نمطًا ⇒ قرآن/ذكر/متن. نوسمه lang="ar" dir="rtl" ليُعامل كعربية
+       (اتجاه، قارئ شاشة، واستثناء صريح من الترجمة) بدل أن يبدو «نصًّا ناقص الترجمة». */
+    if (!isAr && document.body) {
+      const wv = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode(n) {
+          const pe = n.parentElement;
+          if (!pe) return NodeFilter.FILTER_REJECT;
+          if (pe.closest('script,style,textarea,[lang="ar"],.zad-src')) return NodeFilter.FILTER_REJECT;
+          if (pe.children.length) return NodeFilter.FILTER_REJECT;
+          const t = n.nodeValue.trim();
+          if (!t || t.length > 300) return NodeFilter.FILTER_REJECT;
+          const marks = (t.match(/[\u064B-\u0652\u0670]/g) || []).length;
+          if (marks < 3) return NodeFilter.FILTER_REJECT;
+          if (zadRec(t) || zadTpl(t, lang)) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const verse = []; let vn;
+      while ((vn = wv.nextNode())) verse.push(vn.parentElement);
+      verse.forEach(pe => { try { pe.setAttribute('lang', 'ar'); pe.setAttribute('dir', 'rtl'); } catch (e) {} });
     }
 
     /* 4) عنوان الصفحة (وسط الشريط العلوي) */
@@ -1389,8 +1766,13 @@ const I18N = {
     document.documentElement.lang = lang;
     document.body && document.body.setAttribute('data-lang', lang);
 
-    /* 6.5) إبلاغ بقية الوحدات (menu.js…) لتحديث نصوصها المُولّدة */
-    try { window.dispatchEvent(new CustomEvent('zad:lang', { detail: { lang } })); } catch (e) {}
+    /* 6.5) إبلاغ بقية الوحدات (menu.js…) لتحديث نصوصها المُولّدة.
+       لا نُبلّغ في التمريرات الصامتة (مراقب DOM/التمريرة المؤجَّلة): بعض الصفحات
+       تعيد رسم محتواها عربيًّا داخل المستمع، فتصير كل تمريرة سببًا لتمريرة
+       مضادّة — حلقة لا تنتهي تنتهي بمحتوى عربي. */
+    if (!this._silent) {
+      try { window.dispatchEvent(new CustomEvent('zad:lang', { detail: { lang } })); } catch (e) {}
+    }
 
     /* 7) إعادة رسم بطاقة «الآن» الديناميكية باللغة الجديدة */
     try { if (typeof window.zhNowCard === 'function') window.zhNowCard(); } catch (e) {}
@@ -1410,6 +1792,48 @@ const I18N = {
     this._watch();
   },
 
+  /* ── طابور المراجعة البشرية ──────────────────────────────────────────
+     يُرجع كل نص عربي ظاهر بالصفحة **لم يُترجم** (خارج المتن الموسوم
+     `lang="ar"`/`.zad-src`، وخارج أسماء اللغات بأهلها). كل عنصر جاهز
+     للنسخ إلى `i18n/content-pages.js` كمفتاح. الاستخدام من الكونسول:
+
+         copy(JSON.stringify(I18N.gaps(), null, 2))
+
+     وبعد إضافة المفتاح: I18N.setLang(I18N.current) — يظهر مترجمًا فورًا
+     لأن المحرّك يعطي مطابقة القاموس أولوية على سقف الطول. */
+  gaps() {
+    const out = [];
+    const AR = /[\u0600-\u06FF]/;
+    const NATIVE = new Set(['العربية', 'اردو', 'বাংলা', 'English', 'Français', 'Türkçe', 'Bahasa Indonesia', 'عربي']);
+    const pathOf = el => {
+      const bits = [];
+      let e = el;
+      for (let i = 0; e && e !== document.body && i < 4; i++, e = e.parentElement) {
+        bits.unshift(e.tagName.toLowerCase() + (e.id ? '#' + e.id : (e.className && typeof e.className === 'string'
+          ? '.' + e.className.trim().split(/\s+/).slice(0, 2).join('.') : '')));
+      }
+      return bits.join(' > ');
+    };
+    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    let n;
+    while ((n = w.nextNode())) {
+      const pe = n.parentElement;
+      if (!pe) continue;
+      if (pe.closest('script,style,textarea,noscript,code,pre,[lang="ar"],.zad-src')) continue;
+      const t = n.nodeValue.replace(/\s+/g, ' ').trim();
+      if (t.length < 2 || !AR.test(t)) continue;
+      if (NATIVE.has(t)) continue;
+      if (zadRec(t)) continue;
+      if (/^[\u0660-\u0669\d]{1,4}(?:\s*[–-]\s*[\u0660-\u0669\d]{1,4})?\s*٪?$/.test(t)) continue;
+      const SKIPCLS = /(quran|ayah|dhikr|dua|hadith|verse|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
+      if (!pe.closest('[data-zad-ui]') && SKIPCLS.test(String(pe.className || ''))) continue;
+      const lat = (t.match(/[A-Za-z]/g) || []).length;
+      if (lat > t.length * 0.4) continue;
+      out.push({ page: (location.pathname.split('/').pop() || 'index.html'), el: pathOf(pe), len: t.length, ar: t });
+    }
+    return out;
+  },
+
   /* إعادة الترجمة عند إدخال محتوى جديد في الصفحة (بطاقات تُرسم بالجافاسكربت).
      مهم: apply() نفسه يغيّر نصوصًا، فيولّد سجلات جديدة. نفصل المراقب أثناء
      التطبيق ثم نعيد ربطه، وإلا دارت الحلقة إلى ما لا نهاية (٤ مرات/ثانية). */
@@ -1422,21 +1846,29 @@ const I18N = {
     const MAX_APPLIES = 25, MIN_GAP = 700;
     this._obsCount = this._obsCount || 0;
     this._lastObsApply = this._lastObsApply || 0;
+    /* التطبيق المؤجَّل: إن وصل تغيير قبل انقضاء الفاصل الأدنى نؤجّله بدل إسقاطه
+       (كان يُسقَط، فيبقى نصٌّ وُلِد بعد تبديل اللغة عربيًّا إلى الأبد). */
+    const runObserved = () => {
+      const now = Date.now();
+      if (now - this._lastObsApply < MIN_GAP) {
+        timer = setTimeout(runObserved, MIN_GAP - (now - this._lastObsApply) + 40);
+        return;
+      }
+      this._lastObsApply = now;
+      this._obsCount++;
+      const obs = this._obs;
+      try { obs.disconnect(); } catch (e) {}
+      this._silent = true;
+      try { this.apply(); } catch (e) {}
+      this._silent = false;
+      clearTimeout(timer);
+      try { obs.observe(document.body, OPTS); } catch (e) {}
+    };
     this._obs = new MutationObserver(() => {
       if (this.current === 'ar') return;
       if (this._obsCount >= MAX_APPLIES) { try { this._obs.disconnect(); } catch (e) {} return; }
       clearTimeout(timer);
-      timer = setTimeout(() => {
-        const now = Date.now();
-        if (now - this._lastObsApply < MIN_GAP) return;
-        this._lastObsApply = now;
-        this._obsCount++;
-        const obs = this._obs;
-        try { obs.disconnect(); } catch (e) {}
-        try { this.apply(); } catch (e) {}
-        clearTimeout(timer);
-        try { obs.observe(document.body, OPTS); } catch (e) {}
-      }, 250);
+      timer = setTimeout(runObserved, 250);
     });
     const start = () => {
       try { this._obs.observe(document.body, OPTS); } catch (e) {}
@@ -1452,7 +1884,7 @@ const I18N = {
       if (!window.__zadLateApply) {
         window.__zadLateApply = true;
         const late = () => {
-          try { this._obsCount = 0; this._lastObsApply = 0; if (this.current !== 'ar') this.apply(); } catch (e) {}
+          try { this._obsCount = 0; this._lastObsApply = 0; if (this.current !== 'ar') { this._silent = true; this.apply(); this._silent = false; } } catch (e) {}
         };
         window.addEventListener('load', () => setTimeout(late, 450));
         setTimeout(late, 2200);
@@ -1468,6 +1900,17 @@ const _zadSetLang = I18N.setLang.bind(I18N);
 I18N.setLang = function () {
   this._obsCount = 0; this._lastObsApply = 0;
   const r = _zadSetLang.apply(this, arguments);
+  /* تمريرة ثانية بعد تبديل اللغة: بعض الصفحات تعيد رسم محتواها داخل مستمع
+     `zad:lang` (تقويم هجري، بطاقات) — وحدث المستمع يقع بعد خطوات الترجمة،
+     فيبقى ما رسمه عربيًّا. نمنحها ٣٠٠ مللي ثم نترجم ما ولّدته. */
+  const _L = this.current;
+  clearTimeout(this._t2);
+  this._t2 = setTimeout(() => {
+    if (this.current !== _L || _L === 'ar') return;
+    this._silent = true;
+    try { this.apply(); } catch (e) {}
+    this._silent = false;
+  }, 300);
   if (this._obs && !this._watching) { /* ensure observing */ }
   return r;
 };
@@ -2490,6 +2933,23 @@ const UI_MAP = {
   "مصطلح الحديث": {en:"Hadith Terminology", fr:"Terminologie du hadith", id:"Ilmu Mustalah Hadis", ur:"مصطلح الحدیث", bn:"হাদিস পরিভাষা", tr:"Hadis Istılahı"},
 };
 
+/* فهرس عكسي: النص العربي من قاموس الواجهة الدلالي → ترجمته.
+   أي عنصر يعرض النص العربي نفسه (نص حرّ · title · placeholder · aria-label)
+   يُترجم تلقائيًا دون إضافة مفتاح جديد. */
+(function buildReverseIndex() {
+  const src = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS.ar) || {};
+  for (const k in src) {
+    const v = src[k];
+    if (typeof v !== 'string' || v.length < 3 || UI_MAP[v]) continue;
+    const rec = {};
+    for (const L in TRANSLATIONS) {
+      const t = TRANSLATIONS[L] && TRANSLATIONS[L][k];
+      if (typeof t === 'string' && t) rec[L] = t;
+    }
+    if (rec.en || rec.fr || rec.id) UI_MAP[v] = rec;
+  }
+})();
+
 /* ── خريطة عناوين الصفحات (عربي/إنجليزي/فرنسي) ─────────────── */
 const PAGE_TITLES = {
   'index.html':       { ar:['زاد','اليومي'], en:['Daily','Zad'], fr:['Zad','Quotidien'], ur:['روزانہ', 'زاد'], id:['Harian', 'Zad'], tr:['Günlük', 'Zad'], bn:['দৈনিক', 'যাদ'] },
@@ -2787,6 +3247,9 @@ const ZT_PARTS = {
   'السابقة': { en:'Streaker', fr:'Série', id:'Rentetan', ur:'لگاتار', bn:'ধারাবাহিক', tr:'Seri' },
   'عرفة': { en:'Arafah', fr:'Arafah', id:'Arafah', ur:'عرفہ', bn:'আরাফাহ', tr:'Arefe' }
 };
+/* ألقاب لوحة الصدارة وغيرها → تُدمَج في الخريطة العامة */
+for (const _zk in ZT_PARTS) if (!UI_MAP[_zk]) UI_MAP[_zk] = ZT_PARTS[_zk];
+
 function ztPart(v, lang) {
   const hit = ZT_PARTS[v] || (window.ZAD_UI_MAP && window.ZAD_UI_MAP[v]);
   if (!hit) return v;
@@ -2813,6 +3276,18 @@ function ZT(msg) {
     let tplStr = TOAST_TPL[key][lang] || TOAST_TPL[key].en;
     ph.forEach((name, i) => { tplStr = tplStr.split('{' + name + '}').join(ztPart(hit[i + 1], lang)); });
     return tplStr;
+  }
+  /* رسائل لم تُدرَج في TOASTS: نجرّب القاموس العام ثم القوالب (نحو «الجزء 3») */
+  const plain = s.trim();
+  const rec = UI_MAP[plain];
+  if (rec) return rec[lang] || rec.en || s;
+  const tplOut = zadTpl(plain, lang);
+  if (tplOut) return tplOut;
+  for (const [re, make] of zadPatterns(lang)) {
+    const m = re.exec(plain);
+    if (!m) continue;
+    const out = make.apply(null, m.slice(1).map(x => (x == null ? x : zadNum(x, lang))));
+    if (out) return out;
   }
   return s;
 }
@@ -2867,3 +3342,26 @@ window.ZadFmtHijri = ZadFmtHijri;
 window.ZadFmtGreg = ZadFmtGreg;
 
 window.ZAD_UI_MAP = UI_MAP;
+
+/* ── ترجمة نوافذ المتصفح (alert/confirm/prompt) عبر نفس القاموس ── */
+(function () {
+  try {
+    var _a = window.alert, _c = window.confirm, _p = window.prompt;
+    window.alert   = function (m) { return _a.call(window, ztr(m)); };
+    window.confirm = function (m) { return _c.call(window, ztr(m)); };
+    window.prompt  = function (m, d) { return _p.call(window, ztr(m), d); };
+  } catch (e) {}
+})();
+
+/* ── ztr: ترجمة القوالب التي تبنيها الجافاسكربت (عدّادات، شارات، رسائل) ──
+   ztr('اليوم {n} من 10', {n: 3}) — يقرأ من قاموس الواجهة ويملأ المتغيّرات. */
+window.ztr = function (tpl, vars) {
+  var lang = 'ar';
+  try { lang = (window.I18N && window.I18N.current) || 'ar'; } catch (e) {}
+  var map = window.ZAD_UI_MAP || {};
+  var hit = map[tpl];
+  var out = (lang && lang !== 'ar' && hit) ? (hit[lang] || hit.en || tpl) : tpl;
+  if (vars) for (var k in vars) out = out.split('{' + k + '}').join(vars[k] == null ? '' : vars[k]);
+  return out;
+};
+

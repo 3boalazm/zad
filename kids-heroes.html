@@ -387,7 +387,7 @@ html[data-theme="dark"] .hc-vow .n,html[data-theme="oled"] .hc-vow .n{background
           chBtn.classList.add('done');
           if(navigator.vibrate)navigator.vibrate([20,40,30]);
           try{ if(window.confetti) window.confetti({particleCount:70,spread:65,origin:{y:.7},colors:['#0e3b2e','#c9a14a','#4dd862','#fff']}); }catch(e){}
-          if(window.showToast)window.showToast('🎉 مبروك! حصلت على '+st.challenge.badge);
+          if(window.showToast)window.showToast(ztr('🎉 مبروك! حصلت على {badge}', {badge: st.challenge.badge}));
         }
         write(s);
       });
@@ -483,6 +483,7 @@ html[data-theme="dark"] .hc-vow .n,html[data-theme="oled"] .hc-vow .n{background
 })();
 </script>
 <script src="i18n/content-kids.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>

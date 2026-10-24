@@ -329,7 +329,7 @@ html[data-theme="dark"] .mn-now-in.off .mn-now-title,html[data-theme="oled"] .mn
 
     <!-- Closing -->
     <div class="closing-banner">
-      <div class="closing-txt">«الحَجُّ المَبرورُ ليس له جزاءٌ إلا الجنة»</div>
+      <div class="closing-txt" lang="ar" dir="rtl">«الحَجُّ المَبرورُ ليس له جزاءٌ إلا الجنة»</div>
       <div class="closing-src">متفق عليه</div>
     </div>
 
@@ -676,7 +676,7 @@ function setNusuk(type){
   updateProgress();
   renderNowBanner();
   if (navigator.vibrate) navigator.vibrate(15);
-  toast('🧭 المسار الآن لنُسك ' + NUSUK_META[type].label);
+  toast(ztr('🧭 المسار الآن لنُسك {n}', {n: NUSUK_META[type].label}));
 }
 
 function renderTimeline(){
@@ -839,6 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>

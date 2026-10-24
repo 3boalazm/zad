@@ -992,6 +992,7 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
 })();
 </script>
 <script src="i18n/content-kids.js" defer></script>
+<script src="i18n/content-pages.js" defer></script>
 <script src="lang.min.js" defer></script>
 <script src="js/storage.min.js" defer></script>
   <script src="js/calendar.min.js" defer></script>
@@ -1061,6 +1062,8 @@ html[data-theme="dark"] .qz-end-title,html[data-theme="oled"] .qz-end-title{colo
     shuffle(ay.w).forEach(function(word,i){
       var b=document.createElement('button');
       b.className='ba-word ayah'; b.textContent=word; b.dataset.word=word;
+      /* كلمات الآية نفسها: عربية كما هي (ليست واجهة) */
+      b.setAttribute('lang','ar'); b.setAttribute('dir','rtl');
       b.onclick=function(){ baPlace(b); };
       bank.appendChild(b);
     });
