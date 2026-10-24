@@ -677,12 +677,12 @@ function renderTimeline(tab) {
     const duaHtml = slot.dua ? `
       <div class="af-tl-dua" onclick="showToast?.('${slot.dua.replace(/'/g,'&#39;')}')">
         <div class="dua-hdr">🤲 ادعُ بـ</div>
-        <div class="dua-txt">${slot.dua}</div>
+        <div class="dua-txt" lang="ar" dir="rtl">${slot.dua}</div>
       </div>` : '';
 
     const hadithHtml = slot.hadith ? `
       <div class="af-tl-hadith">
-        «${slot.hadith}»
+        <span lang="ar" dir="rtl">«${slot.hadith}»</span>
         <div class="af-tl-hadith-src">${slot.hadithSrc || ''}</div>
       </div>` : '';
 

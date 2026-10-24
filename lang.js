@@ -1230,6 +1230,16 @@ function zadPatterns(lang) {
                    ur:`دن ${i+1}: ${pct}%`, bn:`${i+1} নম্বর দিন: ${pct}%`, tr:`${i+1}. gün: ${pct}%` }[lang];
         }],
         /* «يبدأ موسم العشر بعد 196 يومًا — استعدّ الآن…» */
+        /* «الأيام البيض (13 من الشهر) — يُستحب صيامها.» */
+        [/^الأيام البيض \(([\u0660-\u0669\d]+) من الشهر\) — يُستحب صيامها\.$/, (d) => {
+          const T = { en:`The white days (the ${d}th of the month) — fasting them is recommended.`,
+            fr:`Les jours blancs (le ${d} du mois) — leur jeûne est recommandé.`,
+            id:`Hari-hari putih (tanggal ${d} bulan ini) — dianjurkan berpuasa.`,
+            ur:`ایام بیض (مہینے کی ${d} تاریخ) — ان کے روزے مستحب ہیں۔`,
+            bn:`সাদা দিনগুলো (মাসের ${d} তারিখ) — রোজা রাখা মুস্তাহাব।`,
+            tr:`Beyaz günler (ayın ${d}’i) — oruç tutmak müstehaptır.` };
+          return T[lang] || T.en;
+        }],
         [/^يبدأ موسم العشر بعد ([\u0660-\u0669\d]+) يومًا — استعدّ الآن: راجع مناسكك، واحفظ أدعيتك\.$/, (d) => {
           const T = { en:`The ten days begin in ${d} days — get ready now: review your rites and memorise your supplications.`,
             fr:`Les dix jours commencent dans ${d} jours — préparez-vous : révisez vos rites et mémorisez vos invocations.`,
@@ -1238,6 +1248,15 @@ function zadPatterns(lang) {
             bn:`দশ দিনের মৌসুম ${d} দিন পরে শুরু — এখনই প্রস্তুতি নিন: বিধানগুলো ঝালিয়ে নিন, দুআ মুখস্থ করুন।`,
             tr:`On gün ${d} gün sonra başlıyor — şimdi hazırlan: menâsikini gözden geçir, dualarını ezberle.` };
           return T[lang] || T.en;
+        }],
+        /* نطاقات الأعداد: «١–١٢١» (فهرس الصفحات/المجموعات) */
+        [/^([\u0660-\u0669\d]+)\s*[–-]\s*([\u0660-\u0669\d]+)$/, (a, b) => zadNum(a, lang) + '–' + zadNum(b, lang)],
+        /* «الحديث 1: الأعمال بالنيات» — عنوان حديث بادئته رقمية */
+        [/^(?:📜\s*)?الحديث ([\u0660-\u0669\d]+)\s*[:：]\s*(.+)$/, (n, title) => {
+          const rec = zadRec(title.trim());
+          const tv = rec ? (rec[lang] || rec.en) : title.trim();
+          const H = { en:'Hadith', fr:'Hadith', id:'Hadis', ur:'حدیث', bn:'হাদিস', tr:'Hadis' }[lang] || 'Hadith';
+          return H + ' ' + n + ': ' + tv;
         }],
         /* «سورة الحج 27» · «سورة الكوثر 1-2» · «﴿ الحديد: 20 ﴾» */
         [/^سورة ([\u0600-\u06FF ]+?) ([\u0660-\u0669\d]+(?:-[\u0660-\u0669\d]+)?)$/, (name, ref) => {
@@ -1541,18 +1560,28 @@ const I18N = {
           const pe = n.parentElement;
           if (!pe) return NodeFilter.FILTER_REJECT;
           if (pe.closest('script,style,textarea,[data-i18n],[lang="ar"],.zad-src')) return NodeFilter.FILTER_REJECT;
-          if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
+          if (!t) return NodeFilter.FILTER_REJECT;
+          /* الأرقام والنطاقات ليست نصًّا شرعيًا: تُعرَّب/تُكتب بأرقام اللغة دائمًا،
+             حتى داخل بطاقة محميّة (فهرس مصحف/ختمة). */
+          const NUMONLY = /^[\u0660-\u0669\d]{1,4}(?:\s*[–-]\s*[\u0660-\u0669\d]{1,4})?\s*٪?$/;
+          if (NUMONLY.test(t)) return NodeFilter.FILTER_ACCEPT;
+          /* عنصر أوقف الحماية صراحةً: واجهة تعيش داخل حاوية شرعية (بطاقة تسميع/ختمة) */
+          const OPTIN = !!pe.closest('[data-zad-ui]');
+          if (!OPTIN && SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
+          /* ١) مطابقة القاموس تتقدّم على أي سقف طول: أي متن (شرح، حكاية، سؤال)
+             بمجرّد إدراج مفتاحه يصبح قابلًا للترجمة فورًا — والمراجعة البشرية
+             مسؤولية المحتوى لا المحرّك. */
+          if (zadRec(t)) return NodeFilter.FILTER_ACCEPT;
           /* نصٌّ عربي مُقطَّع الحروف (حركات متبوعة بمسافة) — عنوانُ ذكرٍ لا يُفتَرى له مفتاح.
              لكن إن كان له مدخل صريح في القاموس (شعار/مقدّمة مشكولة) فليُترجم. */
-          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t) && !zadRec(t)) return NodeFilter.FILTER_REJECT;
+          if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t)) return NodeFilter.FILTER_REJECT;
           /* المحتوى الحر (وصف الحلقة) أطول من سقف الواجهة القصير */
           const cap = pe.closest('.vid-desc,.vid-sum,p.vid-desc') ? 600 : 400;
           if (t.length < 2 || t.length > cap) return NodeFilter.FILTER_REJECT;
           /* نصٌّ لاتيني أصلاً («The letter Fa (ف) — episode 20») لا يُترجم */
           const latinChars = (t.match(/[A-Za-z]/g) || []).length;
           if (latinChars > t.length * 0.4) return NodeFilter.FILTER_REJECT;
-          if (zadRec(t)) return NodeFilter.FILTER_ACCEPT;
           if (zadTpl(t, lang)) return NodeFilter.FILTER_ACCEPT;
           /* «💡 نص» — أيقونة في أوّل النص: نطابق الباقي ونُبقي الأيقونة */
           if (t.length <= cap + 8) {
@@ -1640,9 +1669,12 @@ const I18N = {
           const pe = n.parentElement;
           if (!pe) return NodeFilter.FILTER_REJECT;
           if (pe.closest('script,style,textarea,select,option,[data-l10n],[data-i18n]')) return NodeFilter.FILTER_REJECT;
-          if (SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           const t = n.nodeValue.trim();
           if (!t || t.length > 90) return NodeFilter.FILTER_REJECT;
+          /* أرقام/نطاقات: تُكتب بأرقام اللغة دائمًا ولو داخل حاوية محميّة */
+          const NUMONLY = /^[\u0660-\u0669\d]{1,4}(?:\s*[–-]\s*[\u0660-\u0669\d]{1,4})?\s*٪?$/;
+          if (NUMONLY.test(t)) return NodeFilter.FILTER_ACCEPT;
+          if (!pe.closest('[data-zad-ui]') && SKIP.test(pe.className || '')) return NodeFilter.FILTER_REJECT;
           if (/[\u064B-\u0652\u0670]\s|\s[\u064B-\u0652\u0670]/.test(t) && !UI_MAP[t] && !zadTpl(t, lang) &&
               !PATTERNS.some(([re]) => re.test(t))) return NodeFilter.FILTER_REJECT;
           if (/^[\u0660-\u0669\d]{1,3}٪?$/.test(t)) return NodeFilter.FILTER_ACCEPT;
@@ -1753,6 +1785,48 @@ const I18N = {
     this.apply();
     this._updateButtons(this.current);
     this._watch();
+  },
+
+  /* ── طابور المراجعة البشرية ──────────────────────────────────────────
+     يُرجع كل نص عربي ظاهر بالصفحة **لم يُترجم** (خارج المتن الموسوم
+     `lang="ar"`/`.zad-src`، وخارج أسماء اللغات بأهلها). كل عنصر جاهز
+     للنسخ إلى `i18n/content-pages.js` كمفتاح. الاستخدام من الكونسول:
+
+         copy(JSON.stringify(I18N.gaps(), null, 2))
+
+     وبعد إضافة المفتاح: I18N.setLang(I18N.current) — يظهر مترجمًا فورًا
+     لأن المحرّك يعطي مطابقة القاموس أولوية على سقف الطول. */
+  gaps() {
+    const out = [];
+    const AR = /[\u0600-\u06FF]/;
+    const NATIVE = new Set(['العربية', 'اردو', 'বাংলা', 'English', 'Français', 'Türkçe', 'Bahasa Indonesia', 'عربي']);
+    const pathOf = el => {
+      const bits = [];
+      let e = el;
+      for (let i = 0; e && e !== document.body && i < 4; i++, e = e.parentElement) {
+        bits.unshift(e.tagName.toLowerCase() + (e.id ? '#' + e.id : (e.className && typeof e.className === 'string'
+          ? '.' + e.className.trim().split(/\s+/).slice(0, 2).join('.') : '')));
+      }
+      return bits.join(' > ');
+    };
+    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    let n;
+    while ((n = w.nextNode())) {
+      const pe = n.parentElement;
+      if (!pe) continue;
+      if (pe.closest('script,style,textarea,noscript,code,pre,[lang="ar"],.zad-src')) continue;
+      const t = n.nodeValue.replace(/\s+/g, ' ').trim();
+      if (t.length < 2 || !AR.test(t)) continue;
+      if (NATIVE.has(t)) continue;
+      if (zadRec(t)) continue;
+      if (/^[\u0660-\u0669\d]{1,4}(?:\s*[–-]\s*[\u0660-\u0669\d]{1,4})?\s*٪?$/.test(t)) continue;
+      const SKIPCLS = /(quran|ayah|dhikr|dua|hadith|verse|srs|kh-|wird-card|gp-card|fq-|az-|translit)/i;
+      if (!pe.closest('[data-zad-ui]') && SKIPCLS.test(String(pe.className || ''))) continue;
+      const lat = (t.match(/[A-Za-z]/g) || []).length;
+      if (lat > t.length * 0.4) continue;
+      out.push({ page: (location.pathname.split('/').pop() || 'index.html'), el: pathOf(pe), len: t.length, ar: t });
+    }
+    return out;
   },
 
   /* إعادة الترجمة عند إدخال محتوى جديد في الصفحة (بطاقات تُرسم بالجافاسكربت).

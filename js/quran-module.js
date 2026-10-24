@@ -81,13 +81,13 @@ async function renderHifzTracker() {
   container.innerHTML = `
     <div class="hifz-stats">
       <div class="hifz-stat-num">${memorized}</div>
-      <div class="hifz-stat-lbl">سورة محفوظة من ${SURAHS_SHORT.length} (جزء عمّ)</div>
+      <div class="hifz-stat-lbl" data-zad-ui><span>سورة محفوظة من</span> ${SURAHS_SHORT.length} <span>(جزء عمّ)</span></div>
     </div>
     <div class="hifz-grid">
       ${SURAHS_SHORT.map(s => `
         <div class="hifz-surah ${progress[s.n] ? 'memorized' : ''}" onclick="toggleHifz(${s.n})">
           <span class="hifz-surah-name">${s.name}</span>
-          <span class="hifz-surah-ayat">${s.ayat} آيات</span>
+          <span class="hifz-surah-ayat" data-zad-ui>${s.ayat} <span>آيات</span></span>
           ${progress[s.n] ? '<span class="hifz-check">✓</span>' : ''}
         </div>
       `).join('')}
