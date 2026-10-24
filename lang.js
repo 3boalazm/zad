@@ -1766,8 +1766,13 @@ const I18N = {
     document.documentElement.lang = lang;
     document.body && document.body.setAttribute('data-lang', lang);
 
-    /* 6.5) إبلاغ بقية الوحدات (menu.js…) لتحديث نصوصها المُولّدة */
-    try { window.dispatchEvent(new CustomEvent('zad:lang', { detail: { lang } })); } catch (e) {}
+    /* 6.5) إبلاغ بقية الوحدات (menu.js…) لتحديث نصوصها المُولّدة.
+       لا نُبلّغ في التمريرات الصامتة (مراقب DOM/التمريرة المؤجَّلة): بعض الصفحات
+       تعيد رسم محتواها عربيًّا داخل المستمع، فتصير كل تمريرة سببًا لتمريرة
+       مضادّة — حلقة لا تنتهي تنتهي بمحتوى عربي. */
+    if (!this._silent) {
+      try { window.dispatchEvent(new CustomEvent('zad:lang', { detail: { lang } })); } catch (e) {}
+    }
 
     /* 7) إعادة رسم بطاقة «الآن» الديناميكية باللغة الجديدة */
     try { if (typeof window.zhNowCard === 'function') window.zhNowCard(); } catch (e) {}
@@ -1841,21 +1846,29 @@ const I18N = {
     const MAX_APPLIES = 25, MIN_GAP = 700;
     this._obsCount = this._obsCount || 0;
     this._lastObsApply = this._lastObsApply || 0;
+    /* التطبيق المؤجَّل: إن وصل تغيير قبل انقضاء الفاصل الأدنى نؤجّله بدل إسقاطه
+       (كان يُسقَط، فيبقى نصٌّ وُلِد بعد تبديل اللغة عربيًّا إلى الأبد). */
+    const runObserved = () => {
+      const now = Date.now();
+      if (now - this._lastObsApply < MIN_GAP) {
+        timer = setTimeout(runObserved, MIN_GAP - (now - this._lastObsApply) + 40);
+        return;
+      }
+      this._lastObsApply = now;
+      this._obsCount++;
+      const obs = this._obs;
+      try { obs.disconnect(); } catch (e) {}
+      this._silent = true;
+      try { this.apply(); } catch (e) {}
+      this._silent = false;
+      clearTimeout(timer);
+      try { obs.observe(document.body, OPTS); } catch (e) {}
+    };
     this._obs = new MutationObserver(() => {
       if (this.current === 'ar') return;
       if (this._obsCount >= MAX_APPLIES) { try { this._obs.disconnect(); } catch (e) {} return; }
       clearTimeout(timer);
-      timer = setTimeout(() => {
-        const now = Date.now();
-        if (now - this._lastObsApply < MIN_GAP) return;
-        this._lastObsApply = now;
-        this._obsCount++;
-        const obs = this._obs;
-        try { obs.disconnect(); } catch (e) {}
-        try { this.apply(); } catch (e) {}
-        clearTimeout(timer);
-        try { obs.observe(document.body, OPTS); } catch (e) {}
-      }, 250);
+      timer = setTimeout(runObserved, 250);
     });
     const start = () => {
       try { this._obs.observe(document.body, OPTS); } catch (e) {}
@@ -1871,7 +1884,7 @@ const I18N = {
       if (!window.__zadLateApply) {
         window.__zadLateApply = true;
         const late = () => {
-          try { this._obsCount = 0; this._lastObsApply = 0; if (this.current !== 'ar') this.apply(); } catch (e) {}
+          try { this._obsCount = 0; this._lastObsApply = 0; if (this.current !== 'ar') { this._silent = true; this.apply(); this._silent = false; } } catch (e) {}
         };
         window.addEventListener('load', () => setTimeout(late, 450));
         setTimeout(late, 2200);
@@ -1887,6 +1900,17 @@ const _zadSetLang = I18N.setLang.bind(I18N);
 I18N.setLang = function () {
   this._obsCount = 0; this._lastObsApply = 0;
   const r = _zadSetLang.apply(this, arguments);
+  /* تمريرة ثانية بعد تبديل اللغة: بعض الصفحات تعيد رسم محتواها داخل مستمع
+     `zad:lang` (تقويم هجري، بطاقات) — وحدث المستمع يقع بعد خطوات الترجمة،
+     فيبقى ما رسمه عربيًّا. نمنحها ٣٠٠ مللي ثم نترجم ما ولّدته. */
+  const _L = this.current;
+  clearTimeout(this._t2);
+  this._t2 = setTimeout(() => {
+    if (this.current !== _L || _L === 'ar') return;
+    this._silent = true;
+    try { this.apply(); } catch (e) {}
+    this._silent = false;
+  }, 300);
   if (this._obs && !this._watching) { /* ensure observing */ }
   return r;
 };
