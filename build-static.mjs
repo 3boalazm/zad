@@ -8,7 +8,7 @@ const rootFiles = (await readdir(root, { withFileTypes: true }))
   .filter((entry) => entry.isFile())
   .map((entry) => entry.name)
   .filter((name) => rootExtensions.has(path.extname(name).toLowerCase()) || name === 'manifest.json');
-const staticDirectories = ['.well-known', 'css', 'fonts', 'icons', 'js', 'tools'];
+const staticDirectories = ['.well-known', 'css', 'fonts', 'icons', 'i18n', 'js', 'tools'];
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });

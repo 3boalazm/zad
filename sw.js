@@ -41,7 +41,7 @@
    ════════════════════════════════════════════════════════════ */
 
 // R13: إعادة تصميم الهوم من الصفر — إبطال الكاش حتى يرى المستخدم العائد الواجهة الجديدة فورًا.
-const CACHE_STATIC = 'zad-20261024-i18n-r47';
+const CACHE_STATIC = 'zad-20261103-i18n-r48';
 const CACHE_AUDIO  = 'zad-quran-audio-v1'; /* تلاوة: تُحفظ كما هي (opaque مسموح) */
 const NET_TIMEOUT  = 3000; /* مهلة الشبكة قبل الرجوع للكاش (ms) */
 
@@ -86,6 +86,8 @@ const PRECACHE = [
 
   /* ── Z19: أصول مشتركة كانت ناقصة من أغلب الصفحات ── */
   './lang.min.js',
+  './i18n/content.js', './i18n/content-pages.js', './i18n/content-adhkar.js',
+  './i18n/content-dua.js', './i18n/content-kids.js', './i18n/content-misc.js', './i18n/content-summaries.js',
   './js/seasons-module.min.js', './js/share-button.min.js', './js/gps-fix.min.js', './js/pwa-install-fab.min.js',
   './js/sync-module.min.js',
 
