@@ -1,0 +1,10 @@
+flowchart TD
+ Install-->Cache[Explicit precache attempts]
+ Request-->Network{Network responds?}
+ Network--yes-->Online[Network response]
+ Network--no-->Hit{Cache hit?}
+ Hit--yes-->Local[Cached response]
+ Hit--no-->Error[Error; not whole-app offline]
+ State[Local state]-->Sync{Authenticated and online?}
+ Sync--yes-->API[Optional API sync]
+ Sync--no-->Stay[Remain local]

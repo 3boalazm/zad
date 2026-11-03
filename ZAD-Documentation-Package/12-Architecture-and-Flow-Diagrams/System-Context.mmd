@@ -1,0 +1,7 @@
+flowchart LR
+ U[User]-->P[ZAD PWA]
+ P-->B[Browser cache and storage]
+ P-- optional auth sync -->A[REST API]
+ A-->D[(PostgreSQL)]
+ A-->H[HadeethEnc proxy]
+ P-.external providers.->X[AI prayer Quran media Firebase]

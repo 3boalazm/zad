@@ -1,0 +1,3 @@
+# Source References
+
+Service worker: `sw.js`; PWA: `manifest.json`, `vercel.json`, `build-static.mjs`; client storage/sync: `js/storage.js`, `js/sync-manager.js`, `js/api-client.js`; API: `backend-src/app.ts`, `backend-src/auth/`, `backend-src/worship/worship.router.ts`, `backend-src/sync/sync.router.ts`, `backend-src/library/library.router.ts`, `api/index.ts`; migrations: `api/db/migrations/001_init.sql`–`005_auth.sql`; AI: `js/ai-guard.js`, `js/gemini.js`; localization/design: `lang.js`, `i18n/`, `css/style.css`, `css/premium-ui.css`, `js/design-system.js`; historical docs named in Existing-Documentation-Review. No `.env` opened and no secret values included.

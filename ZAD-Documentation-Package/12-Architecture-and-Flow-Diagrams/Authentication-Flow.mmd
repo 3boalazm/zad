@@ -1,0 +1,14 @@
+sequenceDiagram
+ participant U as User
+ participant C as Client
+ participant A as API
+ participant D as Database
+ U->>C: optional register or login
+ C->>A: auth request
+ A->>D: verify and create session
+ D-->>A: session
+ A-->>C: response and cookie
+ C->>A: auth/me
+ U->>C: logout
+ C->>A: auth/logout
+ A->>D: revoke session

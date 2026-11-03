@@ -1,0 +1,15 @@
+flowchart TB
+ HTML[Static pages]-->JS[Shared/page JS]
+ HTML-->CSS[CSS tokens]
+ JS-->SW[Service Worker]
+ JS-->Store[localStorage and Dexie]
+ JS-->Client[API client/sync manager]
+ Client-->App[Express app]
+ App-->Auth[Auth router]
+ App-->W[Worship router]
+ App-->Sync[Sync router]
+ App-->Lib[Library proxy]
+ Auth-->DB[(PostgreSQL)]
+ W-->DB
+ Sync-->DB
+ Lib-->H[HadeethEnc]

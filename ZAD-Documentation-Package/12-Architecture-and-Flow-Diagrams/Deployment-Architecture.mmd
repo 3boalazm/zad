@@ -1,0 +1,8 @@
+flowchart LR
+ Browser-->Static[Static site]
+ Browser-- /api/v1 and /health -->Runtime[API runtime unknown]
+ Config[vercel.json]-.config only.->Runtime
+ Runtime-->Express[backend-src Express]
+ Express-->DB[(PostgreSQL readiness verified)]
+ Express-->HE[HadeethEnc]
+ Browser-.external calls.->Providers[AI prayer Quran media Firebase]

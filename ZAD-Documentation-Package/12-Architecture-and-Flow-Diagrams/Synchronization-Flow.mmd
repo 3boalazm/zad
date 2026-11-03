@@ -1,0 +1,14 @@
+sequenceDiagram
+ participant C as Client
+ participant A as API
+ participant D as Database
+ C->>A: auth/me
+ A->>D: session lookup
+ C->>A: POST worship log and idempotency key
+ A->>D: scoped transactional upsert
+ D-->>A: record and sequence
+ A-->>C: response
+ C->>A: POST sync/pull after_seq
+ A->>D: ordered user delta
+ D-->>C: data and cursor
+ Note over C,D: Source-derived; production writes not tested

@@ -1,0 +1,10 @@
+erDiagram
+ USERS ||--o{ SESSIONS : opens
+ USERS ||--o{ WORSHIP_LOG : owns
+ USERS ||--|| SYNC_CURSORS : tracks
+ USERS ||--o{ IDEMPOTENCY_KEYS : scopes
+ USERS { uuid id PK }
+ WORSHIP_LOG { uuid id PK uuid user_id FK date log_date jsonb payload bigint server_seq }
+ SESSIONS { uuid id PK uuid user_id FK text token_hash }
+ SYNC_CURSORS { uuid user_id PK bigint last_seq }
+ IDEMPOTENCY_KEYS { uuid user_id FK text key timestamptz expires_at }
