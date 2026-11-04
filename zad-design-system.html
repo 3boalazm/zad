@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>زاد — Design System v2.0 | نظام التصميم الكامل</title>
+<meta name="description" content="نظام تصميم زاد الكامل: الألوان، الخطوط، المكونات، الأنماط، الإتاحة، والثيمات — مصدر الحقيقة الواحد.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#0e3b2e;--mid:#1a5d47;--soft:#2a7a5f;--gold:#c9a14a;--gold-lt:#e6c97a;--gold-dk:#8a6822;--bg:#f5f4f0;--card:#fff;--card2:#f7f3ea;--sand:#faf9f6;--sand2:#ebdfc4;--gold-pale:#fdf5e0;--green-pale:#e8f4ef;--ink:#1a1a18;--muted:#5f5f57;--border:#e5e4de;--radius:18px;--radius-sm:12px;--sh:0 10px 30px -12px rgba(14,59,46,.18);--sh-sm:0 4px 14px -6px rgba(14,59,46,.12);--sh-gold:0 8px 24px -8px rgba(201,161,74,.35);--ease:cubic-bezier(.4,0,.2,1);--sys-green:#34c759;--sys-red:#ff3b30;--sys-blue:#007aff;--sys-orange:#ff9500;--sys-purple:#af52de;--sys-yellow:#ffcc00}
+html[data-theme="dark"]{--bg:#0a1410;--card:#141f1a;--card2:#162019;--sand:#1a2820;--sand2:#1a2618;--gold-pale:#1a1608;--green-pale:#0e2a1e;--ink:#f0f0ea;--muted:#8a9a90;--border:#2a3830;--deep:#4dd866;--mid:#2eb84d;--soft:#3dcc5e;--gold:#e6c97a;--gold-dk:#c9a14a;--sh:0 10px 30px -12px rgba(0,0,0,.6)}
+html[data-theme="oled"]{--bg:#000;--card:#0a0f0d;--card2:#101010;--sand:#0f1a14;--sand2:#0d0d0d;--gold-pale:#0a0800;--green-pale:#0e2a1e;--ink:#f5fef6;--muted:#b8cfba;--border:#2a3830;--deep:#4dd866;--mid:#2eb84d;--soft:#3dcc5e;--gold:#f0d080;--gold-dk:#c9a14a;--sh:0 10px 30px -12px rgba(0,0,0,.85)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Tajawal','IBM Plex Sans Arabic',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;transition:background .3s var(--ease),color .3s}
+::selection{background:var(--gold);color:#1a1000}a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer}
+.topbar{position:sticky;top:0;z-index:100;backdrop-filter:blur(16px) saturate(1.3);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--border)}
+.topbar-in{max-width:1280px;margin:auto;padding:12px 24px;display:flex;align-items:center;gap:16px}
+.logo{width:44px;height:44px;border-radius:14px;background:radial-gradient(circle at 30% 30%,#e6c97a,#c9a14a);display:grid;place-items:center;font-weight:900;color:#3a2a08;font-size:20px;box-shadow:0 4px 14px rgba(201,161,74,.4);flex-shrink:0}
+.topbar b{font-size:18px}.topbar small{display:block;color:var(--muted);font-size:11px;line-height:1.2}
+.topnav{margin-inline-start:auto;display:flex;gap:4px;flex-wrap:wrap}.topnav a{padding:8px 13px;border-radius:99px;font-size:13px;font-weight:700;color:var(--muted)}.topnav a:hover{background:var(--green-pale);color:var(--deep)}
+.theme-switch{display:flex;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:3px;gap:2px}
+.theme-switch button{border:0;background:transparent;padding:7px 13px;border-radius:99px;font-size:12px;font-weight:800;color:var(--muted)}
+.theme-switch button.on{background:#0e3b2e;color:#fff}html[data-theme="dark"] .theme-switch button.on,html[data-theme="oled"] .theme-switch button.on{background:#4dd866;color:#001a08}
+.wrap{max-width:1280px;margin:auto;padding:0 24px 80px}
+.hero{margin-top:28px;background:linear-gradient(135deg,#0e3b2e,#1a5d47 68%,#2a7a5f);color:#fff;border-radius:28px;padding:52px 48px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.hero:before{content:"✦";position:absolute;left:-20px;top:-50px;font-size:280px;color:rgba(230,201,122,.09);line-height:1}
+.hero:after{content:"زاد";position:absolute;left:30px;bottom:-38px;font-size:150px;font-weight:900;color:rgba(255,255,255,.05);line-height:1}
+.eyebrow{color:#e6c97a;font-size:12px;letter-spacing:2.5px;font-weight:800}.hero h1{font-size:clamp(36px,6vw,64px);font-weight:900;line-height:1.15;margin:12px 0}.hero h1 em{font-style:normal;color:#e6c97a}
+.hero p{max-width:640px;color:rgba(255,255,255,.82);font-size:17px;position:relative;z-index:1}
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;position:relative;z-index:1}.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);padding:8px 15px;border-radius:99px;font-size:13px;font-weight:700}
+.chip b{color:#e6c97a}
+.sec{margin-top:64px;scroll-margin-top:90px}.sec-head{display:flex;align-items:flex-end;gap:16px;margin-bottom:8px;flex-wrap:wrap}
+.num{font-size:13px;font-weight:900;color:#fff;background:#0e3b2e;border-radius:10px;padding:5px 11px}html[data-theme="dark"] .num,html[data-theme="oled"] .num{background:#4dd866;color:#001a08}
+.sec h2{font-size:30px;font-weight:900;color:var(--deep)}.sec .lead{color:var(--muted);max-width:760px}
+.grid{display:grid;gap:16px;margin-top:22px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}.hero{padding:36px 24px}.topnav{display:none}}
+@media(max-width:560px){.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--sh-sm)}
+.card h3{font-size:16px;color:var(--deep);margin-bottom:8px}.card p{color:var(--muted);font-size:14px}
+.sw{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:transform .25s var(--ease),box-shadow .25s}
+.sw:hover{transform:translateY(-4px);box-shadow:var(--sh)}.sw .fill{height:96px;position:relative}.sw .fill span{position:absolute;bottom:10px;inset-inline-start:14px;background:rgba(0,0,0,.28);color:#fff;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:800;backdrop-filter:blur(4px)}
+.sw .meta{padding:14px 16px}.sw .meta b{display:block;font-size:14px}.sw .meta code{font-size:12px;color:var(--muted);direction:ltr;display:inline-block}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--gold-pale);color:var(--gold-dk);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;font-size:13.5px}
+th{background:#0e3b2e;color:#fff;padding:12px 16px;text-align:right;font-size:12.5px}html[data-theme="dark"] th,html[data-theme="oled"] th{background:#12291d;color:#4dd866}
+td{padding:11px 16px;border-top:1px solid var(--border);vertical-align:top}tr:hover td{background:var(--sand)}code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--sand);border:1px solid var(--border);padding:2px 7px;border-radius:7px;direction:ltr;display:inline-block}
+.dot{width:22px;height:22px;border-radius:8px;border:1px solid rgba(0,0,0,.12);display:inline-block;vertical-align:middle;margin-inline-end:8px}
+.type-row{display:flex;align-items:baseline;gap:18px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-top:10px;flex-wrap:wrap}
+.type-row small{color:var(--muted);min-width:170px}.type-row code{margin-inline-start:auto}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:99px;font-weight:800;border:none;font-size:14px;transition:transform .15s,box-shadow .2s,opacity .2s}.btn:active{transform:scale(.96)}
+.btn-p{background:#0e3b2e;color:#fff}.btn-p:hover{background:#1a5d47;transform:translateY(-1px);box-shadow:var(--sh-sm)}html[data-theme="dark"] .btn-p,html[data-theme="oled"] .btn-p{background:#4dd866;color:#001a08}
+.btn-gold{background:linear-gradient(135deg,#c9a14a,#e6c97a);color:#3a2a08}.btn-gold:hover{box-shadow:var(--sh-gold);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--deep);border:1.5px solid color-mix(in srgb,var(--soft) 45%,transparent)}.btn-ghost:hover{background:var(--green-pale)}
+.btn-danger{background:#d32f2f;color:#fff}.btn-sm{padding:7px 15px;font-size:12.5px}.btn[disabled]{opacity:.45;pointer-events:none}
+.input{width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--sand);color:var(--ink);font-family:inherit;font-size:15px;outline:none}.input:focus{border-color:var(--gold)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:800;background:var(--card);border:1px solid var(--border)}
+.badge.ok{background:var(--green-pale);color:var(--deep);border-color:color-mix(in srgb,var(--soft) 35%,transparent)}.badge.gold{background:var(--gold-pale);color:var(--gold-dk)}.badge.err{background:#fdecea;color:#b3261e}
+.progress{height:10px;background:var(--sand2);border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--soft),var(--gold));border-radius:99px}
+.check{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid var(--border);border-radius:13px;background:var(--card);margin-bottom:9px;cursor:pointer;transition:.2s}.check:hover{border-color:var(--sys-green);background:var(--green-pale)}
+.check .box{width:26px;height:26px;border-radius:8px;border:2px solid var(--soft);display:grid;place-items:center;color:transparent;font-weight:900;font-size:13px;flex-shrink:0}.check.done{background:var(--green-pale)}.check.done .box{background:var(--sys-green);border-color:var(--sys-green);color:#052e12}.check.done .lbl{text-decoration:line-through;color:var(--muted)}.check .lbl{flex:1;font-weight:700;font-size:14px}.check small{color:var(--muted)}
+.spec{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.spec span{font-size:11.5px;background:var(--sand);border:1px dashed var(--border);border-radius:8px;padding:4px 9px;color:var(--muted)}
+.do{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}@media(max-width:700px){.do{grid-template-columns:1fr}}
+.do .card{border-top:4px solid var(--sys-green)}.do .card.no{border-top-color:var(--sys-red)}.do li{margin-inline-start:18px;color:var(--muted);font-size:14px;margin-top:6px}
+.verse{background:linear-gradient(135deg,var(--card),var(--gold-pale));border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center;box-shadow:var(--sh-sm)}
+.verse .ar{font-family:'Amiri',serif;font-size:26px;color:var(--deep);line-height:2.1}.verse .src{color:var(--gold-dk);font-weight:800;font-size:13px}
+.tasbeeh{background:linear-gradient(180deg,#0e3b2e,#0a2a20);color:#fff;border-radius:26px;padding:30px;text-align:center}
+.tasbeeh .w{font-family:'Amiri',serif;font-size:30px;color:#e6c97a}.tasbeeh .n{font-size:72px;font-weight:900;line-height:1.1}
+.ring{width:150px;height:150px;border-radius:50%;border:4px solid rgba(201,161,74,.35);display:grid;place-items:center;margin:14px auto;cursor:pointer;background:radial-gradient(circle at 30% 30%,rgba(201,161,74,.12),transparent 70%)}.ring:active{transform:scale(.94)}
+.phone{width:250px;margin:auto;background:var(--card);border:1.5px solid var(--border);border-radius:34px;padding:12px;box-shadow:var(--sh)}
+.phone .scr{background:var(--bg);border-radius:24px;padding:16px;min-height:380px}
+.mini-hero{background:linear-gradient(135deg,#0e3b2e,#1a5d47);color:#fff;border-radius:18px;padding:16px}.mini-hero b{font-size:15px}.mini-hero small{color:#e6c97a;font-weight:700}
+.mini-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;margin-top:10px;font-size:12.5px}.mini-card b{color:var(--deep)}
+.bnav{display:flex;justify-content:space-around;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:9px;margin-top:12px;font-size:16px}.bnav span{opacity:.45}.bnav span.on{opacity:1;background:var(--green-pale);border-radius:99px;padding:2px 12px}
+.theme-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}@media(max-width:800px){.theme-cards{grid-template-columns:1fr}}
+.tcard{border-radius:18px;padding:20px;border:1px solid var(--border)}.tcard .bar{height:12px;border-radius:6px;margin-top:10px}
+.toast-demo{background:#0e3b2e;color:#fff;padding:12px 24px;border-radius:99px;font-weight:700;font-size:14px;display:inline-block;box-shadow:var(--sh)}
+.modal-demo{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;max-width:420px;box-shadow:var(--sh)}
+.kids{border-radius:18px;padding:20px;color:#fff}.kids h3{color:#fff!important}
+.mono{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#0c1a13;color:#a7e8bd;border-radius:14px;padding:20px;overflow:auto;line-height:1.9}
+.mono .k{color:#e6c97a}.mono .c{color:#6b8577}
+footer{margin-top:70px;border-top:1px solid var(--border);padding-top:26px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.copied{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:#0e3b2e;color:#fff;padding:11px 24px;border-radius:99px;font-weight:800;z-index:999;transition:.35s var(--ease);opacity:0}.copied.show{transform:translateX(-50%);opacity:1}
+.reveal{opacity:0;transform:translateY(22px);transition:.7s var(--ease)}.reveal.in{opacity:1;transform:none}
+.searchbox{width:100%;max-width:440px;padding:12px 18px;border-radius:99px;border:1.5px solid var(--border);background:var(--card);font-family:inherit;font-size:14px;outline:none}.searchbox:focus{border-color:var(--gold)}
+</style></head>
+<body>
+<header class="topbar"><div class="topbar-in">
+<div class="logo">ز</div><div><b>زاد — Design System</b><small>ZAD Design System · v2.0 · 2026 · مصدر الحقيقة الواحد</small></div>
+<nav class="topnav"><a href="#foundations">الأسس</a><a href="#color">الألوان</a><a href="#type">الخطوط</a><a href="#components">المكونات</a><a href="#patterns">الأنماط</a><a href="#themes">الثيمات</a><a href="#a11y">الإتاحة</a><a href="#tokens">التوكنز</a></nav>
+<div class="theme-switch" role="group" aria-label="تبديل الثيم"><button data-t="light" class="on">☀️ فاتح</button><button data-t="dark">🌙 داكن</button><button data-t="oled">⬛ OLED</button></div>
+</div></header>
+
+<div class="wrap">
+<section class="hero reveal">
+<div class="eyebrow">ZAD · DESIGN SYSTEM · النسخة 2.0</div>
+<h1>نظامٌ واحد…<br>من الآيةِ إلى <em>الزرّ</em></h1>
+<p>نظام تصميم «زاد» الكامل والمُستخرج من الكود الفعلي للإنتاج (<code style="background:rgba(255,255,255,.12);color:#e6c97a;border-color:transparent">css/style.css</code> + <code style="background:rgba(255,255,255,.12);color:#e6c97a;border-color:transparent">css/premium-ui.css</code>): ثلاث طبقات توكنز (Primitives ← Semantic ← Component)، و3 ثيمات، ومكونات عبادية متخصصة لا توجد في أي مكتبة جاهزة — فوق 86 صفحة ومنتج واحد متماسك.</p>
+<div class="hero-meta"><span class="chip">🎨 <b>7</b> Primitives أساسية</span><span class="chip">🧩 <b>30+</b> مكوّناً موثّقاً</span><span class="chip">🌗 <b>3</b> ثيمات: فاتح / داكن / OLED</span><span class="chip">📄 <b>86</b> صفحة على نظام واحد</span><span class="chip">♿ WCAG <b>2.1 AA</b></span><span class="chip">⇄ RTL أولاً · <b>4</b> لغات</span></div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="sec reveal" id="foundations"><div class="sec-head"><span class="num">01</span><h2>مبادئ التصميم</h2></div>
+<p class="lead">أربعة مبادئ تحكم كل قرار — من اختيار درجة الأخضر إلى حركة زرّ التسبيح.</p>
+<div class="grid g4">
+<div class="card"><h3>🕊️ سكينة قبل الزخرفة</h3><p>المحتوى الشرعي هو البطل. التدرجات واللمسات الذهبية خادمة للنص لا منافسة له؛ لا نيون، لا تشتيت أثناء العبادة.</p></div>
+<div class="card"><h3>📿 عبادة بلا احتكاك</h3><p>كل مهمة يومية (ذكر، ورد، صلاة) تُنجز في ≤3 نقرات، وتعمل كاملة بلا إنترنت — Offline-First مبدأ تصميم لا مجرد تقنية.</p></div>
+<div class="card"><h3>🌗 نورٌ وظلمةٌ بكرامة</h3><p>الداكن وOLED ليسا «عكس ألوان» بل إعادة صياغة دلالية كاملة لكل توكن، بتباين AA موثّق ومُختبَر حياً.</p></div>
+<div class="card"><h3>🧒 من الطفل إلى الحاجّ</h3><p>نظام واحد يتفرع لهويات فرعية (أطفال، حج، رمضان) دون أن ينكسر — توكنز مشتركة وشخصية محلية مقصودة.</p></div>
+</div>
+<div class="card" style="margin-top:16px"><h3>🏗️ معمارية التوكنز — ثلاث طبقات (Single Source of Truth)</h3>
+<p style="margin-bottom:14px">درسٌ مدفوع الثمن: تكرار نفس الـHex يدوياً في أكثر من ملف كان سبب أغلب أخطاء الثيمات تاريخياً. الحل المعتمد الآن:</p>
+<div class="grid g3">
+<div style="background:var(--sand);border:1px dashed var(--border);border-radius:14px;padding:16px"><b>① Primitives</b><p><code>--primitive-green-900</code> قيم خام <b>ثابتة عمداً</b> لا تتفاعل مع الثيم — لأنها خلفيات صلبة تحت نص أبيض (أبيض فوق أخضر الداكن الساطع = 1.85:1 فقط!).</p></div>
+<div style="background:var(--sand);border:1px dashed var(--border);border-radius:14px;padding:16px"><b>② Semantic</b><p><code>--bg / --ink / --green-deep / --gold</code> تتبدل دلاليًا حسب الثيم. كل الشاشات تستهلك هذه الطبقة فقط.</p></div>
+<div style="background:var(--sand);border:1px dashed var(--border);border-radius:14px;padding:16px"><b>③ Component</b><p><code>--button-primary-bg / --card-border / --progress-fill-*</code> عقدٌ بين الدلالي والمكوّن — alias صفر تغيير بصري، يمنع انجراف المكونات الشبيهة.</p></div>
+</div></div>
+</section>
+
+<!-- COLOR -->
+<section class="sec reveal" id="color"><div class="sec-head"><span class="num">02</span><h2>الألوان</h2></div>
+<p class="lead">اضغط أي بطاقة لنسخ الـHex. الهوية: <b>أخضر غابيّ عميق</b> (السكينة والنمو) × <b>ذهبيّ دافئ</b> (النور والقيمة) فوق رملٍ محايد.</p>
+<h3 style="margin:26px 0 4px;color:var(--deep)">Primitives — ثابتة في كل الثيمات</h3>
+<div class="grid g4" id="prims"></div>
+<h3 style="margin:30px 0 4px;color:var(--deep)">ألوان النظام الدلالية (System)</h3>
+<div class="grid g4" id="sys"></div>
+<h3 style="margin:30px 0 4px;color:var(--deep)">Semantic — جرّب تبديل الثيم من الأعلى وشاهد تبدّلها</h3>
+<div style="overflow:auto;border-radius:16px"><table><tr><th>التوكن</th><th>فاتح</th><th>داكن</th><th>OLED</th><th>الاستخدام</th></tr>
+<tr><td><code>--bg</code></td><td><span class="dot" style="background:#f5f4f0"></span>#F5F4F0</td><td><span class="dot" style="background:#0a1410"></span>#0A1410</td><td><span class="dot" style="background:#000"></span>#000000</td><td>خلفية التطبيق</td></tr>
+<tr><td><code>--card</code></td><td><span class="dot" style="background:#fff"></span>#FFFFFF</td><td><span class="dot" style="background:#141f1a"></span>#141F1A</td><td><span class="dot" style="background:#0a0f0d"></span>#0A0F0D</td><td>أسطح البطاقات</td></tr>
+<tr><td><code>--ink</code></td><td><span class="dot" style="background:#1a1a18"></span>#1A1A18</td><td><span class="dot" style="background:#f0f0ea"></span>#F0F0EA</td><td><span class="dot" style="background:#f5fef6"></span>#F5FEF6</td><td>النص الأساسي</td></tr>
+<tr><td><code>--green-deep</code></td><td><span class="dot" style="background:#0e3b2e"></span>#0E3B2E</td><td><span class="dot" style="background:#4dd866"></span>#4DD866</td><td><span class="dot" style="background:#4dd866"></span>#4DD866</td><td>عناوين، أزرار، هوية</td></tr>
+<tr><td><code>--gold</code></td><td><span class="dot" style="background:#c9a14a"></span>#C9A14A</td><td><span class="dot" style="background:#e6c97a"></span>#E6C97A</td><td><span class="dot" style="background:#f0d080"></span>#F0D080</td><td>تمييز، إنجاز، CTA ثانوي</td></tr>
+<tr><td><code>--border</code></td><td><span class="dot" style="background:#e5e4de"></span>#E5E4DE</td><td colspan="2"><span class="dot" style="background:#2a3830"></span>#2A3830</td><td>حدود وفواصل</td></tr>
+<tr><td><code>--green-pale / --gold-pale</code></td><td>#E8F4EF / #FDF5E0</td><td>#0E2A1E / #1A1608</td><td>#0E2A1E / #0A0800</td><td>خلفيات حالات ونجاح</td></tr>
+</table></div>
+<div class="do"><div class="card"><h3>✅ افعل</h3><ul><li>استهلك Semantic دائماً؛ Primitives للأسطح الصلبة فقط.</li><li>الذهبي للتمييز والإنجاز — لا للنصوص الطويلة.</li><li>اختبر أي لون جديد في الثيمات الثلاثة معاً.</li></ul></div>
+<div class="card no"><h3>⛔ لا تفعل</h3><ul><li>لا تكتب Hex خاماً داخل صفحة — ستفوّت إصلاحات الثيم.</li><li>لا تضع نصاً أبيض فوق <code>--green-deep</code> في الداكن.</li><li>لا تستخدم الأحمر إلا للخطر/الخطأ فعلياً.</li></ul></div></div>
+</section>
+
+<!-- TYPE -->
+<section class="sec reveal" id="type"><div class="sec-head"><span class="num">03</span><h2>الخطوط والمقياس</h2></div>
+<p class="lead">ثلاث عائلات بأدوار صارمة: <b>Thmanyah Sans/Display</b> للواجهة والعناوين، <b>Tajawal</b> بديل ويب موثوق، و<b>Amiri Quran</b> للنص القرآني حصراً — لا يُستبدل أبداً.</p>
+<div class="type-row"><small>Display / H1 · Thmanyah 900 · 40/1.2</small><span style="font-size:40px;font-weight:900;color:var(--deep)">زادُك ليومِك</span><code>40px · 900</code></div>
+<div class="type-row"><small>H2 · 800 · 28/1.3</small><span style="font-size:28px;font-weight:800;color:var(--deep)">مواقيت الصلاة اليوم</span><code>28px · 800</code></div>
+<div class="type-row"><small>H3 / Section · 800 · 17 + شريط ذهبي</small><span style="font-size:17px;font-weight:800;color:var(--deep)">▎ وردك القرآني</span><code>17px · 800</code></div>
+<div class="type-row"><small>Body · 400–600 · 15/1.7</small><span style="font-size:15px">أكمل صفحتين من سورة الكهف لتصل إلى هدف الأسبوع.</span><code>15px · 1.7</code></div>
+<div class="type-row"><small>Caption / Meta · 12.5</small><span style="font-size:12.5px;color:var(--muted)">آخر مزامنة قبل ٥ دقائق · يعمل بلا إنترنت</span><code>12.5px · muted</code></div>
+<div class="type-row"><small>Quran · Amiri · 26/2.1</small><span style="font-family:'Amiri',serif;font-size:26px;color:var(--deep)">﴿إِنَّ مَعَ الْعُسْرِ يُسْرًا﴾</span><code>Amiri · 26px</code></div>
+<div class="type-row"><small>Numbers · tnum</small><span style="font-size:30px;font-weight:900;font-feature-settings:'tnum'">٠٤:٣٨ · 1,248</span><code>font-feature-settings:"tnum"</code></div>
+<div class="grid g3">
+<div class="card"><h3>📏 مقياس المسافات (8pt)</h3><p>4 · 8 · 12 · 16 · 22 (حشوة البطاقة) · 24 · 32 · 48 · 64<br>حشوة الصفحة: 24px سطح مكتب / 16px جوال، مع احترام Safe-Area.</p><div class="spec"><span>card padding 22px</span><span>gap 16px</span><span>section 32px</span></div></div>
+<div class="card"><h3>◜ الانحناء والظل</h3><p><code>--radius:18px</code> بطاقات · <code>12px</code> صغير · <code>99px</code> أزرار وشارات · ظل أخضر ملوّن لا رمادي: <code>0 10px 30px -12px rgba(14,59,46,.18)</code></p><div class="spec"><span>shadow</span><span>shadow-sm</span><span>shadow-gold</span></div></div>
+<div class="card"><h3>🎞️ الحركة</h3><p><code>--t:.25s</code> · <code>--ease:cubic-bezier(.4,0,.2,1)</code> · ضغطة زر scale(.96) ب spring خفيف · احترام <code>prefers-reduced-motion</code> دائماً.</p><div class="spec"><span>150ms press</span><span>250ms surface</span><span>800ms progress</span></div></div>
+</div></section>
+
+<!-- COMPONENTS -->
+<section class="sec reveal" id="components"><div class="sec-head"><span class="num">04</span><h2>المكونات</h2></div>
+<p class="lead">عينات حية بنفس كود الإنتاج. ابحث وصفِّ:</p>
+<input class="searchbox" id="compSearch" placeholder="🔍 ابحث عن مكوّن… (زر، بطاقة، تقدم)">
+<div class="grid g2" id="compGrid">
+<div class="card comp" data-name="button زر أزرار primary gold ghost danger"><h3>Buttons — الأزرار</h3>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-p">أساسي Primary</button><button class="btn btn-gold">ذهبي Gold ✦</button><button class="btn btn-ghost">شبح Ghost</button><button class="btn btn-danger">خطر</button><button class="btn btn-p btn-sm">صغير SM</button><button class="btn btn-p" disabled>معطّل</button></div>
+<div class="spec"><span>.btn .btn-primary</span><span>.btn-gold</span><span>.btn-ghost</span><span>.btn-danger</span><span>radius 99px</span><span>active scale .96</span></div></div>
+
+<div class="card comp" data-name="input حقل إدخال بحث"><h3>Input & Search — الحقول</h3>
+<input class="input" placeholder="اكتب اسمك أو هدفك اليوم…"><div style="height:10px"></div>
+<div style="display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:9px 16px;box-shadow:var(--sh-sm)">🔍<input style="border:0;outline:0;background:transparent;flex:1;font-family:inherit" placeholder="ابحث في الأذكار والقرآن…"><kbd style="font-size:11px;background:var(--sand);border:1px solid var(--border);border-radius:6px;padding:2px 7px">Ctrl K</kbd></div>
+<div class="spec"><span>.input</span><span>focus: border gold</span><span>.search pill</span><span>Command Palette</span></div></div>
+
+<div class="card comp" data-name="badge شارة حالة نجاح"><h3>Badges & Status — الشارات</h3>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><span class="badge ok">✓ مكتمل</span><span class="badge gold">✦ سلسلة ١٢ يوماً 🔥</span><span class="badge">⏳ متبقي صفحتان</span><span class="badge err">✕ فاتتك الفجر</span><span class="badge" style="background:var(--green-pale)">📿 ٣٣ / ١٠٠</span></div>
+<div class="spec"><span>.badge</span><span>.badge.ok</span><span>gold = إنجاز فقط</span></div></div>
+
+<div class="card comp" data-name="progress تقدم شريط ring حلقة"><h3>Progress — التقدّم</h3>
+<p style="font-size:13px">ورد القرآن — ٦٨٪ من هدف الأسبوع</p><div class="progress" style="margin:8px 0 16px"><span style="width:68%"></span></div>
+<p style="font-size:13px">أذكار الصباح — ٤٠٪</p><div class="progress" style="margin-top:8px"><span style="width:40%"></span></div>
+<div class="spec"><span>.progress &gt; span</span><span>gradient soft→gold</span><span>transition .8s</span><span>.prog-ring للحلقي</span></div></div>
+
+<div class="card comp" data-name="check checklist قائمة مهام عبادة"><h3>Worship Checklist — قائمة العبادات ✓</h3>
+<div style="margin-top:10px">
+<div class="check done" onclick="this.classList.toggle('done')"><span class="box">✓</span><span class="lbl">صلاة الفجر في وقتها</span><small>٠٤:٣٨</small></div>
+<div class="check done" onclick="this.classList.toggle('done')"><span class="box">✓</span><span class="lbl">أذكار الصباح</span><small>٧ أذكار</small></div>
+<div class="check" onclick="this.classList.toggle('done')"><span class="box">✓</span><span class="lbl">ورد القرآن — صفحتان</span><small>الكهف</small></div>
+</div><div class="spec"><span>.check .done</span><span>اضغط للتجربة</span><span>box 26px radius 8</span></div></div>
+
+<div class="card comp" data-name="stat إحصائية رقم حصاد"><h3>Stat Cards — الحصاد</h3>
+<div class="grid g3" style="margin-top:8px">
+<div style="background:var(--sand);border-radius:14px;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--deep)">١٢</div><small style="color:var(--muted)">يوم سلسلة 🔥</small></div>
+<div style="background:var(--sand);border-radius:14px;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--deep)">٩٤٪</div><small style="color:var(--muted)">التزام الأسبوع</small></div>
+<div style="background:var(--sand);border-radius:14px;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--gold-dk)">٣,٢٤٠</div><small style="color:var(--muted)">ذكر هذا الشهر</small></div></div>
+<div class="spec"><span>.stat .v .l .ic</span><span>أرقام tnum</span></div></div>
+
+<div class="card comp" data-name="verse آية قرآنية بطاقة"><h3>Verse Card — آية اليوم ﴿ ﴾</h3>
+<div class="verse" style="margin-top:8px"><div style="font-size:12px;color:var(--gold-dk);font-weight:800;letter-spacing:1px">✦ آية اليوم</div><div class="ar">﴿فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرَىٰ﴾</div><div class="src">سورة الشرح · ٥–٦</div></div>
+<div class="spec"><span>.verse</span><span>Amiri فقط للنص المقدس</span><span>gradient card→gold-pale</span></div></div>
+
+<div class="card comp" data-name="tasbeeh مسبحة تسبيح عداد"><h3>Tasbeeh — المسبحة الرقمية 📿</h3>
+<div class="tasbeeh" style="margin-top:8px"><div class="w" id="tsW">سُبْحَانَ الله</div><div class="ring" id="tsRing"><div><div class="n" id="tsN">٠</div><small style="color:rgba(255,255,255,.6)">اضغط الدائرة</small></div></div>
+<div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-gold btn-sm" id="tsNext">الذكر التالي ⏭</button><button class="btn btn-sm" style="background:rgba(255,255,255,.12);color:#fff" id="tsReset">تصفير</button></div></div>
+<div class="spec"><span>.tasbeeh .ring .count</span><span>هدف ٣٣ · اهتزاز عند الإكمال</span></div></div>
+</div>
+</section>
+
+<!-- PATTERNS -->
+<section class="sec reveal" id="patterns"><div class="sec-head"><span class="num">05</span><h2>الأنماط المتخصصة</h2></div>
+<p class="lead">مكونات وُلدت من طبيعة المنتج — لا تجدها في Material ولا Human Interface Guidelines.</p>
+<div class="grid g3">
+<div><div class="phone"><div class="scr"><div class="mini-hero"><small>الخميس · ١٢ صفر ١٤٤٨هـ</small><br><b>السلام عليك، أحمد 👋</b><div style="margin-top:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px;font-size:12px">🕌 المغرب بعد <b style="color:#e6c97a;font-size:16px">٠٠:٤٢:١٥</b></div></div>
+<div class="mini-card"><b>📖 ورد اليوم</b><div class="progress" style="margin-top:8px"><span style="width:68%"></span></div><small style="color:var(--muted)">صفحتان متبقيتان من الكهف</small></div>
+<div class="mini-card"><b>📿 أذكار الصباح</b> <span class="badge ok" style="float:left">✓ تمّت</span><br><small style="color:var(--muted)">أذكار المساء ٦:١٥ م</small></div>
+<div class="bnav"><span class="on">🏠</span><span>🕌</span><span>📖</span><span>📿</span><span>⋯</span></div></div></div>
+<p style="text-align:center;margin-top:12px"><b>نمط «يومك»</b> <span style="color:var(--muted)">— Hero عدّاد الصلاة + بطاقتا الورد والذكر + تنقّل سفلي</span></p></div>
+
+<div><div class="card kids" style="background:linear-gradient(135deg,#7c5cd6,#af52de);min-height:300px"><h3>🧒 هوية الأطفال الفرعية</h3><p style="color:rgba(255,255,255,.85)">بنفسجي مرح + أشكال مستديرة أكبر + أهداف بصرية (حيّ، حديقة، مدينة) عبر ١٧ صفحة Kids — نفس التوكنز البنيوية، شخصية مختلفة مقصودة وموثّقة كقرار لا انجراف.</p>
+<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><span class="badge">⭐ نجمة اليوم</span><span class="badge gold">🏆 بطل الأسبوع</span></div>
+<div style="font-size:44px;margin-top:18px">🌙 ⭐ 🕌 🌴</div></div>
+<p style="text-align:center;margin-top:12px"><b>Sub-brand Pattern</b> <span style="color:var(--muted)">— تفرّع هوية دون كسر النظام</span></p></div>
+
+<div><div class="card" style="min-height:300px"><h3>🕋 نمط المواسم</h3><p>عشر ذي الحجة، عرفة، الحج، رمضان: Hero خاص بالموسم + عدّاد تنازلي حيّ + برنامج يومي مقسّم زمنياً + بطاقات دعاء قابلة للمشاركة — كلها تُبنى من نفس البطاقات والأزرار.</p>
+<div style="display:flex;gap:8px;margin-top:16px"><div style="flex:1;background:var(--gold-pale);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><b style="font-size:22px;color:var(--gold-dk)">٠٦</b><br><small>أيام لعرفة</small></div><div style="flex:1;background:var(--green-pale);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><b style="font-size:22px;color:var(--deep)">١٤</b><br><small>ساعة صيام</small></div><div style="flex:1;background:var(--sand);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><b style="font-size:22px">٩٢٪</b><br><small>برنامجك</small></div></div>
+<div class="spec"><span>.cd-box countdown</span><span>.share-card</span></div></div>
+<p style="text-align:center;margin-top:12px"><b>Season Pattern</b> <span style="color:var(--muted)">— موسم جديد = إعادة تركيب لا إعادة بناء</span></p></div>
+</div>
+
+<div class="grid g2">
+<div class="card"><h3>🧭 التنقّل — Navigation</h3><p>سطح مكتب: شريط جانبي بأقسام مطويّة (Accordion). جوال: شريط سفلي زجاجي Glass ‏(blur 16px) بخمس وجهات + زرّ مسبحة عائم + لوحة «المزيد». بحث شامل <code>Ctrl K</code> فوق كل شيء (<code>--z-*</code> موحّدة: decor 1 ← toast 9999).</p><div class="spec"><span>--z-topbar:60</span><span>--z-sidebar:100</span><span>--z-overlay:500</span><span>--z-toast:9999</span></div></div>
+<div class="card"><h3>💬 الحوارات والتنبيهات</h3><div class="modal-demo" style="margin-top:10px"><b style="color:var(--deep)">أحسنت! أكملت أذكار الصباح 🎉</b><p style="font-size:13px;margin:6px 0 14px">سلسلتك وصلت ١٢ يوماً. أذكار المساء تُفتح ٦:١٥ م.</p><button class="btn btn-p btn-sm">متابعة اليوم</button> <button class="btn btn-ghost btn-sm">مشاركة ✦</button></div>
+<div style="margin-top:14px"><span class="toast-demo">✓ حُفظ وردك — سيُزامَن عند الاتصال</span></div>
+<div class="spec"><span>Escape / خلفية / استرجاع تركيز لكل Dialog</span><span>.toast أسفل المنتصف</span></div></div>
+</div></section>
+
+<!-- THEMES -->
+<section class="sec reveal" id="themes"><div class="sec-head"><span class="num">06</span><h2>الثيمات الثلاثة</h2></div>
+<p class="lead">بدّل من شريط الأعلى — هذه الصفحة كلها تعيد تلوين نفسها فوراً، كما يفعل المنتج. لا ثيم «مكسور» ولا نص يختفي.</p>
+<div class="theme-cards">
+<div class="tcard" style="background:#f5f4f0;color:#1a1a18"><b>☀️ فاتح Light</b><div class="bar" style="background:#fff;border:1px solid #e5e4de"></div><div class="bar" style="background:#0e3b2e;width:55%"></div><div class="bar" style="background:#c9a14a;width:35%"></div><small>النهار والقراءة الطويلة · BG #F5F4F0</small></div>
+<div class="tcard" style="background:#0a1410;color:#f0f0ea"><b>🌙 داكن Dark</b><div class="bar" style="background:#141f1a;border:1px solid #2a3830"></div><div class="bar" style="background:#4dd866;width:55%"></div><div class="bar" style="background:#e6c97a;width:35%"></div><small>قيام الليل · عمق متدرج + توهّج ذهبي خافت</small></div>
+<div class="tcard" style="background:#000;color:#f5fef6"><b>⬛ OLED Pure Black</b><div class="bar" style="background:#0a0f0d;border:1px solid #2a3830"></div><div class="bar" style="background:#4dd866;width:55%"></div><div class="bar" style="background:#f0d080;width:35%"></div><small>توفير بطارية حقيقي · أسود #000000 صِرف</small></div>
+</div></section>
+
+<!-- A11Y -->
+<section class="sec reveal" id="a11y"><div class="sec-head"><span class="num">07</span><h2>الإتاحة والاتجاه واللغات</h2></div>
+<div class="grid g3">
+<div class="card"><h3>♿ WCAG 2.1 AA</h3><p>تباين موثّق بالأرقام (مثال زر الخطر: 5.44:1 فاتح · 6.68:1 داكن · 7.63:1 OLED)، أهداف لمس ≥44px، تركيز مرئي، حوارات بـ Escape واسترجاع تركيز، ووضع إتاحة مخصص (تباين أعلى + خط أكبر).</p></div>
+<div class="card"><h3>⇄ RTL حقيقي لا مرآة عمياء</h3><p>إصلاح جذري موثّق: إزالة فرض <code>direction:rtl</code> بالـCSS الذي كان يهزم تبديل اللغة صامتاً، والتحوّل إلى Logical Properties ‏(<code>inline-start/end</code>) — الواجهة تنعكس فعلياً في LTR لأول مرة.</p></div>
+<div class="card"><h3>🌍 ٤ لغات</h3><p>العربية (افتراضي RTL) · English · Français · اردو/تركية عبر <code>lang.js</code> — النص القرآني يبقى Amiri دائماً مهما تبدّلت لغة الواجهة.</p></div>
+</div></section>
+
+<!-- TOKENS -->
+<section class="sec reveal" id="tokens"><div class="sec-head"><span class="num">08</span><h2>التوكنز — للنسخ المباشر</h2></div>
+<p class="lead">مقتطف من مصدر الحقيقة <code>css/style.css</code> — الصق وابدأ:</p>
+<div class="mono"><span class="c">/* Primitives — never theme-reactive */</span><br><span class="k">--primitive-green-900</span>: #0e3b2e; <span class="k">--primitive-green-700</span>: #1a5d47;<br><span class="k">--primitive-green-500</span>: #2a7a5f; <span class="k">--primitive-gold-500</span>: #c9a14a;<br><span class="c">/* Semantic (light) */</span><br><span class="k">--bg</span>:#f5f4f0; <span class="k">--card</span>:#fff; <span class="k">--ink</span>:#1a1a18; <span class="k">--gold</span>:var(--brand-gold);<br><span class="c">/* Component contract */</span><br><span class="k">--button-primary-bg</span>:var(--brand-deep); <span class="k">--card-radius</span>:18px;<br><span class="k">--progress-fill-from</span>:var(--green-soft); <span class="k">--progress-fill-to</span>:var(--gold);<br><span class="c">/* Layers */</span> <span class="k">--z-sidebar</span>:100; <span class="k">--z-overlay</span>:500; <span class="k">--z-toast</span>:9999;</div>
+<div class="grid g2">
+<div class="card"><h3>📏 حوكمة النظام</h3><p>أي لون/مكوّن جديد يمرّ بـ: توكن ← ثيمات ٣ ← تباين AA ← توثيق هنا. ممنوع الـHex الخام والـz-index الرقمي المجهول داخل الصفحات. الهويات الفرعية (أطفال/مواسم) انحراف <b>مقصود وموثّق</b> لا خطأ.</p></div>
+<div class="card"><h3>🗂️ سجلّ الإصدار</h3><p><b>v2.0 (2026)</b> — طبقة Primitives موحّدة، عقد Component Tokens، مكوّن Input، توكينة Z-index، حلّ تعارض الخطوط، RTL Logical Properties.<br><b>v1.x</b> — إصلاحات تباين وثيمات OLED (٢١ commit موثّقاً في <code>docs/design-system/</code>).</p></div>
+</div></section>
+
+<footer><span>زاد — Design System v2.0 · مُستخرج من كود الإنتاج الفعلي · 2026</span><span><a href="zad-behance.html" style="color:var(--deep);font-weight:800">← عرض المشروع على Behance</a> · <a href="index.html" style="font-weight:700">فتح التطبيق</a></span></footer>
+</div>
+<div class="copied" id="copied">✓ نُسخ اللون</div>
+<script>
+const prims=[["Green 900","#0E3B2E","--primitive-green-900"],["Green 700","#1A5D47","--primitive-green-700"],["Green 500","#2A7A5F","--primitive-green-500"],["Green 100","#E8F4EF","--primitive-green-100"],["Gold 700","#B87200","--primitive-gold-700"],["Gold 500","#C9A14A","--primitive-gold-500"],["Gold Light","#E6C97A","--brand-gold-lt"],["Gold 100","#FFF8E8","--primitive-gold-100"]];
+const sys=[["Success","#34C759","--sys-green"],["Error","#FF3B30","--sys-red"],["Info/Link","#007AFF","--sys-blue"],["Warning","#FF9500","--sys-orange"],["Kids Purple","#AF52DE","--sys-purple"],["Yellow","#FFCC00","--sys-yellow"],["Sand","#EBDFC4","--sand-2"],["Ink","#1A1A18","--ink"]];
+function render(id,arr){document.getElementById(id).innerHTML=arr.map(([n,h,t])=>`<div class="sw" data-hex="${h}" tabindex="0" role="button" aria-label="نسخ ${h}"><div class="fill" style="background:${h}"><span>${h}</span></div><div class="meta"><b>${n}</b><code>${t}</code><br><span class="tag">اضغط للنسخ</span></div></div>`).join("")}
+render("prims",prims);render("sys",sys);
+document.addEventListener("click",e=>{const s=e.target.closest(".sw");if(!s)return;navigator.clipboard&&navigator.clipboard.writeText(s.dataset.hex);const c=document.getElementById("copied");c.textContent="✓ نُسخ "+s.dataset.hex;c.classList.add("show");setTimeout(()=>c.classList.remove("show"),1400)});
+document.querySelectorAll(".theme-switch button").forEach(b=>b.onclick=()=>{document.documentElement.dataset.theme=b.dataset.t;document.querySelectorAll(".theme-switch button").forEach(x=>x.classList.toggle("on",x===b))});
+document.getElementById("compSearch").addEventListener("input",e=>{const q=e.target.value.trim();document.querySelectorAll(".comp").forEach(c=>c.style.display=(!q||c.dataset.name.includes(q)||c.textContent.includes(q))?"":"none")});
+// Tasbeeh demo
+const adhkar=["سُبْحَانَ الله","الْحَمْدُ لِلَّه","اللهُ أَكْبَر","لَا إِلَٰهَ إِلَّا الله"];let ti=0,tn=0;
+const fmt=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+document.getElementById("tsRing").onclick=()=>{tn++;if(navigator.vibrate)navigator.vibrate(tn>=33?[60,40,60]:12);document.getElementById("tsN").textContent=fmt(tn);if(tn>=33){tn=0;ti=(ti+1)%adhkar.length;document.getElementById("tsW").textContent=adhkar[ti];setTimeout(()=>document.getElementById("tsN").textContent="٠",350)}};
+document.getElementById("tsNext").onclick=()=>{ti=(ti+1)%adhkar.length;tn=0;document.getElementById("tsW").textContent=adhkar[ti];document.getElementById("tsN").textContent="٠"};
+document.getElementById("tsReset").onclick=()=>{tn=0;document.getElementById("tsN").textContent="٠"};
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("in")),{threshold:.08});document.querySelectorAll(".reveal").forEach(e=>io.observe(e));
+</script></body></html>
